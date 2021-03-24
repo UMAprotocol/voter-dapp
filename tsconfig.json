@@ -15,7 +15,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react" // for the css prop
   },
-  "include": ["src"]
+  "include": ["src"],
+  "files": ["src/twin.d.ts"]
 }
