@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-// eslint-disable-next-line
-import tw, { styled } from "twin.macro";
+import { FC } from "react";
+import tw, { styled } from "twin.macro"; // eslint-disable-line
 
 import { Link } from "react-router-dom";
 import logo from "assets/logo.png";
@@ -18,17 +18,19 @@ const Wrapper = styled.nav`
   .sm-logo {
     height: 25px;
     &:hover {
+      transition: opacity 0.2s;
       opacity: 0.7;
     }
   }
   .link {
     &:hover {
-      color: red;
+      transition: color 0.3s;
+      color: #ff4a4a;
     }
   }
 `;
 
-const Navbar = () => {
+const Navbar: FC = () => {
   return (
     <Wrapper tw="flex justify-between flex-wrap bg-white p-3 max-w-7xl">
       <Link tw="inline-flex items-center p-2 mr-4" to="/">
