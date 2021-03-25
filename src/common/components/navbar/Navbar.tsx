@@ -10,6 +10,7 @@ import mediumLogo from "assets/ico-medium.svg";
 import twitterLogo from "assets/ico-tw.svg";
 
 const Wrapper = styled.nav`
+  font-family: "Halyard Display";
   margin: 0 auto;
   margin-top: 1rem;
   .logo {
