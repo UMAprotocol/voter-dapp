@@ -3,3 +3,7 @@
 @tailwind utilities;
 
 @import "./assets/fonts.css";
+
+body {
+  font-family: "Halyard Display";
+}

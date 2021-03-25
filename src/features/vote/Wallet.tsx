@@ -6,9 +6,7 @@ import { FC } from "react";
 
 const Container = styled.div`
   background-color: #fff;
-  font-family: "Halyard Display";
-  ${tw`max-w-7xl mx-auto p-8`};
-  /* height: 100px */
+  ${tw`max-w-7xl mx-auto py-4 px-8`};
   .wallet-title {
     font-weight: 600;
     font-size: 1.5rem;
@@ -35,13 +33,16 @@ const Container = styled.div`
   .value-tokens {
     font-size: 1.5rem;
     margin: 0 0 11px;
-    span:first-child {
+    span {
       font-weight: 500;
     }
     span:last-child {
       font-weight: 500;
       opacity: 0.3;
     }
+  }
+  .value-dollars {
+    font-size: 0.8rem;
   }
 `;
 const Wallet: FC = () => {
