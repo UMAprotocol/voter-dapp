@@ -53,7 +53,7 @@ const Wallet: FC = () => {
           <p className="wallet-title">Voting Wallet</p>
           <p className="connected">Connected with MetaMask</p>
         </div>
-        <div tw="py-5 px-3 flex-grow">
+        <div tw="my-5 mx-3 flex-grow border-r">
           <p className="sm-title">UMA Balance</p>
           <div className="value-tokens">
             <span>0.000</span>
@@ -61,7 +61,7 @@ const Wallet: FC = () => {
           </div>
           <p className="value-dollars">$00.00 USD</p>
         </div>
-        <div tw="py-5 px-3 flex-grow">
+        <div tw="my-5 mx-3 pl-5 flex-grow border-r">
           <p className="sm-title">Total UMA Collected</p>
           <div className="value-tokens">
             <span>0.000</span>
@@ -69,7 +69,7 @@ const Wallet: FC = () => {
           </div>
           <p className="value-dollars">$00.00 USD</p>
         </div>
-        <div tw="py-5 px-3 flex-grow">
+        <div tw="my-5 mx-3 pl-5 flex-grow">
           <p className="sm-title">Available Rewards</p>
           <div className="value-tokens">
             <span>0.000</span>
