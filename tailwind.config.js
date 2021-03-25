@@ -204,6 +204,7 @@ module.exports = {
         '"Liberation Mono"',
         '"Courier New"',
         "monospace",
+        "Halyard Display",
       ],
     },
     fontSize: {

@@ -2,9 +2,11 @@
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 
 import settingsLogo from "assets/settings.svg";
+import { FC } from "react";
 
 const Container = styled.div`
   background-color: #fff;
+  font-family: "Halyard Display";
   ${tw`max-w-7xl mx-auto p-8`};
   /* height: 100px */
   .wallet-title {
@@ -24,29 +26,47 @@ const Container = styled.div`
       margin-right: 10px;
     }
   }
+  .value-tokens {
+    font-size: 1.25rem;
+    span:first-child {
+      font-weight: 600;
+    }
+    span:last-child {
+      font-weight: 200;
+    }
+  }
 `;
-const Wallet = () => {
+const Wallet: FC = () => {
   return (
     <Container>
-      <div tw="flex items-stretch">
+      <div tw="flex items-stretch items-center">
         <div tw="py-8 pl-5 flex-grow">
           <p className="wallet-title">Voting Wallet</p>
           <p className="connected">Connected with MetaMask</p>
         </div>
-        <div tw="py-5 flex-grow">
-          <p>UMA Balance</p>
-          <p>0.000000</p>
-          <p>$00.00 USD</p>
+        <div tw="py-5 px-3 flex-grow">
+          <p className="sm-title">UMA Balance</p>
+          <div className="value-tokens">
+            <span>0.000</span>
+            <span>0000</span>
+          </div>
+          <p className="value-dollars">$00.00 USD</p>
         </div>
-        <div tw="py-5 flex-grow">
-          <p>Total UMA Collected</p>
-          <p>0.000000</p>
-          <p>$00.00 USD</p>
+        <div tw="py-5 px-3 flex-grow">
+          <p className="sm-title">Total UMA Collected</p>
+          <div className="value-tokens">
+            <span>0.000</span>
+            <span>0000</span>
+          </div>
+          <p className="value-dollars">$00.00 USD</p>
         </div>
-        <div tw="py-5 flex-grow">
-          <p>Available Rewards</p>
-          <p>0.000000</p>
-          <p>$00.00 USD</p>
+        <div tw="py-5 px-3 flex-grow">
+          <p className="sm-title">Available Rewards</p>
+          <div className="value-tokens">
+            <span>0.000</span>
+            <span>0000</span>
+          </div>
+          <p className="value-dollars">$00.00 USD</p>
         </div>
         <div tw="py-10 pl-5 ml-auto flex-none">
           <img src={settingsLogo} alt="settings_icon" />
