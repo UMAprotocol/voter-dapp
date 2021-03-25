@@ -3,11 +3,8 @@ import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 
 import { Link } from "react-router-dom";
+import { Discord, Github, Medium, Twitter } from "assets/icons";
 import logo from "assets/icons/logo.png";
-import discordLogo from "assets/icons/ico-discord.svg";
-import githubLogo from "assets/icons/ico-github.svg";
-import mediumLogo from "assets/icons/ico-medium.svg";
-import twitterLogo from "assets/icons/ico-tw.svg";
 
 const Wrapper = styled.nav`
   margin: 1rem auto;
@@ -62,7 +59,7 @@ const Navbar: FC = () => {
             target="_blank"
             rel="noreferrer"
           >
-            <img className="sm-logo" src={mediumLogo} alt="medium_logo" />
+            <Medium className="sm-logo" />
           </a>
           <a
             href="https://github.com/UMAprotocol"
@@ -70,7 +67,7 @@ const Navbar: FC = () => {
             target="_blank"
             rel="noreferrer"
           >
-            <img className="sm-logo" src={githubLogo} alt="medium_logo" />
+            <Github className="sm-logo" />
           </a>
           <a
             href="https://twitter.com/UMAprotocol"
@@ -78,7 +75,7 @@ const Navbar: FC = () => {
             target="_blank"
             rel="noreferrer"
           >
-            <img className="sm-logo" src={twitterLogo} alt="medium_logo" />
+            <Twitter className="sm-logo" />
           </a>
           <a
             href="https://medium.com"
@@ -86,7 +83,7 @@ const Navbar: FC = () => {
             target="_blank"
             rel="noreferrer"
           >
-            <img className="sm-logo" src={discordLogo} alt="medium_logo" />
+            <Discord className="sm-logo" />
           </a>
         </div>
       </div>

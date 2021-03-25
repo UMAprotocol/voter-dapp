@@ -4,14 +4,14 @@ import { Times } from "assets/icons";
 
 import Portal from "./Portal";
 
-type ModalProps = {
+type Props = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-const ModalComponent: React.ForwardRefRenderFunction<
+const _Modal: React.ForwardRefRenderFunction<
   HTMLElement,
-  React.PropsWithChildren<ModalProps>
+  React.PropsWithChildren<Props>
 > = ({ children, isOpen, onClose }, externalRef) => {
   if (!isOpen) {
     return null;
@@ -29,7 +29,7 @@ const ModalComponent: React.ForwardRefRenderFunction<
   );
 };
 
-const Modal = forwardRef(ModalComponent);
+const Modal = forwardRef(_Modal);
 Modal.displayName = "Modal";
 
 export const Wrapper = styled.aside`
