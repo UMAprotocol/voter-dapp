@@ -13,7 +13,7 @@ const Wallet: FC = () => {
       <div tw="flex items-stretch items-center">
         <div tw="py-8 pl-5 flex-grow">
           <p className="wallet-title">Voting Wallet</p>
-          <p className="connected">Connected with MetaMask</p>
+          <Connected>Connected with MetaMask</Connected>
         </div>
         <div tw="my-5 mx-3 flex-grow border-r">
           <p className="sm-title">UMA Balance</p>
@@ -44,24 +44,29 @@ const Wallet: FC = () => {
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
-        <div className="modal-wrapper">
-          <h3>Voting Wallet</h3>
-          <div tw="flex items-stretch">
-            <div>Not Connected</div>
-            <div>Add New Wallet</div>
+        <ModalWrapper>
+          <h3 className="header">Voting Wallet</h3>
+          <div className="header-body" tw="flex items-stretch mb-3 border-b">
+            <Disconnected>Not Connected</Disconnected>
+            <div className="open-form" tw="flex-grow text-right">
+              Add New Wallet
+            </div>
           </div>
-          <br />
-          <h3>Two Key Voting</h3>
-          <p>
+          <h3 tw="mt-10" className="header">
+            Two Key Voting
+          </h3>
+          <p tw="opacity-50 mb-4 text-center">
             You are not currently using a two key voting system. To deploy one,
             provide your cold key address. Click here to learn more about the
             two key voting system.
           </p>
           <div tw="flex items-stretch">
-            <div>Not Connected</div>
-            <div>Add Cold Wallet Address</div>
+            <Disconnected tw="flex-grow">Not Connected</Disconnected>
+            <div className="open-form" tw="flex-grow text-right">
+              Add Cold Wallet Address
+            </div>
           </div>
-        </div>
+        </ModalWrapper>
       </Modal>
     </Container>
   );
@@ -83,7 +88,7 @@ const Container = styled.div`
       display: inline-flex;
       width: 6px;
       height: 6px;
-      background-color: red;
+      background-color: #ff4a4a;
       border-radius: 50%;
       margin-right: 10px;
     }
@@ -107,6 +112,73 @@ const Container = styled.div`
   }
   .value-dollars {
     font-size: 0.8rem;
+  }
+`;
+
+const ModalWrapper = styled.div`
+  max-width: 375px;
+  padding: 2rem 1.5rem;
+  height: auto;
+  position: relative;
+  background-color: #fff;
+  z-index: 1;
+  overflow-y: auto;
+  border-radius: 12px;
+  margin: 0;
+  outline: 0;
+  box-sizing: border-box;
+  font-family: "Halyard Display";
+  border: none;
+  .header {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+  .break {
+    line-height: 1px;
+    width: auto;
+  }
+  .header-body {
+    border-color: #e5e5e5;
+    padding-bottom: 4rem;
+  }
+  .open-form {
+    color: #ff4a4a;
+    font-size: 0.8rem;
+    line-height: 2rem;
+    text-decoration: underline;
+  }
+`;
+
+const Connected = styled.div`
+  font-size: 0.8rem;
+  line-height: 2rem;
+  flex-basis: 1;
+  &::before {
+    content: " ";
+    display: inline-flex;
+    width: 6px;
+    height: 6px;
+    background-color: #ff4a4a;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+`;
+
+const Disconnected = styled.div`
+  font-size: 0.8rem;
+  line-height: 2rem;
+  flex-basis: 1;
+  &::before {
+    content: " ";
+    display: inline-flex;
+    width: 6px;
+    height: 6px;
+    background-color: #000;
+    border-radius: 50%;
+    margin-right: 10px;
+    opacity: 0.5;
   }
 `;
 

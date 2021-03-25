@@ -33,7 +33,7 @@ const Modal = forwardRef(_Modal);
 Modal.displayName = "Modal";
 
 export const Wrapper = styled.aside`
-  ${tw`z-20 bg-white rounded border border-opacity-10 absolute inset-x-0 mx-auto p-5 max-w-max flex flex-col items-center`};
+  ${tw`z-20 bg-white rounded border-0 border-opacity-10 absolute inset-x-0 mx-auto p-5 max-w-max flex flex-col items-center`};
   top: 150px;
 `;
 
