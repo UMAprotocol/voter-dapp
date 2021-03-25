@@ -6,26 +6,6 @@ import { Link } from "react-router-dom";
 import { Discord, Github, Medium, Twitter } from "assets/icons";
 import logo from "assets/icons/logo.png";
 
-const Wrapper = styled.nav`
-  margin: 1rem auto;
-  .logo {
-    height: 30px;
-  }
-  .sm-logo {
-    height: 25px;
-    &:hover {
-      transition: opacity 0.2s;
-      opacity: 0.7;
-    }
-  }
-  .link {
-    &:hover {
-      transition: color 0.3s;
-      color: #ff4a4a;
-    }
-  }
-`;
-
 const Navbar: FC = () => {
   return (
     <Wrapper tw="flex justify-between flex-wrap bg-white p-3 max-w-7xl">
@@ -90,5 +70,27 @@ const Navbar: FC = () => {
     </Wrapper>
   );
 };
+
+const Wrapper = styled.nav`
+  margin: 1rem auto;
+  font-family: "Halyard Display";
+  font-weight: 600;
+  .logo {
+    height: 30px;
+  }
+  .sm-logo {
+    height: 25px;
+    &:hover {
+      transition: opacity 0.2s;
+      opacity: 0.7;
+    }
+  }
+  .link {
+    &:hover {
+      transition: color 0.3s;
+      color: #ff4a4a;
+    }
+  }
+`;
 
 export default Navbar;
