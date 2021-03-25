@@ -6,7 +6,8 @@ import { FC } from "react";
 
 const Container = styled.div`
   background-color: #fff;
-  ${tw`max-w-7xl mx-auto py-4 px-8`};
+
+  ${tw`max-w-7xl mx-auto py-5 px-8 my-10`};
   .wallet-title {
     font-weight: 600;
     font-size: 1.5rem;

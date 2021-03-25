@@ -10,8 +10,7 @@ import mediumLogo from "assets/ico-medium.svg";
 import twitterLogo from "assets/ico-tw.svg";
 
 const Wrapper = styled.nav`
-  margin: 0 auto;
-  margin-top: 1rem;
+  margin: 1rem auto;
   .logo {
     height: 30px;
   }

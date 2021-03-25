@@ -4,6 +4,7 @@
 
 @import "./assets/fonts.css";
 
-body {
+body,
+html {
   font-family: "Halyard Display";
 }
