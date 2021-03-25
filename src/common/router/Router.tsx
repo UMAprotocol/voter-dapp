@@ -5,6 +5,7 @@ import Vote from "features/vote";
 
 // Components
 import Navbar from "common/components/navbar";
+import Footer from "common/components/footer";
 
 const Router = () => {
   return (
@@ -19,6 +20,7 @@ const Router = () => {
           </Route>
         </Switch>
       </div>
+      <Footer />
     </BrowserRouter>
   );
 };

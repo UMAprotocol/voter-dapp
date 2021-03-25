@@ -8,6 +8,9 @@ const Wrapper = styled.div`
   ${tw`max-w-full p-12`};
   background-color: #fff;
   .header-row {
+    max-width: 1350px;
+    margin: 0 auto;
+
     .title {
       font-size: 1.75rem;
       font-weight: 600;

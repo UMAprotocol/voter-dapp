@@ -58,7 +58,7 @@ const Navbar: FC = () => {
             <Twitter className="sm-logo" />
           </a>
           <a
-            href="https://medium.com"
+            href="https://discord.umaproject.org"
             tw="px-5 py-3"
             target="_blank"
             rel="noreferrer"
