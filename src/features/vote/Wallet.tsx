@@ -26,13 +26,21 @@ const Container = styled.div`
       margin-right: 10px;
     }
   }
+  .sm-title {
+    color: #000;
+    margin: 0 0 12px;
+    font-weight: 400;
+    opacity: 0.5;
+  }
   .value-tokens {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
+    margin: 0 0 11px;
     span:first-child {
-      font-weight: 600;
+      font-weight: 500;
     }
     span:last-child {
-      font-weight: 200;
+      font-weight: 500;
+      opacity: 0.3;
     }
   }
 `;
