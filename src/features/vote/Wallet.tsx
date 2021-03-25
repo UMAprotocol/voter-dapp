@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 
-import settingsLogo from "assets/settings.svg";
+import settingsLogo from "assets/icons/settings.svg";
 import { FC } from "react";
 
 const Container = styled.div`

@@ -3,11 +3,11 @@ import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 
 import { Link } from "react-router-dom";
-import logo from "assets/logo.png";
-import discordLogo from "assets/ico-discord.svg";
-import githubLogo from "assets/ico-github.svg";
-import mediumLogo from "assets/ico-medium.svg";
-import twitterLogo from "assets/ico-tw.svg";
+import logo from "assets/icons/logo.png";
+import discordLogo from "assets/icons/ico-discord.svg";
+import githubLogo from "assets/icons/ico-github.svg";
+import mediumLogo from "assets/icons/ico-medium.svg";
+import twitterLogo from "assets/icons/ico-tw.svg";
 
 const Wrapper = styled.nav`
   margin: 1rem auto;

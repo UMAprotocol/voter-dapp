@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 
-import timerSVG from "assets/timer.svg";
+import timerSVG from "assets/icons/timer.svg";
 
 const Wrapper = styled.div`
   font-family: "Halyard Display";
