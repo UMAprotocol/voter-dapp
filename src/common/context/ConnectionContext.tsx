@@ -26,19 +26,20 @@ const SET_ERROR = "SET_ERROR";
 const SET_CONNECTION_STATUS = "SET_CONNECTION_STATUS";
 const RESET_STATE = "RESET_STATE";
 
-export const connectionActions = {
-  SET_PROVIDER,
-  SET_ONBOARD,
-  SET_SIGNER,
-  SET_NETWORK,
-  SET_ADDRESS,
-  SET_ERROR,
-  SET_CONNECTION_STATUS,
+export const actions = {
+  SET_PROVIDER: SET_PROVIDER as typeof SET_PROVIDER,
+  SET_ONBOARD: SET_ONBOARD as typeof SET_ONBOARD,
+  SET_SIGNER: SET_SIGNER as typeof SET_SIGNER,
+  SET_NETWORK: SET_NETWORK as typeof SET_NETWORK,
+  SET_ADDRESS: SET_ADDRESS as typeof SET_ADDRESS,
+  SET_ERROR: SET_ERROR as typeof SET_ERROR,
+  SET_CONNECTION_STATUS: SET_CONNECTION_STATUS as typeof SET_CONNECTION_STATUS,
+  RESET_STATE: RESET_STATE as typeof RESET_STATE,
 };
 
 type Action =
   | {
-      type: typeof SET_PROVIDER;
+      type: `${typeof SET_PROVIDER}`;
       payload: Provider | null;
     }
   | {

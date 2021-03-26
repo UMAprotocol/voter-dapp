@@ -1,5 +1,9 @@
 import { useContext, useCallback } from "react";
-import { ConnectionContext, EMPTY } from "common/context/ConnectionContext";
+import {
+  ConnectionContext,
+  EMPTY,
+  actions,
+} from "common/context/ConnectionContext";
 import { ethers } from "ethers";
 import Onboard from "bnc-onboard";
 import { Wallet } from "bnc-onboard/dist/src/interfaces";
@@ -22,7 +26,7 @@ export function useConnection() {
         networkId: 1, // Default to main net. If on a different network will change with the subscription.
         subscriptions: {
           address: (address: string | null) => {
-            dispatch({ type: "set address", address });
+            dispatch({ type: actions.SET_ADDRESS, payload: address });
           },
           network: async (networkId: any) => {
             if (
@@ -40,18 +44,18 @@ export function useConnection() {
               const ethersProvider = new ethers.providers.Web3Provider(
                 wallet.provider
               );
-              dispatch({ type: "set provider", provider: ethersProvider });
+              dispatch({ type: actions.SET_PROVIDER, payload: ethersProvider });
               dispatch({
-                type: "set signer",
-                signer: ethersProvider.getSigner(),
+                type: actions.SET_SIGNER,
+                payload: ethersProvider.getSigner(),
               });
               dispatch({
-                type: "set network",
-                network: await ethersProvider.getNetwork(),
+                type: actions.SET_NETWORK,
+                payload: await ethersProvider.getNetwork(),
               });
             } else {
-              dispatch({ type: "set provider", provider: null });
-              dispatch({ type: "set network", network: null });
+              dispatch({ type: actions.SET_PROVIDER, payload: null });
+              dispatch({ type: actions.SET_NETWORK, payload: null });
             }
           },
         },
@@ -61,10 +65,10 @@ export function useConnection() {
       await onboardInstance.walletSelect();
       await onboardInstance.walletCheck();
 
-      dispatch({ type: "set onboard", onboard: onboardInstance });
-      dispatch({ type: "set connection status", isConnected: true });
+      dispatch({ type: actions.SET_ONBOARD, payload: onboardInstance });
+      dispatch({ type: actions.SET_CONNECTION_STATUS, payload: true });
     } catch (error) {
-      dispatch({ type: "set error", error });
+      dispatch({ type: actions.SET_ERROR, payload: error });
     }
   }, [dispatch, network, onboard]);
 
@@ -73,12 +77,7 @@ export function useConnection() {
       return;
     }
     onboard?.walletReset();
-    dispatch({ type: "set address", address: null });
-    dispatch({ type: "set provider", provider: null });
-    dispatch({ type: "set signer", signer: null });
-    dispatch({ type: "set network", network: null });
-    dispatch({ type: "set connection status", isConnected: false });
-    dispatch({ type: "set onboard", onboard: null });
+    dispatch({ type: actions.RESET_STATE });
   }, [dispatch, isConnected, onboard]);
   return {
     provider,
