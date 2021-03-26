@@ -6,7 +6,7 @@ import { Discord, Github, Medium, Twitter } from "assets/icons";
 
 const Footer: FC = () => {
   return (
-    <Wrapper>
+    <StyledFooter>
       <div tw="flex">
         <div className="logo-wrapper">
           <FooterLogo />
@@ -14,6 +14,7 @@ const Footer: FC = () => {
         </div>
         <div className="link-wrapper">
           <ul className="links">
+            {/* TBD: Need links, asked Tom */}
             <li className="link">How UMA Works</li>
             <li className="link">Getting Started</li>
             <li className="link">Docs</li>
@@ -30,48 +31,47 @@ const Footer: FC = () => {
               Sign up for our newsletter to stay updated about the UMA project.
             </p>
             <div className="sm-links-wrapper">
-              <a
-                href="https://medium.com/uma-project"
-                tw="pr-2 py-3 flex-grow"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Medium className="sm-logo" />
-              </a>
-              <a
-                href="https://github.com/UMAprotocol"
-                tw="px-2 py-3 flex-grow"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Github className="sm-logo" />
-              </a>
-              <a
-                href="https://twitter.com/UMAprotocol"
-                tw="px-2 py-3 flex-grow"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Twitter className="sm-logo" />
-              </a>
-              <a
-                href="https://discord.umaproject.org"
-                tw="px-2 py-3 flex-grow"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Discord className="sm-logo" />
-              </a>
+              {socialLinks.map(({ logo, url }, index) => {
+                return (
+                  <a
+                    key={index}
+                    href={url}
+                    tw="pr-2 py-3 flex-grow"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {logo}
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
-    </Wrapper>
+    </StyledFooter>
   );
 };
 
-const Wrapper = styled.div`
-  /* ${tw`flex justify-between flex-wrap bg-white p-5`}; */
+const socialLinks = [
+  {
+    url: "https://medium.com/uma-project",
+    logo: <Medium className="sm-logo" />,
+  },
+  {
+    url: "https://github.com/UMAprotocol",
+    logo: <Github className="sm-logo" />,
+  },
+  {
+    url: "https://twitter.com/UMAprotocol",
+    logo: <Twitter className="sm-logo" />,
+  },
+  {
+    url: "https://discord.umaproject.org",
+    logo: <Discord className="sm-logo" />,
+  },
+];
+
+const StyledFooter = styled.div`
   max-width: 1280px;
   margin: auto;
   font-family: "Halyard Display";

@@ -3,7 +3,31 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 
 import timerSVG from "assets/icons/timer.svg";
 
-const Wrapper = styled.div`
+const ActiveRequests = () => {
+  return (
+    <StyledActiveRequests>
+      <div className="header-row" tw="flex items-stretch p-10">
+        <div tw="flex-grow">
+          <div className="title">
+            Stage: <span>Commit Votes</span>
+          </div>
+          <p className="big-title">Active Requests</p>
+        </div>
+        <div tw="flex-grow text-right">
+          <div className="title">Time Remaining</div>
+          <div className="time">
+            00:00
+            <span>
+              <img src={timerSVG} alt="timer_img" />
+            </span>
+          </div>
+        </div>
+      </div>
+    </StyledActiveRequests>
+  );
+};
+
+const StyledActiveRequests = styled.div`
   font-family: "Halyard Display";
   ${tw`max-w-full p-12`};
   background-color: #fff;
@@ -42,28 +66,5 @@ const Wrapper = styled.div`
     }
   }
 `;
-const ActiveRequests = () => {
-  return (
-    <Wrapper>
-      <div className="header-row" tw="flex items-stretch p-10">
-        <div tw="flex-grow">
-          <div className="title">
-            Stage: <span>Commit Votes</span>
-          </div>
-          <p className="big-title">Active Requests</p>
-        </div>
-        <div tw="flex-grow text-right">
-          <div className="title">Time Remaining</div>
-          <div className="time">
-            00:00
-            <span>
-              <img src={timerSVG} alt="timer_img" />
-            </span>
-          </div>
-        </div>
-      </div>
-    </Wrapper>
-  );
-};
 
 export default ActiveRequests;

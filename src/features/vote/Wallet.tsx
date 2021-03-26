@@ -9,7 +9,7 @@ import { Settings } from "assets/icons";
 const Wallet: FC = () => {
   const { isOpen, open, close, modalRef } = useModal();
   return (
-    <Container>
+    <StyledWallet>
       <div tw="flex items-stretch items-center">
         <div tw="py-8 pl-5 flex-grow">
           <p className="wallet-title">Voting Wallet</p>
@@ -44,7 +44,7 @@ const Wallet: FC = () => {
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
-        <ModalWrapper>
+        <StyledModal>
           <h3 className="header">Voting Wallet</h3>
           <div className="header-body" tw="flex items-stretch mb-3 border-b">
             <Disconnected>Not Connected</Disconnected>
@@ -66,32 +66,19 @@ const Wallet: FC = () => {
               Add Cold Wallet Address
             </div>
           </div>
-        </ModalWrapper>
+        </StyledModal>
       </Modal>
-    </Container>
+    </StyledWallet>
   );
 };
 
-const Container = styled.div`
+const StyledWallet = styled.div`
   background-color: #fff;
 
   ${tw`max-w-7xl mx-auto py-5 px-8 my-10`};
   .wallet-title {
     font-weight: 600;
     font-size: 1.5rem;
-  }
-  .connected {
-    font-size: 0.75rem;
-    line-height: 2rem;
-    &::before {
-      content: " ";
-      display: inline-flex;
-      width: 6px;
-      height: 6px;
-      background-color: #ff4a4a;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
   }
   .sm-title {
     color: #000;
@@ -115,7 +102,7 @@ const Container = styled.div`
   }
 `;
 
-const ModalWrapper = styled.div`
+const StyledModal = styled.div`
   max-width: 375px;
   padding: 2rem 1.5rem;
   height: auto;
@@ -134,10 +121,6 @@ const ModalWrapper = styled.div`
     margin-bottom: 1rem;
     font-weight: 600;
     font-size: 1.25rem;
-  }
-  .break {
-    line-height: 1px;
-    width: auto;
   }
   .header-body {
     border-color: #e5e5e5;

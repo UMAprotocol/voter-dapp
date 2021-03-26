@@ -8,7 +8,7 @@ import logo from "assets/icons/logo.png";
 
 const Navbar: FC = () => {
   return (
-    <Wrapper tw="flex justify-between flex-wrap bg-white p-3 max-w-7xl">
+    <StyledNavbar tw="flex justify-between flex-wrap bg-white p-3 max-w-7xl">
       <Link tw="inline-flex items-center p-2 mr-4" to="/">
         <img className="logo" src={logo} alt="uma_logo" />
       </Link>
@@ -33,45 +33,45 @@ const Navbar: FC = () => {
           <Link className="link" to="/" tw="px-5 py-3">
             About
           </Link>
-          <a
-            href="https://medium.com/uma-project"
-            tw="px-5 py-3"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Medium className="sm-logo" />
-          </a>
-          <a
-            href="https://github.com/UMAprotocol"
-            tw="px-5 py-3"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Github className="sm-logo" />
-          </a>
-          <a
-            href="https://twitter.com/UMAprotocol"
-            tw="px-5 py-3"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Twitter className="sm-logo" />
-          </a>
-          <a
-            href="https://discord.umaproject.org"
-            tw="px-5 py-3"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Discord className="sm-logo" />
-          </a>
+          {socialLinks.map(({ logo, url }, index) => {
+            return (
+              <a
+                key={index}
+                href={url}
+                tw="px-5 py-3"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {logo}
+              </a>
+            );
+          })}
         </div>
       </div>
-    </Wrapper>
+    </StyledNavbar>
   );
 };
 
-const Wrapper = styled.nav`
+const socialLinks = [
+  {
+    url: "https://medium.com/uma-project",
+    logo: <Medium className="sm-logo" />,
+  },
+  {
+    url: "https://github.com/UMAprotocol",
+    logo: <Github className="sm-logo" />,
+  },
+  {
+    url: "https://twitter.com/UMAprotocol",
+    logo: <Twitter className="sm-logo" />,
+  },
+  {
+    url: "https://discord.umaproject.org",
+    logo: <Discord className="sm-logo" />,
+  },
+];
+
+const StyledNavbar = styled.nav`
   margin: 1rem auto;
   font-family: "Halyard Display";
   font-weight: 600;
