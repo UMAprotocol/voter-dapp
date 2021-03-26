@@ -24,6 +24,7 @@ const SET_NETWORK = "SET_NETWORK";
 const SET_ADDRESS = "SET_ADDRESS";
 const SET_ERROR = "SET_ERROR";
 const SET_CONNECTION_STATUS = "SET_CONNECTION_STATUS";
+const RESET_STATE = "RESET_STATE";
 
 export const connectionActions = {
   SET_PROVIDER,
@@ -63,7 +64,8 @@ type Action =
   | {
       type: typeof SET_CONNECTION_STATUS;
       payload: boolean;
-    };
+    }
+  | { type: typeof RESET_STATE };
 
 type ConnectionDispatch = React.Dispatch<Action>;
 type TConnectionContext = [ConnectionState, ConnectionDispatch];
@@ -122,6 +124,9 @@ function connectionReducer(state: ConnectionState, action: Action) {
         ...state,
         isConnected: action.payload,
       };
+    }
+    case RESET_STATE: {
+      return INITIAL_STATE;
     }
     default: {
       throw new Error(`Unsupported action type ${(action as any).type}`);
