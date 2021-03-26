@@ -4,6 +4,7 @@ import tw, { styled } from "twin.macro";
 // Components
 import Wallet from "./Wallet";
 import ActiveRequests from "./ActiveRequests";
+import useVoteData from "common/hooks/useVoteData";
 
 const Container = styled.div`
   background-color: #f5f5f5;
@@ -12,6 +13,7 @@ const Container = styled.div`
 `;
 
 const Vote = () => {
+  useVoteData();
   return (
     <Container>
       <Wallet />
