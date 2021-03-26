@@ -1,5 +1,5 @@
 import { BigNumber, utils } from "ethers";
-import { PriceRequestRounds } from "common/hooks/useVoteData";
+import { PriceRequestRound } from "common/hooks/useVoteData";
 import formatRequestKey from "./formatRequestKey";
 import toWei from "common/utils/convertToWeiSafely";
 
@@ -25,11 +25,11 @@ export interface FormattedPriceRequestRound {
 const fromWei = utils.formatUnits;
 
 export default function formatPriceRequestRounds(
-  data: PriceRequestRounds[]
+  data: PriceRequestRound[]
 ): FormattedPriceRequestRound {
   const formattedPriceRequestRounds: FormattedPriceRequestRound = {};
   // Load data into `newVoteData` synchronously
-  data.forEach((rr) => {
+  data.forEach((rr: PriceRequestRound) => {
     const identifier = rr.identifier.id;
     const newRoundKey = formatRequestKey(rr.time, identifier, rr.roundId);
     // Commit vote data:

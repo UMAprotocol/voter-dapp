@@ -26,7 +26,7 @@ interface RewardsClaimed {
   };
 }
 
-export interface PriceRequestRounds {
+export interface PriceRequestRound {
   committedVotes: Voter[];
   id: string;
   identifier: {
@@ -54,7 +54,7 @@ function useVoteData() {
   // are not expected to change much.
   // Source: https://www.apollographql.com/docs/react/data/queries/#polling
   const { loading, error, data } = useQuery<{
-    priceRequestRounds: PriceRequestRounds[];
+    priceRequestRounds: PriceRequestRound[];
   }>(PRICE_REQUEST_VOTING_DATA, {
     pollInterval: POLLING_INTERVAL,
   });
