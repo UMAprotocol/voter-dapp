@@ -118,7 +118,7 @@ const StyledFooter = styled.div`
     flex-wrap: wrap;
     .link {
       flex-basis: 50%;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
       font-weight: 600;
       a {
         &:hover {
