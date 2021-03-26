@@ -43,18 +43,20 @@ export interface PriceRequestRounds {
   totalSupplyAtSnapshot: string;
 }
 
+const POLLING_INTERVAL = 60000;
+
 // Retrieve vote data per price request from graphQL API.
 function useVoteData() {
   const [roundVoteData, setRoundVoteData] = useState({});
 
   // Because apollo caches results of queries, we will poll/refresh this query periodically.
-  // We set the poll interval to a very slow 5 seconds for now since the vote states
+  // We set the poll interval to a very slow 60 seconds for now since the vote states
   // are not expected to change much.
   // Source: https://www.apollographql.com/docs/react/data/queries/#polling
   const { loading, error, data } = useQuery<{
     priceRequestRounds: PriceRequestRounds[];
   }>(PRICE_REQUEST_VOTING_DATA, {
-    pollInterval: 60000,
+    pollInterval: POLLING_INTERVAL,
   });
 
   // Refresh the object every time the graphQL API response changes
