@@ -14,14 +14,15 @@ const Footer: FC = () => {
         </div>
         <div className="link-wrapper">
           <ul className="links">
-            {/* TBD: Need links, asked Tom */}
-            <li className="link">How UMA Works</li>
-            <li className="link">Getting Started</li>
-            <li className="link">Docs</li>
-            <li className="link">Vote</li>
-            <li className="link">FAQs</li>
-            <li className="link">Careers</li>
-            <li className="link">Contact</li>
+            {umaLinks.map(({ url, text }, index) => {
+              return (
+                <li key={index} className="link">
+                  <a href={url} target="_blank" rel="noreferrer">
+                    {text}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div className="subscribe-wrapper">
@@ -51,6 +52,33 @@ const Footer: FC = () => {
     </StyledFooter>
   );
 };
+
+const umaLinks = [
+  {
+    url: "https://medium.com/uma-project",
+    text: "How UMA Works",
+  },
+  {
+    url: "https://docs.umaproject.org/build-walkthrough/build-process",
+    text: "Getting Started",
+  },
+  {
+    url: "https://docs.umaproject.org/",
+    text: "Docs",
+  },
+  {
+    url: "https://umaproject.org/faq",
+    text: "FAQs",
+  },
+  {
+    url: "https://angel.co/company/uma-project/jobs",
+    text: "Careers",
+  },
+  {
+    url: "mailto:hello@umaproject.org",
+    text: "Contact",
+  },
+];
 
 const socialLinks = [
   {
@@ -91,6 +119,12 @@ const StyledFooter = styled.div`
     .link {
       flex-basis: 50%;
       margin-bottom: 0.75rem;
+      font-weight: 600;
+      a {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
   }
   .subscribe-wrapper {
