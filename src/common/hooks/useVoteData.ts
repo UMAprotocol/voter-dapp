@@ -45,7 +45,6 @@ export interface PriceRequestRounds {
 
 // Retrieve vote data per price request from graphQL API.
 function useVoteData() {
-  // const { toBN, fromWei, toWei, toChecksumAddress } = web3.utils;
   const [roundVoteData, setRoundVoteData] = useState({});
 
   // Because apollo caches results of queries, we will poll/refresh this query periodically.

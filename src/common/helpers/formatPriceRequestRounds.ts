@@ -3,7 +3,7 @@ import { PriceRequestRounds } from "common/hooks/useVoteData";
 import formatRequestKey from "./formatRequestKey";
 import toWei from "common/utils/convertToWeiSafely";
 
-interface FormattedPriceRequestRound {
+export interface FormattedPriceRequestRound {
   [key: string]: {
     totalSupplyAtSnapshot: string;
     uniqueCommits: string;
