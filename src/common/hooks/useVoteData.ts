@@ -46,6 +46,7 @@ export interface PriceRequestRound {
 const POLLING_INTERVAL = 60000;
 
 // Retrieve vote data per price request from graphQL API.
+// Taken from previous voter-dapp, with heavy refactoring.
 function useVoteData() {
   const [roundVoteData, setRoundVoteData] = useState({});
 

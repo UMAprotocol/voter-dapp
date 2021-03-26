@@ -24,6 +24,7 @@ export interface FormattedPriceRequestRound {
 
 const fromWei = utils.formatUnits;
 
+// Taken from previous voter dapp, refactored to use TypeScript and Ethers.
 export default function formatPriceRequestRounds(
   data: PriceRequestRound[]
 ): FormattedPriceRequestRound {
