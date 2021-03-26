@@ -166,19 +166,9 @@ const Connected = styled.div`
   }
 `;
 
-const Disconnected = styled.div`
-  font-size: 0.8rem;
-  line-height: 2rem;
-  flex-basis: 1;
+const Disconnected = styled(Connected)`
   &::before {
-    content: " ";
-    display: inline-flex;
-    width: 6px;
-    height: 6px;
     background-color: #000;
-    border-radius: 50%;
-    margin-right: 10px;
-    opacity: 0.5;
   }
 `;
 
