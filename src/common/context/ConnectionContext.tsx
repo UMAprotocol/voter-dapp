@@ -17,34 +17,52 @@ type ConnectionState = {
   isConnected: boolean;
 };
 
+const SET_PROVIDER = "SET_PROVIDER";
+const SET_ONBOARD = "SET_ONBOARD";
+const SET_SIGNER = "SET_SIGNER";
+const SET_NETWORK = "SET_NETWORK";
+const SET_ADDRESS = "SET_ADDRESS";
+const SET_ERROR = "SET_ERROR";
+const SET_CONNECTION_STATUS = "SET_CONNECTION_STATUS";
+
+export const connectionActions = {
+  SET_PROVIDER,
+  SET_ONBOARD,
+  SET_SIGNER,
+  SET_NETWORK,
+  SET_ADDRESS,
+  SET_ERROR,
+  SET_CONNECTION_STATUS,
+};
+
 type Action =
   | {
-      type: "set provider";
-      provider: Provider | null;
+      type: typeof SET_PROVIDER;
+      payload: Provider | null;
     }
   | {
-      type: "set onboard";
-      onboard: OnboardApi | null;
+      type: typeof SET_ONBOARD;
+      payload: OnboardApi | null;
     }
   | {
-      type: "set signer";
-      signer: Signer | null;
+      type: typeof SET_SIGNER;
+      payload: Signer | null;
     }
   | {
-      type: "set network";
-      network: Network | null;
+      type: typeof SET_NETWORK;
+      payload: Network | null;
     }
   | {
-      type: "set address";
-      address: Address | null;
+      type: typeof SET_ADDRESS;
+      payload: Address | null;
     }
   | {
-      type: "set error";
-      error: Error | null;
+      type: typeof SET_ERROR;
+      payload: Error | null;
     }
   | {
-      type: "set connection status";
-      isConnected: boolean;
+      type: typeof SET_CONNECTION_STATUS;
+      payload: boolean;
     };
 
 type ConnectionDispatch = React.Dispatch<Action>;
@@ -63,66 +81,69 @@ ConnectionContext.displayName = "ConnectionContext";
 
 function connectionReducer(state: ConnectionState, action: Action) {
   switch (action.type) {
-    case "set provider": {
+    case SET_PROVIDER: {
       return {
         ...state,
-        provider: action.provider,
+        provider: action.payload,
       };
     }
-    case "set onboard": {
+    case SET_ONBOARD: {
       return {
         ...state,
-        onboard: action.onboard,
+        onboard: action.payload,
       };
     }
-    case "set signer": {
+    case SET_SIGNER: {
       return {
         ...state,
-        signer: action.signer,
+        signer: action.payload,
       };
     }
-    case "set network": {
+    case SET_NETWORK: {
       return {
         ...state,
-        network: action.network,
+        network: action.payload,
       };
     }
-    case "set address": {
+    case SET_ADDRESS: {
       return {
         ...state,
-        address: action.address,
+        address: action.payload,
       };
     }
-    case "set error": {
+    case SET_ERROR: {
       return {
         ...state,
-        error: action.error,
+        error: action.payload,
       };
     }
-    case "set connection status": {
+    case SET_CONNECTION_STATUS: {
       return {
         ...state,
-        isConnected: action.isConnected,
+        isConnected: action.payload,
       };
     }
     default: {
-      throw new Error(`Unsopported action type ${(action as any).type}`);
+      throw new Error(`Unsupported action type ${(action as any).type}`);
     }
   }
 }
+
+const INITIAL_STATE = {
+  provider: null,
+  onboard: null,
+  signer: null,
+  network: null,
+  address: null,
+  error: null,
+  isConnected: false,
+};
+
 export const ConnectionProvider: React.FC<WithDelegatedProps> = ({
   children,
   ...delegated
 }) => {
-  const [connection, dispatch] = useReducer(connectionReducer, {
-    provider: null,
-    onboard: null,
-    signer: null,
-    network: null,
-    address: null,
-    error: null,
-    isConnected: false,
-  });
+  const [connection, dispatch] = useReducer(connectionReducer, INITIAL_STATE);
 
   return (
     <ConnectionContext.Provider value={[connection, dispatch]} {...delegated}>
