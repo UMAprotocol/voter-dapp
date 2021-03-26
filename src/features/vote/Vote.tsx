@@ -13,7 +13,8 @@ const Container = styled.div`
 `;
 
 const Vote = () => {
-  useVoteData();
+  const { roundVoteData } = useVoteData();
+  console.log("roundVoteData", roundVoteData);
   return (
     <Container>
       <Wallet />

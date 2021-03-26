@@ -65,16 +65,14 @@ function useVoteData() {
     }
 
     if (!loading && data) {
-      console.log("data", data.priceRequestRounds);
       const newVoteData = formatPriceRequestRounds(data.priceRequestRounds);
-      console.log("nvd", newVoteData);
-      // setRoundVoteData(newVoteData);
+      console.log("data", data.priceRequestRounds);
+      setRoundVoteData(newVoteData);
     }
   }, [loading, error, data]);
 
   return {
     roundVoteData,
-    // getRequestKey
   };
 }
 

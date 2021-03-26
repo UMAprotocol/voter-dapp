@@ -3,12 +3,31 @@ import { PriceRequestRounds } from "common/hooks/useVoteData";
 import formatRequestKey from "./formatRequestKey";
 import toWei from "common/utils/convertToWeiSafely";
 
-interface FormattedVoteDataGql {}
+interface FormattedPriceRequestRound {
+  [key: string]: {
+    totalSupplyAtSnapshot: string;
+    uniqueCommits: string;
+    revealedVotes: string;
+    revealedVotesPct: string;
+    uniqueReveals: string;
+    uniqueRevealsPctOfCommits: string;
+    correctVotes: string;
+    correctlyRevealedVotesPct: string;
+    roundInflationRate: string;
+    roundInflationRewardsAvailable: string;
+    rewardsClaimed: string;
+    rewardsClaimedPct: string;
+    uniqueClaimers: string;
+    uniqueClaimersPctOfReveals: string;
+  };
+}
 
 const fromWei = utils.formatUnits;
 
-export default function formatPriceRequestRounds(data: PriceRequestRounds[]) {
-  const newVoteData = {};
+export default function formatPriceRequestRounds(
+  data: PriceRequestRounds[]
+): FormattedPriceRequestRound {
+  const formattedPriceRequestRounds: FormattedPriceRequestRound = {};
   // Load data into `newVoteData` synchronously
   data.forEach((rr) => {
     const identifier = rr.identifier.id;
@@ -55,62 +74,73 @@ export default function formatPriceRequestRounds(data: PriceRequestRounds[]) {
         .div(totalVotesRevealed);
     }
 
-    // // Rewards claimed data:
-    // let rewardsClaimed = toBN("0");
-    // let rewardsClaimedPct = toBN("0");
-    // let roundInflationRate = toBN("0");
-    // let roundInflationRewardsAvailable = toBN("0");
-    // let uniqueRewardClaimers = {};
-    // // If the inflation rate was not snapshotted yet, then rewards could not have been claimed yet.
-    // if (dataForRequest.inflationRate) {
-    //   dataForRequest.rewardsClaimed.forEach((e) => {
-    //     rewardsClaimed = rewardsClaimed.add(toBN(e.numTokens));
-    //     uniqueRewardClaimers[toChecksumAddress(e.claimer.address)] = true;
-    //   });
-    //   // @dev: `inflationRate` is the inflation % applied each round, so "0.05" means 0.05% or 5 basis points.
-    //   roundInflationRate = toBN(toWei(dataForRequest.inflationRate)).div(
-    //     toBN("100")
-    //   );
-    //   roundInflationRewardsAvailable = roundInflationRate
-    //     .mul(toBN(toWei(dataForRequest.totalSupplyAtSnapshot)))
-    //     .div(toBN(toWei("1")));
-    //   if (!roundInflationRewardsAvailable.isZero()) {
-    //     rewardsClaimedPct = rewardsClaimed
-    //       .mul(toBN(toWei("1")))
-    //       .div(roundInflationRewardsAvailable);
-    //   }
-    // }
-    // // Data on unique users:
-    // const uniqueCommits = Object.keys(uniqueVotersCommitted).length;
-    // const uniqueReveals = Object.keys(uniqueVotersRevealed).length;
-    // const uniqueClaimers = Object.keys(uniqueRewardClaimers).length;
-    // const uniqueRevealsPctOfCommits =
-    //   uniqueCommits > 0 ? (100 * uniqueReveals) / uniqueCommits : 0;
-    // const uniqueClaimersPctOfReveals =
-    //   uniqueReveals > 0 ? (100 * uniqueClaimers) / uniqueReveals : 0;
-    // // Insert round data into new object.
-    // newVoteData[newRoundKey] = {
-    //   totalSupplyAtSnapshot: dataForRequest.totalSupplyAtSnapshot,
-    //   uniqueCommits: uniqueCommits.toString(),
-    //   revealedVotes: fromWei(totalVotesRevealed.toString()),
-    //   revealedVotesPct: fromWei(pctOfVotesRevealed.mul(toBN("100")).toString()),
-    //   uniqueReveals: uniqueReveals.toString(),
-    //   uniqueRevealsPctOfCommits: uniqueRevealsPctOfCommits.toString(),
-    //   correctVotes: fromWei(correctVotesRevealed.toString()),
-    //   correctlyRevealedVotesPct: fromWei(
-    //     pctOfCorrectRevealedVotes.mul(toBN("100")).toString()
-    //   ),
-    //   roundInflationRate: fromWei(
-    //     roundInflationRate.mul(toBN("100")).toString()
-    //   ),
-    //   roundInflationRewardsAvailable: fromWei(
-    //     roundInflationRewardsAvailable.toString()
-    //   ),
-    //   rewardsClaimed: fromWei(rewardsClaimed.toString()),
-    //   rewardsClaimedPct: fromWei(rewardsClaimedPct.mul(toBN("100")).toString()),
-    //   uniqueClaimers: uniqueClaimers.toString(),
-    //   uniqueClaimersPctOfReveals: uniqueClaimersPctOfReveals.toString(),
-    // };
+    // Rewards claimed data:
+    let rewardsClaimed = BigNumber.from("0");
+    let rewardsClaimedPct = BigNumber.from("0");
+    let roundInflationRate = BigNumber.from("0");
+    let roundInflationRewardsAvailable = BigNumber.from("0");
+    let uniqueRewardClaimers: {
+      [key: string]: boolean;
+    } = {};
+
+    // If the inflation rate was not snapshotted yet, then rewards could not have been claimed yet.
+    if (rr.inflationRate) {
+      rr.rewardsClaimed.forEach((e) => {
+        rewardsClaimed = rewardsClaimed.add(BigNumber.from(e.numTokens));
+        uniqueRewardClaimers[
+          utils.getAddress(e.claimer.address.toLowerCase())
+        ] = true;
+      });
+      // @dev: `inflationRate` is the inflation % applied each round, so "0.05" means 0.05% or 5 basis points.
+      roundInflationRate = BigNumber.from(toWei(rr.inflationRate)).div(
+        BigNumber.from("100")
+      );
+      roundInflationRewardsAvailable = roundInflationRate
+        .mul(BigNumber.from(toWei(rr.totalSupplyAtSnapshot)))
+        .div(BigNumber.from(toWei("1")));
+      if (!roundInflationRewardsAvailable.isZero()) {
+        rewardsClaimedPct = rewardsClaimed
+          .mul(BigNumber.from(toWei("1")))
+          .div(roundInflationRewardsAvailable);
+      }
+    }
+
+    // Data on unique users:
+    const uniqueCommits = Object.keys(uniqueVotersCommitted).length;
+    const uniqueReveals = Object.keys(uniqueVotersRevealed).length;
+    const uniqueClaimers = Object.keys(uniqueRewardClaimers).length;
+    const uniqueRevealsPctOfCommits =
+      uniqueCommits > 0 ? (100 * uniqueReveals) / uniqueCommits : 0;
+    const uniqueClaimersPctOfReveals =
+      uniqueReveals > 0 ? (100 * uniqueClaimers) / uniqueReveals : 0;
+    // Insert round data into new object.
+    formattedPriceRequestRounds[newRoundKey] = {
+      totalSupplyAtSnapshot: rr.totalSupplyAtSnapshot,
+      uniqueCommits: uniqueCommits.toString(),
+      revealedVotes: fromWei(totalVotesRevealed.toString()),
+      revealedVotesPct: fromWei(
+        pctOfVotesRevealed.mul(BigNumber.from("100")).toString()
+      ),
+      uniqueReveals: uniqueReveals.toString(),
+      uniqueRevealsPctOfCommits: uniqueRevealsPctOfCommits.toString(),
+      correctVotes: fromWei(correctVotesRevealed.toString()),
+      correctlyRevealedVotesPct: fromWei(
+        pctOfCorrectRevealedVotes.mul(BigNumber.from("100")).toString()
+      ),
+      roundInflationRate: fromWei(
+        roundInflationRate.mul(BigNumber.from("100")).toString()
+      ),
+      roundInflationRewardsAvailable: fromWei(
+        roundInflationRewardsAvailable.toString()
+      ),
+      rewardsClaimed: fromWei(rewardsClaimed.toString()),
+      rewardsClaimedPct: fromWei(
+        rewardsClaimedPct.mul(BigNumber.from("100")).toString()
+      ),
+      uniqueClaimers: uniqueClaimers.toString(),
+      uniqueClaimersPctOfReveals: uniqueClaimersPctOfReveals.toString(),
+    };
   });
-  return newVoteData;
+
+  return formattedPriceRequestRounds;
 }
