@@ -1,6 +1,8 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, Dispatch } from "react";
 import { ethers } from "ethers";
 import { API as OnboardApi } from "bnc-onboard/dist/src/interfaces";
+import createOnboardInstance from "common/utils/createOnboardInstance";
+import { Subscriptions } from "bnc-onboard/dist/src/interfaces";
 
 type Provider = ethers.providers.Web3Provider;
 type Address = string;
@@ -68,8 +70,7 @@ type Action =
     }
   | { type: typeof RESET_STATE };
 
-type ConnectionDispatch = React.Dispatch<Action>;
-type TConnectionContext = [ConnectionState, ConnectionDispatch];
+export type ConnectionDispatch = Dispatch<Action>;
 
 type WithDelegatedProps = {
   [k: string]: unknown;
@@ -145,14 +146,54 @@ const INITIAL_STATE = {
   isConnected: false,
 };
 
+const connect = async (
+  dispatch: ConnectionDispatch,
+  network: Network | null,
+  subscriptions: Subscriptions
+) => {
+  try {
+    const onboardInstance = createOnboardInstance(network, subscriptions);
+
+    await onboardInstance.walletSelect();
+    await onboardInstance.walletCheck();
+
+    dispatch({ type: actions.SET_ONBOARD, payload: onboardInstance });
+    dispatch({ type: actions.SET_CONNECTION_STATUS, payload: true });
+  } catch (error) {
+    dispatch({ type: actions.SET_ERROR, payload: error });
+  }
+};
+
+const disconnect = (
+  dispatch: ConnectionDispatch,
+  isConnected: boolean,
+  onboard: OnboardApi | null
+) => {
+  if (!isConnected) {
+    return;
+  }
+  onboard?.walletReset();
+  dispatch({ type: actions.RESET_STATE });
+};
+
+type TConnectionContext = [
+  ConnectionState,
+  ConnectionDispatch,
+  typeof connect,
+  typeof disconnect
+];
+
 export const ConnectionProvider: React.FC<WithDelegatedProps> = ({
   children,
   ...delegated
 }) => {
-  const [connection, dispatch] = useReducer(connectionReducer, INITIAL_STATE);
+  const [state, dispatch] = useReducer(connectionReducer, INITIAL_STATE);
 
   return (
-    <ConnectionContext.Provider value={[connection, dispatch]} {...delegated}>
+    <ConnectionContext.Provider
+      value={[state, dispatch, connect, disconnect]}
+      {...delegated}
+    >
       {children}
     </ConnectionContext.Provider>
   );
