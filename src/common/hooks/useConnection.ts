@@ -60,11 +60,6 @@ export default function useConnection() {
     }
   }, [network, connect, initOnboard, setInitOnboard, dispatch, onboard]);
 
-  // // Disconnect and reset state on change;
-  // useEffect(() => {
-  //   disconnect(dispatch, isConnected, onboard);
-  // }, [isConnected, onboard, disconnect, dispatch]);
-
   return {
     provider,
     onboard,

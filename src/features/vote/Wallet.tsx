@@ -88,16 +88,7 @@ const Wallet: FC<Props> = () => {
       </div>
       <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
         <StyledModal>
-          <h3 className="header">Voting Wallet</h3>
-          <div className="header-body" tw="flex items-stretch mb-3 border-b">
-            <Disconnected>Not Connected</Disconnected>
-            <div className="open-form" tw="flex-grow text-right">
-              Add New Wallet
-            </div>
-          </div>
-          <h3 tw="mt-10" className="header">
-            Two Key Voting
-          </h3>
+          <h3 className="header">Two Key Voting</h3>
           <p tw="opacity-50 mb-4 text-center">
             You are not currently using a two key voting system. To deploy one,
             provide your cold key address. Click here to learn more about the
