@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 
 import { useQuery } from "@apollo/client";
 import { PRICE_REQUEST_VOTING_DATA } from "../apollo/queries";
-import formatPriceRequestRounds from "common/helpers/formatPriceRequestRounds";
+import formatPriceRequestRounds, {
+  FormattedPriceRequestRounds,
+} from "common/helpers/formatPriceRequestRounds";
 
 // These do interfaces come with __typenames, but I figure this probably ignorable for our purposes
 interface Voter {
@@ -48,7 +50,10 @@ const POLLING_INTERVAL = 60000;
 // Retrieve vote data per price request from graphQL API.
 // Taken from previous voter-dapp, with heavy refactoring.
 function useVoteData() {
-  const [roundVoteData, setRoundVoteData] = useState({});
+  const [
+    roundVoteData,
+    setRoundVoteData,
+  ] = useState<FormattedPriceRequestRounds>({});
 
   // Because apollo caches results of queries, we will poll/refresh this query periodically.
   // We set the poll interval to a very slow 60 seconds for now since the vote states

@@ -4,29 +4,31 @@ import formatRequestKey from "./formatRequestKey";
 import toWei from "common/utils/convertToWeiSafely";
 import { DateTime } from "luxon";
 
+export interface FormattedPriceRequestRounds {
+  [key: string]: FormattedPriceRequestRound;
+}
+
 export interface FormattedPriceRequestRound {
-  [key: string]: {
-    totalSupplyAtSnapshot: string;
-    uniqueCommits: string;
-    revealedVotes: string;
-    revealedVotesPct: string;
-    uniqueReveals: string;
-    uniqueRevealsPctOfCommits: string;
-    correctVotes: string;
-    correctlyRevealedVotesPct: string;
-    roundInflationRate: string;
-    roundInflationRewardsAvailable: string;
-    rewardsClaimed: string;
-    rewardsClaimedPct: string;
-    uniqueClaimers: string;
-    uniqueClaimersPctOfReveals: string;
-    time: string;
-  };
+  totalSupplyAtSnapshot: string;
+  uniqueCommits: string;
+  revealedVotes: string;
+  revealedVotesPct: string;
+  uniqueReveals: string;
+  uniqueRevealsPctOfCommits: string;
+  correctVotes: string;
+  correctlyRevealedVotesPct: string;
+  roundInflationRate: string;
+  roundInflationRewardsAvailable: string;
+  rewardsClaimed: string;
+  rewardsClaimedPct: string;
+  uniqueClaimers: string;
+  uniqueClaimersPctOfReveals: string;
+  time: number;
 }
 
 const fromWei = utils.formatUnits;
 
-function formatTime(time: string) {
+export function formatPriceRoundTime(time: number) {
   return `${DateTime.fromSeconds(Number(time)).toLocaleString({
     year: "numeric",
     month: "short",
@@ -35,11 +37,12 @@ function formatTime(time: string) {
     minute: "2-digit",
   })} ${DateTime.local().toFormat("ZZZZ")}`;
 }
+
 // Taken from previous voter dapp, refactored to use TypeScript and Ethers.
 export default function formatPriceRequestRounds(
   data: PriceRequestRound[]
-): FormattedPriceRequestRound {
-  const formattedPriceRequestRounds: FormattedPriceRequestRound = {};
+): FormattedPriceRequestRounds {
+  const formattedPriceRequestRounds: FormattedPriceRequestRounds = {};
   // Load data into `newVoteData` synchronously
   data.forEach((rr: PriceRequestRound) => {
     const identifier = rr.identifier.id;
@@ -150,7 +153,7 @@ export default function formatPriceRequestRounds(
       ),
       uniqueClaimers: uniqueClaimers.toString(),
       uniqueClaimersPctOfReveals: uniqueClaimersPctOfReveals.toString(),
-      time: formatTime(rr.time),
+      time: Number(rr.time),
     };
   });
 

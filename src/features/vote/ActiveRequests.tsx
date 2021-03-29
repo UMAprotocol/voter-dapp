@@ -1,9 +1,14 @@
 /** @jsxImportSource @emotion/react */
+import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
+import { FormattedPriceRequestRound } from "common/helpers/formatPriceRequestRounds";
 
 import timerSVG from "assets/icons/timer.svg";
 
-const ActiveRequests = () => {
+interface Props {
+  activeRequests: FormattedPriceRequestRound[];
+}
+const ActiveRequests: FC<Props> = ({ activeRequests }) => {
   return (
     <StyledActiveRequests>
       <div className="header-row" tw="flex items-stretch p-10">
@@ -15,12 +20,16 @@ const ActiveRequests = () => {
         </div>
         <div tw="flex-grow text-right">
           <div className="title">Time Remaining</div>
-          <div className="time">
-            00:00
-            <span>
-              <img src={timerSVG} alt="timer_img" />
-            </span>
-          </div>
+          {activeRequests.length ? (
+            <div className="time">
+              00:00
+              <span>
+                <img src={timerSVG} alt="timer_img" />
+              </span>
+            </div>
+          ) : (
+            <div className="time">N/A</div>
+          )}
         </div>
       </div>
     </StyledActiveRequests>
