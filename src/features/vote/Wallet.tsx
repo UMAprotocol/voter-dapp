@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useContext } from "react";
+import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
@@ -14,24 +14,50 @@ interface Props {
 
 const Wallet: FC<Props> = () => {
   const { isOpen, open, close, modalRef } = useModal();
-  const { initOnboard, setInitOnboard } = useConnection();
+  const {
+    initOnboard,
+    setInitOnboard,
+    isConnected,
+    onboard,
+    disconnect,
+  } = useConnection();
 
   return (
     <StyledWallet>
       <div tw="flex items-stretch items-center">
         <div tw="py-8 pl-5 flex-grow">
           <p className="wallet-title">Voting Wallet</p>
-          <Connected>Connected with MetaMask</Connected>
-          <Button
-            className="connect-btn"
-            onClick={() => {
-              if (!initOnboard) setInitOnboard(true);
-            }}
-            variant="primary"
-          >
-            Connect Wallet
-          </Button>
+          {isConnected ? (
+            <Connected>
+              Connected with {onboard?.getState().wallet.name}
+            </Connected>
+          ) : (
+            <Disconnected>Not Connected</Disconnected>
+          )}
+
+          {!isConnected ? (
+            <Button
+              className="connect-btn"
+              onClick={() => {
+                if (!initOnboard) setInitOnboard(true);
+              }}
+              variant="primary"
+            >
+              Connect Wallet
+            </Button>
+          ) : (
+            <Button
+              className="connect-btn"
+              onClick={() => {
+                disconnect();
+              }}
+              variant="primary"
+            >
+              Disconnect
+            </Button>
+          )}
         </div>
+
         <div tw="my-5 mx-3 flex-grow border-r">
           <p className="sm-title">UMA Balance</p>
           <div className="value-tokens">

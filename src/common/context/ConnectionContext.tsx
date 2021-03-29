@@ -158,12 +158,8 @@ const connect = async (
 
 const disconnect = (
   dispatch: ConnectionDispatch,
-  isConnected: boolean,
   onboard: OnboardApi | null
 ) => {
-  if (!isConnected) {
-    return;
-  }
   onboard?.walletReset();
   dispatch({ type: actions.RESET_STATE });
 };
