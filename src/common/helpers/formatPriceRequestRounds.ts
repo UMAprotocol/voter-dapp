@@ -2,6 +2,7 @@ import { BigNumber, utils } from "ethers";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import formatRequestKey from "./formatRequestKey";
 import toWei from "common/utils/convertToWeiSafely";
+import { DateTime } from "luxon";
 
 export interface FormattedPriceRequestRound {
   [key: string]: {
@@ -19,11 +20,21 @@ export interface FormattedPriceRequestRound {
     rewardsClaimedPct: string;
     uniqueClaimers: string;
     uniqueClaimersPctOfReveals: string;
+    time: string;
   };
 }
 
 const fromWei = utils.formatUnits;
 
+function formatTime(time: string) {
+  return `${DateTime.fromSeconds(Number(time)).toLocaleString({
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  })} ${DateTime.local().toFormat("ZZZZ")}`;
+}
 // Taken from previous voter dapp, refactored to use TypeScript and Ethers.
 export default function formatPriceRequestRounds(
   data: PriceRequestRound[]
@@ -105,7 +116,6 @@ export default function formatPriceRequestRounds(
           .div(roundInflationRewardsAvailable);
       }
     }
-
     // Data on unique users:
     const uniqueCommits = Object.keys(uniqueVotersCommitted).length;
     const uniqueReveals = Object.keys(uniqueVotersRevealed).length;
@@ -140,6 +150,7 @@ export default function formatPriceRequestRounds(
       ),
       uniqueClaimers: uniqueClaimers.toString(),
       uniqueClaimersPctOfReveals: uniqueClaimersPctOfReveals.toString(),
+      time: formatTime(rr.time),
     };
   });
 
