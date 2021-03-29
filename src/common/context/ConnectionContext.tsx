@@ -1,4 +1,4 @@
-import { createContext, useReducer, Dispatch } from "react";
+import { createContext, useReducer, Dispatch, FC } from "react";
 import { ethers } from "ethers";
 import { API as OnboardApi } from "bnc-onboard/dist/src/interfaces";
 import createOnboardInstance from "common/utils/createOnboardInstance";
@@ -183,7 +183,7 @@ type TConnectionContext = [
   typeof disconnect
 ];
 
-export const ConnectionProvider: React.FC<WithDelegatedProps> = ({
+export const ConnectionProvider: FC<WithDelegatedProps> = ({
   children,
   ...delegated
 }) => {
