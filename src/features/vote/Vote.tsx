@@ -6,9 +6,12 @@ import Wallet from "./Wallet";
 import ActiveRequests from "./ActiveRequests";
 import useVoteData from "common/hooks/useVoteData";
 
+import useConnection from "common/hooks/useConnection";
+
 const Vote = () => {
   const { roundVoteData } = useVoteData();
   console.log("roundVoteData", roundVoteData);
+
   return (
     <StyledVote>
       <Wallet />

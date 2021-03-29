@@ -1,19 +1,41 @@
 /** @jsxImportSource @emotion/react */
-import { FC } from "react";
+import { FC, useContext } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
-
+import Button from "common/components/button";
+import {
+  ConnectionContext,
+  TConnectionContext,
+} from "common/context/ConnectionContext";
+import useConnection from "common/hooks/useConnection";
 import { Settings } from "assets/icons";
 
-const Wallet: FC = () => {
+interface Props {
+  // connect: Connect;
+  // disconnect: Disconnect;
+}
+
+const Wallet: FC<Props> = () => {
   const { isOpen, open, close, modalRef } = useModal();
+  const { initOnboard, setInitOnboard } = useConnection();
+  const context = useContext<TConnectionContext>(ConnectionContext);
+
+  console.log(context);
   return (
     <StyledWallet>
       <div tw="flex items-stretch items-center">
         <div tw="py-8 pl-5 flex-grow">
           <p className="wallet-title">Voting Wallet</p>
           <Connected>Connected with MetaMask</Connected>
+          <Button
+            onClick={() => {
+              if (!initOnboard) return false;
+            }}
+            variant="primary"
+          >
+            Connect Wallet
+          </Button>
         </div>
         <div tw="my-5 mx-3 flex-grow border-r">
           <p className="sm-title">UMA Balance</p>
