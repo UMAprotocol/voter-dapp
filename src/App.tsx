@@ -1,9 +1,13 @@
 import Router from "common/router";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "./common/apollo/client";
 
 function App() {
   return (
     <div className="App">
-      <Router />
+      <ApolloProvider client={client}>
+        <Router />
+      </ApolloProvider>
     </div>
   );
 }

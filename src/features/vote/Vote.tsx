@@ -1,13 +1,26 @@
 /** @jsxImportSource @emotion/react */
-// eslint-disable-next-line
-import tw from "twin.macro";
+import tw, { styled } from "twin.macro";
+
+// Components
+import Wallet from "./Wallet";
+import ActiveRequests from "./ActiveRequests";
+import useVoteData from "common/hooks/useVoteData";
 
 const Vote = () => {
+  const { roundVoteData } = useVoteData();
+  console.log("roundVoteData", roundVoteData);
   return (
-    <div tw="max-w-4xl mx-auto p-5 mt-5">
-      <h1 tw="text-blue-500 text-4xl">Vote Page</h1>
-    </div>
+    <StyledVote>
+      <Wallet />
+      <ActiveRequests />
+    </StyledVote>
   );
 };
+
+const StyledVote = styled.div`
+  background-color: #f5f5f5;
+  ${tw`max-w-full pt-5 mt-5`};
+  font-family: "Halyard Display";
+`;
 
 export default Vote;
