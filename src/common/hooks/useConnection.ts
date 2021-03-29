@@ -7,16 +7,9 @@ import { SUPPORTED_NETWORK_IDS } from "common/config";
 export default function useConnection() {
   const [initOnboard, setInitOnboard] = useState(false);
   const context = useContext(ConnectionContext);
-  if (!Object.keys(context)) {
+  if (!Object.keys(context).length) {
     throw new Error(`UseConnection must be used within a Connection Provider.`);
   }
-
-  // const {
-  //   { provider, onboard, signer, network, address, error, isConnected } = state,
-  //   dispatch,
-  //   connect,
-  //   disconnect,
-  //  } = context;
 
   const {
     state: { provider, onboard, signer, network, address, error, isConnected },

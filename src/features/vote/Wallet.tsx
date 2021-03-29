@@ -4,10 +4,6 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Button from "common/components/button";
-import {
-  ConnectionContext,
-  TConnectionContext,
-} from "common/context/ConnectionContext";
 import useConnection from "common/hooks/useConnection";
 import { Settings } from "assets/icons";
 
@@ -19,9 +15,7 @@ interface Props {
 const Wallet: FC<Props> = () => {
   const { isOpen, open, close, modalRef } = useModal();
   const { initOnboard, setInitOnboard } = useConnection();
-  const context = useContext<TConnectionContext>(ConnectionContext);
 
-  console.log(context);
   return (
     <StyledWallet>
       <div tw="flex items-stretch items-center">
@@ -29,8 +23,9 @@ const Wallet: FC<Props> = () => {
           <p className="wallet-title">Voting Wallet</p>
           <Connected>Connected with MetaMask</Connected>
           <Button
+            className="connect-btn"
             onClick={() => {
-              if (!initOnboard) return false;
+              if (!initOnboard) setInitOnboard(true);
             }}
             variant="primary"
           >
@@ -121,6 +116,10 @@ const StyledWallet = styled.div`
   }
   .value-dollars {
     font-size: 0.8rem;
+  }
+  .connect-btn {
+    /* margin-left: 12px; */
+    width: 150px;
   }
 `;
 
