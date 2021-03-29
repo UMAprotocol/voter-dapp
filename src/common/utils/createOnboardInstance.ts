@@ -4,8 +4,7 @@ import { ethers } from "ethers";
 import { Initialization, Subscriptions } from "bnc-onboard/dist/src/interfaces";
 type Network = ethers.providers.Network;
 
-// These are optional functions that can be injected into the Onboard instance that call when these values change.
-// See docs for info (https://docs.blocknative.com/onboard#example-code);
+// Other options that could be added to this instance, from docs.
 // interface Initialization {
 //   dappId?: string;
 //   networkId: number;
@@ -18,6 +17,9 @@ type Network = ethers.providers.Network;
 //   hideBranding?: boolean;
 //   blockPollingInterval?: number;
 // }
+
+// Subscriptions are optional functions that can be injected into the Onboard instance that call when these values change.
+// See docs for info (https://docs.blocknative.com/onboard#example-code);
 
 // Pass in some default options.
 export default function createOnboardInstance(
