@@ -3,11 +3,13 @@ import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import timerSVG from "assets/icons/timer.svg";
 import { PriceRound } from "./useVotingEvents";
+import ActiveRequestsForm from "./ActiveRequestsForm";
 
 interface Props {
   activeRequests: PriceRound[];
 }
 const ActiveRequests: FC<Props> = ({ activeRequests }) => {
+  console.log("AR", activeRequests);
   return (
     <StyledActiveRequests>
       <div className="header-row" tw="flex items-stretch p-10">
@@ -31,6 +33,9 @@ const ActiveRequests: FC<Props> = ({ activeRequests }) => {
           )}
         </div>
       </div>
+      {activeRequests.length ? (
+        <ActiveRequestsForm activeRequests={activeRequests} />
+      ) : null}
     </StyledActiveRequests>
   );
 };
