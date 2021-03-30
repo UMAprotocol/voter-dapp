@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 
 import { useQuery } from "@apollo/client";
 import { PRICE_REQUEST_VOTING_DATA } from "../apollo/queries";
-import formatPriceRequestRounds, {
+import formatPriceRequestVoteData, {
   FormattedPriceRequestRounds,
-} from "common/helpers/formatPriceRequestRounds";
+} from "common/helpers/formatPriceRequestVoteData";
 
 // These do interfaces come with __typenames, but I figure this probably ignorable for our purposes
 interface Voter {
@@ -72,7 +72,7 @@ function useVoteData() {
     }
 
     if (!loading && data) {
-      const newVoteData = formatPriceRequestRounds(data.priceRequestRounds);
+      const newVoteData = formatPriceRequestVoteData(data.priceRequestRounds);
       setRoundVoteData(newVoteData);
     }
   }, [loading, error, data]);

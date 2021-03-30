@@ -1,14 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
-import { FormattedPriceRequestRound } from "common/helpers/formatPriceRequestRounds";
-
+// import { getAbi, getAddress, getTruffleContract } from "@uma/core";
 import timerSVG from "assets/icons/timer.svg";
 
 interface Props {
-  activeRequests: FormattedPriceRequestRound[];
+  // activeRequests: FormattedPriceRequestRound[];
 }
-const ActiveRequests: FC<Props> = ({ activeRequests }) => {
+const ActiveRequests: FC<Props> = () => {
   return (
     <StyledActiveRequests>
       <div className="header-row" tw="flex items-stretch p-10">
@@ -20,7 +19,7 @@ const ActiveRequests: FC<Props> = ({ activeRequests }) => {
         </div>
         <div tw="flex-grow text-right">
           <div className="title">Time Remaining</div>
-          {activeRequests.length ? (
+          {[].length ? (
             <div className="time">
               00:00
               <span>
