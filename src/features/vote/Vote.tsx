@@ -2,12 +2,13 @@
 import { useState, useEffect, useContext } from "react";
 import tw, { styled } from "twin.macro";
 import { ethers } from "ethers";
+import { DateTime } from "luxon";
 
 // Components
 import Wallet from "./Wallet";
 import ActiveRequests from "./ActiveRequests";
-import useVoteData from "common/hooks/useVoteData";
-import usePriceRounds from "./usePriceRounds";
+// import useVoteData from "common/hooks/useVoteData";
+import useVotingEvents, { PriceRound } from "./useVotingEvents";
 import { ConnectionContext } from "common/context/ConnectionContext";
 import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
 
@@ -16,7 +17,9 @@ const Vote = () => {
   const [votingContract, setVotingContract] = useState<ethers.Contract | null>(
     null
   );
-  usePriceRounds(votingContract);
+  const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
+  const [, setPastRequests] = useState<PriceRound[]>([]);
+  const { priceRounds } = useVotingEvents(votingContract);
 
   useEffect(() => {
     // If connected, try to create contract with assigned signer.
@@ -27,37 +30,52 @@ const Vote = () => {
         setVotingContract(contract);
       }
     }
-  }, [context.state.isConnected]);
-  // const [activeRequests, setActiveRequests] = useState<
-  //   FormattedPriceRequestRound[]
-  // >([]);
-  // const [pastRequests, setPastRequests] = useState<
-  //   FormattedPriceRequestRound[]
-  // >([]);
-  // const [upcomingRequests, setUpcomingRequests] = useState<
-  //   FormattedPriceRequestRound[]
-  // >([]);
+  }, [context.state.isConnected, context.state.signer, votingContract]);
 
-  const { roundVoteData } = useVoteData();
+  // Once priceRounds are pulled from contract, filter them into requests.
+  useEffect(() => {
+    if (priceRounds.length) {
+      const ar = priceRounds.filter(isActiveRequest);
+      const pr = priceRounds.filter(isPastRequest);
+      setActiveRequests(ar);
+      setPastRequests(pr);
+    }
+  }, [priceRounds]);
 
-  // useEffect(() => {
-  //   // After queried, filter rounds into past, current, future.
-  //   if (Object.keys(roundVoteData).length) {
-  //     const pr: FormattedPriceRequestRound[] = Object.values(
-  //       roundVoteData
-  //     ).filter((el) => el.time < Date.now() / 1000);
-
-  //     setPastRequests(pr);
-  //   }
-  // }, [roundVoteData, setActiveRequests, setPastRequests, setUpcomingRequests]);
-
+  // const { roundVoteData } = useVoteData();
   return (
     <StyledVote>
       <Wallet />
-      <ActiveRequests />
+      <ActiveRequests activeRequests={activeRequests} />
     </StyledVote>
   );
 };
+
+function isActiveRequest(round: PriceRound) {
+  const currentTime = DateTime.local();
+  const roundTime = DateTime.fromSeconds(Number(round.time));
+  const diff = currentTime.diff(roundTime, ["days"]).toObject();
+  const { days } = diff;
+  if (days) {
+    return days > 0 && days <= ACTIVE_DAYS_CONSTANT ? true : false;
+  } else {
+    return false;
+  }
+}
+
+const ACTIVE_DAYS_CONSTANT = 2.5;
+
+function isPastRequest(round: PriceRound) {
+  const currentTime = DateTime.local();
+  const roundTime = DateTime.fromSeconds(Number(round.time));
+  const diff = currentTime.diff(roundTime, ["days"]).toObject();
+  const { days } = diff;
+  if (days) {
+    return days > 0 && days > ACTIVE_DAYS_CONSTANT ? true : false;
+  } else {
+    return false;
+  }
+}
 
 const StyledVote = styled.div`
   background-color: #f5f5f5;
