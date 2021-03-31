@@ -76,7 +76,7 @@ const StyledActiveRequestsForm = styled.table`
         max-width: 500px;
       }
     }
-    td:first-child {
+    td:first-of-type {
       /* div {
 
       }

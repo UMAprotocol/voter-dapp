@@ -2,14 +2,15 @@
 import { useState, useEffect, useContext } from "react";
 import tw, { styled } from "twin.macro";
 import { ethers } from "ethers";
-import { DateTime } from "luxon";
 
 // Components
 import Wallet from "./Wallet";
 import ActiveRequests from "./ActiveRequests";
+import PastRequests from "./PastRequests";
 import useVotingEvents, { PriceRound } from "./useVotingEvents";
 import { ConnectionContext } from "common/context/ConnectionContext";
 import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
+import { isActiveRequest, isPastRequest } from "./helpers";
 
 const Vote = () => {
   const context = useContext(ConnectionContext);
@@ -17,7 +18,7 @@ const Vote = () => {
     null
   );
   const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
-  const [, setPastRequests] = useState<PriceRound[]>([]);
+  const [pastRequests, setPastRequests] = useState<PriceRound[]>([]);
   const { priceRounds } = useVotingEvents(votingContract);
 
   useEffect(() => {
@@ -45,35 +46,10 @@ const Vote = () => {
     <StyledVote>
       <Wallet />
       <ActiveRequests activeRequests={activeRequests} />
+      <PastRequests pastRequests={pastRequests} />
     </StyledVote>
   );
 };
-
-function isActiveRequest(round: PriceRound) {
-  const currentTime = DateTime.local();
-  const roundTime = DateTime.fromSeconds(Number(round.time));
-  const diff = currentTime.diff(roundTime, ["days"]).toObject();
-  const { days } = diff;
-  if (days) {
-    return days > 0 && days <= ACTIVE_DAYS_CONSTANT ? true : false;
-  } else {
-    return false;
-  }
-}
-
-const ACTIVE_DAYS_CONSTANT = 2.5;
-
-function isPastRequest(round: PriceRound) {
-  const currentTime = DateTime.local();
-  const roundTime = DateTime.fromSeconds(Number(round.time));
-  const diff = currentTime.diff(roundTime, ["days"]).toObject();
-  const { days } = diff;
-  if (days) {
-    return days > 0 && days > ACTIVE_DAYS_CONSTANT ? true : false;
-  } else {
-    return false;
-  }
-}
 
 const StyledVote = styled.div`
   background-color: #f5f5f5;
