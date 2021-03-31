@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Button from "common/components/button";
 import useConnection from "common/hooks/useConnection";
 import { Settings } from "assets/icons";
+import getUmaBalance from "common/utils/getUmaBalance";
 
 interface Props {
   // connect: Connect;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const Wallet: FC<Props> = () => {
+  const [umaBalance, setUmaBalance] = useState("0.000");
   const { isOpen, open, close, modalRef } = useModal();
   const {
     initOnboard,
@@ -20,7 +22,16 @@ const Wallet: FC<Props> = () => {
     isConnected,
     onboard,
     disconnect,
+    signer,
   } = useConnection();
+
+  useEffect(() => {
+    if (signer && onboard) {
+      getUmaBalance(onboard.getState().address, signer).then((balance) => {
+        setUmaBalance(formatWalletBalance(balance));
+      });
+    }
+  }, [signer, onboard]);
 
   return (
     <StyledWallet>
@@ -61,8 +72,8 @@ const Wallet: FC<Props> = () => {
         <div tw="my-5 mx-3 flex-grow border-r">
           <p className="sm-title">UMA Balance</p>
           <div className="value-tokens">
-            <span>0.000</span>
-            <span>0000</span>
+            <span>{umaBalance}</span>
+            {/* <span>0000</span> */}
           </div>
           <p className="value-dollars">$00.00 USD</p>
         </div>
@@ -193,5 +204,16 @@ const Disconnected = styled(Connected)`
     opacity: 0.5;
   }
 `;
+
+function formatWalletBalance(balance: string) {
+  if (balance.includes(".")) {
+    const split = balance.split(".");
+    const rightSide = split[1].substr(0, 8);
+    const formattedString = `${split[0]}.${rightSide}`;
+    return formattedString;
+  } else {
+    return `${balance}.00000000`;
+  }
+}
 
 export default Wallet;

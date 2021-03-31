@@ -9,7 +9,6 @@ interface Props {
   activeRequests: PriceRound[];
 }
 const ActiveRequests: FC<Props> = ({ activeRequests }) => {
-  console.log("AR", activeRequests);
   return (
     <StyledActiveRequests>
       <div className="header-row" tw="flex items-stretch p-10">

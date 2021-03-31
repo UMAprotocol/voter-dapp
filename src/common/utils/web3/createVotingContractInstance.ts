@@ -10,5 +10,6 @@ export default function createVotingContractInstance(
     VotingArtifact.abi,
     signer
   );
+
   return contract;
 }
