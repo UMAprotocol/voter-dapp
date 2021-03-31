@@ -7,19 +7,20 @@ import Button from "common/components/button";
 import useConnection from "common/hooks/useConnection";
 import { Settings } from "assets/icons";
 import getUmaBalance from "common/utils/getUmaBalance";
+import useUmaPriceData from "common/hooks/useUmaPriceData";
 
 interface Props {
   // connect: Connect;
   // disconnect: Disconnect;
 }
 
-const DEFAULT_BALANCE = ["0.", "0000000"];
+const DEFAULT_BALANCE_STR_ARRAY = ["0.", "0000000"];
 
 const Wallet: FC<Props> = () => {
-  const [umaBalance, setUmaBalance] = useState(DEFAULT_BALANCE);
-  const [totalUmaCollected] = useState(DEFAULT_BALANCE);
-  const [availableRewards] = useState(DEFAULT_BALANCE);
-
+  const [umaBalance, setUmaBalance] = useState("0");
+  const [totalUmaCollected] = useState(DEFAULT_BALANCE_STR_ARRAY);
+  const [availableRewards] = useState(DEFAULT_BALANCE_STR_ARRAY);
+  const { data: umaPrice } = useUmaPriceData();
   const { isOpen, open, close, modalRef } = useModal();
   const {
     initOnboard,
@@ -33,7 +34,7 @@ const Wallet: FC<Props> = () => {
   useEffect(() => {
     if (signer && onboard) {
       getUmaBalance(onboard.getState().address, signer).then((balance) => {
-        setUmaBalance(formatWalletBalance(balance));
+        setUmaBalance(balance);
       });
     }
   }, [signer, onboard]);
@@ -77,10 +78,19 @@ const Wallet: FC<Props> = () => {
         <div tw="my-5 mx-3 flex-grow border-r">
           <p className="sm-title">UMA Balance</p>
           <div className="value-tokens">
-            <span>{umaBalance[0]}</span>
-            <span>{umaBalance[1]}</span>
+            <span>{formatWalletBalance(umaBalance)[0]}</span>
+            <span>{formatWalletBalance(umaBalance)[1]}</span>
           </div>
-          <p className="value-dollars">$00.00 USD</p>
+          <p className="value-dollars">
+            $
+            {umaBalance && umaPrice
+              ? calculateUMATotalValue(
+                  umaPrice.market_data.current_price.usd,
+                  umaBalance
+                )
+              : "$00.00"}
+            USD
+          </p>
         </div>
         <div tw="my-5 mx-3 pl-5 flex-grow border-r">
           <p className="sm-title">Total UMA Collected</p>
@@ -214,6 +224,7 @@ const Disconnected = styled(Connected)`
 // Hence we need to return an array of strings.
 // We want to limit the overall string length to ~8 digits.
 function formatWalletBalance(balance: string): string[] {
+  console.log("balance", balance);
   if (balance.includes(".")) {
     const strArray: string[] = [];
     const split = balance.split(".");
@@ -237,6 +248,11 @@ function formatWalletBalance(balance: string): string[] {
     }
     return [`${balance}.`, trailingZeros];
   }
+}
+
+function calculateUMATotalValue(price: number, balance: string) {
+  const bal = Number(balance);
+  return (price * bal).toFixed(2).toLocaleString();
 }
 
 export default Wallet;

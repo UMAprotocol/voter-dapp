@@ -1,12 +1,16 @@
 import Router from "common/router";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./common/apollo/client";
+import { QueryClient, QueryClientProvider } from "react-query";
 
+const queryClient = new QueryClient();
 function App() {
   return (
     <div className="App">
       <ApolloProvider client={client}>
-        <Router />
+        <QueryClientProvider client={queryClient}>
+          <Router />
+        </QueryClientProvider>
       </ApolloProvider>
     </div>
   );
