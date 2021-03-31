@@ -53,7 +53,7 @@ const Vote = () => {
 
 const StyledVote = styled.div`
   background-color: #f5f5f5;
-  ${tw`max-w-full pt-5 mt-5`};
+  ${tw`max-w-full pt-5 mt-5 pb-1`};
   font-family: "Halyard Display";
 `;
 
