@@ -7,7 +7,6 @@ import { DateTime } from "luxon";
 // Components
 import Wallet from "./Wallet";
 import ActiveRequests from "./ActiveRequests";
-// import useVoteData from "common/hooks/useVoteData";
 import useVotingEvents, { PriceRound } from "./useVotingEvents";
 import { ConnectionContext } from "common/context/ConnectionContext";
 import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
@@ -42,7 +41,6 @@ const Vote = () => {
     }
   }, [priceRounds]);
 
-  // const { roundVoteData } = useVoteData();
   return (
     <StyledVote>
       <Wallet />

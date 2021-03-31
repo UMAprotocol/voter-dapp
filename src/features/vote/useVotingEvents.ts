@@ -42,7 +42,6 @@ export default function usePriceRounds(contract: ethers.Contract | null) {
   const [priceRounds, setPriceRounds] = useState<PriceRound[]>([]);
   useEffect(() => {
     if (contract) {
-      console.log(contract.filters);
       queryPriceRoundEvents(contract, setPriceRounds);
 
       try {
