@@ -24,6 +24,7 @@ const PastRequests: FC<Props> = ({ pastRequests }) => {
             <th>Your Vote</th>
             <th>Earned Rewards</th>
             <th>Timestamp</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -75,7 +76,7 @@ const StyledPastRequests = styled.div`
     }
   }
   .table {
-    ${tw`table-auto`};
+    ${tw`table-auto p-10`};
     width: 100%;
     max-width: 1250px;
     margin: 0 auto;
@@ -87,6 +88,10 @@ const StyledPastRequests = styled.div`
         text-align: left;
         margin-bottom: 2rem;
       }
+      th {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e5e5e5;
+      }
       th:last-child {
         text-align: center;
       }
@@ -94,9 +99,15 @@ const StyledPastRequests = styled.div`
 
     tbody {
       td {
+        &:last-child div {
+          padding-bottom: 2rem;
+        }
         div {
           display: flex;
           align-items: center;
+          border-bottom: 1px solid #e5e5e5;
+          padding: 0.5rem;
+          padding-bottom: 3rem;
         }
         .description {
           max-width: 500px;

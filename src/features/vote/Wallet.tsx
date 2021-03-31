@@ -14,12 +14,10 @@ interface Props {
   // disconnect: Disconnect;
 }
 
-const DEFAULT_BALANCE_STR_ARRAY = ["0.", "0000000"];
-
 const Wallet: FC<Props> = () => {
   const [umaBalance, setUmaBalance] = useState("0");
-  const [totalUmaCollected] = useState(DEFAULT_BALANCE_STR_ARRAY);
-  const [availableRewards] = useState(DEFAULT_BALANCE_STR_ARRAY);
+  const [totalUmaCollected] = useState("0");
+  const [availableRewards] = useState("0");
   const { data: umaPrice } = useUmaPriceData();
   const { isOpen, open, close, modalRef } = useModal();
   const {
@@ -95,8 +93,8 @@ const Wallet: FC<Props> = () => {
         <div tw="my-5 mx-3 pl-5 flex-grow border-r">
           <p className="sm-title">Total UMA Collected</p>
           <div className="value-tokens">
-            <span>{totalUmaCollected[0]}</span>
-            <span>{totalUmaCollected[1]}</span>
+            <span>{formatWalletBalance(totalUmaCollected)[0]}</span>
+            <span>{formatWalletBalance(totalUmaCollected)[1]}</span>
           </div>
           <p className="value-dollars">$00.00 USD</p>
         </div>
