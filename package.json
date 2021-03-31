@@ -20,7 +20,6 @@
     "@types/react-dom": "^17.0.0",
     "@uma/core": "^2.1.0",
     "babel-plugin-macros": "^3.0.1",
-    "bignumber": "^1.1.0",
     "bnc-onboard": "^1.20.0",
     "ethers": "^5.0.32",
     "graphql": "^15.5.0",
