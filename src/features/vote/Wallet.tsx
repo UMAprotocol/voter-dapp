@@ -13,8 +13,13 @@ interface Props {
   // disconnect: Disconnect;
 }
 
+const DEFAULT_BALANCE = ["0.000", "0000"];
+
 const Wallet: FC<Props> = () => {
-  const [umaBalance, setUmaBalance] = useState("0.000");
+  const [umaBalance, setUmaBalance] = useState(DEFAULT_BALANCE);
+  const [totalUmaCollected] = useState(DEFAULT_BALANCE);
+  const [availableRewards] = useState(DEFAULT_BALANCE);
+
   const { isOpen, open, close, modalRef } = useModal();
   const {
     initOnboard,
@@ -72,24 +77,24 @@ const Wallet: FC<Props> = () => {
         <div tw="my-5 mx-3 flex-grow border-r">
           <p className="sm-title">UMA Balance</p>
           <div className="value-tokens">
-            <span>{umaBalance}</span>
-            {/* <span>0000</span> */}
+            <span>{umaBalance[0]}</span>
+            <span>{umaBalance[1]}</span>
           </div>
           <p className="value-dollars">$00.00 USD</p>
         </div>
         <div tw="my-5 mx-3 pl-5 flex-grow border-r">
           <p className="sm-title">Total UMA Collected</p>
           <div className="value-tokens">
-            <span>0.000</span>
-            <span>0000</span>
+            <span>{totalUmaCollected[0]}</span>
+            <span>{totalUmaCollected[1]}</span>
           </div>
           <p className="value-dollars">$00.00 USD</p>
         </div>
         <div tw="my-5 mx-3 pl-5 flex-grow">
           <p className="sm-title">Available Rewards</p>
           <div className="value-tokens">
-            <span>0.000</span>
-            <span>0000</span>
+            <span>{availableRewards[0]}</span>
+            <span>{availableRewards[1]}</span>
           </div>
           <p className="value-dollars">$00.00 USD</p>
         </div>
@@ -205,14 +210,19 @@ const Disconnected = styled(Connected)`
   }
 `;
 
-function formatWalletBalance(balance: string) {
+// There are two different colours for the first 4 digits and last 4 digits of the number.
+// Hence we need to return an array of strings.
+function formatWalletBalance(balance: string): string[] {
   if (balance.includes(".")) {
+    const strArray: string[] = [];
     const split = balance.split(".");
     const rightSide = split[1].substr(0, 8);
-    const formattedString = `${split[0]}.${rightSide}`;
-    return formattedString;
+
+    strArray.push(`${split[0]}.${rightSide.substr(0, 3)}`);
+    strArray.push(rightSide.substr(4, 8));
+    return strArray;
   } else {
-    return `${balance}.00000000`;
+    return [`${balance}.000`, "0000"];
   }
 }
 
