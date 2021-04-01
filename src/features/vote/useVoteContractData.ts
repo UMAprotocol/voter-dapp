@@ -7,10 +7,12 @@ export default function useVoteContractData(
   contract: ethers.Contract | null,
   address: string | null
 ) {
-  const [votesCommitted, setVotesCommitted] = useState([]);
+  const [votesCommitted, setVotesCommitted] = useState<VoteCommitted[]>([]);
   useEffect(() => {
     if (contract && address) {
-      queryVotesCommitted(contract, address, setVotesCommitted);
+      queryVotesCommitted(contract, address).then((data) => {
+        if (data) setVotesCommitted(data);
+      });
     }
   }, [contract, address]);
 
@@ -35,8 +37,7 @@ interface VoteCommitted {
 
 const queryVotesCommitted = async (
   contract: ethers.Contract,
-  address: string,
-  setState: Function
+  address: string
 ) => {
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
@@ -48,7 +49,7 @@ const queryVotesCommitted = async (
       (el) => el.args && el.args[0].toLowerCase() === address.toLowerCase()
     );
 
-    const vals = filteredEvents.map((el, index) => {
+    return filteredEvents.map((el, index) => {
       const { args } = el;
       const datum = {} as VoteCommitted;
       if (args) {
@@ -60,8 +61,6 @@ const queryVotesCommitted = async (
 
       return datum;
     });
-
-    setState(vals);
   } catch (err) {
     console.log("err", err);
   }

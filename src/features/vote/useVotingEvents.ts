@@ -13,17 +13,16 @@ export default function usePriceRounds(contract: ethers.Contract | null) {
 
   useEffect(() => {
     if (contract) {
-      queryPriceRoundEvents(contract, setPriceRounds);
+      queryPriceRoundEvents(contract).then((data) => {
+        if (data) setPriceRounds(data);
+      });
     }
   }, [contract]);
 
   return { priceRounds };
 }
 
-const queryPriceRoundEvents = async (
-  contract: ethers.Contract,
-  setState: Function
-) => {
+const queryPriceRoundEvents = async (contract: ethers.Contract) => {
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
   const priceRequestFilter = contract.filters.PriceRequestAdded(
@@ -38,7 +37,7 @@ const queryPriceRoundEvents = async (
       MAINNET_DEPLOY_BLOCK
     );
 
-    const pr = events.map((el) => {
+    return events.map((el) => {
       const { args } = el;
       const datum = {} as PriceRound;
       if (args) {
@@ -48,7 +47,6 @@ const queryPriceRoundEvents = async (
       }
       return datum;
     });
-    setState(pr);
   } catch (err) {
     console.log("err", err);
   }
