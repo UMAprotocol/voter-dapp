@@ -6,6 +6,7 @@ export default function useModal(initialState = false) {
   const close = useCallback(() => setOpen(false), []);
   const open = useCallback(() => setOpen(true), []);
   const ref = useRef<HTMLElement>();
+
   // The focus trap is used to make sure the user can't tab out of the modal.
   const focusTrapRef = useFocusTrap(isOpen);
   const modalRef = useCallback(
