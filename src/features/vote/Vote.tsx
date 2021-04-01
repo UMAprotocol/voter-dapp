@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 // Components
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "../past-requests/PastRequests";
-import useVotingEvents, { PriceRound } from "./useVotingEvents";
+import usePriceRound, { PriceRound } from "./usePriceRound";
 import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
 import { isActiveRequest, isPastRequest } from "./helpers";
@@ -18,7 +18,7 @@ const Vote = () => {
   );
   const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
   const [pastRequests, setPastRequests] = useState<PriceRound[]>([]);
-  const { priceRounds } = useVotingEvents(votingContract);
+  const { priceRounds } = usePriceRound();
 
   useEffect(() => {
     // If connected, try to create contract with assigned signer.

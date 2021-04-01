@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
-import { PriceRound } from "./useVotingEvents";
+import { PriceRound } from "./usePriceRound";
 import { UnlockedIcon } from "assets/icons";
 
 interface Props {

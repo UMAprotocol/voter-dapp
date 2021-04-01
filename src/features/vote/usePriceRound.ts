@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { MAINNET_DEPLOY_BLOCK } from "common/config";
+import provider from "common/utils/web3/createProvider";
+import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
 
 export interface PriceRound {
   roundId: string;
@@ -8,7 +10,10 @@ export interface PriceRound {
   time: string;
 }
 
-export default function useVotingEvents(contract: ethers.Contract | null) {
+const signer = provider.getSigner();
+const contract = createVotingContractInstance(signer);
+
+export default function usePriceRound() {
   const [priceRounds, setPriceRounds] = useState<PriceRound[]>([]);
 
   useEffect(() => {

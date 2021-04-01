@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { PriceRound } from "./useVotingEvents";
+import { PriceRound } from "./usePriceRound";
 
 const ACTIVE_DAYS_CONSTANT = 2.5;
 
