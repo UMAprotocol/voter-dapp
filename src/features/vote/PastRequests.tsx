@@ -17,7 +17,7 @@ interface PastRequest {
   proposal: string;
   correct: boolean;
   vote: string;
-  rewards: string;
+  reward: string;
   timestamp: string;
 }
 
@@ -51,50 +51,68 @@ const PastRequests: FC<Props> = ({
   useEffect(() => {
     if (priceRounds.length) {
       const filterRoundsByTime = priceRounds.filter(isPastRequest);
-      if (!address) {
-        if (filterRoundsByTime.length) {
-          const pr = filterRoundsByTime.map((el) => {
-            const datum = {} as PastRequest;
-            datum.proposal = el.identifier;
-            datum.correct = false;
-            datum.vote = "N/A";
-            datum.rewards = "N/A";
-            datum.timestamp = DateTime.fromSeconds(
-              Number(el.time)
-            ).toLocaleString();
-            return datum;
-          });
-          setPastRequests(pr);
-        }
+      if (!address && filterRoundsByTime.length) {
+        const pr = filterRoundsByTime.map((el) => {
+          const datum = {} as PastRequest;
+          datum.proposal = el.identifier;
+          datum.correct = false;
+          datum.vote = "N/A";
+          datum.reward = "N/A";
+          datum.timestamp = DateTime.fromSeconds(
+            Number(el.time)
+          ).toLocaleString();
+          return datum;
+        });
+        setPastRequests(pr);
       }
-      if (address) {
-        if (filterRoundsByTime.length) {
-          const pr = filterRoundsByTime.map((el) => {
-            let vote = "N/A";
-            const findVote = votesRevealed.find(
-              (el) => el.address.toLowerCase() === address.toLowerCase()
-            );
-            // if the name of the proposal includes "Admin", it is a true/false vote.
-            if (findVote && el.identifier.includes("Admin")) {
-              if (Number(findVote.price) > 0) {
-                vote = "YES";
-              } else {
-                vote = "NO";
-              }
-            }
 
-            const datum = {} as PastRequest;
-            datum.proposal = el.identifier;
-            datum.correct = false;
-            datum.vote = vote;
-            datum.rewards = "N/A";
-            datum.timestamp = DateTime.fromSeconds(
-              Number(el.time)
-            ).toLocaleString();
-            return datum;
+      // When address is defined, user is logged in.
+      if (address && filterRoundsByTime.length) {
+        const pr = filterRoundsByTime.map((el) => {
+          let vote = "N/A";
+          const findVote = votesRevealed.find(
+            (el) => el.address.toLowerCase() === address.toLowerCase()
+          );
+          // if the name of the proposal includes "Admin", it is a true/false vote.
+          if (findVote && el.identifier.includes("Admin")) {
+            if (Number(findVote.price) > 0) {
+              vote = "YES";
+            } else {
+              vote = "NO";
+            }
+          }
+
+          // Note: Rewards can be retrieved from the event after the user has
+          // taken it. If they haven't, you must do a getPrice call to the contract from Governor address.
+          let reward = "N/A";
+          const findReward = rewardsRetrieved.find(
+            (el) => el.address.toLowerCase() === address.toLowerCase()
+          );
+          if (findReward) {
+            reward = findReward.numTokens;
+          } else {
+            console.log("Need to query blockchain meow.");
+          }
+          const datum = {} as PastRequest;
+          datum.proposal = el.identifier;
+          datum.correct = false;
+          datum.vote = vote;
+          datum.reward = reward;
+          datum.timestamp = DateTime.fromSeconds(
+            Number(el.time)
+          ).toLocaleString({
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hourCycle: "h24",
+            timeZoneName: "short",
           });
-          setPastRequests(pr);
-        }
+
+          return datum;
+        });
+        setPastRequests(pr);
       }
     }
   }, [priceRounds, address, setPastRequests, votesRevealed]);
@@ -131,7 +149,7 @@ const PastRequests: FC<Props> = ({
                   <div>{el.vote}</div>
                 </td>
                 <td>
-                  <div>{el.rewards}</div>
+                  <div>{el.reward}</div>
                 </td>
                 <td>
                   <div>{el.timestamp}</div>

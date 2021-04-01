@@ -180,11 +180,9 @@ const queryVoteRevealed = async (
   );
   try {
     const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
-    console.log("events", events);
     const filteredEventsByAddress = events.filter(
       (el) => el.args && el.args[0].toLowerCase() === address.toLowerCase()
     );
-    console.log("filteredEventsByAddress", filteredEventsByAddress);
 
     return filteredEventsByAddress.map((el) => {
       const { args } = el;
