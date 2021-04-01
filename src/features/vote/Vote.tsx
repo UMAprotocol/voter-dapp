@@ -5,14 +5,14 @@ import { ethers } from "ethers";
 
 // Components
 import ActiveRequests from "./ActiveRequests";
-import PastRequests from "./PastRequests";
+import PastRequests from "../past-requests/PastRequests";
 import useVotingEvents, { PriceRound } from "./useVotingEvents";
-import { ConnectionContext } from "common/context/ConnectionContext";
+import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
 import { isActiveRequest, isPastRequest } from "./helpers";
 
 const Vote = () => {
-  const context = useContext(ConnectionContext);
+  const context = useContext(OnboardContext);
   const [votingContract, setVotingContract] = useState<ethers.Contract | null>(
     null
   );
@@ -35,7 +35,8 @@ const Vote = () => {
   useEffect(() => {
     if (priceRounds.length) {
       const ar = priceRounds.filter(isActiveRequest);
-      const pr = priceRounds.filter(isPastRequest);
+      // Only show first 4 values on index page.
+      const pr = priceRounds.filter(isPastRequest).slice(0, 4);
       setActiveRequests(ar);
       setPastRequests(pr);
     }

@@ -1,5 +1,5 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import ConnectionProvider from "common/context/ConnectionContext";
+import OnboardProvider from "common/context/OnboardContext";
 
 // Pages
 import Vote from "features/vote";
@@ -12,20 +12,21 @@ import Footer from "common/components/footer";
 const Router = () => {
   return (
     <BrowserRouter>
-      <ConnectionProvider>
+      <OnboardProvider>
         <div>
           <Navbar />
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
           <Wallet />
           <Switch>
+            <Route path="/past-requests"></Route>
             <Route path="/">
               <Vote />
             </Route>
           </Switch>
         </div>
         <Footer />
-      </ConnectionProvider>
+      </OnboardProvider>
     </BrowserRouter>
   );
 };
