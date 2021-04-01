@@ -7,29 +7,33 @@ import { ethers } from "ethers";
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "../past-requests/PastRequests";
 import usePriceRound, { PriceRound } from "./usePriceRound";
+import useVoteContractData from "./useVoteContractData";
 import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
 import { isActiveRequest, isPastRequest } from "./helpers";
 
 const Vote = () => {
-  const context = useContext(OnboardContext);
+  const { state } = useContext(OnboardContext);
   const [votingContract, setVotingContract] = useState<ethers.Contract | null>(
     null
   );
   const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
   const [pastRequests, setPastRequests] = useState<PriceRound[]>([]);
   const { priceRounds } = usePriceRound();
+  const [address, setAddress] = useState<string | null>(null);
+  useVoteContractData(votingContract, address);
 
   useEffect(() => {
     // If connected, try to create contract with assigned signer.
-    if (context.state.isConnected) {
+    if (state.isConnected) {
       // Signer can be null check for null and if we've already defined a contract.
-      if (context.state.signer && !votingContract) {
-        const contract = createVotingContractInstance(context.state.signer);
+      if (state.signer && !votingContract) {
+        const contract = createVotingContractInstance(state.signer);
+        setAddress(state.address);
         setVotingContract(contract);
       }
     }
-  }, [context.state.isConnected, context.state.signer, votingContract]);
+  }, [state.isConnected, state.signer, state.address, votingContract]);
 
   // Once priceRounds are pulled from contract, filter them into requests.
   useEffect(() => {

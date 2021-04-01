@@ -13,14 +13,14 @@ export interface PriceRound {
 const signer = provider.getSigner();
 const contract = createVotingContractInstance(signer);
 
+console.log("contract", contract);
+// This can be accessed without logging the user in.
 export default function usePriceRound() {
   const [priceRounds, setPriceRounds] = useState<PriceRound[]>([]);
 
   useEffect(() => {
-    if (contract) {
-      queryPriceRoundEvents(contract, setPriceRounds);
-    }
-  }, [contract]);
+    queryPriceRoundEvents(contract, setPriceRounds);
+  }, []);
 
   return { priceRounds };
 }
