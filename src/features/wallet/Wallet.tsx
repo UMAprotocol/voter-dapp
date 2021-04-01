@@ -228,7 +228,6 @@ const Disconnected = styled(Connected)`
 // Hence we need to return an array of strings.
 // We want to limit the overall string length to ~8 digits.
 function formatWalletBalance(balance: string): string[] {
-  console.log("balance", balance);
   if (balance.includes(".")) {
     const strArray: string[] = [];
     const split = balance.split(".");

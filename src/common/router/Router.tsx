@@ -1,3 +1,4 @@
+// import { useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import OnboardProvider from "common/context/OnboardContext";
 
@@ -9,7 +10,15 @@ import Navbar from "common/components/navbar";
 import Wallet from "features/wallet";
 import Footer from "common/components/footer";
 
+import useVotingEvents from "features/vote/useVotingEvents";
+import provider from "common/utils/web3/createProvider";
+import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
+const signer = provider.getSigner();
+const contract = createVotingContractInstance(signer);
+
 const Router = () => {
+  const { priceRounds } = useVotingEvents(contract);
+
   return (
     <BrowserRouter>
       <OnboardProvider>

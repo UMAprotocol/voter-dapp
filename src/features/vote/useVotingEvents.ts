@@ -8,7 +8,7 @@ export interface PriceRound {
   time: string;
 }
 
-export default function usePriceRounds(contract: ethers.Contract | null) {
+export default function useVotingEvents(contract: ethers.Contract | null) {
   const [priceRounds, setPriceRounds] = useState<PriceRound[]>([]);
 
   useEffect(() => {
