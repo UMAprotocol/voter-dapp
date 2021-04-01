@@ -14,9 +14,7 @@ export default function useVoteContractData(
     }
   }, [contract, address]);
 
-  console.log("votes committed", votesCommitted);
-
-  return {};
+  return { votesCommitted };
 }
 
 /*  event VoteCommitted(
@@ -44,7 +42,6 @@ const queryVotesCommitted = async (
   // Otherwise this will likely return no values.
   // VoteCommmited: (address,uint256,bytes32,uint256,bytes)
   const filter = contract.filters.VoteCommitted(null, null, null, null, null);
-  // console.log("address", address);
   try {
     const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
     const filteredEvents = events.filter(
