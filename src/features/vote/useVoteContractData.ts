@@ -61,7 +61,7 @@ export default function useVoteContractData(
 );
 */
 
-interface VoteEvent {
+export interface VoteEvent {
   address: string;
   roundId: string;
   identifier: string;
@@ -157,7 +157,7 @@ const queryEncryptedVotes = async (
   );
 */
 
-interface VoteRevealed extends VoteEvent {
+export interface VoteRevealed extends VoteEvent {
   price: string;
   numTokens: string;
 }
@@ -180,9 +180,11 @@ const queryVoteRevealed = async (
   );
   try {
     const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
+    console.log("events", events);
     const filteredEventsByAddress = events.filter(
       (el) => el.args && el.args[0].toLowerCase() === address.toLowerCase()
     );
+    console.log("filteredEventsByAddress", filteredEventsByAddress);
 
     return filteredEventsByAddress.map((el) => {
       const { args } = el;
@@ -192,7 +194,7 @@ const queryVoteRevealed = async (
         datum.roundId = args[1].toString();
         datum.identifier = ethers.utils.toUtf8String(args[2]);
         datum.time = args[3].toString();
-        datum.price = args[4].toString();
+        datum.price = ethers.utils.formatEther(args[4]);
         datum.numTokens = args[6].toString();
       }
 
@@ -214,7 +216,7 @@ const queryVoteRevealed = async (
   );
 */
 
-interface RewardsRetrieved extends VoteEvent {
+export interface RewardsRetrieved extends VoteEvent {
   numTokens: string;
 }
 
@@ -267,7 +269,7 @@ event PriceResolved(
 );
 */
 
-interface PriceResolved {
+export interface PriceResolved {
   roundId: string;
   identifier: string;
   time: string;

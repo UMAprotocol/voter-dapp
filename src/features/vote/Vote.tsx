@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 
 // Components
 import ActiveRequests from "./ActiveRequests";
-import PastRequests from "../past-requests/PastRequests";
+import PastRequests from "./PastRequests";
 import usePriceRound, { PriceRound } from "./usePriceRound";
 import useVoteContractData from "./useVoteContractData";
 import { OnboardContext } from "common/context/OnboardContext";
@@ -18,10 +18,19 @@ const Vote = () => {
     null
   );
   const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
-  const [pastRequests, setPastRequests] = useState<PriceRound[]>([]);
-  const { priceRounds } = usePriceRound();
   const [address, setAddress] = useState<string | null>(null);
-  useVoteContractData(votingContract, address);
+
+  // This is determined before a user connects.
+  const { priceRounds } = usePriceRound();
+
+  // This data is determined after a user connects.
+  const {
+    votesCommitted,
+    encryptedVotes,
+    votesRevealed,
+    rewardsRetrieved,
+    priceResolved,
+  } = useVoteContractData(votingContract, address);
 
   useEffect(() => {
     setAddress(state.address);
@@ -42,17 +51,22 @@ const Vote = () => {
   useEffect(() => {
     if (priceRounds.length) {
       const ar = priceRounds.filter(isActiveRequest);
-      // Only show first 4 values on index page.
-      const pr = priceRounds.filter(isPastRequest).slice(0, 4);
       setActiveRequests(ar);
-      setPastRequests(pr);
     }
   }, [priceRounds]);
 
   return (
     <StyledVote>
       <ActiveRequests activeRequests={activeRequests} />
-      <PastRequests pastRequests={pastRequests} />
+      <PastRequests
+        priceRounds={priceRounds}
+        address={address}
+        votesCommitted={votesCommitted}
+        encryptedVotes={encryptedVotes}
+        votesRevealed={votesRevealed}
+        rewardsRetrieved={rewardsRetrieved}
+        priceResolved={priceResolved}
+      />
     </StyledVote>
   );
 };

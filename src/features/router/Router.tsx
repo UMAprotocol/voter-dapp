@@ -20,7 +20,6 @@ const Router = () => {
             renders the first one that matches the current URL. */}
           <Wallet />
           <Switch>
-            <Route path="/past-requests"></Route>
             <Route path="/">
               <Vote />
             </Route>
