@@ -70,19 +70,26 @@ export interface VoteEvent {
 
 const queryVotesCommitted = async (
   contract: ethers.Contract,
-  address: string
+  address: string | null = null,
+  roundId: string | null = null,
+  identifier: string | null = null,
+  time: number | null = null
 ) => {
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
   // VoteCommmited: (address,uint256,bytes32,uint256,bytes)
-  const filter = contract.filters.VoteCommitted(null, null, null, null, null);
+  const filter = contract.filters.VoteCommitted(
+    address,
+    roundId,
+    identifier,
+    time,
+    null
+  );
+
   try {
     const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
-    const filteredEventsByAddress = events.filter(
-      (el) => el.args && el.args[0].toLowerCase() === address.toLowerCase()
-    );
-
-    return filteredEventsByAddress.map((el) => {
+    console.log("events", events);
+    return events.map((el) => {
       const { args } = el;
       const datum = {} as VoteEvent;
       if (args) {
@@ -112,19 +119,23 @@ const queryVotesCommitted = async (
 
 const queryEncryptedVotes = async (
   contract: ethers.Contract,
-  address: string
+  address: string | null = null,
+  roundId: string | null = null,
+  identifier: string | null = null,
+  time: number | null = null
 ) => {
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
   // EncryptedVote: (address,uint256,bytes32,uint256,bytes,bytes)
   const filter = contract.filters.EncryptedVote(
-    null,
-    null,
-    null,
-    null,
+    address,
+    roundId,
+    identifier,
+    time,
     null,
     null
   );
+
   try {
     const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
 
@@ -164,27 +175,30 @@ export interface VoteRevealed extends VoteEvent {
 
 const queryVoteRevealed = async (
   contract: ethers.Contract,
-  address: string
+  address: string | null = null,
+  roundId: string | null = null,
+  identifier: string | null = null,
+  time: number | null = null,
+  price: number | null = null,
+  numTokens: number | null = null
 ) => {
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
   // VoteRevealed(address,uint256,bytes32,uint256,int256,bytes,uint256)
   const filter = contract.filters.VoteRevealed(
+    address,
+    roundId,
+    identifier,
+    time,
+    price,
     null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
+    numTokens
   );
+
   try {
     const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
-    const filteredEventsByAddress = events.filter(
-      (el) => el.args && el.args[0].toLowerCase() === address.toLowerCase()
-    );
 
-    return filteredEventsByAddress.map((el) => {
+    return events.map((el) => {
       const { args } = el;
       const datum = {} as VoteRevealed;
       if (args) {
@@ -226,7 +240,7 @@ const queryRewardsRetrieved = async (
   // Otherwise this will likely return no values.
   // RewardsRetrieved(address,uint256,bytes32,uint256,bytes,uint256)
   const filter = contract.filters.RewardsRetrieved(
-    null,
+    address,
     null,
     null,
     null,
@@ -236,11 +250,8 @@ const queryRewardsRetrieved = async (
 
   try {
     const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
-    const filteredEventsByAddress = events.filter(
-      (el) => el.args && el.args[0].toLowerCase() === address.toLowerCase()
-    );
 
-    return filteredEventsByAddress.map((el) => {
+    return events.map((el) => {
       const { args } = el;
       const datum = {} as RewardsRetrieved;
       if (args) {

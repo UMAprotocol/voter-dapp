@@ -6,7 +6,9 @@ import { ethers } from "ethers";
 // Components
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
-import usePriceRound, { PriceRound } from "./usePriceRound";
+import usePriceRound from "./usePriceRound";
+import { PriceRound } from "common/utils/web3/getVotingContractEvents";
+
 import useVoteContractEvents from "./useVoteContractEvents";
 import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
