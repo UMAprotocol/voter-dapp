@@ -1,4 +1,4 @@
-import Router from "common/router";
+import Router from "features/router";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./common/apollo/client";
 import { QueryClient, QueryClientProvider } from "react-query";

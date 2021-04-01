@@ -18,7 +18,6 @@ export default function useVoteContractData(
 
   useEffect(() => {
     if (contract && address) {
-      console.log("<<<<contract", contract);
       queryVotesCommitted(contract, address).then((data) => {
         if (data) setVotesCommitted(data);
       });
@@ -29,11 +28,9 @@ export default function useVoteContractData(
         if (data) setVotesRevealed(data);
       });
       queryRewardsRetrieved(contract, address).then((data) => {
-        console.log("query rewards", data);
         if (data) setRewardsRetrieved(data);
       });
       queryPriceResolved(contract).then((data) => {
-        console.log("price resolved", data);
         if (data) setPriceResolved(data);
       });
     } else {
