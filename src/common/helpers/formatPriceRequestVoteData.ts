@@ -2,8 +2,9 @@ import { BigNumber, utils } from "ethers";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import formatRequestKey from "./formatRequestKey";
 import toWei from "common/utils/convertToWeiSafely";
+import { DateTime } from "luxon";
 
-export interface FormattedPriceRequestRound {
+export interface FormattedPriceRequestRounds {
   [key: string]: {
     totalSupplyAtSnapshot: string;
     uniqueCommits: string;
@@ -19,16 +20,27 @@ export interface FormattedPriceRequestRound {
     rewardsClaimedPct: string;
     uniqueClaimers: string;
     uniqueClaimersPctOfReveals: string;
+    time: number;
   };
 }
 
 const fromWei = utils.formatUnits;
 
+export function formatPriceRoundTime(time: number) {
+  return `${DateTime.fromSeconds(Number(time)).toLocaleString({
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  })} ${DateTime.local().toFormat("ZZZZ")}`;
+}
+
 // Taken from previous voter dapp, refactored to use TypeScript and Ethers.
-export default function formatPriceRequestRounds(
+export default function formatPriceRequestVoteData(
   data: PriceRequestRound[]
-): FormattedPriceRequestRound {
-  const formattedPriceRequestRounds: FormattedPriceRequestRound = {};
+): FormattedPriceRequestRounds {
+  const formattedPriceRequestRounds: FormattedPriceRequestRounds = {};
   // Load data into `newVoteData` synchronously
   data.forEach((rr: PriceRequestRound) => {
     const identifier = rr.identifier.id;
@@ -105,7 +117,6 @@ export default function formatPriceRequestRounds(
           .div(roundInflationRewardsAvailable);
       }
     }
-
     // Data on unique users:
     const uniqueCommits = Object.keys(uniqueVotersCommitted).length;
     const uniqueReveals = Object.keys(uniqueVotersRevealed).length;
@@ -140,6 +151,7 @@ export default function formatPriceRequestRounds(
       ),
       uniqueClaimers: uniqueClaimers.toString(),
       uniqueClaimersPctOfReveals: uniqueClaimersPctOfReveals.toString(),
+      time: Number(rr.time),
     };
   });
 

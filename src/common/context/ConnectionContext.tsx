@@ -75,14 +75,6 @@ export type ConnectionDispatch = Dispatch<Action>;
 type WithDelegatedProps = {
   [k: string]: unknown;
 };
-
-export const EMPTY: unique symbol = Symbol();
-
-export const ConnectionContext = createContext<
-  TConnectionContext | typeof EMPTY
->(EMPTY);
-ConnectionContext.displayName = "ConnectionContext";
-
 function connectionReducer(state: ConnectionState, action: Action) {
   switch (action.type) {
     case SET_PROVIDER: {
@@ -166,22 +158,27 @@ const connect = async (
 
 const disconnect = (
   dispatch: ConnectionDispatch,
-  isConnected: boolean,
   onboard: OnboardApi | null
 ) => {
-  if (!isConnected) {
-    return;
-  }
   onboard?.walletReset();
   dispatch({ type: actions.RESET_STATE });
 };
 
-type TConnectionContext = [
-  ConnectionState,
-  ConnectionDispatch,
-  typeof connect,
-  typeof disconnect
-];
+export type Connect = typeof connect;
+export type Disconnect = typeof disconnect;
+
+export interface TConnectionContext {
+  state: ConnectionState;
+  dispatch: ConnectionDispatch;
+  connect: typeof connect;
+  disconnect: typeof disconnect;
+}
+
+export const ConnectionContext = createContext<TConnectionContext>(
+  {} as TConnectionContext
+);
+
+ConnectionContext.displayName = "ConnectionContext";
 
 export const ConnectionProvider: FC<WithDelegatedProps> = ({
   children,
@@ -191,10 +188,12 @@ export const ConnectionProvider: FC<WithDelegatedProps> = ({
 
   return (
     <ConnectionContext.Provider
-      value={[state, dispatch, connect, disconnect]}
+      value={{ state, dispatch, connect, disconnect }}
       {...delegated}
     >
       {children}
     </ConnectionContext.Provider>
   );
 };
+
+export default ConnectionProvider;

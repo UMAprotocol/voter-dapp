@@ -3,18 +3,61 @@ import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
-
+import Button from "common/components/button";
+import useConnection from "common/hooks/useConnection";
 import { Settings } from "assets/icons";
 
-const Wallet: FC = () => {
+interface Props {
+  // connect: Connect;
+  // disconnect: Disconnect;
+}
+
+const Wallet: FC<Props> = () => {
   const { isOpen, open, close, modalRef } = useModal();
+  const {
+    initOnboard,
+    setInitOnboard,
+    isConnected,
+    onboard,
+    disconnect,
+  } = useConnection();
+
   return (
     <StyledWallet>
       <div tw="flex items-stretch items-center">
         <div tw="py-8 pl-5 flex-grow">
           <p className="wallet-title">Voting Wallet</p>
-          <Connected>Connected with MetaMask</Connected>
+          {isConnected ? (
+            <Connected>
+              Connected with {onboard?.getState().wallet.name}
+            </Connected>
+          ) : (
+            <Disconnected>Not Connected</Disconnected>
+          )}
+
+          {!isConnected ? (
+            <Button
+              className="connect-btn"
+              onClick={() => {
+                if (!initOnboard) setInitOnboard(true);
+              }}
+              variant="primary"
+            >
+              Connect Wallet
+            </Button>
+          ) : (
+            <Button
+              className="connect-btn"
+              onClick={() => {
+                disconnect();
+              }}
+              variant="primary"
+            >
+              Disconnect
+            </Button>
+          )}
         </div>
+
         <div tw="my-5 mx-3 flex-grow border-r">
           <p className="sm-title">UMA Balance</p>
           <div className="value-tokens">
@@ -45,16 +88,7 @@ const Wallet: FC = () => {
       </div>
       <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
         <StyledModal>
-          <h3 className="header">Voting Wallet</h3>
-          <div className="header-body" tw="flex items-stretch mb-3 border-b">
-            <Disconnected>Not Connected</Disconnected>
-            <div className="open-form" tw="flex-grow text-right">
-              Add New Wallet
-            </div>
-          </div>
-          <h3 tw="mt-10" className="header">
-            Two Key Voting
-          </h3>
+          <h3 className="header">Two Key Voting</h3>
           <p tw="opacity-50 mb-4 text-center">
             You are not currently using a two key voting system. To deploy one,
             provide your cold key address. Click here to learn more about the
@@ -99,6 +133,10 @@ const StyledWallet = styled.div`
   }
   .value-dollars {
     font-size: 0.8rem;
+  }
+  .connect-btn {
+    /* margin-left: 12px; */
+    width: 150px;
   }
 `;
 

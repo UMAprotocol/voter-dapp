@@ -1,9 +1,15 @@
 /** @jsxImportSource @emotion/react */
+import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
-
 import timerSVG from "assets/icons/timer.svg";
+import { PriceRound } from "./useVotingEvents";
+import ActiveRequestsForm from "./ActiveRequestsForm";
 
-const ActiveRequests = () => {
+interface Props {
+  activeRequests: PriceRound[];
+}
+const ActiveRequests: FC<Props> = ({ activeRequests }) => {
+  console.log("AR", activeRequests);
   return (
     <StyledActiveRequests>
       <div className="header-row" tw="flex items-stretch p-10">
@@ -15,14 +21,21 @@ const ActiveRequests = () => {
         </div>
         <div tw="flex-grow text-right">
           <div className="title">Time Remaining</div>
-          <div className="time">
-            00:00
-            <span>
-              <img src={timerSVG} alt="timer_img" />
-            </span>
-          </div>
+          {activeRequests.length ? (
+            <div className="time">
+              00:00
+              <span>
+                <img src={timerSVG} alt="timer_img" />
+              </span>
+            </div>
+          ) : (
+            <div className="time">N/A</div>
+          )}
         </div>
       </div>
+      {activeRequests.length ? (
+        <ActiveRequestsForm activeRequests={activeRequests} />
+      ) : null}
     </StyledActiveRequests>
   );
 };

@@ -3,6 +3,7 @@ type Network = ethers.providers.Network;
 
 export const infuraId = process.env.REACT_APP_PUBLIC_INFURA_ID || "";
 export const SUPPORTED_NETWORK_IDS = [1, 42] as const;
+export const MAINNET_DEPLOY_BLOCK = 11876839;
 
 export default function config(network: Network | null) {
   const infuraRpc = `https://${
