@@ -7,10 +7,10 @@ import { ethers } from "ethers";
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
 import usePriceRound, { PriceRound } from "./usePriceRound";
-import useVoteContractData from "./useVoteContractData";
+import useVoteContractEvents from "./useVoteContractEvents";
 import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
-import { isActiveRequest, isPastRequest } from "./helpers";
+import { isActiveRequest } from "./helpers";
 
 const Vote = () => {
   const { state } = useContext(OnboardContext);
@@ -30,7 +30,7 @@ const Vote = () => {
     votesRevealed,
     rewardsRetrieved,
     priceResolved,
-  } = useVoteContractData(votingContract, address);
+  } = useVoteContractEvents(votingContract, address);
 
   useEffect(() => {
     setAddress(state.address);

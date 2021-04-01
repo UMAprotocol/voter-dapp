@@ -9,7 +9,7 @@ import {
   RewardsRetrieved,
   PriceResolved,
   VoteRevealed,
-} from "./useVoteContractData";
+} from "./useVoteContractEvents";
 
 import { isPastRequest } from "./helpers";
 
