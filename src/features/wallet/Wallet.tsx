@@ -4,7 +4,7 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Button from "common/components/button";
-import useConnection from "common/hooks/useConnection";
+import useOnboard from "common/hooks/useOnboard";
 import { Settings } from "assets/icons";
 import getUmaBalance from "common/utils/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
@@ -27,15 +27,17 @@ const Wallet: FC<Props> = () => {
     onboard,
     disconnect,
     signer,
-  } = useConnection();
+    address,
+  } = useOnboard();
 
   useEffect(() => {
-    if (signer && onboard) {
-      getUmaBalance(onboard.getState().address, signer).then((balance) => {
+    // When Address changes in MM, balance will change, as the address in context is changing from Onboard.
+    if (signer && address) {
+      getUmaBalance(address, signer).then((balance) => {
         setUmaBalance(balance);
       });
     }
-  }, [signer, onboard]);
+  }, [signer, address]);
 
   return (
     <StyledWallet>

@@ -24,12 +24,15 @@ const Vote = () => {
   useVoteContractData(votingContract, address);
 
   useEffect(() => {
+    setAddress(state.address);
+  }, [state.address]);
+
+  useEffect(() => {
     // If connected, try to create contract with assigned signer.
     if (state.isConnected) {
       // Signer can be null check for null and if we've already defined a contract.
       if (state.signer && !votingContract) {
         const contract = createVotingContractInstance(state.signer);
-        setAddress(state.address);
         setVotingContract(contract);
       }
     }
