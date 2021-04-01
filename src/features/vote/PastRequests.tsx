@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { PriceRound } from "./useVotingEvents";
 import Button from "common/components/button";
@@ -9,6 +9,21 @@ interface Props {
 }
 
 const PastRequests: FC<Props> = ({ pastRequests }) => {
+  const [filteredPastRequests, setFilteredPastRequests] = useState<
+    PriceRound[]
+  >([]);
+  const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    if (pastRequests.length) {
+      if (!showAll) {
+        const filteredRequests = pastRequests.slice(0, 5);
+        setFilteredPastRequests(filteredRequests);
+      } else {
+        setFilteredPastRequests(pastRequests);
+      }
+    }
+  }, [pastRequests, showAll]);
   return (
     <StyledPastRequests>
       <div className="header-row" tw="flex items-stretch p-10">
@@ -28,7 +43,7 @@ const PastRequests: FC<Props> = ({ pastRequests }) => {
           </tr>
         </thead>
         <tbody>
-          {pastRequests.map((el, index) => {
+          {filteredPastRequests.map((el, index) => {
             return (
               <tr key={index}>
                 <td>
@@ -56,6 +71,13 @@ const PastRequests: FC<Props> = ({ pastRequests }) => {
           })}
         </tbody>
       </table>
+      {pastRequests.length ? (
+        <div className="bottom-row">
+          <Button variant="primary" onClick={() => setShowAll(true)}>
+            View All
+          </Button>
+        </div>
+      ) : null}
     </StyledPastRequests>
   );
 };
@@ -125,6 +147,12 @@ const StyledPastRequests = styled.div`
           margin: 0 auto;
         }
       }
+    }
+  }
+  .bottom-row {
+    text-align: center;
+    button {
+      width: 150px;
     }
   }
 `;

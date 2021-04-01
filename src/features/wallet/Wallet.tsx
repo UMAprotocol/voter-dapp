@@ -39,101 +39,107 @@ const Wallet: FC<Props> = () => {
 
   return (
     <StyledWallet>
-      <div tw="flex items-stretch items-center">
-        <div tw="py-8 pl-5 flex-grow">
-          <p className="wallet-title">Voting Wallet</p>
-          {isConnected ? (
-            <Connected>
-              Connected with {onboard?.getState().wallet.name}
-            </Connected>
-          ) : (
-            <Disconnected>Not Connected</Disconnected>
-          )}
+      <div className="wrapper">
+        <div tw="flex items-stretch items-center">
+          <div tw="py-8 pl-5 flex-grow">
+            <p className="wallet-title">Voting Wallet</p>
+            {isConnected ? (
+              <Connected>
+                Connected with {onboard?.getState().wallet.name}
+              </Connected>
+            ) : (
+              <Disconnected>Not Connected</Disconnected>
+            )}
 
-          {!isConnected ? (
-            <Button
-              className="connect-btn"
-              onClick={() => {
-                if (!initOnboard) setInitOnboard(true);
-              }}
-              variant="primary"
-            >
-              Connect Wallet
-            </Button>
-          ) : (
-            <Button
-              className="connect-btn"
-              onClick={() => {
-                disconnect();
-              }}
-              variant="primary"
-            >
-              Disconnect
-            </Button>
-          )}
-        </div>
+            {!isConnected ? (
+              <Button
+                className="connect-btn"
+                onClick={() => {
+                  if (!initOnboard) setInitOnboard(true);
+                }}
+                variant="primary"
+              >
+                Connect Wallet
+              </Button>
+            ) : (
+              <Button
+                className="connect-btn"
+                onClick={() => {
+                  disconnect();
+                }}
+                variant="primary"
+              >
+                Disconnect
+              </Button>
+            )}
+          </div>
 
-        <div tw="my-5 mx-3 flex-grow border-r">
-          <p className="sm-title">UMA Balance</p>
-          <div className="value-tokens">
-            <span>{formatWalletBalance(umaBalance)[0]}</span>
-            <span>{formatWalletBalance(umaBalance)[1]}</span>
-          </div>
-          <p className="value-dollars">
-            $
-            {umaBalance && umaPrice
-              ? calculateUMATotalValue(
-                  umaPrice.market_data.current_price.usd,
-                  umaBalance
-                )
-              : "$00.00"}
-            USD
-          </p>
-        </div>
-        <div tw="my-5 mx-3 pl-5 flex-grow border-r">
-          <p className="sm-title">Total UMA Collected</p>
-          <div className="value-tokens">
-            <span>{formatWalletBalance(totalUmaCollected)[0]}</span>
-            <span>{formatWalletBalance(totalUmaCollected)[1]}</span>
-          </div>
-          <p className="value-dollars">$00.00 USD</p>
-        </div>
-        <div tw="my-5 mx-3 pl-5 flex-grow">
-          <p className="sm-title">Available Rewards</p>
-          <div className="value-tokens">
-            <span>{availableRewards[0]}</span>
-            <span>{availableRewards[1]}</span>
-          </div>
-          <p className="value-dollars">$00.00 USD</p>
-        </div>
-        <div tw="py-10 pl-5 ml-auto flex-none">
-          <Settings onClick={() => open()} tw="cursor-pointer" />
-        </div>
-      </div>
-      <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
-        <StyledModal>
-          <h3 className="header">Two Key Voting</h3>
-          <p tw="opacity-50 mb-4 text-center">
-            You are not currently using a two key voting system. To deploy one,
-            provide your cold key address. Click here to learn more about the
-            two key voting system.
-          </p>
-          <div tw="flex items-stretch">
-            <Disconnected tw="flex-grow">Not Connected</Disconnected>
-            <div className="open-form" tw="flex-grow text-right">
-              Add Cold Wallet Address
+          <div tw="my-5 mx-3 flex-grow border-r">
+            <p className="sm-title">UMA Balance</p>
+            <div className="value-tokens">
+              <span>{formatWalletBalance(umaBalance)[0]}</span>
+              <span>{formatWalletBalance(umaBalance)[1]}</span>
             </div>
+            <p className="value-dollars">
+              $
+              {umaBalance && umaPrice
+                ? calculateUMATotalValue(
+                    umaPrice.market_data.current_price.usd,
+                    umaBalance
+                  )
+                : "$00.00"}
+              USD
+            </p>
           </div>
-        </StyledModal>
-      </Modal>
+          <div tw="my-5 mx-3 pl-5 flex-grow border-r">
+            <p className="sm-title">Total UMA Collected</p>
+            <div className="value-tokens">
+              <span>{formatWalletBalance(totalUmaCollected)[0]}</span>
+              <span>{formatWalletBalance(totalUmaCollected)[1]}</span>
+            </div>
+            <p className="value-dollars">$00.00 USD</p>
+          </div>
+          <div tw="my-5 mx-3 pl-5 flex-grow">
+            <p className="sm-title">Available Rewards</p>
+            <div className="value-tokens">
+              <span>{availableRewards[0]}</span>
+              <span>{availableRewards[1]}</span>
+            </div>
+            <p className="value-dollars">$00.00 USD</p>
+          </div>
+          <div tw="py-10 pl-5 ml-auto flex-none">
+            <Settings onClick={() => open()} tw="cursor-pointer" />
+          </div>
+        </div>
+        <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
+          <StyledModal>
+            <h3 className="header">Two Key Voting</h3>
+            <p tw="opacity-50 mb-4 text-center">
+              You are not currently using a two key voting system. To deploy
+              one, provide your cold key address. Click here to learn more about
+              the two key voting system.
+            </p>
+            <div tw="flex items-stretch">
+              <Disconnected tw="flex-grow">Not Connected</Disconnected>
+              <div className="open-form" tw="flex-grow text-right">
+                Add Cold Wallet Address
+              </div>
+            </div>
+          </StyledModal>
+        </Modal>
+      </div>
     </StyledWallet>
   );
 };
 
 const StyledWallet = styled.div`
-  background-color: #fff;
+  background-color: #f5f5f5;
 
-  ${tw`max-w-7xl mx-auto py-5 px-8 my-10`};
+  ${tw`max-w-full pt-5 mt-5 pb-1`};
+  .wrapper {
+    ${tw`max-w-7xl mx-auto py-5 px-8 my-10`}
+    background-color: #fff;
+  }
   .wallet-title {
     font-weight: 600;
     font-size: 1.5rem;

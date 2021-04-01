@@ -4,7 +4,6 @@ import tw, { styled } from "twin.macro";
 import { ethers } from "ethers";
 
 // Components
-import Wallet from "./Wallet";
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
 import useVotingEvents, { PriceRound } from "./useVotingEvents";
@@ -44,7 +43,6 @@ const Vote = () => {
 
   return (
     <StyledVote>
-      <Wallet />
       <ActiveRequests activeRequests={activeRequests} />
       <PastRequests pastRequests={pastRequests} />
     </StyledVote>
@@ -53,7 +51,7 @@ const Vote = () => {
 
 const StyledVote = styled.div`
   background-color: #f5f5f5;
-  ${tw`max-w-full pt-5 mt-5 pb-1`};
+  ${tw`max-w-full pt-5 pb-1`};
   font-family: "Halyard Display";
 `;
 

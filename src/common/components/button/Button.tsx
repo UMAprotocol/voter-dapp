@@ -21,4 +21,8 @@ const Button = styled.button<Props>`
       : `background-color: #ffffff`};
 `;
 
+Button.defaultProps = {
+  variant: "primary",
+};
+
 export default Button;
