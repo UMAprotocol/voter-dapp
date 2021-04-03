@@ -6,7 +6,7 @@ import useModal from "common/hooks/useModal";
 import Button from "common/components/button";
 import useOnboard from "common/hooks/useOnboard";
 import { Settings } from "assets/icons";
-import getUmaBalance from "common/utils/getUmaBalance";
+import getUmaBalance from "common/utils/web3/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
 
 interface Props {

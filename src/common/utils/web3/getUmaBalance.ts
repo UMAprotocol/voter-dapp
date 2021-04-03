@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import createERC20ContractInstance from "./web3/createERC20ContractInstance";
+import createERC20ContractInstance from "./createERC20ContractInstance";
 
 export default async function getUmaBalance(
   address: string,

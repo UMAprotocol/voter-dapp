@@ -2,7 +2,7 @@
 import { FC, useState, useEffect } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { DateTime } from "luxon";
-import { PriceRound } from "common/utils/web3/getVotingContractEvents";
+import { PriceRound } from "web3/getVotingContractEvents";
 
 import Button from "common/components/button";
 import {

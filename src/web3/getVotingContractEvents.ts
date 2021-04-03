@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { MAINNET_DEPLOY_BLOCK } from "common/config";
 
-import stringToBytes32 from "common/utils/stringToBytes32";
+import stringToBytes32 from "common/utils/web3/stringToBytes32";
 
 export interface PriceRound {
   roundId: string;

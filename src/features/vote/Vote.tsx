@@ -7,11 +7,11 @@ import { ethers } from "ethers";
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
 import usePriceRound from "./usePriceRound";
-import { PriceRound } from "common/utils/web3/getVotingContractEvents";
+import { PriceRound } from "web3/getVotingContractEvents";
 
 import useVoteContractEvents from "./useVoteContractEvents";
 import { OnboardContext } from "common/context/OnboardContext";
-import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
+import createVotingContractInstance from "web3/createVotingContractInstance";
 import { isActiveRequest } from "./helpers";
 
 const Vote = () => {

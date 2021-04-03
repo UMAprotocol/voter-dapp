@@ -1,7 +1,7 @@
 import { createContext, useReducer, Dispatch, FC } from "react";
 import { ethers } from "ethers";
 import { API as OnboardApi } from "bnc-onboard/dist/src/interfaces";
-import createOnboardInstance from "common/utils/createOnboardInstance";
+import createOnboardInstance from "common/utils/web3/createOnboardInstance";
 import { Subscriptions } from "bnc-onboard/dist/src/interfaces";
 
 type Provider = ethers.providers.Web3Provider;

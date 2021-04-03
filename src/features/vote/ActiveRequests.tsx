@@ -2,7 +2,7 @@
 import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import timerSVG from "assets/icons/timer.svg";
-import { PriceRound } from "common/utils/web3/getVotingContractEvents";
+import { PriceRound } from "web3/getVotingContractEvents";
 import ActiveRequestsForm from "./ActiveRequestsForm";
 
 interface Props {
