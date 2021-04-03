@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import provider from "common/utils/web3/createProvider";
 import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
+import { useQuery } from "react-query";
 
 import {
   queryPriceRoundEvents,
@@ -12,13 +12,19 @@ const contract = createVotingContractInstance(signer);
 
 // This can be accessed without logging the user in.
 export default function usePriceRound() {
-  const [priceRounds, setPriceRounds] = useState<PriceRound[]>([]);
-
-  useEffect(() => {
-    queryPriceRoundEvents(contract).then((data) => {
-      if (data) setPriceRounds(data);
+  const { data } = useQuery<PriceRound[]>("priceRoundEvents", () => {
+    return queryPriceRoundEvents(contract).then((res) => {
+      if (res) {
+        return res;
+      } else {
+        return [];
+      }
     });
-  }, []);
+  });
 
-  return { priceRounds };
+  if (data) {
+    return { priceRounds: data };
+  } else {
+    return { priceRounds: [] as PriceRound[] };
+  }
 }
