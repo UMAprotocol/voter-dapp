@@ -3,7 +3,7 @@ import { FC, useState, useEffect } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { DateTime } from "luxon";
 import { PriceRound } from "web3/queryVotingContractEvents";
-
+import { ethers } from "ethers";
 import Button from "common/components/button";
 import {
   VoteEvent,
@@ -11,15 +11,17 @@ import {
   PriceResolved,
   VoteRevealed,
 } from "web3/queryVotingContractEvents";
+import { queryRetrieveRewards } from "web3/queryVotingContractMethods";
 
 import { isPastRequest } from "./helpers";
 
 interface PastRequest {
   proposal: string;
-  correct: boolean;
+  correct: string;
   vote: string;
   reward: string;
   timestamp: string;
+  rewardCollected: boolean;
 }
 
 interface Props {
@@ -30,16 +32,18 @@ interface Props {
   rewardsRetrieved: RewardsRetrieved[];
   priceResolved: PriceResolved[];
   address: string | null;
+  contract: ethers.Contract | null;
 }
 
 const PastRequests: FC<Props> = ({
   priceRounds,
-  votesCommitted,
-  encryptedVotes,
+  // votesCommitted,
+  // encryptedVotes,
   votesRevealed,
   rewardsRetrieved,
   priceResolved,
   address,
+  contract,
 }) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [filteredPastRequests, setFilteredPastRequests] = useState<
@@ -51,14 +55,16 @@ const PastRequests: FC<Props> = ({
   // Show basic price round data when user is not logged into Onboard
   useEffect(() => {
     if (priceRounds.length) {
-      const filterRoundsByTime = priceRounds.filter(isPastRequest);
+      console.log("contract>>>>", contract);
+      const filterRoundsByTime = priceRounds.filter(isPastRequest).reverse();
       if (!address && filterRoundsByTime.length) {
         const pr = filterRoundsByTime.map((el) => {
           const datum = {} as PastRequest;
           datum.proposal = el.identifier;
-          datum.correct = false;
+          datum.correct = "N/A";
           datum.vote = "N/A";
           datum.reward = "N/A";
+          datum.rewardCollected = true;
           datum.timestamp = DateTime.fromSeconds(
             Number(el.time)
           ).toLocaleString();
@@ -70,16 +76,32 @@ const PastRequests: FC<Props> = ({
       // When address is defined, user is logged in.
       if (address && filterRoundsByTime.length) {
         const pr = filterRoundsByTime.map((el) => {
+          // Determine correct vote
+          let correct = "N/A";
+          const findPriceResolved = priceResolved.find(
+            (x) => x.identifier === el.identifier
+          );
+          console.log("findPriceResolved", findPriceResolved);
+          if (findPriceResolved) {
+            if (el.identifier.includes("Admin")) {
+              correct = Number(findPriceResolved.price) > 0 ? "YES" : "NO";
+            } else {
+              correct = findPriceResolved.price;
+            }
+          }
+
           let vote = "N/A";
           const findVote = votesRevealed.find(
-            (el) => el.address.toLowerCase() === address.toLowerCase()
+            (x) => x.identifier === el.identifier
           );
           // if the name of the proposal includes "Admin", it is a true/false vote.
-          if (findVote && el.identifier.includes("Admin")) {
-            if (Number(findVote.price) > 0) {
-              vote = "YES";
+          if (findVote) {
+            if (el.identifier.includes("Admin")) {
+              vote = Number(findVote.price) > 0 ? "YES" : "NO";
             } else {
-              vote = "NO";
+              console.log("findVote Price", findVote.price);
+              // vote = ethers.utils.formatEther(findVote.price);
+              vote = findVote.price;
             }
           }
 
@@ -87,18 +109,33 @@ const PastRequests: FC<Props> = ({
           // taken it. If they haven't, you must do a getPrice call to the contract from Governor address.
           let reward = "N/A";
           const findReward = rewardsRetrieved.find(
-            (el) => el.address.toLowerCase() === address.toLowerCase()
+            (x) => el.identifier === x.identifier && el.roundId === x.roundId
           );
+          if (contract) {
+            console.log(contract.functions);
+          }
+
           if (findReward) {
-            reward = findReward.numTokens;
+            reward = ethers.utils.formatEther(findReward.numTokens);
           } else {
             console.log("Need to query blockchain meow.");
+            if (contract) {
+              queryRetrieveRewards(contract, address, el.roundId);
+            }
           }
+
+          // Determine if the user has revealed a vote and has not retrieved their rewards yet.
+          let rewardCollected = true;
+          if (!findReward && findVote) {
+            rewardCollected = false;
+          }
+
           const datum = {} as PastRequest;
           datum.proposal = el.identifier;
-          datum.correct = false;
+          datum.correct = correct;
           datum.vote = vote;
           datum.reward = reward;
+          datum.rewardCollected = rewardCollected;
           datum.timestamp = DateTime.fromSeconds(
             Number(el.time)
           ).toLocaleString({
@@ -144,7 +181,7 @@ const PastRequests: FC<Props> = ({
                   <div className="identifier">{el.proposal}</div>
                 </td>
                 <td>
-                  <div>{el.correct ? "Yes" : "No"}</div>
+                  <div>{el.correct}</div>
                 </td>
                 <td>
                   <div>{el.vote}</div>
@@ -155,11 +192,21 @@ const PastRequests: FC<Props> = ({
                 <td>
                   <div>{el.timestamp}</div>
                 </td>
-                <td>
-                  <div>
-                    <Button variant="primary">Collect Reward</Button>
-                  </div>
-                </td>
+                {el.vote === el.correct && el.vote !== "N/A" ? (
+                  <td>
+                    <div>
+                      <Button disabled={el.rewardCollected} variant="primary">
+                        {!el.rewardCollected && el.vote === el.correct
+                          ? "Collect Reward"
+                          : "Collected"}
+                      </Button>
+                    </div>
+                  </td>
+                ) : (
+                  <td>
+                    <div />
+                  </td>
+                )}
               </tr>
             );
           })}
@@ -215,15 +262,16 @@ const StyledPastRequests = styled.div`
 
     tbody {
       td {
-        &:last-child div {
+        /* &:last-child div {
           padding-bottom: 2rem;
-        }
+        } */
         div {
           display: flex;
           align-items: center;
           border-bottom: 1px solid #e5e5e5;
           padding: 0.5rem;
           padding-bottom: 3rem;
+          min-height: 125px;
         }
         .description {
           max-width: 500px;

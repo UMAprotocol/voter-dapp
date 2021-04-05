@@ -9,11 +9,11 @@ type Props = {
 
 const Button = styled.button<Props>`
   ${tw`inline-flex items-center justify-center p-2 rounded `};
+  min-width: 130px;
   > svg {
     margin-left: 10px;
   }
-  ${({ variant }) =>
-    variant === "primary" ? tw`text-white` : tw` text-black`};
+  ${({ variant }) => (variant === "primary" ? tw`text-white` : tw`text-black`)};
 
   ${({ variant }) =>
     variant === "primary"

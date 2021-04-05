@@ -92,7 +92,6 @@ export const queryVotesCommitted = async (
 
   try {
     const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
-    console.log("events", events);
     return events.map((el) => {
       const { args } = el;
       const datum = {} as VoteEvent;
@@ -327,7 +326,7 @@ export const queryPriceResolved = async (contract: ethers.Contract | null) => {
         datum.roundId = args[0].toString();
         datum.identifier = ethers.utils.toUtf8String(args[1]);
         datum.time = args[2].toString();
-        datum.price = args[3].toString();
+        datum.price = ethers.utils.formatEther(args[3]);
       }
 
       return datum;

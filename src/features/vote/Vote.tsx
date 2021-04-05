@@ -81,6 +81,7 @@ const Vote = () => {
       <PastRequests
         priceRounds={priceRounds}
         address={address}
+        contract={votingContract}
         votesCommitted={votesCommitted}
         encryptedVotes={encryptedVotes}
         votesRevealed={votesRevealed}

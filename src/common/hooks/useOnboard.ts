@@ -24,7 +24,6 @@ export default function useOnboard() {
       // These are optional callbacks to be passed into onboard.
       const subscriptions = {
         address: (address: string | null) => {
-          console.log("does this run on address change in MM?", address);
           dispatch({ type: actions.SET_ADDRESS, payload: address });
         },
         network: async (networkId: any) => {
