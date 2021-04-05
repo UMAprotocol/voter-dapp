@@ -9,25 +9,23 @@ export default function useRewardsRetrievedEvents(
   contract: ethers.Contract | null,
   address: string | null
 ) {
-  const { data } = useQuery<RewardsRetrieved[] | Error>(
+  const { data, error, isFetching } = useQuery<RewardsRetrieved[]>(
     "rewardsRetrievedEvents",
     () => {
       return queryRewardsRetrieved(contract, address).then((res) => {
-        if (res instanceof Error) return [];
-
         if (res) {
           return res;
         } else {
           return [];
         }
       });
-    }
+    },
+    { enabled: contract !== null ? true : false }
   );
-  if (data instanceof Error) return [] as RewardsRetrieved[];
 
   if (data) {
-    return [data];
+    return { data, error, isFetching };
   } else {
-    return [[] as RewardsRetrieved[]];
+    return { data: [] as RewardsRetrieved[], error, isFetching };
   }
 }

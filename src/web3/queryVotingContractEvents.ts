@@ -75,7 +75,7 @@ export const queryVotesCommitted = async (
   time: number | null = null
 ) => {
   if (!contract)
-    return new Error(
+    throw new Error(
       "User is not connected to provider and cannot query contract."
     );
 
@@ -130,7 +130,7 @@ export const queryEncryptedVotes = async (
   time: number | null = null
 ) => {
   if (!contract)
-    return new Error(
+    throw new Error(
       "User is not connected to provider and cannot query contract."
     );
 
@@ -193,7 +193,7 @@ export const queryVoteRevealed = async (
   numTokens: number | null = null
 ) => {
   if (!contract)
-    return new Error(
+    throw new Error(
       "User is not connected to provider and cannot query contract."
     );
 
@@ -252,7 +252,7 @@ export const queryRewardsRetrieved = async (
   address: string | null
 ) => {
   if (!contract)
-    return new Error(
+    throw new Error(
       "User is not connected to provider and cannot query contract."
     );
 
@@ -308,7 +308,7 @@ export interface PriceResolved {
 
 export const queryPriceResolved = async (contract: ethers.Contract | null) => {
   if (!contract)
-    return new Error(
+    throw new Error(
       "User is not connected to provider and cannot query contract."
     );
 

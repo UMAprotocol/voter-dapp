@@ -15,6 +15,7 @@ import {
   useVotesCommittedEvents,
   useVotesRevealedEvents,
 } from "./hooks";
+// import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "web3/createVotingContractInstance";
 import { isActiveRequest } from "./helpers";
@@ -32,15 +33,25 @@ const Vote = () => {
   // console.log("PR", priceRounds);
 
   // This data is determined after a user connects.
-  const [encryptedVotes] = useEncryptedVotesEvents(
+  const { data: encryptedVotes } = useEncryptedVotesEvents(
     votingContract,
     state.address
   );
-  const [priceResolved] = usePriceResolvedEvents(votingContract);
-  const [rewardsRetrieved] = useRewardsRetrievedEvents(votingContract, address);
-  const [votesCommitted] = useVotesCommittedEvents(votingContract, address);
-  const [votesRevealed] = useVotesRevealedEvents(votingContract, address);
+  const { data: priceResolved } = usePriceResolvedEvents(votingContract);
+  const { data: rewardsRetrieved } = useRewardsRetrievedEvents(
+    votingContract,
+    address
+  );
+  const { data: votesCommitted } = useVotesCommittedEvents(
+    votingContract,
+    address
+  );
+  const { data: votesRevealed } = useVotesRevealedEvents(
+    votingContract,
+    address
+  );
 
+  // useVoteData();
   useEffect(() => {
     setAddress(state.address);
   }, [state.address]);
@@ -67,7 +78,7 @@ const Vote = () => {
   return (
     <StyledVote>
       <ActiveRequests activeRequests={activeRequests} />
-      {/* <PastRequests
+      <PastRequests
         priceRounds={priceRounds}
         address={address}
         votesCommitted={votesCommitted}
@@ -75,7 +86,7 @@ const Vote = () => {
         votesRevealed={votesRevealed}
         rewardsRetrieved={rewardsRetrieved}
         priceResolved={priceResolved}
-      /> */}
+      />
     </StyledVote>
   );
 };

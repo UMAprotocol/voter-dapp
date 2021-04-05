@@ -9,8 +9,8 @@ export default function useVotesRevealedEvents(
   contract: ethers.Contract | null,
   address: string | null
 ) {
-  const { data } = useQuery<VoteRevealed[] | Error>(
-    "votesCommittedEvents",
+  const { data, error, isFetching } = useQuery<VoteRevealed[]>(
+    "votesRevealedEvents",
     () => {
       return queryVoteRevealed(contract, address).then((res) => {
         if (res) {
@@ -19,14 +19,13 @@ export default function useVotesRevealedEvents(
           return [];
         }
       });
-    }
+    },
+    { enabled: contract !== null ? true : false }
   );
 
-  if (data instanceof Error) return [] as VoteRevealed[];
-
   if (data) {
-    return [data];
+    return { data, error, isFetching };
   } else {
-    return [[] as VoteRevealed[]];
+    return { data: [] as VoteRevealed[], error, isFetching };
   }
 }

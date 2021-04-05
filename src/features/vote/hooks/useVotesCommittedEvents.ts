@@ -6,21 +6,23 @@ export default function useVotesCommittedEvents(
   contract: ethers.Contract | null,
   address: string | null
 ) {
-  const { data } = useQuery<VoteEvent[] | Error>("votesCommittedEvents", () => {
-    return queryVotesCommitted(contract, address).then((res) => {
-      if (res) {
-        return res;
-      } else {
-        return [];
-      }
-    });
-  });
-
-  if (data instanceof Error) return [] as VoteEvent[];
+  const { data, error, isFetching } = useQuery<VoteEvent[]>(
+    "votesCommittedEvents",
+    () => {
+      return queryVotesCommitted(contract, address).then((res) => {
+        if (res) {
+          return res;
+        } else {
+          return [];
+        }
+      });
+    },
+    { enabled: contract !== null ? true : false }
+  );
 
   if (data) {
-    return [data];
+    return { data, error, isFetching };
   } else {
-    return [[] as VoteEvent[]];
+    return { data: [] as VoteEvent[], error, isFetching };
   }
 }

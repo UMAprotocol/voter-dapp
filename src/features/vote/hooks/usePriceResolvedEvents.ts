@@ -8,25 +8,23 @@ import {
 export default function usePriceResolvedEvents(
   contract: ethers.Contract | null
 ) {
-  const { data } = useQuery<PriceResolved[] | Error>(
+  const { data, error, isFetching } = useQuery<PriceResolved[]>(
     "priceResolvedEvents",
     () => {
       return queryPriceResolved(contract).then((res) => {
-        if (res instanceof Error) return [];
         if (res) {
           return res;
         } else {
           return [];
         }
       });
-    }
+    },
+    { enabled: contract !== null ? true : false }
   );
 
-  if (data instanceof Error) return [] as PriceResolved[];
-
   if (data) {
-    return [data];
+    return { data, error, isFetching };
   } else {
-    return [[] as PriceResolved[]];
+    return { data: [] as PriceResolved[], error, isFetching };
   }
 }
