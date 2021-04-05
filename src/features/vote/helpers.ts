@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { PriceRound } from "web3/getVotingContractEvents";
+import { PriceRound } from "web3/queryVotingContractEvents";
 
 const ACTIVE_DAYS_CONSTANT = 2.5;
 

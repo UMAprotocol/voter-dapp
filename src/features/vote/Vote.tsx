@@ -6,10 +6,15 @@ import { ethers } from "ethers";
 // Components
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
-import usePriceRound from "./usePriceRound";
-import { PriceRound } from "web3/getVotingContractEvents";
-
-import useVoteContractEvents from "./useVoteContractEvents";
+import { PriceRound } from "web3/queryVotingContractEvents";
+import {
+  useEncryptedVotesEvents,
+  usePriceRoundEvents,
+  usePriceResolvedEvents,
+  useRewardsRetrievedEvents,
+  useVotesCommittedEvents,
+  useVotesRevealedEvents,
+} from "./hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "web3/createVotingContractInstance";
 import { isActiveRequest } from "./helpers";
@@ -23,16 +28,18 @@ const Vote = () => {
   const [address, setAddress] = useState<string | null>(null);
 
   // This is determined before a user connects.
-  const { priceRounds } = usePriceRound();
+  const { priceRounds } = usePriceRoundEvents();
+  // console.log("PR", priceRounds);
 
   // This data is determined after a user connects.
-  const {
-    votesCommitted,
-    encryptedVotes,
-    votesRevealed,
-    rewardsRetrieved,
-    priceResolved,
-  } = useVoteContractEvents(votingContract, address);
+  const [encryptedVotes] = useEncryptedVotesEvents(
+    votingContract,
+    state.address
+  );
+  const [priceResolved] = usePriceResolvedEvents(votingContract);
+  const [rewardsRetrieved] = useRewardsRetrievedEvents(votingContract, address);
+  const [votesCommitted] = useVotesCommittedEvents(votingContract, address);
+  const [votesRevealed] = useVotesRevealedEvents(votingContract, address);
 
   useEffect(() => {
     setAddress(state.address);
@@ -60,7 +67,7 @@ const Vote = () => {
   return (
     <StyledVote>
       <ActiveRequests activeRequests={activeRequests} />
-      <PastRequests
+      {/* <PastRequests
         priceRounds={priceRounds}
         address={address}
         votesCommitted={votesCommitted}
@@ -68,7 +75,7 @@ const Vote = () => {
         votesRevealed={votesRevealed}
         rewardsRetrieved={rewardsRetrieved}
         priceResolved={priceResolved}
-      />
+      /> */}
     </StyledVote>
   );
 };

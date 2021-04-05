@@ -1,56 +1,55 @@
-import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { MAINNET_DEPLOY_BLOCK } from "common/config";
 
-// This can be accessed without logging the user in.
-export default function useVoteContractData(
-  contract: ethers.Contract | null,
-  address: string | null
-) {
-  const [votesCommitted, setVotesCommitted] = useState<VoteEvent[]>([]);
-  const [encryptedVotes, setEncryptedVotes] = useState<VoteEvent[]>([]);
-  const [votesRevealed, setVotesRevealed] = useState<VoteRevealed[]>([]);
-  const [rewardsRetrieved, setRewardsRetrieved] = useState<RewardsRetrieved[]>(
-    []
+import stringToBytes32 from "common/utils/web3/stringToBytes32";
+
+export interface PriceRound {
+  roundId: string;
+  identifier: string;
+  time: string;
+}
+
+export const queryPriceRoundEvents = async (
+  contract: ethers.Contract,
+  roundId: number | null = null,
+  identifier: string | null = null,
+  time: number | null = null
+) => {
+  // Convert identifier from string to Bytes32.
+  let bytesIdentifier: Uint8Array | null = null;
+  if (identifier) {
+    bytesIdentifier = stringToBytes32(identifier);
+  }
+  // BIG NOTE. You need to pass in null for events with args.
+  // Otherwise this will likely return no values.
+  // PriceRequestAdded(uint256 indexed roundId, bytes32 indexed identifier, uint256 time)
+
+  const priceRequestFilter = contract.filters.PriceRequestAdded(
+    roundId,
+    bytesIdentifier,
+    time
   );
 
-  const [priceResolved, setPriceResolved] = useState<PriceResolved[]>([]);
+  try {
+    const events = await contract.queryFilter(
+      priceRequestFilter,
+      MAINNET_DEPLOY_BLOCK
+    );
 
-  useEffect(() => {
-    if (contract && address) {
-      queryVotesCommitted(contract, address).then((data) => {
-        if (data) setVotesCommitted(data);
-      });
-      queryEncryptedVotes(contract, address).then((data) => {
-        if (data) setEncryptedVotes(data);
-      });
-      queryVoteRevealed(contract, address).then((data) => {
-        if (data) setVotesRevealed(data);
-      });
-      queryRewardsRetrieved(contract, address).then((data) => {
-        if (data) setRewardsRetrieved(data);
-      });
-      queryPriceResolved(contract).then((data) => {
-        if (data) setPriceResolved(data);
-      });
-    } else {
-      // Reset values if they disconnect.
-      setVotesCommitted([]);
-      setEncryptedVotes([]);
-      setVotesRevealed([]);
-      setRewardsRetrieved([]);
-      setPriceResolved([]);
-    }
-  }, [contract, address]);
-
-  return {
-    votesCommitted,
-    encryptedVotes,
-    votesRevealed,
-    rewardsRetrieved,
-    priceResolved,
-  };
-}
+    return events.map((el) => {
+      const { args } = el;
+      const datum = {} as PriceRound;
+      if (args) {
+        datum.roundId = args[0].toString();
+        datum.identifier = ethers.utils.toUtf8String(args[1]);
+        datum.time = args[2].toString();
+      }
+      return datum;
+    });
+  } catch (err) {
+    console.log("err", err);
+  }
+};
 
 /*  event VoteCommitted(
   address indexed voter,
@@ -68,13 +67,18 @@ export interface VoteEvent {
   time: string;
 }
 
-const queryVotesCommitted = async (
-  contract: ethers.Contract,
+export const queryVotesCommitted = async (
+  contract: ethers.Contract | null,
   address: string | null = null,
   roundId: string | null = null,
   identifier: string | null = null,
   time: number | null = null
 ) => {
+  if (!contract)
+    return new Error(
+      "User is not connected to provider and cannot query contract."
+    );
+
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
   // VoteCommmited: (address,uint256,bytes32,uint256,bytes)
@@ -105,6 +109,7 @@ const queryVotesCommitted = async (
     console.log("err", err);
   }
 };
+
 /*
   event EncryptedVote(
     address indexed voter,
@@ -117,13 +122,18 @@ const queryVotesCommitted = async (
 
 */
 
-const queryEncryptedVotes = async (
-  contract: ethers.Contract,
+export const queryEncryptedVotes = async (
+  contract: ethers.Contract | null,
   address: string | null = null,
   roundId: string | null = null,
   identifier: string | null = null,
   time: number | null = null
 ) => {
+  if (!contract)
+    return new Error(
+      "User is not connected to provider and cannot query contract."
+    );
+
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
   // EncryptedVote: (address,uint256,bytes32,uint256,bytes,bytes)
@@ -173,8 +183,8 @@ export interface VoteRevealed extends VoteEvent {
   numTokens: string;
 }
 
-const queryVoteRevealed = async (
-  contract: ethers.Contract,
+export const queryVoteRevealed = async (
+  contract: ethers.Contract | null,
   address: string | null = null,
   roundId: string | null = null,
   identifier: string | null = null,
@@ -182,6 +192,11 @@ const queryVoteRevealed = async (
   price: number | null = null,
   numTokens: number | null = null
 ) => {
+  if (!contract)
+    return new Error(
+      "User is not connected to provider and cannot query contract."
+    );
+
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
   // VoteRevealed(address,uint256,bytes32,uint256,int256,bytes,uint256)
@@ -232,10 +247,15 @@ export interface RewardsRetrieved extends VoteEvent {
   numTokens: string;
 }
 
-const queryRewardsRetrieved = async (
-  contract: ethers.Contract,
-  address: string
+export const queryRewardsRetrieved = async (
+  contract: ethers.Contract | null,
+  address: string | null
 ) => {
+  if (!contract)
+    return new Error(
+      "User is not connected to provider and cannot query contract."
+    );
+
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
   // RewardsRetrieved(address,uint256,bytes32,uint256,bytes,uint256)
@@ -268,6 +288,7 @@ const queryRewardsRetrieved = async (
     console.log("err", err);
   }
 };
+
 /*
 event PriceResolved(
   uint256 indexed roundId,
@@ -285,7 +306,12 @@ export interface PriceResolved {
   price: string;
 }
 
-const queryPriceResolved = async (contract: ethers.Contract) => {
+export const queryPriceResolved = async (contract: ethers.Contract | null) => {
+  if (!contract)
+    return new Error(
+      "User is not connected to provider and cannot query contract."
+    );
+
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
   // PriceResolved(uint256,bytes32,uint256,int256,bytes)

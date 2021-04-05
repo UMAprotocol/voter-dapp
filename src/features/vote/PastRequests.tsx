@@ -2,7 +2,7 @@
 import { FC, useState, useEffect } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { DateTime } from "luxon";
-import { PriceRound } from "web3/getVotingContractEvents";
+import { PriceRound } from "web3/queryVotingContractEvents";
 
 import Button from "common/components/button";
 import {
@@ -10,7 +10,7 @@ import {
   RewardsRetrieved,
   PriceResolved,
   VoteRevealed,
-} from "./useVoteContractEvents";
+} from "web3/queryVotingContractEvents";
 
 import { isPastRequest } from "./helpers";
 
