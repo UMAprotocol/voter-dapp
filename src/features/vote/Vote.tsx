@@ -19,6 +19,7 @@ import {
 import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "web3/createVotingContractInstance";
 import { isActiveRequest } from "./helpers";
+import createDesignatedVotingContractInstance from "common/utils/web3/createDesignatedVotingContractInstance";
 
 const Vote = () => {
   const { state } = useContext(OnboardContext);
@@ -26,8 +27,8 @@ const Vote = () => {
     null
   );
   const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
-  const [address, setAddress] = useState<string | null>(null);
-
+  const [votingAddress, setVotingAddress] = useState<string | null>(null);
+  const [, setHotAddress] = useState<string | null>(null);
   // This is determined before a user connects.
   const { priceRounds } = usePriceRoundEvents();
   // console.log("PR", priceRounds);
@@ -35,26 +36,45 @@ const Vote = () => {
   // This data is determined after a user connects.
   const { data: encryptedVotes } = useEncryptedVotesEvents(
     votingContract,
-    state.address
+    votingAddress
   );
   const { data: priceResolved } = usePriceResolvedEvents(votingContract);
   const { data: rewardsRetrieved } = useRewardsRetrievedEvents(
     votingContract,
-    address
+    votingAddress
   );
   const { data: votesCommitted } = useVotesCommittedEvents(
     votingContract,
-    address
+    votingAddress
   );
   const { data: votesRevealed } = useVotesRevealedEvents(
     votingContract,
-    address
+    votingAddress
   );
 
   // useVoteData();
+  // Need to determine if user is using a two key contract.
   useEffect(() => {
-    setAddress(state.address);
-  }, [state.address]);
+    if (state.address && state.signer) {
+      const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+      const designatedContract = createDesignatedVotingContractInstance(
+        state.signer
+      );
+      designatedContract
+        .designatedVotingContracts(state.address)
+        .then((res: string) => {
+          if (res === NULL_ADDRESS) {
+            setVotingAddress(state.address);
+          } else {
+            console.log("address", res);
+            setVotingAddress(res);
+            setHotAddress(state.address);
+          }
+        });
+    }
+    setVotingAddress(state.address);
+  }, [state.address, state.signer]);
 
   useEffect(() => {
     // If connected, try to create contract with assigned signer.
@@ -80,7 +100,7 @@ const Vote = () => {
       <ActiveRequests activeRequests={activeRequests} />
       <PastRequests
         priceRounds={priceRounds}
-        address={address}
+        address={votingAddress}
         contract={votingContract}
         votesCommitted={votesCommitted}
         encryptedVotes={encryptedVotes}

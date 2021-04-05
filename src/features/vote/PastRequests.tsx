@@ -11,7 +11,6 @@ import {
   PriceResolved,
   VoteRevealed,
 } from "web3/queryVotingContractEvents";
-import { queryRetrieveRewards } from "web3/queryVotingContractMethods";
 
 import { isPastRequest } from "./helpers";
 
@@ -55,8 +54,10 @@ const PastRequests: FC<Props> = ({
   // Show basic price round data when user is not logged into Onboard
   useEffect(() => {
     if (priceRounds.length) {
-      console.log("contract>>>>", contract);
-      const filterRoundsByTime = priceRounds.filter(isPastRequest).reverse();
+      const filterRoundsByTime = priceRounds
+        .filter(isPastRequest)
+        .reverse()
+        .slice(0, 10);
       if (!address && filterRoundsByTime.length) {
         const pr = filterRoundsByTime.map((el) => {
           const datum = {} as PastRequest;
@@ -79,27 +80,28 @@ const PastRequests: FC<Props> = ({
           // Determine correct vote
           let correct = "N/A";
           const findPriceResolved = priceResolved.find(
-            (x) => x.identifier === el.identifier
+            (x) => x.identifier === el.identifier && el.roundId === x.roundId
           );
-          console.log("findPriceResolved", findPriceResolved);
           if (findPriceResolved) {
-            if (el.identifier.includes("Admin")) {
-              correct = Number(findPriceResolved.price) > 0 ? "YES" : "NO";
-            } else {
-              correct = findPriceResolved.price;
-            }
+            if (findPriceResolved.identifier === "USDETH")
+              if (el.identifier.includes("Admin")) {
+                correct = Number(findPriceResolved.price) > 0 ? "YES" : "NO";
+              } else {
+                correct = findPriceResolved.price;
+              }
           }
 
           let vote = "N/A";
           const findVote = votesRevealed.find(
-            (x) => x.identifier === el.identifier
+            (x) => x.identifier === el.identifier && el.roundId === x.roundId
           );
           // if the name of the proposal includes "Admin", it is a true/false vote.
           if (findVote) {
+            if (findVote.identifier === "USDETH") console.log(findVote);
             if (el.identifier.includes("Admin")) {
               vote = Number(findVote.price) > 0 ? "YES" : "NO";
             } else {
-              console.log("findVote Price", findVote.price);
+              // console.log("findVote Price", findVote.price);
               // vote = ethers.utils.formatEther(findVote.price);
               vote = findVote.price;
             }
@@ -111,17 +113,14 @@ const PastRequests: FC<Props> = ({
           const findReward = rewardsRetrieved.find(
             (x) => el.identifier === x.identifier && el.roundId === x.roundId
           );
-          if (contract) {
-            console.log(contract.functions);
-          }
 
           if (findReward) {
             reward = ethers.utils.formatEther(findReward.numTokens);
           } else {
-            console.log("Need to query blockchain meow.");
-            if (contract) {
-              queryRetrieveRewards(contract, address, el.roundId);
-            }
+            // console.log("Need to query blockchain meow.");
+            // if (contract) {
+            //   queryRetrieveRewards(contract, address, el.roundId);
+            // }
           }
 
           // Determine if the user has revealed a vote and has not retrieved their rewards yet.
