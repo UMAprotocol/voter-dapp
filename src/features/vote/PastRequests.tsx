@@ -11,6 +11,7 @@ import {
   PriceResolved,
   VoteRevealed,
 } from "web3/queryVotingContractEvents";
+import { PriceRequestRound } from "common/hooks/useVoteData";
 
 import { isPastRequest } from "./helpers";
 
@@ -24,7 +25,7 @@ interface PastRequest {
 }
 
 interface Props {
-  priceRounds: PriceRound[];
+  priceRounds: PriceRequestRound[];
   votesCommitted: VoteEvent[];
   encryptedVotes: VoteEvent[];
   votesRevealed: VoteRevealed[];
@@ -52,107 +53,107 @@ const PastRequests: FC<Props> = ({
 
   // Once priceRounds are pulled from contract, filter them into requests.
   // Show basic price round data when user is not logged into Onboard
-  useEffect(() => {
-    if (priceRounds.length) {
-      const filterRoundsByTime = priceRounds
-        .filter(isPastRequest)
-        .reverse()
-        .slice(0, 10);
-      if (!address && filterRoundsByTime.length) {
-        const pr = filterRoundsByTime.map((el) => {
-          const datum = {} as PastRequest;
-          datum.proposal = el.identifier;
-          datum.correct = "N/A";
-          datum.vote = "N/A";
-          datum.reward = "N/A";
-          datum.rewardCollected = true;
-          datum.timestamp = DateTime.fromSeconds(
-            Number(el.time)
-          ).toLocaleString();
-          return datum;
-        });
-        setPastRequests(pr);
-      }
+  // useEffect(() => {
+  //   if (priceRounds.length) {
+  //     const filterRoundsByTime = priceRounds
+  //       .filter(isPastRequest)
+  //       .reverse()
+  //       .slice(0, 10);
+  //     if (!address && filterRoundsByTime.length) {
+  //       const pr = filterRoundsByTime.map((el) => {
+  //         const datum = {} as PastRequest;
+  //         datum.proposal = el.identifier;
+  //         datum.correct = "N/A";
+  //         datum.vote = "N/A";
+  //         datum.reward = "N/A";
+  //         datum.rewardCollected = true;
+  //         datum.timestamp = DateTime.fromSeconds(
+  //           Number(el.time)
+  //         ).toLocaleString();
+  //         return datum;
+  //       });
+  //       setPastRequests(pr);
+  //     }
 
-      // When address is defined, user is logged in.
-      if (address && filterRoundsByTime.length) {
-        const pr = filterRoundsByTime.map((el) => {
-          // Determine correct vote
-          let correct = "N/A";
-          const findPriceResolved = priceResolved.find(
-            (x) => x.identifier === el.identifier && el.roundId === x.roundId
-          );
-          if (findPriceResolved) {
-            if (findPriceResolved.identifier === "USDETH")
-              if (el.identifier.includes("Admin")) {
-                correct = Number(findPriceResolved.price) > 0 ? "YES" : "NO";
-              } else {
-                correct = findPriceResolved.price;
-              }
-          }
+  //     // When address is defined, user is logged in.
+  //     if (address && filterRoundsByTime.length) {
+  //       const pr = filterRoundsByTime.map((el) => {
+  //         // Determine correct vote
+  //         let correct = "N/A";
+  //         const findPriceResolved = priceResolved.find(
+  //           (x) => x.identifier === el.identifier && el.roundId === x.roundId
+  //         );
+  //         if (findPriceResolved) {
+  //           if (findPriceResolved.identifier === "USDETH")
+  //             if (el.identifier.includes("Admin")) {
+  //               correct = Number(findPriceResolved.price) > 0 ? "YES" : "NO";
+  //             } else {
+  //               correct = findPriceResolved.price;
+  //             }
+  //         }
 
-          let vote = "N/A";
-          const findVote = votesRevealed.find(
-            (x) => x.identifier === el.identifier && el.roundId === x.roundId
-          );
-          // if the name of the proposal includes "Admin", it is a true/false vote.
-          if (findVote) {
-            if (findVote.identifier === "USDETH") console.log(findVote);
-            if (el.identifier.includes("Admin")) {
-              vote = Number(findVote.price) > 0 ? "YES" : "NO";
-            } else {
-              // console.log("findVote Price", findVote.price);
-              // vote = ethers.utils.formatEther(findVote.price);
-              vote = findVote.price;
-            }
-          }
+  //         let vote = "N/A";
+  //         const findVote = votesRevealed.find(
+  //           (x) => x.identifier === el.identifier && el.roundId === x.roundId
+  //         );
+  //         // if the name of the proposal includes "Admin", it is a true/false vote.
+  //         if (findVote) {
+  //           if (findVote.identifier === "USDETH") console.log(findVote);
+  //           if (el.identifier.includes("Admin")) {
+  //             vote = Number(findVote.price) > 0 ? "YES" : "NO";
+  //           } else {
+  //             // console.log("findVote Price", findVote.price);
+  //             // vote = ethers.utils.formatEther(findVote.price);
+  //             vote = findVote.price;
+  //           }
+  //         }
 
-          // Note: Rewards can be retrieved from the event after the user has
-          // taken it. If they haven't, you must do a getPrice call to the contract from Governor address.
-          let reward = "N/A";
-          const findReward = rewardsRetrieved.find(
-            (x) => el.identifier === x.identifier && el.roundId === x.roundId
-          );
+  //         // Note: Rewards can be retrieved from the event after the user has
+  //         // taken it. If they haven't, you must do a getPrice call to the contract from Governor address.
+  //         let reward = "N/A";
+  //         const findReward = rewardsRetrieved.find(
+  //           (x) => el.identifier === x.identifier && el.roundId === x.roundId
+  //         );
 
-          if (findReward) {
-            reward = ethers.utils.formatEther(findReward.numTokens);
-          } else {
-            // console.log("Need to query blockchain meow.");
-            // if (contract) {
-            //   queryRetrieveRewards(contract, address, el.roundId);
-            // }
-          }
+  //         if (findReward) {
+  //           reward = ethers.utils.formatEther(findReward.numTokens);
+  //         } else {
+  //           // console.log("Need to query blockchain meow.");
+  //           // if (contract) {
+  //           //   queryRetrieveRewards(contract, address, el.roundId);
+  //           // }
+  //         }
 
-          // Determine if the user has revealed a vote and has not retrieved their rewards yet.
-          let rewardCollected = true;
-          if (!findReward && findVote) {
-            rewardCollected = false;
-          }
+  //         // Determine if the user has revealed a vote and has not retrieved their rewards yet.
+  //         let rewardCollected = true;
+  //         if (!findReward && findVote) {
+  //           rewardCollected = false;
+  //         }
 
-          const datum = {} as PastRequest;
-          datum.proposal = el.identifier;
-          datum.correct = correct;
-          datum.vote = vote;
-          datum.reward = reward;
-          datum.rewardCollected = rewardCollected;
-          datum.timestamp = DateTime.fromSeconds(
-            Number(el.time)
-          ).toLocaleString({
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hourCycle: "h24",
-            timeZoneName: "short",
-          });
+  //         const datum = {} as PastRequest;
+  //         datum.proposal = el.identifier;
+  //         datum.correct = correct;
+  //         datum.vote = vote;
+  //         datum.reward = reward;
+  //         datum.rewardCollected = rewardCollected;
+  //         datum.timestamp = DateTime.fromSeconds(
+  //           Number(el.time)
+  //         ).toLocaleString({
+  //           month: "short",
+  //           day: "2-digit",
+  //           year: "numeric",
+  //           hour: "2-digit",
+  //           minute: "2-digit",
+  //           hourCycle: "h24",
+  //           timeZoneName: "short",
+  //         });
 
-          return datum;
-        });
-        setPastRequests(pr);
-      }
-    }
-  }, [priceRounds, address, setPastRequests, votesRevealed]);
+  //         return datum;
+  //       });
+  //       setPastRequests(pr);
+  //     }
+  //   }
+  // }, [priceRounds, address, setPastRequests, votesRevealed]);
 
   return (
     <StyledPastRequests>

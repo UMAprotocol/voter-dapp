@@ -15,7 +15,7 @@ import {
   useVotesCommittedEvents,
   useVotesRevealedEvents,
 } from "./hooks";
-// import useVoteData from "common/hooks/useVoteData";
+import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "web3/createVotingContractInstance";
 import { isActiveRequest } from "./helpers";
@@ -52,7 +52,8 @@ const Vote = () => {
     votingAddress
   );
 
-  // useVoteData();
+  const { data: priceRequestRounds, votingSummaryData } = useVoteData();
+  console.log("VD", priceRequestRounds, "VSD", votingSummaryData);
   // Need to determine if user is using a two key contract.
   useEffect(() => {
     if (state.address && state.signer) {
@@ -99,7 +100,7 @@ const Vote = () => {
     <StyledVote>
       <ActiveRequests activeRequests={activeRequests} />
       <PastRequests
-        priceRounds={priceRounds}
+        priceRounds={priceRequestRounds}
         address={votingAddress}
         contract={votingContract}
         votesCommitted={votesCommitted}

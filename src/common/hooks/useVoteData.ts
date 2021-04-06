@@ -51,8 +51,8 @@ const POLLING_INTERVAL = 60000;
 // Taken from previous voter-dapp, with heavy refactoring.
 function useVoteData() {
   const [
-    roundVoteData,
-    setRoundVoteData,
+    votingSummaryData,
+    setVotingSummaryData,
   ] = useState<FormattedPriceRequestRounds>({});
 
   // Because apollo caches results of queries, we will poll/refresh this query periodically.
@@ -72,13 +72,18 @@ function useVoteData() {
     }
 
     if (!loading && data) {
-      const newVoteData = formatPriceRequestVoteData(data.priceRequestRounds);
-      setRoundVoteData(newVoteData);
+      const newVoteSummaryData = formatPriceRequestVoteData(
+        data.priceRequestRounds
+      );
+      setVotingSummaryData(newVoteSummaryData);
     }
   }, [loading, error, data]);
 
   return {
-    roundVoteData,
+    votingSummaryData,
+    data: data?.priceRequestRounds
+      ? data.priceRequestRounds
+      : ([] as PriceRequestRound[]),
   };
 }
 
