@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
-import { PriceRound } from "./useVotingEvents";
+import { PriceRound } from "web3/queryVotingContractEvents";
 import { UnlockedIcon } from "assets/icons";
 
 interface Props {
@@ -76,7 +76,7 @@ const StyledActiveRequestsForm = styled.table`
         max-width: 500px;
       }
     }
-    td:first-child {
+    td:first-of-type {
       /* div {
 
       }

@@ -51,15 +51,15 @@ const POLLING_INTERVAL = 60000;
 // Taken from previous voter-dapp, with heavy refactoring.
 function useVoteData() {
   const [
-    roundVoteData,
-    setRoundVoteData,
+    votingSummaryData,
+    setVotingSummaryData,
   ] = useState<FormattedPriceRequestRounds>({});
 
   // Because apollo caches results of queries, we will poll/refresh this query periodically.
   // We set the poll interval to a very slow 60 seconds for now since the vote states
   // are not expected to change much.
   // Source: https://www.apollographql.com/docs/react/data/queries/#polling
-  const { loading, error, data } = useQuery<{
+  const { loading, error, data, refetch } = useQuery<{
     priceRequestRounds: PriceRequestRound[];
   }>(PRICE_REQUEST_VOTING_DATA, {
     pollInterval: POLLING_INTERVAL,
@@ -72,13 +72,19 @@ function useVoteData() {
     }
 
     if (!loading && data) {
-      const newVoteData = formatPriceRequestVoteData(data.priceRequestRounds);
-      setRoundVoteData(newVoteData);
+      const newVoteSummaryData = formatPriceRequestVoteData(
+        data.priceRequestRounds
+      );
+      setVotingSummaryData(newVoteSummaryData);
     }
   }, [loading, error, data]);
 
   return {
-    roundVoteData,
+    votingSummaryData,
+    data: data?.priceRequestRounds
+      ? data.priceRequestRounds
+      : ([] as PriceRequestRound[]),
+    refetch,
   };
 }
 

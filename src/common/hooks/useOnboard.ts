@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { ConnectionContext, actions } from "common/context/ConnectionContext";
+import { OnboardContext, actions } from "common/context/OnboardContext";
 import { ethers } from "ethers";
 import { Wallet } from "bnc-onboard/dist/src/interfaces";
 import { SUPPORTED_NETWORK_IDS } from "common/config";
 
-export default function useConnection() {
+export default function useOnboard() {
   const [initOnboard, setInitOnboard] = useState(false);
-  const context = useContext(ConnectionContext);
+  const context = useContext(OnboardContext);
   if (!Object.keys(context).length) {
     throw new Error(`UseConnection must be used within a Connection Provider.`);
   }

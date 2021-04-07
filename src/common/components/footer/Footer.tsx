@@ -101,7 +101,7 @@ const socialLinks = [
 
 const StyledFooter = styled.div`
   max-width: 1280px;
-  margin: auto;
+  margin: 3rem auto 0;
   font-family: "Halyard Display";
   min-height: 20vh;
   .logo-wrapper {

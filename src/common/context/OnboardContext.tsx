@@ -1,7 +1,7 @@
 import { createContext, useReducer, Dispatch, FC } from "react";
 import { ethers } from "ethers";
 import { API as OnboardApi } from "bnc-onboard/dist/src/interfaces";
-import createOnboardInstance from "common/utils/createOnboardInstance";
+import createOnboardInstance from "common/utils/web3/createOnboardInstance";
 import { Subscriptions } from "bnc-onboard/dist/src/interfaces";
 
 type Provider = ethers.providers.Web3Provider;
@@ -9,7 +9,7 @@ type Address = string;
 type Network = ethers.providers.Network;
 type Signer = ethers.Signer;
 
-type ConnectionState = {
+type OnboardState = {
   provider: Provider | null;
   onboard: OnboardApi | null;
   signer: Signer | null;
@@ -70,12 +70,12 @@ type Action =
     }
   | { type: typeof RESET_STATE };
 
-export type ConnectionDispatch = Dispatch<Action>;
+export type OnboardDispatch = Dispatch<Action>;
 
 type WithDelegatedProps = {
   [k: string]: unknown;
 };
-function connectionReducer(state: ConnectionState, action: Action) {
+function connectionReducer(state: OnboardState, action: Action) {
   switch (action.type) {
     case SET_PROVIDER: {
       return {
@@ -139,7 +139,7 @@ const INITIAL_STATE = {
 };
 
 const connect = async (
-  dispatch: ConnectionDispatch,
+  dispatch: OnboardDispatch,
   network: Network | null,
   subscriptions: Subscriptions
 ) => {
@@ -156,10 +156,7 @@ const connect = async (
   }
 };
 
-const disconnect = (
-  dispatch: ConnectionDispatch,
-  onboard: OnboardApi | null
-) => {
+const disconnect = (dispatch: OnboardDispatch, onboard: OnboardApi | null) => {
   onboard?.walletReset();
   dispatch({ type: actions.RESET_STATE });
 };
@@ -167,33 +164,33 @@ const disconnect = (
 export type Connect = typeof connect;
 export type Disconnect = typeof disconnect;
 
-export interface TConnectionContext {
-  state: ConnectionState;
-  dispatch: ConnectionDispatch;
+export interface TOnboardContext {
+  state: OnboardState;
+  dispatch: OnboardDispatch;
   connect: typeof connect;
   disconnect: typeof disconnect;
 }
 
-export const ConnectionContext = createContext<TConnectionContext>(
-  {} as TConnectionContext
+export const OnboardContext = createContext<TOnboardContext>(
+  {} as TOnboardContext
 );
 
-ConnectionContext.displayName = "ConnectionContext";
+OnboardContext.displayName = "OnboardContext";
 
-export const ConnectionProvider: FC<WithDelegatedProps> = ({
+const OnboardProvider: FC<WithDelegatedProps> = ({
   children,
   ...delegated
 }) => {
   const [state, dispatch] = useReducer(connectionReducer, INITIAL_STATE);
 
   return (
-    <ConnectionContext.Provider
+    <OnboardContext.Provider
       value={{ state, dispatch, connect, disconnect }}
       {...delegated}
     >
       {children}
-    </ConnectionContext.Provider>
+    </OnboardContext.Provider>
   );
 };
 
-export default ConnectionProvider;
+export default OnboardProvider;

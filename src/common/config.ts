@@ -5,6 +5,13 @@ export const infuraId = process.env.REACT_APP_PUBLIC_INFURA_ID || "";
 export const SUPPORTED_NETWORK_IDS = [1, 42] as const;
 export const MAINNET_DEPLOY_BLOCK = 11876839;
 
+export const COIN_GECKO_UMA_TICKER_DATA = {
+  id: "uma",
+  symbol: "uma",
+  name: "UMA",
+  url: "https://api.coingecko.com/api/v3/coins/uma",
+};
+
 export default function config(network: Network | null) {
   const infuraRpc = `https://${
     network ? network?.name : "mainnet"

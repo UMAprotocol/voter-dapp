@@ -2,82 +2,87 @@
 import { useState, useEffect, useContext } from "react";
 import tw, { styled } from "twin.macro";
 import { ethers } from "ethers";
-import { DateTime } from "luxon";
 
 // Components
-import Wallet from "./Wallet";
 import ActiveRequests from "./ActiveRequests";
-import useVotingEvents, { PriceRound } from "./useVotingEvents";
-import { ConnectionContext } from "common/context/ConnectionContext";
-import createVotingContractInstance from "common/utils/web3/createVotingContractInstance";
+import PastRequests from "./PastRequests";
+import { PriceRound } from "web3/queryVotingContractEvents";
+import { usePriceRoundEvents } from "./hooks";
+import useVoteData from "common/hooks/useVoteData";
+import { OnboardContext } from "common/context/OnboardContext";
+import createVotingContractInstance from "web3/createVotingContractInstance";
+import { isActiveRequest } from "./helpers";
+import createDesignatedVotingContractInstance from "common/utils/web3/createDesignatedVotingContractInstance";
 
 const Vote = () => {
-  const context = useContext(ConnectionContext);
+  const { state } = useContext(OnboardContext);
   const [votingContract, setVotingContract] = useState<ethers.Contract | null>(
     null
   );
   const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
-  const [, setPastRequests] = useState<PriceRound[]>([]);
-  const { priceRounds } = useVotingEvents(votingContract);
+  const [votingAddress, setVotingAddress] = useState<string | null>(null);
+  const [, setHotAddress] = useState<string | null>(null);
+  // This is determined before a user connects.
+  const { data: priceRoundsEvents } = usePriceRoundEvents();
+
+  const { data: priceRequestRounds } = useVoteData();
+
+  // Need to determine if user is using a two key contract.
+  useEffect(() => {
+    if (state.address && state.signer) {
+      const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+      const designatedContract = createDesignatedVotingContractInstance(
+        state.signer
+      );
+      designatedContract
+        .designatedVotingContracts(state.address)
+        .then((res: string) => {
+          if (res === NULL_ADDRESS) {
+            setVotingAddress(state.address);
+          } else {
+            setVotingAddress(res);
+            setHotAddress(state.address);
+          }
+        });
+    }
+    setVotingAddress(state.address);
+  }, [state.address, state.signer]);
 
   useEffect(() => {
     // If connected, try to create contract with assigned signer.
-    if (context.state.isConnected) {
+    if (state.isConnected) {
       // Signer can be null check for null and if we've already defined a contract.
-      if (context.state.signer && !votingContract) {
-        const contract = createVotingContractInstance(context.state.signer);
+      if (state.signer && !votingContract) {
+        const contract = createVotingContractInstance(state.signer);
         setVotingContract(contract);
       }
     }
-  }, [context.state.isConnected, context.state.signer, votingContract]);
+  }, [state.isConnected, state.signer, state.address, votingContract]);
 
   // Once priceRounds are pulled from contract, filter them into requests.
   useEffect(() => {
-    if (priceRounds.length) {
-      const ar = priceRounds.filter(isActiveRequest);
-      const pr = priceRounds.filter(isPastRequest);
+    if (priceRoundsEvents.length) {
+      const ar = priceRoundsEvents.filter(isActiveRequest);
       setActiveRequests(ar);
-      setPastRequests(pr);
     }
-  }, [priceRounds]);
+  }, [priceRoundsEvents]);
 
   return (
     <StyledVote>
-      <Wallet />
       <ActiveRequests activeRequests={activeRequests} />
+      <PastRequests
+        priceRounds={priceRequestRounds}
+        address={votingAddress}
+        contract={votingContract}
+      />
     </StyledVote>
   );
 };
 
-function isActiveRequest(round: PriceRound) {
-  const currentTime = DateTime.local();
-  const roundTime = DateTime.fromSeconds(Number(round.time));
-  const diff = currentTime.diff(roundTime, ["days"]).toObject();
-  const { days } = diff;
-  if (days) {
-    return days > 0 && days <= ACTIVE_DAYS_CONSTANT ? true : false;
-  } else {
-    return false;
-  }
-}
-
-const ACTIVE_DAYS_CONSTANT = 2.5;
-
-function isPastRequest(round: PriceRound) {
-  const currentTime = DateTime.local();
-  const roundTime = DateTime.fromSeconds(Number(round.time));
-  const diff = currentTime.diff(roundTime, ["days"]).toObject();
-  const { days } = diff;
-  if (days) {
-    return days > 0 && days > ACTIVE_DAYS_CONSTANT ? true : false;
-  } else {
-    return false;
-  }
-}
-
 const StyledVote = styled.div`
   background-color: #f5f5f5;
-  ${tw`max-w-full pt-5 mt-5`};
+  ${tw`max-w-full pt-5 pb-1`};
   font-family: "Halyard Display";
 `;
 

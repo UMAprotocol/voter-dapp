@@ -19,6 +19,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@uma/core": "^2.1.0",
+    "axios": "^0.21.1",
     "babel-plugin-macros": "^3.0.1",
     "bnc-onboard": "^1.20.0",
     "ethers": "^5.0.32",
@@ -27,6 +28,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hook-form": "^6.15.5",
+    "react-query": "^3.13.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "tailwindcss": "^2.0.4",
@@ -38,6 +40,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "yarn test --coverage --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

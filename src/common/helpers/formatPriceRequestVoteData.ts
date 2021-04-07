@@ -1,7 +1,7 @@
 import { BigNumber, utils } from "ethers";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import formatRequestKey from "./formatRequestKey";
-import toWei from "common/utils/convertToWeiSafely";
+import toWei from "common/utils/web3/convertToWeiSafely";
 import { DateTime } from "luxon";
 
 export interface FormattedPriceRequestRounds {
