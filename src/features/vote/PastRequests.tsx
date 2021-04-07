@@ -200,6 +200,7 @@ const StyledPastRequests = styled.div`
       padding: 2rem;
       font-size: 1.5rem;
       margin-left: 2rem;
+      font-weight: 600;
     }
   }
 `;

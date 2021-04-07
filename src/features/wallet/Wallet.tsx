@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { FC, useState, useEffect } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
+import { ethers } from "ethers";
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Button from "common/components/button";
@@ -21,7 +22,7 @@ interface Props {
 
 const Wallet: FC<Props> = () => {
   const [umaBalance, setUmaBalance] = useState("0");
-  const [totalUmaCollected] = useState("0");
+  const [totalUmaCollected, setTotalUmaCollected] = useState("0");
   const [availableRewards] = useState("0");
   const { data: umaPrice } = useUmaPriceData();
   const { isOpen, open, close, modalRef } = useModal();
@@ -51,9 +52,15 @@ const Wallet: FC<Props> = () => {
     }
   }, [signer, votingAddress]);
 
+  // Iterate over reward events to determine total UMA collected from voting.
   useEffect(() => {
     if (rewardsEvents.length) {
-      console.log("RE", rewardsEvents);
+      let totalRewards = ethers.BigNumber.from("0");
+      rewardsEvents.forEach(({ numTokens }) => {
+        totalRewards = totalRewards.add(ethers.BigNumber.from(numTokens));
+      });
+
+      setTotalUmaCollected(ethers.utils.formatEther(totalRewards.toString()));
     }
   }, [rewardsEvents]);
 
@@ -117,7 +124,16 @@ const Wallet: FC<Props> = () => {
               <span>{formatWalletBalance(totalUmaCollected)[0]}</span>
               <span>{formatWalletBalance(totalUmaCollected)[1]}</span>
             </div>
-            <p className="value-dollars">$00.00 USD</p>
+            <p className="value-dollars">
+              ${" "}
+              {totalUmaCollected && umaPrice
+                ? calculateUMATotalValue(
+                    umaPrice.market_data.current_price.usd,
+                    totalUmaCollected
+                  )
+                : "$00.00"}{" "}
+              USD
+            </p>
           </div>
           <div tw="my-5 mx-3 pl-5 flex-grow">
             <p className="sm-title">Available Rewards</p>
@@ -275,7 +291,13 @@ function formatWalletBalance(balance: string): string[] {
 
 function calculateUMATotalValue(price: number, balance: string) {
   const bal = Number(balance);
-  return (price * bal).toFixed(2).toLocaleString();
+  return (
+    (price * bal)
+      .toFixed(2)
+      // Add commas
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      .toLocaleString()
+  );
 }
 
 export default Wallet;
