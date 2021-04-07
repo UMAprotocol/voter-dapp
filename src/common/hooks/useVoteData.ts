@@ -59,7 +59,7 @@ function useVoteData() {
   // We set the poll interval to a very slow 60 seconds for now since the vote states
   // are not expected to change much.
   // Source: https://www.apollographql.com/docs/react/data/queries/#polling
-  const { loading, error, data } = useQuery<{
+  const { loading, error, data, refetch } = useQuery<{
     priceRequestRounds: PriceRequestRound[];
   }>(PRICE_REQUEST_VOTING_DATA, {
     pollInterval: POLLING_INTERVAL,
@@ -84,6 +84,7 @@ function useVoteData() {
     data: data?.priceRequestRounds
       ? data.priceRequestRounds
       : ([] as PriceRequestRound[]),
+    refetch,
   };
 }
 

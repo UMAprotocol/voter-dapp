@@ -2,7 +2,6 @@
 import { FC, useState, useEffect } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { DateTime } from "luxon";
-import { PriceRound } from "web3/queryVotingContractEvents";
 import { ethers } from "ethers";
 import Button from "common/components/button";
 import {
@@ -13,7 +12,7 @@ import {
 } from "web3/queryVotingContractEvents";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 
-import { isPastRequest } from "./helpers";
+import { queryRetrieveRewards } from "web3/queryVotingContractMethods";
 
 interface PastRequest {
   proposal: string;
@@ -46,115 +45,25 @@ const PastRequests: FC<Props> = ({
   contract,
 }) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
-  const [filteredPastRequests, setFilteredPastRequests] = useState<
-    PriceRound[]
-  >([]);
   const [showAll, setShowAll] = useState(false);
 
-  // Once priceRounds are pulled from contract, filter them into requests.
-  // Show basic price round data when user is not logged into Onboard
-  // useEffect(() => {
-  //   if (priceRounds.length) {
-  //     const filterRoundsByTime = priceRounds
-  //       .filter(isPastRequest)
-  //       .reverse()
-  //       .slice(0, 10);
-  //     if (!address && filterRoundsByTime.length) {
-  //       const pr = filterRoundsByTime.map((el) => {
-  //         const datum = {} as PastRequest;
-  //         datum.proposal = el.identifier;
-  //         datum.correct = "N/A";
-  //         datum.vote = "N/A";
-  //         datum.reward = "N/A";
-  //         datum.rewardCollected = true;
-  //         datum.timestamp = DateTime.fromSeconds(
-  //           Number(el.time)
-  //         ).toLocaleString();
-  //         return datum;
-  //       });
-  //       setPastRequests(pr);
-  //     }
+  useEffect(() => {
+    // Handle past requests differently depending on if user is logged in or not.
+    if (priceRounds.length) {
+      if (address && contract) {
+        const pr = formatPastRequestsByAddress(priceRounds, address, contract);
+        Promise.all(pr).then((res) => {
+          setPastRequests(!showAll ? res.slice(0, 10) : res);
+        });
+      } else {
+        const pr = formatPastRequestsNoAddress(priceRounds);
 
-  //     // When address is defined, user is logged in.
-  //     if (address && filterRoundsByTime.length) {
-  //       const pr = filterRoundsByTime.map((el) => {
-  //         // Determine correct vote
-  //         let correct = "N/A";
-  //         const findPriceResolved = priceResolved.find(
-  //           (x) => x.identifier === el.identifier && el.roundId === x.roundId
-  //         );
-  //         if (findPriceResolved) {
-  //           if (findPriceResolved.identifier === "USDETH")
-  //             if (el.identifier.includes("Admin")) {
-  //               correct = Number(findPriceResolved.price) > 0 ? "YES" : "NO";
-  //             } else {
-  //               correct = findPriceResolved.price;
-  //             }
-  //         }
+        setPastRequests(!showAll ? pr.slice(0, 10) : pr);
+      }
+    }
+  }, [priceRounds, address, contract, showAll]);
 
-  //         let vote = "N/A";
-  //         const findVote = votesRevealed.find(
-  //           (x) => x.identifier === el.identifier && el.roundId === x.roundId
-  //         );
-  //         // if the name of the proposal includes "Admin", it is a true/false vote.
-  //         if (findVote) {
-  //           if (findVote.identifier === "USDETH") console.log(findVote);
-  //           if (el.identifier.includes("Admin")) {
-  //             vote = Number(findVote.price) > 0 ? "YES" : "NO";
-  //           } else {
-  //             // console.log("findVote Price", findVote.price);
-  //             // vote = ethers.utils.formatEther(findVote.price);
-  //             vote = findVote.price;
-  //           }
-  //         }
-
-  //         // Note: Rewards can be retrieved from the event after the user has
-  //         // taken it. If they haven't, you must do a getPrice call to the contract from Governor address.
-  //         let reward = "N/A";
-  //         const findReward = rewardsRetrieved.find(
-  //           (x) => el.identifier === x.identifier && el.roundId === x.roundId
-  //         );
-
-  //         if (findReward) {
-  //           reward = ethers.utils.formatEther(findReward.numTokens);
-  //         } else {
-  //           // console.log("Need to query blockchain meow.");
-  //           // if (contract) {
-  //           //   queryRetrieveRewards(contract, address, el.roundId);
-  //           // }
-  //         }
-
-  //         // Determine if the user has revealed a vote and has not retrieved their rewards yet.
-  //         let rewardCollected = true;
-  //         if (!findReward && findVote) {
-  //           rewardCollected = false;
-  //         }
-
-  //         const datum = {} as PastRequest;
-  //         datum.proposal = el.identifier;
-  //         datum.correct = correct;
-  //         datum.vote = vote;
-  //         datum.reward = reward;
-  //         datum.rewardCollected = rewardCollected;
-  //         datum.timestamp = DateTime.fromSeconds(
-  //           Number(el.time)
-  //         ).toLocaleString({
-  //           month: "short",
-  //           day: "2-digit",
-  //           year: "numeric",
-  //           hour: "2-digit",
-  //           minute: "2-digit",
-  //           hourCycle: "h24",
-  //           timeZoneName: "short",
-  //         });
-
-  //         return datum;
-  //       });
-  //       setPastRequests(pr);
-  //     }
-  //   }
-  // }, [priceRounds, address, setPastRequests, votesRevealed]);
-
+  console.log(pastRequests[0]);
   return (
     <StyledPastRequests>
       <div className="header-row" tw="flex items-stretch p-10">
@@ -195,9 +104,21 @@ const PastRequests: FC<Props> = ({
                 {el.vote === el.correct && el.vote !== "N/A" ? (
                   <td>
                     <div>
-                      <Button disabled={el.rewardCollected} variant="primary">
-                        {!el.rewardCollected && el.vote === el.correct
+                      <Button
+                        variant={
+                          !el.rewardCollected &&
+                          el.vote === el.correct &&
+                          el.reward !== "0"
+                            ? "primary"
+                            : "disabled"
+                        }
+                      >
+                        {!el.rewardCollected &&
+                        el.vote === el.correct &&
+                        el.reward !== "0"
                           ? "Collect Reward"
+                          : el.reward === "0"
+                          ? "Expired"
                           : "Collected"}
                       </Button>
                     </div>
@@ -222,6 +143,118 @@ const PastRequests: FC<Props> = ({
     </StyledPastRequests>
   );
 };
+
+// Sorts and sets some default values for when the user isn't logged in.
+function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
+  const sortedByTime = data.slice().sort((a, b) => {
+    if (Number(b.time) > Number(a.time)) return 1;
+    if (Number(b.time) < Number(a.time)) return -1;
+    return 0;
+  });
+
+  const formattedData = sortedByTime.map((el) => {
+    const datum = {} as PastRequest;
+    datum.proposal = el.identifier.id;
+    datum.correct = "N/A";
+    datum.vote = "N/A";
+    datum.reward = "N/A";
+    datum.rewardCollected = true;
+    datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h24",
+      timeZoneName: "short",
+    });
+    return datum;
+  });
+
+  return formattedData;
+}
+
+//
+function formatPastRequestsByAddress(
+  data: PriceRequestRound[],
+  address: string,
+  contract: ethers.Contract | null
+) {
+  const sortedByTime = data.slice().sort((a, b) => {
+    if (Number(b.time) > Number(a.time)) return 1;
+    if (Number(b.time) < Number(a.time)) return -1;
+    return 0;
+  });
+  const formattedData = sortedByTime.map(async (el, index) => {
+    // Determine correct vote
+    let correct = ethers.utils.formatEther(el.request.price);
+    if (el.identifier.id.includes("Admin")) {
+      correct = Number(correct) > 0 ? "YES" : "NO";
+    }
+
+    let vote = "N/A";
+    const findVote = el.revealedVotes.find(
+      (x) => x.voter.address.toLowerCase() === address.toLowerCase()
+    );
+    // if the name of the proposal includes "Admin", it is a true/false vote.
+    if (findVote) {
+      if (el.identifier.id.includes("Admin")) {
+        vote = Number(findVote.price) > 0 ? "YES" : "NO";
+      } else {
+        // console.log("findVote Price", findVote.price);
+        // vote = ethers.utils.formatEther(findVote.price);
+        vote = ethers.utils.formatEther(findVote.price);
+      }
+    }
+
+    // Note: Rewards can be retrieved from the event after the user has
+    // taken it. If they haven't, you must do a getPrice call to the contract from Governor address.
+    let reward = "N/A";
+    const findReward = el.rewardsClaimed.find(
+      (x) => x.claimer.address.toLowerCase() === address.toLowerCase()
+    );
+
+    if (findReward) {
+      reward = ethers.utils.formatEther(findReward.numTokens);
+    } else {
+      if (contract && findVote) {
+        const checkIfRewardAvailable = await queryRetrieveRewards(
+          contract,
+          address,
+          el.roundId,
+          el.identifier.id,
+          el.time
+        );
+        if (checkIfRewardAvailable) reward = checkIfRewardAvailable;
+      }
+    }
+
+    // Determine if the user has revealed a vote and has not retrieved their rewards yet.
+    let rewardCollected = true;
+    if (!findReward && findVote) {
+      rewardCollected = false;
+    }
+
+    const datum = {} as PastRequest;
+    datum.proposal = el.identifier.id;
+    datum.correct = correct;
+    datum.vote = vote;
+    datum.reward = reward;
+    datum.rewardCollected = rewardCollected;
+    datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h24",
+      timeZoneName: "short",
+    });
+
+    return datum;
+  });
+  return formattedData;
+}
 
 const StyledPastRequests = styled.div`
   font-family: "Halyard Display";

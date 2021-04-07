@@ -31,7 +31,6 @@ const Vote = () => {
   const [, setHotAddress] = useState<string | null>(null);
   // This is determined before a user connects.
   const { priceRounds } = usePriceRoundEvents();
-  // console.log("PR", priceRounds);
 
   // This data is determined after a user connects.
   const { data: encryptedVotes } = useEncryptedVotesEvents(
@@ -52,8 +51,8 @@ const Vote = () => {
     votingAddress
   );
 
-  const { data: priceRequestRounds, votingSummaryData } = useVoteData();
-  console.log("VD", priceRequestRounds, "VSD", votingSummaryData);
+  const { data: priceRequestRounds } = useVoteData();
+
   // Need to determine if user is using a two key contract.
   useEffect(() => {
     if (state.address && state.signer) {
@@ -95,6 +94,8 @@ const Vote = () => {
       setActiveRequests(ar);
     }
   }, [priceRounds]);
+
+  console.log("VC", votingContract);
 
   return (
     <StyledVote>

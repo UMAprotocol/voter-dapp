@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import tw, { styled } from "twin.macro";
 
-type Variant = "primary" | "secondary";
+type Variant = "primary" | "secondary" | "disabled";
 
 type Props = {
   variant?: Variant;
@@ -13,12 +13,20 @@ const Button = styled.button<Props>`
   > svg {
     margin-left: 10px;
   }
-  ${({ variant }) => (variant === "primary" ? tw`text-white` : tw`text-black`)};
 
-  ${({ variant }) =>
+  color: ${({ variant }) =>
     variant === "primary"
-      ? `background-color: #FF4A4A`
-      : `background-color: #ffffff`};
+      ? "#FF4A4A"
+      : variant === "secondary"
+      ? "#ffffff"
+      : "#040504"};
+
+  background-color: ${({ variant }) =>
+    variant === "primary"
+      ? "#ffffff"
+      : variant === "secondary"
+      ? "#FF4A4A"
+      : "#F1F0F0"};
 `;
 
 Button.defaultProps = {

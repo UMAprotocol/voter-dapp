@@ -59,7 +59,7 @@ const Wallet: FC<Props> = () => {
                 onClick={() => {
                   if (!initOnboard) setInitOnboard(true);
                 }}
-                variant="primary"
+                variant="secondary"
               >
                 Connect Wallet
               </Button>
@@ -69,7 +69,7 @@ const Wallet: FC<Props> = () => {
                 onClick={() => {
                   disconnect();
                 }}
-                variant="primary"
+                variant="secondary"
               >
                 Disconnect
               </Button>
@@ -104,8 +104,8 @@ const Wallet: FC<Props> = () => {
           <div tw="my-5 mx-3 pl-5 flex-grow">
             <p className="sm-title">Available Rewards</p>
             <div className="value-tokens">
-              <span>{availableRewards[0]}</span>
-              <span>{availableRewards[1]}</span>
+              <span>{formatWalletBalance(availableRewards)[0]}</span>
+              <span>{formatWalletBalance(availableRewards)[1]}</span>
             </div>
             <p className="value-dollars">$00.00 USD</p>
           </div>
