@@ -4,7 +4,7 @@ import createDesignatedVotingContractInstance from "common/utils/web3/createDesi
 
 // Need to determine if user is using a two key contract.
 // Return their hot wallet address and cold wallet address.
-export default function useEthAddress(
+export default function useVotingAddress(
   address: string | null,
   signer: ethers.Signer | null
 ) {

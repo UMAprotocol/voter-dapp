@@ -8,7 +8,7 @@ import useOnboard from "common/hooks/useOnboard";
 import { Settings } from "assets/icons";
 import getUmaBalance from "common/utils/web3/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
-import useVotingAddress from "hooks/useVotingAddress";
+import { useVotingAddress } from "hooks";
 
 interface Props {
   // connect: Connect;
