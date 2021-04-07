@@ -23,7 +23,7 @@ const Vote = () => {
   const [votingAddress, setVotingAddress] = useState<string | null>(null);
   const [, setHotAddress] = useState<string | null>(null);
   // This is determined before a user connects.
-  const { priceRounds } = usePriceRoundEvents();
+  const { data: priceRoundsEvents } = usePriceRoundEvents();
 
   const { data: priceRequestRounds } = useVoteData();
 
@@ -62,11 +62,11 @@ const Vote = () => {
 
   // Once priceRounds are pulled from contract, filter them into requests.
   useEffect(() => {
-    if (priceRounds.length) {
-      const ar = priceRounds.filter(isActiveRequest);
+    if (priceRoundsEvents.length) {
+      const ar = priceRoundsEvents.filter(isActiveRequest);
       setActiveRequests(ar);
     }
-  }, [priceRounds]);
+  }, [priceRoundsEvents]);
 
   return (
     <StyledVote>

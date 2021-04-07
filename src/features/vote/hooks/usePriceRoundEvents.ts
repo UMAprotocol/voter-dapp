@@ -26,8 +26,8 @@ export default function usePriceRoundEvents() {
   );
 
   if (data) {
-    return { priceRounds: data, error, isFetching };
+    return { data, error, isFetching };
   } else {
-    return { priceRounds: [] as PriceRound[], error, isFetching };
+    return { data: [] as PriceRound[], error, isFetching };
   }
 }
