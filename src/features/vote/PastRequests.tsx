@@ -63,7 +63,6 @@ const PastRequests: FC<Props> = ({
     }
   }, [priceRounds, address, contract, showAll]);
 
-  console.log(pastRequests[0]);
   return (
     <StyledPastRequests>
       <div className="header-row" tw="flex items-stretch p-10">
@@ -201,8 +200,6 @@ function formatPastRequestsByAddress(
       if (el.identifier.id.includes("Admin")) {
         vote = Number(findVote.price) > 0 ? "YES" : "NO";
       } else {
-        // console.log("findVote Price", findVote.price);
-        // vote = ethers.utils.formatEther(findVote.price);
         vote = ethers.utils.formatEther(findVote.price);
       }
     }

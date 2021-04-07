@@ -67,7 +67,6 @@ const Vote = () => {
           if (res === NULL_ADDRESS) {
             setVotingAddress(state.address);
           } else {
-            console.log("address", res);
             setVotingAddress(res);
             setHotAddress(state.address);
           }
@@ -94,8 +93,6 @@ const Vote = () => {
       setActiveRequests(ar);
     }
   }, [priceRounds]);
-
-  console.log("VC", votingContract);
 
   return (
     <StyledVote>
