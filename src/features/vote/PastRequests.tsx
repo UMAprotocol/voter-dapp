@@ -272,9 +272,6 @@ const StyledPastRequests = styled.div`
 
     tbody {
       td {
-        /* &:last-child div {
-          padding-bottom: 2rem;
-        } */
         div {
           display: flex;
           align-items: center;
@@ -286,12 +283,6 @@ const StyledPastRequests = styled.div`
         .description {
           max-width: 500px;
         }
-      }
-      td:first-of-type {
-        /* div {
-
-      }
-      max-width: 150px; */
       }
 
       td:last-child {
