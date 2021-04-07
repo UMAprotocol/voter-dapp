@@ -62,54 +62,58 @@ const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
           </tr>
         </thead>
         <tbody>
-          {pastRequests.map((el, index) => {
-            return (
-              <tr key={index}>
-                <td>
-                  <div className="identifier">{el.proposal}</div>
-                </td>
-                <td>
-                  <div>{el.correct}</div>
-                </td>
-                <td>
-                  <div>{el.vote}</div>
-                </td>
-                <td>
-                  <div>{el.reward}</div>
-                </td>
-                <td>
-                  <div>{el.timestamp}</div>
-                </td>
-                {el.vote === el.correct && el.vote !== "N/A" ? (
+          {pastRequests.length ? (
+            pastRequests.map((el, index) => {
+              return (
+                <tr key={index}>
                   <td>
-                    <div>
-                      <Button
-                        variant={
-                          !el.rewardCollected &&
+                    <div className="identifier">{el.proposal}</div>
+                  </td>
+                  <td>
+                    <div>{el.correct}</div>
+                  </td>
+                  <td>
+                    <div>{el.vote}</div>
+                  </td>
+                  <td>
+                    <div>{el.reward}</div>
+                  </td>
+                  <td>
+                    <div>{el.timestamp}</div>
+                  </td>
+                  {el.vote === el.correct && el.vote !== "N/A" ? (
+                    <td>
+                      <div>
+                        <Button
+                          variant={
+                            !el.rewardCollected &&
+                            el.vote === el.correct &&
+                            el.reward !== "0"
+                              ? "primary"
+                              : "disabled"
+                          }
+                        >
+                          {!el.rewardCollected &&
                           el.vote === el.correct &&
                           el.reward !== "0"
-                            ? "primary"
-                            : "disabled"
-                        }
-                      >
-                        {!el.rewardCollected &&
-                        el.vote === el.correct &&
-                        el.reward !== "0"
-                          ? "Collect Reward"
-                          : el.reward === "0"
-                          ? "Expired"
-                          : "Collected"}
-                      </Button>
-                    </div>
-                  </td>
-                ) : (
-                  <td>
-                    <div />
-                  </td>
-                )}
-              </tr>
-            );
-          })}
+                            ? "Collect Reward"
+                            : el.reward === "0"
+                            ? "Expired"
+                            : "Collected"}
+                        </Button>
+                      </div>
+                    </td>
+                  ) : (
+                    <td>
+                      <div />
+                    </td>
+                  )}
+                </tr>
+              );
+            })
+          ) : (
+            <div>Loading...</div>
+          )}
         </tbody>
       </table>
       {pastRequests.length && !showAll ? (
