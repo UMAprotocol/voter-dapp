@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, useContext } from "react";
 import tw, { styled } from "twin.macro";
-import { ethers } from "ethers";
 
 // Components
 import ActiveRequests from "./ActiveRequests";
@@ -10,15 +9,11 @@ import { PriceRound } from "web3/queryVotingContractEvents";
 import { usePriceRoundEvents } from "hooks";
 import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
-import createVotingContractInstance from "web3/createVotingContractInstance";
-import { useVotingAddress } from "hooks";
+import { useVotingAddress, useVotingContract } from "hooks";
 import { isActiveRequest } from "./helpers";
 
 const Vote = () => {
   const { state } = useContext(OnboardContext);
-  const [votingContract, setVotingContract] = useState<ethers.Contract | null>(
-    null
-  );
   const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
 
   // This is determined before a user connects.
@@ -27,16 +22,7 @@ const Vote = () => {
   const { data: priceRequestRounds } = useVoteData();
   const { votingAddress } = useVotingAddress(state.address, state.signer);
 
-  useEffect(() => {
-    // If connected, try to create contract with assigned signer.
-    if (state.isConnected) {
-      // Signer can be null check for null and if we've already defined a contract.
-      if (state.signer && !votingContract) {
-        const contract = createVotingContractInstance(state.signer);
-        setVotingContract(contract);
-      }
-    }
-  }, [state.isConnected, state.signer, state.address, votingContract]);
+  const { votingContract } = useVotingContract(state.signer, state.isConnected);
 
   // Once priceRounds are pulled from contract, filter them into requests.
   useEffect(() => {

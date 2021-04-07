@@ -5,3 +5,4 @@ export { default as useRewardsRetrievedEvents } from "./useRewardsRetrievedEvent
 export { default as useVotesCommittedEvents } from "./useVotesCommittedEvents";
 export { default as useVotesRevealedEvents } from "./useVotesRevealedEvents";
 export { default as useVotingAddress } from "./useVotingAddress";
+export { default as useVotingContract } from "./useVotingContract";

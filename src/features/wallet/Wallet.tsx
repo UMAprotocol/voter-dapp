@@ -8,7 +8,7 @@ import useOnboard from "common/hooks/useOnboard";
 import { Settings } from "assets/icons";
 import getUmaBalance from "common/utils/web3/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
-import { useVotingAddress } from "hooks";
+import { useVotingAddress, useRewardsRetrievedEvents } from "hooks";
 
 interface Props {
   // connect: Connect;
@@ -32,6 +32,7 @@ const Wallet: FC<Props> = () => {
   } = useOnboard();
 
   const { votingAddress } = useVotingAddress(address, signer);
+  // const {data: rewardsEvents } = useRewardsRetrievedEvents(votingAddress, )
 
   useEffect(() => {
     // When Address changes in MM, balance will change, as the address in context is changing from Onboard.
