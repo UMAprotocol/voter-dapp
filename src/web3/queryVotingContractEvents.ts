@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { MAINNET_DEPLOY_BLOCK } from "common/config";
+import assert from "assert";
 
 import stringToBytes32 from "common/utils/web3/stringToBytes32";
 
@@ -74,10 +75,10 @@ export const queryVotesCommitted = async (
   identifier: string | null = null,
   time: number | null = null
 ) => {
-  if (!contract)
-    throw new Error(
-      "User is not connected to provider and cannot query contract."
-    );
+  assert(
+    contract,
+    "User is not connected to provider and cannot query contract."
+  );
 
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
@@ -128,10 +129,10 @@ export const queryEncryptedVotes = async (
   identifier: string | null = null,
   time: number | null = null
 ) => {
-  if (!contract)
-    throw new Error(
-      "User is not connected to provider and cannot query contract."
-    );
+  assert(
+    contract,
+    "User is not connected to provider and cannot query contract."
+  );
 
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
@@ -191,10 +192,10 @@ export const queryVoteRevealed = async (
   price: number | null = null,
   numTokens: number | null = null
 ) => {
-  if (!contract)
-    throw new Error(
-      "User is not connected to provider and cannot query contract."
-    );
+  assert(
+    contract,
+    "User is not connected to provider and cannot query contract."
+  );
 
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
@@ -250,10 +251,10 @@ export const queryRewardsRetrieved = async (
   contract: ethers.Contract | null,
   address: string | null
 ) => {
-  if (!contract)
-    throw new Error(
-      "User is not connected to provider and cannot query contract."
-    );
+  assert(
+    contract,
+    "User is not connected to provider and cannot query contract."
+  );
 
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
@@ -306,10 +307,10 @@ export interface PriceResolved {
 }
 
 export const queryPriceResolved = async (contract: ethers.Contract | null) => {
-  if (!contract)
-    throw new Error(
-      "User is not connected to provider and cannot query contract."
-    );
+  assert(
+    contract,
+    "User is not connected to provider and cannot query contract."
+  );
 
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
