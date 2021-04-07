@@ -1,4 +1,17 @@
-# Getting Started with Create React App
+# UMA Voter dApp
+
+## Get Started
+
+Yarn was used for package management. Install yarn and run
+
+`yarn`
+
+To install packages.
+
+You will also need to add a .env file and define:
+REACT_APP_PUBLIC_INFURA_ID
+REACT_APP_PUBLIC_ONBOARD_API_KEY
+REACT_APP_PUBLIC_PORTIS_API_KEY
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
