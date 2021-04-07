@@ -135,7 +135,7 @@ const PastRequests: FC<Props> = ({
       </table>
       {pastRequests.length ? (
         <div className="bottom-row">
-          <Button variant="primary" onClick={() => setShowAll(true)}>
+          <Button variant="secondary" onClick={() => setShowAll(true)}>
             View All
           </Button>
         </div>
