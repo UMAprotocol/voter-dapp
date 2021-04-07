@@ -8,10 +8,39 @@ Yarn was used for package management. Install yarn and run
 
 To install packages.
 
-You will also need to add a .env file and define:
-REACT_APP_PUBLIC_INFURA_ID
-REACT_APP_PUBLIC_ONBOARD_API_KEY
+You will also need to add a .env file and define:\
+REACT_APP_PUBLIC_INFURA_ID \
+REACT_APP_PUBLIC_ONBOARD_API_KEY \
 REACT_APP_PUBLIC_PORTIS_API_KEY
+
+## Testing Voter dApp locally
+
+In order to test the app with Ganache, you must clone [UMA Protocal Core](https://github.com/UMAprotocol/protocol)
+
+In a separate terminal, go into the packages/core directory and run:
+
+`yarn build`
+
+You may also need to migrate.
+
+`npx truffle migrate`
+
+In this app, run:
+
+`yarn link`
+
+This will link the built contracts and they will be referencable.
+
+You will then need to run this script in another window [Run Voting Tests](https://github.com/UMAprotocol/protocol/blob/master/packages/voter-dapp/run_tests.sh)\
+This will walk you through the testing process.
+
+Once run_tests.sh is running, make sure to run ganache-cli in another terminal with the following command:
+
+`ganache-cli -p 9545 -e 10000000000 -l 9000000 -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --chainId 1337`
+
+This will run a local ganache server.
+
+To actually integrate and do blockchain calls to ganache, add the network in your MM network tab.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
