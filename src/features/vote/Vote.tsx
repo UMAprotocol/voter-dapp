@@ -11,8 +11,8 @@ import { usePriceRoundEvents } from "./hooks";
 import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "web3/createVotingContractInstance";
+import useVotingAddress from "hooks/useVotingAddress";
 import { isActiveRequest } from "./helpers";
-import createDesignatedVotingContractInstance from "common/utils/web3/createDesignatedVotingContractInstance";
 
 const Vote = () => {
   const { state } = useContext(OnboardContext);
@@ -20,34 +20,12 @@ const Vote = () => {
     null
   );
   const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
-  const [votingAddress, setVotingAddress] = useState<string | null>(null);
-  const [, setHotAddress] = useState<string | null>(null);
+
   // This is determined before a user connects.
   const { data: priceRoundsEvents } = usePriceRoundEvents();
 
   const { data: priceRequestRounds } = useVoteData();
-
-  // Need to determine if user is using a two key contract.
-  useEffect(() => {
-    if (state.address && state.signer) {
-      const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
-
-      const designatedContract = createDesignatedVotingContractInstance(
-        state.signer
-      );
-      designatedContract
-        .designatedVotingContracts(state.address)
-        .then((res: string) => {
-          if (res === NULL_ADDRESS) {
-            setVotingAddress(state.address);
-          } else {
-            setVotingAddress(res);
-            setHotAddress(state.address);
-          }
-        });
-    }
-    setVotingAddress(state.address);
-  }, [state.address, state.signer]);
+  const { votingAddress } = useVotingAddress(state.address, state.signer);
 
   useEffect(() => {
     // If connected, try to create contract with assigned signer.
