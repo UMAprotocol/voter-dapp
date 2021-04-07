@@ -51,20 +51,20 @@ const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
           <p className="big-title title">Past Requests</p>
         </div>
       </div>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Proposal</th>
-            <th>Correct Vote</th>
-            <th>Your Vote</th>
-            <th>Earned Rewards</th>
-            <th>Timestamp</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {pastRequests.length ? (
-            pastRequests.map((el, index) => {
+      {pastRequests.length ? (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Proposal</th>
+              <th>Correct Vote</th>
+              <th>Your Vote</th>
+              <th>Earned Rewards</th>
+              <th>Timestamp</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {pastRequests.map((el, index) => {
               return (
                 <tr key={index}>
                   <td>
@@ -111,12 +111,13 @@ const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
                   )}
                 </tr>
               );
-            })
-          ) : (
-            <div>Loading...</div>
-          )}
-        </tbody>
-      </table>
+            })}
+          </tbody>
+        </table>
+      ) : (
+        <div className="loading">Loading...</div>
+      )}
+
       {pastRequests.length && !showAll ? (
         <div className="bottom-row">
           <Button variant="secondary" onClick={() => setShowAll(true)}>
@@ -194,6 +195,11 @@ const StyledPastRequests = styled.div`
       button {
         width: 150px;
       }
+    }
+    .loading {
+      padding: 2rem;
+      font-size: 1.5rem;
+      margin-left: 2rem;
     }
   }
 `;
