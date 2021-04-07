@@ -4,12 +4,6 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { DateTime } from "luxon";
 import { ethers } from "ethers";
 import Button from "common/components/button";
-import {
-  VoteEvent,
-  RewardsRetrieved,
-  PriceResolved,
-  VoteRevealed,
-} from "web3/queryVotingContractEvents";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 
 import { queryRetrieveRewards } from "web3/queryVotingContractMethods";
@@ -25,25 +19,11 @@ interface PastRequest {
 
 interface Props {
   priceRounds: PriceRequestRound[];
-  votesCommitted: VoteEvent[];
-  encryptedVotes: VoteEvent[];
-  votesRevealed: VoteRevealed[];
-  rewardsRetrieved: RewardsRetrieved[];
-  priceResolved: PriceResolved[];
   address: string | null;
   contract: ethers.Contract | null;
 }
 
-const PastRequests: FC<Props> = ({
-  priceRounds,
-  // votesCommitted,
-  // encryptedVotes,
-  votesRevealed,
-  rewardsRetrieved,
-  priceResolved,
-  address,
-  contract,
-}) => {
+const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [showAll, setShowAll] = useState(false);
 
@@ -132,7 +112,7 @@ const PastRequests: FC<Props> = ({
           })}
         </tbody>
       </table>
-      {pastRequests.length ? (
+      {pastRequests.length && !showAll ? (
         <div className="bottom-row">
           <Button variant="secondary" onClick={() => setShowAll(true)}>
             View All

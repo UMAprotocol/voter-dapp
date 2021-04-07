@@ -7,14 +7,7 @@ import { ethers } from "ethers";
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
 import { PriceRound } from "web3/queryVotingContractEvents";
-import {
-  useEncryptedVotesEvents,
-  usePriceRoundEvents,
-  usePriceResolvedEvents,
-  useRewardsRetrievedEvents,
-  useVotesCommittedEvents,
-  useVotesRevealedEvents,
-} from "./hooks";
+import { usePriceRoundEvents } from "./hooks";
 import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
 import createVotingContractInstance from "web3/createVotingContractInstance";
@@ -31,25 +24,6 @@ const Vote = () => {
   const [, setHotAddress] = useState<string | null>(null);
   // This is determined before a user connects.
   const { priceRounds } = usePriceRoundEvents();
-
-  // This data is determined after a user connects.
-  const { data: encryptedVotes } = useEncryptedVotesEvents(
-    votingContract,
-    votingAddress
-  );
-  const { data: priceResolved } = usePriceResolvedEvents(votingContract);
-  const { data: rewardsRetrieved } = useRewardsRetrievedEvents(
-    votingContract,
-    votingAddress
-  );
-  const { data: votesCommitted } = useVotesCommittedEvents(
-    votingContract,
-    votingAddress
-  );
-  const { data: votesRevealed } = useVotesRevealedEvents(
-    votingContract,
-    votingAddress
-  );
 
   const { data: priceRequestRounds } = useVoteData();
 
@@ -101,11 +75,6 @@ const Vote = () => {
         priceRounds={priceRequestRounds}
         address={votingAddress}
         contract={votingContract}
-        votesCommitted={votesCommitted}
-        encryptedVotes={encryptedVotes}
-        votesRevealed={votesRevealed}
-        rewardsRetrieved={rewardsRetrieved}
-        priceResolved={priceResolved}
       />
     </StyledVote>
   );
