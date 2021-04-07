@@ -16,7 +16,6 @@ export default function usePriceRoundEvents() {
     "priceRoundEvents",
     () => {
       return queryPriceRoundEvents(contract).then((res) => {
-        if (res instanceof Error) return [];
         if (res) {
           return res;
         } else {

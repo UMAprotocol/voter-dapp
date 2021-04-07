@@ -17,7 +17,7 @@ export default function useVotesCommittedEvents(
         }
       });
     },
-    { enabled: contract !== null ? true : false }
+    { enabled: contract !== null }
   );
 
   if (data) {

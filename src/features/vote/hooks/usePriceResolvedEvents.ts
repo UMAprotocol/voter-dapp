@@ -19,7 +19,7 @@ export default function usePriceResolvedEvents(
         }
       });
     },
-    { enabled: contract !== null ? true : false }
+    { enabled: contract !== null }
   );
 
   if (data) {

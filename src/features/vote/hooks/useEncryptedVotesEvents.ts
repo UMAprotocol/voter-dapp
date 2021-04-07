@@ -17,7 +17,7 @@ export default function useEncryptedVotesEvents(
         }
       });
     },
-    { enabled: contract !== null ? true : false }
+    { enabled: contract !== null }
   );
 
   if (data) {
