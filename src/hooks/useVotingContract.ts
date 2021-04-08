@@ -23,7 +23,7 @@ export default function useVotingContract(
         setVotingContract(contract);
       }
     }
-  }, [isConnected, signer, votingContract]);
+  }, [isConnected, signer, votingContract, network]);
 
   return { votingContract };
 }

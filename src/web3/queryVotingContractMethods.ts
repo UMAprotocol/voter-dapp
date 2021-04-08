@@ -20,3 +20,37 @@ export const queryRetrieveRewards = async (
     console.log("err", err);
   }
 };
+
+export interface PendingRequest {
+  time: string;
+  identifier: string;
+  ancillaryData: string;
+}
+
+export const queryGetPendingRequests = async (contract: ethers.Contract) => {
+  try {
+    const requests: Array<
+      Array<[string, ethers.BigNumber, string]>
+    > = await contract.functions.getPendingRequests();
+
+    if (requests.length) {
+      const values = [] as PendingRequest[];
+      requests.forEach((el, index) => {
+        if (el.length) {
+          el.forEach((x) => {
+            const datum = {} as PendingRequest;
+            datum.identifier = ethers.utils.toUtf8String(x[0]);
+            datum.time = x[1].toString();
+            datum.ancillaryData = ethers.utils.toUtf8String(x[2]);
+            values.push(datum);
+          });
+        }
+      });
+      return values;
+    } else {
+      return [] as PendingRequest[];
+    }
+  } catch (err) {
+    console.log("err", err);
+  }
+};

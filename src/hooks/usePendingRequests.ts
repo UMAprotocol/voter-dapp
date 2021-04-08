@@ -3,22 +3,21 @@ import createVotingContractInstance from "web3/createVotingContractInstance";
 import { useQuery } from "react-query";
 
 import {
-  queryPriceRoundEvents,
-  PriceRound,
-} from "web3/queryVotingContractEvents";
+  queryGetPendingRequests,
+  PendingRequest,
+} from "web3/queryVotingContractMethods";
 
 const signer = provider.getSigner();
 const contract = createVotingContractInstance(
   signer,
   process.env.REACT_APP_TESTING_GANACHE ? "1337" : "1"
 );
-
 // This can be accessed without logging the user in.
-export default function usePriceRoundEvents() {
-  const { data, error, isFetching } = useQuery<PriceRound[]>(
-    "priceRoundEvents",
+export default function usePendingRequests() {
+  const { data, error, isFetching } = useQuery<PendingRequest[]>(
+    "pendingRequests",
     () => {
-      return queryPriceRoundEvents(contract).then((res) => {
+      return queryGetPendingRequests(contract).then((res) => {
         if (res) {
           return res;
         } else {
@@ -31,6 +30,6 @@ export default function usePriceRoundEvents() {
   if (data) {
     return { data, error, isFetching };
   } else {
-    return { data: [] as PriceRound[], error, isFetching };
+    return { data: [] as PendingRequest[], error, isFetching };
   }
 }

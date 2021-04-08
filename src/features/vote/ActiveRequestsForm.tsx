@@ -13,7 +13,8 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
     <StyledActiveRequestsForm className="table">
       <thead>
         <tr>
-          <th>Proposal</th>
+          <th>Requested Vote</th>
+          <th>Proposal Detail</th>
           <th>Description</th>
           <th>Your Vote</th>
           <th>Vote Status</th>
@@ -26,6 +27,7 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
               <td>
                 <div className="identifier">{el.identifier}</div>
               </td>
+              <td>Detail Stub</td>
               <td>
                 <div className="description">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.

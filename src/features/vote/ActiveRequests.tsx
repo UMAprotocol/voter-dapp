@@ -4,11 +4,13 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 import timerSVG from "assets/icons/timer.svg";
 import { PriceRound } from "web3/queryVotingContractEvents";
 import ActiveRequestsForm from "./ActiveRequestsForm";
+import { usePendingRequests } from "hooks";
 
 interface Props {
   activeRequests: PriceRound[];
 }
 const ActiveRequests: FC<Props> = ({ activeRequests }) => {
+  usePendingRequests();
   return (
     <StyledActiveRequests className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">

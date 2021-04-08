@@ -1,6 +1,6 @@
 import VotingArtifact from "@uma/core/build/contracts/Voting.json";
 import { ethers } from "ethers";
-
+console.log("VotingArt", VotingArtifact);
 interface Network {
   [key: string]: {
     address: string;

@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import ERC20TestnetArtifact from "@uma/core/build/contracts/TestnetERC20.json";
 const UMA_MAINNET_CONTRACT_ADDRESS =
   "0x04fa0d235c4abf4bcf4787af4cf447de572ef828";
+const MAINNET_NETWORK_ID = "1";
 
 // Limited ERC-20 ABI
 const abi = [
@@ -25,7 +26,7 @@ export default function createERC20ContractInstance(
   networkId: string
 ) {
   // Apparently the mainnet address doesn't live on the same artifact
-  if (networkId !== "1") {
+  if (networkId !== MAINNET_NETWORK_ID) {
     const artifact: Network = ERC20TestnetArtifact.networks;
     const network = artifact[networkId];
     return new ethers.Contract(network.address, abi, signer);
