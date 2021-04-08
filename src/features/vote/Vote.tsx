@@ -14,7 +14,7 @@ import { isActiveRequest } from "./helpers";
 
 const Vote = () => {
   const { state } = useContext(OnboardContext);
-  const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
+  // const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
 
   // This is determined before a user connects.
   const { data: priceRoundsEvents } = usePriceRoundEvents();
@@ -32,17 +32,19 @@ const Vote = () => {
     state.network
   );
 
-  // Once priceRounds are pulled from contract, filter them into requests.
-  useEffect(() => {
-    if (priceRoundsEvents.length) {
-      const ar = priceRoundsEvents.filter(isActiveRequest);
-      setActiveRequests(ar);
-    }
-  }, [priceRoundsEvents]);
+  // // Once priceRounds are pulled from contract, filter them into requests.
+  // useEffect(() => {
+  //   if (priceRoundsEvents.length) {
+  //     const ar = priceRoundsEvents.filter(isActiveRequest);
+  //     setActiveRequests(ar);
+  //   }
+  // }, [priceRoundsEvents]);
 
   return (
     <StyledVote>
-      <ActiveRequests activeRequests={activeRequests} />
+      <ActiveRequests
+      // activeRequests={activeRequests}
+      />
       <PastRequests
         priceRounds={priceRequestRounds}
         address={votingAddress}

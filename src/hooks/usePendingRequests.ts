@@ -14,7 +14,7 @@ const contract = createVotingContractInstance(
 );
 // This can be accessed without logging the user in.
 export default function usePendingRequests() {
-  const { data, error, isFetching } = useQuery<PendingRequest[]>(
+  const { data, error, isFetching, refetch } = useQuery<PendingRequest[]>(
     "pendingRequests",
     () => {
       return queryGetPendingRequests(contract).then((res) => {
@@ -28,7 +28,7 @@ export default function usePendingRequests() {
   );
 
   if (data) {
-    return { data, error, isFetching };
+    return { data, error, isFetching, refetch };
   } else {
     return { data: [] as PendingRequest[], error, isFetching };
   }

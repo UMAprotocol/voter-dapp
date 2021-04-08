@@ -27,6 +27,8 @@ export interface PendingRequest {
   ancillaryData: string;
 }
 
+const NULL_ANC_DATA = "0x";
+
 export const queryGetPendingRequests = async (contract: ethers.Contract) => {
   try {
     const requests: Array<
@@ -41,7 +43,8 @@ export const queryGetPendingRequests = async (contract: ethers.Contract) => {
             const datum = {} as PendingRequest;
             datum.identifier = ethers.utils.toUtf8String(x[0]);
             datum.time = x[1].toString();
-            datum.ancillaryData = ethers.utils.toUtf8String(x[2]);
+            datum.ancillaryData =
+              x[2] !== NULL_ANC_DATA ? ethers.utils.toUtf8String(x[2]) : "-";
             values.push(datum);
           });
         }

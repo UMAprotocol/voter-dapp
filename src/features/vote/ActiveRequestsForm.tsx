@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
-import { PriceRound } from "web3/queryVotingContractEvents";
 import { UnlockedIcon } from "assets/icons";
+import { PendingRequest } from "web3/queryVotingContractMethods";
 
 interface Props {
-  activeRequests: PriceRound[];
+  activeRequests: PendingRequest[];
 }
 
 const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
@@ -27,7 +27,7 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
               <td>
                 <div className="identifier">{el.identifier}</div>
               </td>
-              <td>Detail Stub</td>
+              <td>{el.ancillaryData}</td>
               <td>
                 <div className="description">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.

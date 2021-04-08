@@ -7,10 +7,10 @@ import ActiveRequestsForm from "./ActiveRequestsForm";
 import { usePendingRequests } from "hooks";
 
 interface Props {
-  activeRequests: PriceRound[];
+  // activeRequests: PriceRound[];
 }
-const ActiveRequests: FC<Props> = ({ activeRequests }) => {
-  usePendingRequests();
+const ActiveRequests: FC<Props> = () => {
+  const { data: activeRequests } = usePendingRequests();
   return (
     <StyledActiveRequests className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">
