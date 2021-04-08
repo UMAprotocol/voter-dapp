@@ -3,7 +3,7 @@ import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { UnlockedIcon } from "assets/icons";
 import { PendingRequest } from "web3/queryVotingContractMethods";
-
+import TextInput from "common/components/text-input";
 interface Props {
   activeRequests: PendingRequest[];
 }
@@ -36,7 +36,13 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
                   consequat neque.
                 </div>
               </td>
-              <td>INPUT STUB</td>
+              <td>
+                {el.identifier.includes("Admin") ? (
+                  <div>Select stub</div>
+                ) : (
+                  <TextInput variant="currency" placeholder="0.000" />
+                )}
+              </td>
               <td>
                 <div>
                   <UnlockedIcon />

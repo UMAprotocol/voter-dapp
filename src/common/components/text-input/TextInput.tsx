@@ -1,25 +1,40 @@
 /** @jsxImportSource @emotion/react */
-import { useState, useEffect, FC } from "react";
-import tw, { styled } from "twin.macro";
+import { useState, FC } from "react";
+import tw, { styled } from "twin.macro"; // eslint-disable-line
 
 interface Props {
-  variant: "text" | "search";
-  label: string;
+  variant?: "text" | "search" | "currency";
+  label?: string;
+  placeholder?: string;
 }
-const TextInput: FC<Props> = ({ label }) => {
+const TextInput: FC<Props> = ({ label, placeholder, variant }) => {
   const [value, setValue] = useState("");
 
   return (
     <StyledInput>
       <label>{label}</label>
-      <input value={value} onChange={(e) => setValue(e.target.value)} />
+      <input
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      {variant === "currency" ? <span className="dollar-sign">$</span> : null}
     </StyledInput>
   );
 };
 
 const StyledInput = styled.div`
-  min-height: 25px;
-  width: 150px;
+  input {
+    min-height: 25px;
+    min-width: 150px;
+    width: 100%;
+    background-color: #f4f5f4;
+    padding: 1rem 1.5rem;
+  }
+  .dollar-sign {
+    position: absolute;
+    padding-left: 12px;
+  }
 `;
 
 export default TextInput;

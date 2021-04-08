@@ -1,23 +1,23 @@
 /** @jsxImportSource @emotion/react */
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import tw, { styled } from "twin.macro";
 
 // Components
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
-import { PriceRound } from "web3/queryVotingContractEvents";
-import { usePriceRoundEvents } from "hooks";
+// import { PriceRound } from "web3/queryVotingContractEvents";
+// import { usePriceRoundEvents } from "hooks";
 import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
 import { useVotingAddress, useVotingContract } from "hooks";
-import { isActiveRequest } from "./helpers";
+// import { isActiveRequest } from "./helpers";
 
 const Vote = () => {
   const { state } = useContext(OnboardContext);
   // const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
 
   // This is determined before a user connects.
-  const { data: priceRoundsEvents } = usePriceRoundEvents();
+  // const { data: priceRoundsEvents } = usePriceRoundEvents();
 
   const { data: priceRequestRounds } = useVoteData();
   const { votingAddress } = useVotingAddress(
