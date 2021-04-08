@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { FC, useState, useEffect, useCallback } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useController } from "react-hook-form";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { UnlockedIcon } from "assets/icons";
 import { PendingRequest } from "web3/queryVotingContractMethods";
@@ -9,6 +9,7 @@ import TextInput from "common/components/text-input";
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import usePrevious from "common/hooks/usePrevious";
+import Select from "common/components/select";
 interface Props {
   activeRequests: PendingRequest[];
 }
@@ -33,7 +34,7 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
     return dv;
   }, [activeRequests]);
 
-  const { handleSubmit, control, watch } = useForm<FormData>({
+  const { register, handleSubmit, control, watch } = useForm<FormData>({
     defaultValues: generateDefaultValues(),
   });
 
@@ -64,26 +65,6 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
       return [];
     }
   }, [watchAllFields]);
-  // useEffect(() => {
-  //   const anyFields = Object.values(watchAllFields).filter((x) => x);
-  //   console.log(anyFields);
-  //   if (anyFields.length && summary !== previousSummary) {
-  //     console.log("any fields", anyFields);
-  //     const showSummary = [] as Summary[];
-  //     const identifiers = Object.keys(watchAllFields);
-  //     const values = Object.values(watchAllFields);
-  //     for (let i = 0; i < identifiers.length; i++) {
-  //       if (values[i] !== undefined) {
-  //         const val = {
-  //           identifier: identifiers[i],
-  //           value: values[i],
-  //         };
-  //         showSummary.push(val);
-  //       }
-  //     }
-  //     setSummary(showSummary);
-  //   }
-  // }, [watchAllFields, summary]);
 
   return (
     <StyledActiveRequestsForm onSubmit={handleSubmit(onSubmit)}>
@@ -115,7 +96,19 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
                 </td>
                 <td>
                   {el.identifier.includes("Admin") ? (
-                    <div>Select stub</div>
+                    <div>
+                      <Select control={control} name={`${el.identifier}`} />
+
+                      {/* <select
+                        {...register(`${el.identifier}`)}
+                        name={`${el.identifier}`}
+                        control={control}
+                      >
+                        <option value="">--</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select> */}
+                    </div>
                   ) : (
                     <TextInput
                       label="Input your vote."
