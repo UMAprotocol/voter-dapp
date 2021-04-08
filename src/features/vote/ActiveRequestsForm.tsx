@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { FC } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { FC, useState, useEffect, useCallback } from "react";
+import { useForm } from "react-hook-form";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { UnlockedIcon } from "assets/icons";
 import { PendingRequest } from "web3/queryVotingContractMethods";
@@ -8,7 +8,7 @@ import Button from "common/components/button";
 import TextInput from "common/components/text-input";
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
-
+import usePrevious from "common/hooks/usePrevious";
 interface Props {
   activeRequests: PendingRequest[];
 }
@@ -17,12 +17,74 @@ type FormData = {
   [key: string]: string;
 };
 
+interface Summary {
+  identifier: string;
+  value: string;
+}
+
 const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
   const { isOpen, open, close, modalRef } = useModal();
-  const { handleSubmit, control, watch } = useForm<FormData>();
+  const generateDefaultValues = useCallback(() => {
+    const dv = {} as FormData;
+    activeRequests.forEach((el) => {
+      dv[el.identifier] = "";
+    });
+
+    return dv;
+  }, [activeRequests]);
+
+  const { handleSubmit, control, watch } = useForm<FormData>({
+    defaultValues: generateDefaultValues(),
+  });
+
   const onSubmit = (data: FormData[]) => console.log(data);
   const watchAllFields = watch();
-  console.log("formstate", watchAllFields);
+
+  const [summary, setSummary] = useState<Summary[]>([]);
+  const previousSummary = usePrevious(summary);
+  const showSummary = useCallback(() => {
+    const anyFields = Object.values(watchAllFields).filter((x) => x);
+    console.log(anyFields);
+    if (anyFields.length) {
+      console.log("any fields", anyFields);
+      const showSummary = [] as Summary[];
+      const identifiers = Object.keys(watchAllFields);
+      const values = Object.values(watchAllFields);
+      for (let i = 0; i < identifiers.length; i++) {
+        if (values[i] !== "") {
+          const val = {
+            identifier: identifiers[i],
+            value: values[i],
+          };
+          showSummary.push(val);
+        }
+      }
+      return showSummary;
+    } else {
+      return [];
+    }
+  }, [watchAllFields]);
+  // useEffect(() => {
+  //   const anyFields = Object.values(watchAllFields).filter((x) => x);
+  //   console.log(anyFields);
+  //   if (anyFields.length && summary !== previousSummary) {
+  //     console.log("any fields", anyFields);
+  //     const showSummary = [] as Summary[];
+  //     const identifiers = Object.keys(watchAllFields);
+  //     const values = Object.values(watchAllFields);
+  //     for (let i = 0; i < identifiers.length; i++) {
+  //       if (values[i] !== undefined) {
+  //         const val = {
+  //           identifier: identifiers[i],
+  //           value: values[i],
+  //         };
+  //         showSummary.push(val);
+  //       }
+  //     }
+  //     setSummary(showSummary);
+  //   }
+  // }, [watchAllFields, summary]);
+
   return (
     <StyledActiveRequestsForm onSubmit={handleSubmit(onSubmit)}>
       <table className="table">
@@ -58,7 +120,7 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
                     <TextInput
                       label="Input your vote."
                       control={control}
-                      name={`${el.identifier}-${el.time}-vote-input-${index}`}
+                      name={`${el.identifier}`}
                       placeholder="0.000"
                       variant="currency"
                     />
@@ -79,14 +141,29 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
           Need to enable two key voting? Click here.
         </div>
         <div className="end-row-item">
-          <Button variant="secondary" onClick={() => open()}>
+          <Button
+            variant={showSummary().length ? "secondary" : "disabled"}
+            onClick={() => {
+              if (showSummary().length) open();
+            }}
+          >
             Commit Votes
           </Button>
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
         <StyledModal>
-          <h3 className="header">Reader to commit these votes?</h3>
+          <h3 className="header">Ready to commit these votes?</h3>
+          {showSummary().length
+            ? showSummary().map((el, index) => {
+                return (
+                  <div key={index}>
+                    <div>{el.identifier}</div>
+                    <div>{el.value}</div>
+                  </div>
+                );
+              })
+            : null}
         </StyledModal>
       </Modal>
     </StyledActiveRequestsForm>
@@ -142,38 +219,6 @@ const StyledActiveRequestsForm = styled.form`
     justify-content: space-between;
     .end-row-item {
     }
-  }
-`;
-
-const StyledInput = styled.div`
-  display: flex;
-  flex-direction: column;
-  .label {
-    width: 100%;
-    padding-left: 20px;
-    margin-bottom: 1rem;
-    font-weight: 400;
-    font-size: 14px;
-  }
-  input {
-    min-height: 25px;
-    min-width: 150px;
-    width: 100%;
-    background-color: #f4f5f4;
-    padding: 1rem 1.25rem;
-    margin-bottom: 2rem;
-    &:focus {
-      background-color: #fff;
-      color: #ff4d4c;
-      outline-color: #ff4d4c;
-    }
-  }
-  .dollar-sign {
-    position: absolute;
-    margin-left: 8px;
-    margin-bottom: 32px;
-    pointer-events: none;
-    /* color: #ff4d4c; */
   }
 `;
 
