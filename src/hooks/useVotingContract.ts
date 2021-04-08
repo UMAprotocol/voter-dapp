@@ -4,7 +4,8 @@ import createVotingContractInstance from "web3/createVotingContractInstance";
 
 export default function useVotingContract(
   signer: ethers.Signer | null,
-  isConnected: boolean
+  isConnected: boolean,
+  network: ethers.providers.Network | null
 ) {
   const [votingContract, setVotingContract] = useState<ethers.Contract | null>(
     null
@@ -14,8 +15,11 @@ export default function useVotingContract(
     // If connected, try to create contract with assigned signer.
     if (isConnected) {
       // Signer can be null check for null and if we've already defined a contract.
-      if (signer && !votingContract) {
-        const contract = createVotingContractInstance(signer);
+      if (signer && !votingContract && network) {
+        const contract = createVotingContractInstance(
+          signer,
+          network.chainId.toString()
+        );
         setVotingContract(contract);
       }
     }

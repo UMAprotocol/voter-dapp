@@ -27,7 +27,7 @@ You may also need to migrate.
 
 In this app, run:
 
-`yarn link`
+`yarn link "@uma/core"`
 
 This will link the built contracts and they will be referencable.
 

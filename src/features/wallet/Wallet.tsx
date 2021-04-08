@@ -23,7 +23,7 @@ interface Props {
 const Wallet: FC<Props> = () => {
   const [umaBalance, setUmaBalance] = useState("0");
   const [totalUmaCollected, setTotalUmaCollected] = useState("0");
-  const [availableRewards] = useState("0");
+  const [availableRewards, setAvailableRewards] = useState("0");
   const { data: umaPrice } = useUmaPriceData();
   const { isOpen, open, close, modalRef } = useModal();
   const {
@@ -34,10 +34,11 @@ const Wallet: FC<Props> = () => {
     disconnect,
     signer,
     address,
+    network,
   } = useOnboard();
 
-  const { votingAddress } = useVotingAddress(address, signer);
-  const { votingContract } = useVotingContract(signer, isConnected);
+  const { votingAddress } = useVotingAddress(address, signer, network);
+  const { votingContract } = useVotingContract(signer, isConnected, network);
   const { data: rewardsEvents } = useRewardsRetrievedEvents(
     votingContract,
     votingAddress
@@ -45,12 +46,19 @@ const Wallet: FC<Props> = () => {
 
   useEffect(() => {
     // When Address changes in MM, balance will change, as the address in context is changing from Onboard.
-    if (votingAddress && signer) {
-      getUmaBalance(votingAddress, signer).then((balance) => {
-        setUmaBalance(balance);
-      });
+    if (votingAddress && signer && network) {
+      getUmaBalance(votingAddress, signer, network.chainId.toString()).then(
+        (balance) => {
+          setUmaBalance(balance);
+        }
+      );
     }
-  }, [signer, votingAddress]);
+    if (!isConnected) {
+      setUmaBalance("0");
+      setTotalUmaCollected("0");
+      setAvailableRewards("0");
+    }
+  }, [signer, votingAddress, network, isConnected]);
 
   // Iterate over reward events to determine total UMA collected from voting.
   useEffect(() => {

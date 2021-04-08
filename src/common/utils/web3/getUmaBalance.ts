@@ -3,9 +3,10 @@ import createERC20ContractInstance from "./createERC20ContractInstance";
 
 export default async function getUmaBalance(
   address: string,
-  signer: ethers.Signer
+  signer: ethers.Signer,
+  networkId: string
 ) {
-  const contract = createERC20ContractInstance(signer);
+  const contract = createERC20ContractInstance(signer, networkId);
   const balance = await contract.balanceOf(address);
   const formattedBalance = ethers.utils.formatUnits(balance, "ether");
 

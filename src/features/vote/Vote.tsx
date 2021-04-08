@@ -20,9 +20,17 @@ const Vote = () => {
   const { data: priceRoundsEvents } = usePriceRoundEvents();
 
   const { data: priceRequestRounds } = useVoteData();
-  const { votingAddress } = useVotingAddress(state.address, state.signer);
+  const { votingAddress } = useVotingAddress(
+    state.address,
+    state.signer,
+    state.network
+  );
 
-  const { votingContract } = useVotingContract(state.signer, state.isConnected);
+  const { votingContract } = useVotingContract(
+    state.signer,
+    state.isConnected,
+    state.network
+  );
 
   // Once priceRounds are pulled from contract, filter them into requests.
   useEffect(() => {

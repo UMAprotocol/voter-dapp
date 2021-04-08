@@ -6,14 +6,18 @@ import createDesignatedVotingContractInstance from "common/utils/web3/createDesi
 // Return their hot wallet address and cold wallet address.
 export default function useVotingAddress(
   address: string | null,
-  signer: ethers.Signer | null
+  signer: ethers.Signer | null,
+  network: ethers.providers.Network | null
 ) {
   const [votingAddress, setVotingAddress] = useState<string | null>(null);
   const [hotAddress, setHotAddress] = useState<string | null>(null);
 
   useEffect(() => {
-    if (address && signer) {
-      const designatedContract = createDesignatedVotingContractInstance(signer);
+    if (address && signer && network) {
+      const designatedContract = createDesignatedVotingContractInstance(
+        signer,
+        network.chainId.toString()
+      );
       designatedContract
         .designatedVotingContracts(address)
         .then((res: string) => {
@@ -26,7 +30,7 @@ export default function useVotingAddress(
         });
     }
     setVotingAddress(address);
-  }, [address, signer]);
+  }, [address, signer, network]);
 
   return {
     votingAddress,

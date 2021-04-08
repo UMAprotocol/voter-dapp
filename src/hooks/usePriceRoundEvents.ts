@@ -8,7 +8,7 @@ import {
 } from "web3/queryVotingContractEvents";
 
 const signer = provider.getSigner();
-const contract = createVotingContractInstance(signer);
+const contract = createVotingContractInstance(signer, "1337");
 
 // This can be accessed without logging the user in.
 export default function usePriceRoundEvents() {
