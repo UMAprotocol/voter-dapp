@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useCallback } from "react";
+import { FC, useCallback, useContext } from "react";
 import { useForm } from "react-hook-form";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { UnlockedIcon } from "assets/icons";
@@ -9,8 +9,17 @@ import TextInput from "common/components/text-input";
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Select from "common/components/select";
+import { PostCommitVote } from "web3/postVotingContractMethods";
+import { ethers } from "ethers";
+import stringToBytes32 from "common/utils/web3/stringToBytes32";
+import {
+  computeVoteHashAncillary,
+  getRandomSignedInt,
+} from "common/tempUmaFunctions";
+import { useCurrentRoundId } from "hooks";
+import { OnboardContext } from "common/context/OnboardContext";
 
-type FormData = {
+export type FormData = {
   [key: string]: string;
 };
 
@@ -25,6 +34,11 @@ interface Props {
 }
 
 const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
+  const {
+    state: { address },
+  } = useContext(OnboardContext);
+
+  const { data: roundId } = useCurrentRoundId();
   const { isOpen, open, close, modalRef } = useModal();
   const generateDefaultValues = useCallback(() => {
     const dv = {} as FormData;
@@ -39,7 +53,24 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
     defaultValues: generateDefaultValues(),
   });
 
-  const onSubmit = (data: FormData[]) => console.log(data);
+  console.log(activeRequests);
+
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    const validValues = {} as FormData;
+    for (let i = 0; i < Object.keys(data).length; i++) {
+      if (Object.values(data)[i] !== "")
+        validValues[Object.keys(data)[i]] = Object.values(data)[i];
+    }
+    console.log("REMOVED VALUEs", validValues);
+
+    const postData = formatVoteDataToCommit(
+      validValues,
+      activeRequests,
+      roundId,
+      address
+    );
+  };
   const watchAllFields = watch();
 
   const showSummary = useCallback(() => {
@@ -157,14 +188,47 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
               })
             : null}
           <div className="button-wrapper">
-            <Button variant="primary">Not Yet</Button>
-            <Button variant="secondary">I'm Ready</Button>
+            <Button onClick={() => close()} variant="primary">
+              Not Yet
+            </Button>
+            <Button onClick={handleSubmit(onSubmit)} variant="secondary">
+              I'm Ready
+            </Button>
           </div>
         </StyledModal>
       </Modal>
     </StyledActiveRequestsForm>
   );
 };
+
+function formatVoteDataToCommit(
+  data: FormData,
+  activeRequests: PendingRequest[],
+  roundId: string,
+  address: string | null
+) {
+  const postValues = [] as PostCommitVote[];
+  activeRequests.forEach((el) => {
+    const datum = {} as PostCommitVote;
+    datum.identifier = stringToBytes32(el.identifier);
+    datum.time = Number(el.time);
+    datum.ancillaryData = ethers.utils.hexValue(el.ancillaryData);
+    // anc data is set to - or N/A in UI if empty, convert back to 0x.
+    if (el.ancillaryData === "-" || el.ancillaryData === "N/A")
+      datum.ancillaryData = "0x";
+
+    if (Object.keys(data).includes(el.identifier)) {
+      console.log("should only be in here", el);
+      const price = data[el.identifier];
+      const salt = getRandomSignedInt().toString();
+      // const hash = computeVoteHashAncillary({
+      //   price,
+      //   salt,
+
+      // })
+    }
+  });
+}
 
 interface StyledFormProps {
   isConnected: boolean;
@@ -267,6 +331,7 @@ const StyledModal = styled.div`
     text-decoration: underline;
   }
   .icon-wrapper {
+    margin-top: 1rem;
     height: 100px;
     .unlocked-icon {
       margin: 0 auto;
@@ -284,7 +349,7 @@ const StyledModal = styled.div`
     }
   }
   .button-wrapper {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     text-align: center;
 
     width: 400px;

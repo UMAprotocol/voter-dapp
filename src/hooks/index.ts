@@ -8,3 +8,5 @@ export { default as useVotingAddress } from "./useVotingAddress";
 export { default as useVotingContract } from "./useVotingContract";
 export { default as usePendingRequests } from "./usePendingRequests";
 export { default as useVotePhase } from "./useVotePhase";
+export { default as useVoteTiming } from "./useVoteTiming";
+export { default as useCurrentRoundId } from "./useCurrentRoundId";

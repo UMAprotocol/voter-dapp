@@ -79,3 +79,27 @@ export const queryGetVotePhase = async (contract: ethers.Contract) => {
     console.log("err", err);
   }
 };
+
+export const queryVoteTiming = async (contract: ethers.Contract) => {
+  try {
+    const timing = await contract.functions.voteTiming();
+    if (timing.length) {
+      const timingToString = ethers.BigNumber.from(timing[0]).toString();
+      return timingToString;
+    }
+  } catch (err) {
+    console.log("err", err);
+  }
+};
+
+export const queryCurrentRoundId = async (contract: ethers.Contract) => {
+  try {
+    const roundId = await contract.functions.getCurrentRoundId();
+    if (roundId.length) {
+      const roundIdToString = ethers.BigNumber.from(roundId[0]).toString();
+      return roundIdToString;
+    }
+  } catch (err) {
+    console.log("err", err);
+  }
+};

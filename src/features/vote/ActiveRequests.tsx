@@ -5,6 +5,7 @@ import timerSVG from "assets/icons/timer.svg";
 import ActiveRequestsForm from "./ActiveRequestsForm";
 import { usePendingRequests, useVotePhase } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
+import { DateTime } from "luxon";
 
 interface Props {
   // activeRequests: PriceRound[];
@@ -15,6 +16,11 @@ const ActiveRequests: FC<Props> = () => {
     state: { isConnected },
   } = useContext(OnboardContext);
   const { data: votePhase } = useVotePhase();
+
+  // if (activeRequests.length) {
+  //   const date = DateTime.fromSeconds(Number(activeRequests[4].time));
+  //   console.log(date.toLocaleString());
+  // }
 
   return (
     <StyledActiveRequests className="ActiveRequests">
