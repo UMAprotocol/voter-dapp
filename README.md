@@ -43,7 +43,8 @@ This will run a local ganache server.
 To actually integrate and do blockchain calls to ganache, add the network in your MM network tab.
 
 You will also need to add to your local .env file:\
-REACT_APP_TESTING_GANACHE = true
+// Set this REACT_APP_CURRENT_ENV to either: test, main, kovan. If not defined, defaults to main in the app.
+REACT_APP_CURRENT_ENV = <"test" | "main" | "kovan">
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
