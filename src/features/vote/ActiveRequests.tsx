@@ -1,15 +1,20 @@
 /** @jsxImportSource @emotion/react */
-import { FC } from "react";
+import { FC, useContext } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import timerSVG from "assets/icons/timer.svg";
 import ActiveRequestsForm from "./ActiveRequestsForm";
 import { usePendingRequests } from "hooks";
+import { OnboardContext } from "common/context/OnboardContext";
 
 interface Props {
   // activeRequests: PriceRound[];
 }
 const ActiveRequests: FC<Props> = () => {
   const { data: activeRequests } = usePendingRequests();
+  const {
+    state: { isConnected },
+  } = useContext(OnboardContext);
+
   return (
     <StyledActiveRequests className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">
@@ -34,7 +39,10 @@ const ActiveRequests: FC<Props> = () => {
         </div>
       </div>
       {activeRequests.length ? (
-        <ActiveRequestsForm activeRequests={activeRequests} />
+        <ActiveRequestsForm
+          isConnected={isConnected}
+          activeRequests={activeRequests}
+        />
       ) : null}
     </StyledActiveRequests>
   );

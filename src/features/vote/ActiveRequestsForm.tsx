@@ -10,9 +10,6 @@ import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import usePrevious from "common/hooks/usePrevious";
 import Select from "common/components/select";
-interface Props {
-  activeRequests: PendingRequest[];
-}
 
 type FormData = {
   [key: string]: string;
@@ -23,7 +20,12 @@ interface Summary {
   value: string;
 }
 
-const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
+interface Props {
+  activeRequests: PendingRequest[];
+  isConnected: boolean;
+}
+
+const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
   const { isOpen, open, close, modalRef } = useModal();
   const generateDefaultValues = useCallback(() => {
     const dv = {} as FormData;
@@ -47,7 +49,7 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
     const anyFields = Object.values(watchAllFields).filter((x) => x);
     console.log(anyFields);
     if (anyFields.length) {
-      console.log("any fields", anyFields);
+      // console.log("any fields", anyFields);
       const showSummary = [] as Summary[];
       const identifiers = Object.keys(watchAllFields);
       const values = Object.values(watchAllFields);
@@ -67,7 +69,10 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
   }, [watchAllFields]);
 
   return (
-    <StyledActiveRequestsForm onSubmit={handleSubmit(onSubmit)}>
+    <StyledActiveRequestsForm
+      isConnected={isConnected}
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <table className="table">
         <thead>
           <tr>
@@ -94,20 +99,10 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
                     sollicitudin consequat neque.
                   </div>
                 </td>
-                <td>
+                <td className="input-cell">
                   {el.identifier.includes("Admin") ? (
                     <div>
                       <Select control={control} name={`${el.identifier}`} />
-
-                      {/* <select
-                        {...register(`${el.identifier}`)}
-                        name={`${el.identifier}`}
-                        control={control}
-                      >
-                        <option value="">--</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </select> */}
                     </div>
                   ) : (
                     <TextInput
@@ -135,7 +130,11 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
         </div>
         <div className="end-row-item">
           <Button
-            variant={showSummary().length ? "secondary" : "disabled"}
+            variant={
+              Object.values(watchAllFields).filter((x) => x !== "").length
+                ? "secondary"
+                : "disabled"
+            }
             onClick={() => {
               if (showSummary().length) open();
             }}
@@ -163,7 +162,11 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests }) => {
   );
 };
 
-const StyledActiveRequestsForm = styled.form`
+interface StyledFormProps {
+  isConnected: boolean;
+}
+
+const StyledActiveRequestsForm = styled.form<StyledFormProps>`
   .table {
     ${tw`table-auto`};
     width: 100%;
@@ -171,7 +174,18 @@ const StyledActiveRequestsForm = styled.form`
     margin: 0 auto;
     border-collapse: separate;
     border-spacing: 0 15px;
-
+    /* pointer-events: ${(props) => (props.isConnected ? "all" : "none")};
+    cursor: ${(props) => (props.isConnected ? "auto" : "not-allowed")}; */
+    .input-cell {
+      cursor: ${(props) => (props.isConnected ? "auto" : "not-allowed")};
+      input,
+      select {
+        pointer-events: ${(props) => (props.isConnected ? "all" : "none")};
+        opacity: ${(props) => (props.isConnected ? "1" : "0.5")};
+      }
+    }
+    select {
+    }
     thead {
       tr {
         text-align: left;

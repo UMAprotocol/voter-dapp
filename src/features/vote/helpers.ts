@@ -73,7 +73,10 @@ export function formatPastRequestsByAddress(
   });
   const formattedData = sortedByTime.map(async (el, index) => {
     // Determine correct vote
-    let correct = ethers.utils.formatEther(el.request.price);
+    // Apparently price is null on some of these, so do a null check.
+    let correct = ethers.utils.formatEther(
+      el.request.price !== null ? el.request.price : "0"
+    );
     if (el.identifier.id.includes("Admin")) {
       correct = Number(correct) > 0 ? "YES" : "NO";
     }

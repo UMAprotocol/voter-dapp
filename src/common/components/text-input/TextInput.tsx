@@ -19,7 +19,7 @@ const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
   const { field } = useController(props);
 
   return (
-    <StyledInput>
+    <StyledInput className="TextInput">
       <label className="label">{props.label}</label>
       <div>
         <input

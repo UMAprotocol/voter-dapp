@@ -30,14 +30,16 @@ export interface PendingRequest {
 const NULL_ANC_DATA = "0x";
 
 export const queryGetPendingRequests = async (contract: ethers.Contract) => {
+  console.log("contract", contract);
   try {
     const requests: Array<
       Array<[string, ethers.BigNumber, string]>
     > = await contract.functions.getPendingRequests();
 
+    console.log("requests gets here?", requests);
     if (requests.length) {
       const values = [] as PendingRequest[];
-      requests.forEach((el, index) => {
+      requests.forEach((el) => {
         if (el.length) {
           el.forEach((x) => {
             const datum = {} as PendingRequest;

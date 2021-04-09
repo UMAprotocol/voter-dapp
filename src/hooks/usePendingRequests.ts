@@ -1,5 +1,5 @@
 import provider from "common/utils/web3/createProvider";
-import createVotingContractInstance from "web3/createVotingContractInstance";
+import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
 import { useQuery } from "react-query";
 
 import {
@@ -7,11 +7,11 @@ import {
   PendingRequest,
 } from "web3/queryVotingContractMethods";
 
-const signer = provider.getSigner();
-const contract = createVotingContractInstance(
-  signer,
+const contract = createVoidSignerVotingContractInstance(
+  provider,
   process.env.REACT_APP_TESTING_GANACHE ? "1337" : "1"
 );
+
 // This can be accessed without logging the user in.
 export default function usePendingRequests() {
   const { data, error, isFetching, refetch } = useQuery<PendingRequest[]>(
