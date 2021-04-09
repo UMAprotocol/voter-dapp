@@ -1,5 +1,8 @@
 import provider from "common/utils/web3/createProvider";
 import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
+
+import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork";
+
 import { useQuery } from "react-query";
 
 import {
@@ -9,7 +12,7 @@ import {
 
 const contract = createVoidSignerVotingContractInstance(
   provider,
-  process.env.REACT_APP_TESTING_GANACHE ? "1337" : "1"
+  determineBlockchainNetwork()
 );
 
 // This can be accessed without logging the user in.

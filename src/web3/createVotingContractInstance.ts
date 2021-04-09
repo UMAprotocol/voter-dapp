@@ -14,6 +14,7 @@ export default function createVotingContractInstance(
   signer: ethers.Signer,
   networkId: string
 ) {
+  console.log("signer", signer);
   const artifact: Network = VotingArtifact.networks;
   const network = artifact[networkId];
 
