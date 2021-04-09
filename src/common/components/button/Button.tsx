@@ -28,6 +28,13 @@ const Button = styled.button<Props>`
       ? "#FF4A4A"
       : "#F1F0F0"};
 
+  border: ${({ variant }) =>
+    variant === "primary"
+      ? "1px solid #FF4A4A"
+      : variant === "secondary"
+      ? "1px solid #ffffff"
+      : " 1px solid #F1F0F0"};
+
   cursor: ${({ variant }) =>
     variant === "disabled" ? "not-allowed" : "pointer"};
 

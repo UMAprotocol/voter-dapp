@@ -43,8 +43,7 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
   const watchAllFields = watch();
 
   const showSummary = useCallback(() => {
-    const anyFields = Object.values(watchAllFields).filter((x) => x);
-    console.log(anyFields);
+    const anyFields = Object.values(watchAllFields).filter((x) => x !== "");
     if (anyFields.length) {
       // console.log("any fields", anyFields);
       const showSummary = [] as Summary[];
@@ -67,6 +66,7 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
 
   return (
     <StyledActiveRequestsForm
+      className="ActiveRequestsForm"
       isConnected={isConnected}
       onSubmit={handleSubmit(onSubmit)}
     >
@@ -142,17 +142,24 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
       </div>
       <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
         <StyledModal>
+          <div className="icon-wrapper">
+            <UnlockedIcon className="unlocked-icon" />
+          </div>
           <h3 className="header">Ready to commit these votes?</h3>
           {showSummary().length
             ? showSummary().map((el, index) => {
                 return (
-                  <div key={index}>
+                  <div className="vote-wrapper" key={index}>
                     <div>{el.identifier}</div>
                     <div>{el.value}</div>
                   </div>
                 );
               })
             : null}
+          <div className="button-wrapper">
+            <Button variant="primary">Not Yet</Button>
+            <Button variant="secondary">I'm Ready</Button>
+          </div>
         </StyledModal>
       </Modal>
     </StyledActiveRequestsForm>
@@ -164,70 +171,73 @@ interface StyledFormProps {
 }
 
 const StyledActiveRequestsForm = styled.form<StyledFormProps>`
-  .table {
-    ${tw`table-auto`};
-    width: 100%;
-    max-width: 1250px;
-    margin: 0 auto;
-    border-collapse: separate;
-    border-spacing: 0 15px;
-    /* pointer-events: ${(props) => (props.isConnected ? "all" : "none")};
+  &.ActiveRequestsForm {
+    .table {
+      ${tw`table-auto`};
+      width: 100%;
+      max-width: 1250px;
+      margin: 0 auto;
+      border-collapse: separate;
+      border-spacing: 0 15px;
+      /* pointer-events: ${(props) => (props.isConnected ? "all" : "none")};
     cursor: ${(props) => (props.isConnected ? "auto" : "not-allowed")}; */
-    .input-cell {
-      cursor: ${(props) => (props.isConnected ? "auto" : "not-allowed")};
-      input,
+      .input-cell {
+        cursor: ${(props) => (props.isConnected ? "auto" : "not-allowed")};
+        input,
+        select {
+          pointer-events: ${(props) => (props.isConnected ? "all" : "none")};
+          opacity: ${(props) => (props.isConnected ? "1" : "0.5")};
+        }
+      }
       select {
-        pointer-events: ${(props) => (props.isConnected ? "all" : "none")};
-        opacity: ${(props) => (props.isConnected ? "1" : "0.5")};
       }
-    }
-    select {
-    }
-    thead {
-      tr {
-        text-align: left;
-        margin-bottom: 2rem;
+      thead {
+        tr {
+          text-align: left;
+          margin-bottom: 2rem;
+        }
+        th:last-child {
+          text-align: center;
+        }
       }
-      th:last-child {
-        text-align: center;
-      }
-    }
 
-    tbody {
-      td {
-        div {
-          display: flex;
-          align-items: center;
+      tbody {
+        td {
+          div {
+            display: flex;
+            align-items: center;
+          }
+          .description {
+            max-width: 500px;
+          }
         }
-        .description {
-          max-width: 500px;
-        }
-      }
-      td:first-of-type {
-        /* div {
+        td:first-of-type {
+          /* div {
 
       }
       max-width: 150px; */
-      }
+        }
 
-      td:last-child {
-        svg {
-          margin: 0 auto;
+        td:last-child {
+          svg {
+            margin: 0 auto;
+          }
         }
       }
     }
-  }
-  .end-row {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: space-between;
-    .end-row-item {
+    .end-row {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      .end-row-item {
+      }
     }
   }
 `;
 
 const StyledModal = styled.div`
-  max-width: 375px;
+  /* max-width: 700; */
+  min-width: 400px;
   padding: 2rem 1.5rem;
   height: auto;
   position: relative;
@@ -255,6 +265,32 @@ const StyledModal = styled.div`
     font-size: 0.8rem;
     line-height: 2rem;
     text-decoration: underline;
+  }
+  .icon-wrapper {
+    height: 100px;
+    .unlocked-icon {
+      margin: 0 auto;
+      transform: scale(2);
+    }
+  }
+  .vote-wrapper {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e5e5;
+    div:last-child {
+      color: #ff4a4a;
+      text-transform: uppercase;
+    }
+  }
+  .button-wrapper {
+    margin-top: 1rem;
+    text-align: center;
+
+    width: 400px;
+    button {
+      margin: 0 0.5rem;
+    }
   }
 `;
 
