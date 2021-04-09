@@ -60,10 +60,22 @@ export const queryGetPendingRequests = async (contract: ethers.Contract) => {
   }
 };
 
+enum VotePhases {
+  COMMIT,
+  REVEAL,
+}
+
 export const queryGetVotePhase = async (contract: ethers.Contract) => {
+  console.log(contract);
   try {
-    const phase = await contract.function.getVotePhase();
+    const phase: VotePhases[] = await contract.functions.getVotePhase();
     console.log("phase", phase);
+    if (phase.length) {
+      if (phase[0] === VotePhases.COMMIT) return "Commit";
+      if (phase[1] === VotePhases.REVEAL) return "Reveal";
+    } else {
+      return "";
+    }
   } catch (err) {
     console.log("err", err);
   }

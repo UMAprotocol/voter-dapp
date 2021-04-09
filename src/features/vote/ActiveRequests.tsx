@@ -3,7 +3,7 @@ import { FC, useContext } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import timerSVG from "assets/icons/timer.svg";
 import ActiveRequestsForm from "./ActiveRequestsForm";
-import { usePendingRequests } from "hooks";
+import { usePendingRequests, useVotePhase } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 
 interface Props {
@@ -14,13 +14,14 @@ const ActiveRequests: FC<Props> = () => {
   const {
     state: { isConnected },
   } = useContext(OnboardContext);
+  const { data: votePhase } = useVotePhase();
 
   return (
     <StyledActiveRequests className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">
         <div tw="flex-grow">
           <div className="title">
-            Stage: <span>Commit Votes</span>
+            Stage: <span>{votePhase} Votes</span>
           </div>
           <p className="big-title title">Active Requests</p>
         </div>

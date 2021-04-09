@@ -7,3 +7,4 @@ export { default as useVotesRevealedEvents } from "./useVotesRevealedEvents";
 export { default as useVotingAddress } from "./useVotingAddress";
 export { default as useVotingContract } from "./useVotingContract";
 export { default as usePendingRequests } from "./usePendingRequests";
+export { default as useVotePhase } from "./useVotePhase";

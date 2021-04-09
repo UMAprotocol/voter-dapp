@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useState, useEffect, useCallback } from "react";
-import { useForm, useController } from "react-hook-form";
+import { FC, useCallback } from "react";
+import { useForm } from "react-hook-form";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { UnlockedIcon } from "assets/icons";
 import { PendingRequest } from "web3/queryVotingContractMethods";
@@ -8,7 +8,6 @@ import Button from "common/components/button";
 import TextInput from "common/components/text-input";
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
-import usePrevious from "common/hooks/usePrevious";
 import Select from "common/components/select";
 
 type FormData = {
@@ -36,15 +35,13 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
     return dv;
   }, [activeRequests]);
 
-  const { register, handleSubmit, control, watch } = useForm<FormData>({
+  const { handleSubmit, control, watch } = useForm<FormData>({
     defaultValues: generateDefaultValues(),
   });
 
   const onSubmit = (data: FormData[]) => console.log(data);
   const watchAllFields = watch();
 
-  const [summary, setSummary] = useState<Summary[]>([]);
-  const previousSummary = usePrevious(summary);
   const showSummary = useCallback(() => {
     const anyFields = Object.values(watchAllFields).filter((x) => x);
     console.log(anyFields);
