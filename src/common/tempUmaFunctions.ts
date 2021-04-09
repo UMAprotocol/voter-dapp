@@ -2,11 +2,19 @@
 // remove any dependencies in here later.
 import EthCrypto from "eth-crypto";
 import web3 from "web3";
+import stringToBytes32 from "common/utils/web3/stringToBytes32";
 
-export async function encryptMessage(publicKey: string, message: string) {
+// const signer = EthCrypto.recoverPublicKey(
+//   address, // signature
+//   EthCrypto.hash.keccak256("foobar") // message hash
+// );
+
+export async function encryptMessage(pubKey: string, message: string) {
   // substr(2) removes the web3 friendly "0x" from the public key.
+
   const encryptedMessageObject = await EthCrypto.encryptWithPublicKey(
-    publicKey.substr(2),
+    // pubKey.substr(2),
+    pubKey,
     message
   );
   return "0x" + EthCrypto.cipher.stringify(encryptedMessageObject);
@@ -47,7 +55,7 @@ function getRandomUnsignedInt() {
   return web3.utils.toBN(web3.utils.randomHex(32));
 }
 
-// Commit vote from old coter dapp
+// Commit vote from old voter dapp
 /*
 
   const onSaveHandler = async () => {

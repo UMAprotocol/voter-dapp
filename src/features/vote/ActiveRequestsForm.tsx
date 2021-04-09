@@ -10,14 +10,18 @@ import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Select from "common/components/select";
 import { PostCommitVote } from "web3/postVotingContractMethods";
-import { ethers } from "ethers";
 import stringToBytes32 from "common/utils/web3/stringToBytes32";
+import { useVotingContract } from "hooks";
 import {
   computeVoteHashAncillary,
   getRandomSignedInt,
+  encryptMessage,
 } from "common/tempUmaFunctions";
+import { postCommitVotes } from "web3/postVotingContractMethods";
+
 import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
+import { useVotesCommittedEvents } from "hooks";
 
 export type FormData = {
   [key: string]: string;
@@ -31,12 +35,20 @@ interface Summary {
 interface Props {
   activeRequests: PendingRequest[];
   isConnected: boolean;
+  publicKey: string;
 }
 
-const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
+const ActiveRequestsForm: FC<Props> = ({
+  activeRequests,
+  isConnected,
+  publicKey,
+}) => {
   const {
-    state: { address },
+    state: { address, network, signer },
   } = useContext(OnboardContext);
+  const { votingContract } = useVotingContract(signer, isConnected, network);
+  const { data } = useVotesCommittedEvents(votingContract, address);
+  console.log("vote events", data);
 
   const { data: roundId } = useCurrentRoundId();
   const { isOpen, open, close, modalRef } = useModal();
@@ -53,8 +65,6 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
     defaultValues: generateDefaultValues(),
   });
 
-  console.log(activeRequests);
-
   const onSubmit = (data: FormData) => {
     console.log(data);
     const validValues = {} as FormData;
@@ -62,14 +72,21 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
       if (Object.values(data)[i] !== "")
         validValues[Object.keys(data)[i]] = Object.values(data)[i];
     }
-    console.log("REMOVED VALUEs", validValues);
 
-    const postData = formatVoteDataToCommit(
+    // Format data.
+    formatVoteDataToCommit(
       validValues,
       activeRequests,
       roundId,
-      address
-    );
+      address,
+      publicKey
+    ).then((fd) => {
+      if (votingContract) {
+        postCommitVotes(votingContract, fd).then((tx) => {
+          console.log("tx created?", tx);
+        });
+      }
+    });
   };
   const watchAllFields = watch();
 
@@ -201,33 +218,73 @@ const ActiveRequestsForm: FC<Props> = ({ activeRequests, isConnected }) => {
   );
 };
 
-function formatVoteDataToCommit(
+function toHex(str: string) {
+  var hex, i;
+
+  var result = "";
+  for (i = 0; i < str.length; i++) {
+    hex = str.charCodeAt(i).toString(16);
+    result += ("000" + hex).slice(-4);
+  }
+
+  return `0x${result}`;
+}
+
+async function formatVoteDataToCommit(
   data: FormData,
   activeRequests: PendingRequest[],
   roundId: string,
-  address: string | null
+  address: string | null,
+  publicKey: string
 ) {
   const postValues = [] as PostCommitVote[];
-  activeRequests.forEach((el) => {
-    const datum = {} as PostCommitVote;
-    datum.identifier = stringToBytes32(el.identifier);
-    datum.time = Number(el.time);
-    datum.ancillaryData = ethers.utils.hexValue(el.ancillaryData);
-    // anc data is set to - or N/A in UI if empty, convert back to 0x.
-    if (el.ancillaryData === "-" || el.ancillaryData === "N/A")
-      datum.ancillaryData = "0x";
+  await Promise.all(
+    activeRequests.map(async (el) => {
+      // Compute hash and encrypted vote
+      if (Object.keys(data).includes(el.identifier)) {
+        const datum = {} as PostCommitVote;
+        datum.identifier = stringToBytes32(el.identifier);
+        datum.time = Number(el.time);
+        let ancData = "";
 
-    if (Object.keys(data).includes(el.identifier)) {
-      console.log("should only be in here", el);
-      const price = data[el.identifier];
-      const salt = getRandomSignedInt().toString();
-      // const hash = computeVoteHashAncillary({
-      //   price,
-      //   salt,
+        // anc data is set to - or N/A in UI if empty, convert back to 0x.
+        if (el.ancillaryData === "-" || el.ancillaryData === "N/A") {
+          ancData = "0x";
+        } else {
+          ancData = toHex(el.ancillaryData);
+          // console.log(toUTF8Array(el.ancillaryData));
+          // ancData = toUTF8Array(el.ancillaryData);
+        }
 
-      // })
-    }
-  });
+        datum.ancillaryData = ancData;
+        const price = data[el.identifier];
+        const salt = getRandomSignedInt().toString();
+        const hash = computeVoteHashAncillary({
+          price,
+          salt,
+          account: address || "",
+          time: el.time,
+          roundId,
+          identifier: el.identifier,
+          ancillaryData: ancData,
+        });
+        if (hash) {
+          datum.hash = hash;
+        }
+        if (address) {
+          const encryptedVote = await encryptMessage(
+            // stringToBytes32(address),
+            publicKey,
+            JSON.stringify({ price, salt })
+          );
+          datum.encryptedVote = encryptedVote;
+        }
+        postValues.push(datum);
+      }
+    })
+  );
+
+  return postValues;
 }
 
 interface StyledFormProps {

@@ -92,7 +92,13 @@ export const queryVotesCommitted = async (
   );
 
   try {
-    const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
+    const events = await contract.queryFilter(
+      filter,
+      !process.env.REACT_APP_CURRENT_ENV ||
+        process.env.REACT_APP_CURRENT_ENV === "main"
+        ? MAINNET_DEPLOY_BLOCK
+        : 1
+    );
     return events.map((el) => {
       const { args } = el;
       const datum = {} as VoteEvent;

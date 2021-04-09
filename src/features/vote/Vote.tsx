@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import tw, { styled } from "twin.macro";
 
 // Components
@@ -11,8 +11,10 @@ import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
 import { useVotingAddress, useVotingContract } from "hooks";
 // import { isActiveRequest } from "./helpers";
+import EthCrypto from "eth-crypto";
 
 const Vote = () => {
+  const [publicKey, setPublicKey] = useState("");
   const { state } = useContext(OnboardContext);
   // const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
 
@@ -32,6 +34,24 @@ const Vote = () => {
     state.network
   );
 
+  useEffect(() => {
+    if (state.signer) {
+      const message = "Login to UMA Voter dApp";
+      state.signer
+        .signMessage(message)
+        .then((res) => {
+          const derivedPubKey = EthCrypto.recoverPublicKey(
+            res, // signature
+            EthCrypto.hash.keccak256(message) // message hash
+          );
+          setPublicKey(derivedPubKey);
+        })
+        .catch((err) => {
+          console.log("Sign failed");
+        });
+    }
+  }, [state.signer]);
+
   // // Once priceRounds are pulled from contract, filter them into requests.
   // useEffect(() => {
   //   if (priceRoundsEvents.length) {
@@ -43,7 +63,8 @@ const Vote = () => {
   return (
     <StyledVote>
       <ActiveRequests
-      // activeRequests={activeRequests}
+        // activeRequests={activeRequests}
+        publicKey={publicKey}
       />
       <PastRequests
         priceRounds={priceRequestRounds}

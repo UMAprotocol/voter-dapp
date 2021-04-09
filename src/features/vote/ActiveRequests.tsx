@@ -9,8 +9,10 @@ import { DateTime } from "luxon";
 
 interface Props {
   // activeRequests: PriceRound[];
+  publicKey: string;
 }
-const ActiveRequests: FC<Props> = () => {
+
+const ActiveRequests: FC<Props> = ({ publicKey }) => {
   const { data: activeRequests } = usePendingRequests();
   const {
     state: { isConnected },
@@ -47,6 +49,7 @@ const ActiveRequests: FC<Props> = () => {
       </div>
       {activeRequests.length ? (
         <ActiveRequestsForm
+          publicKey={publicKey}
           isConnected={isConnected}
           activeRequests={activeRequests}
         />

@@ -103,3 +103,15 @@ export const queryCurrentRoundId = async (contract: ethers.Contract) => {
     console.log("err", err);
   }
 };
+
+export const quertRequestPrice = async (
+  contract: ethers.Contract,
+  identifier: string,
+  time: string,
+  ancillaryData: string
+) => {
+  try {
+  } catch (err) {
+    console.log("err", err);
+  }
+};

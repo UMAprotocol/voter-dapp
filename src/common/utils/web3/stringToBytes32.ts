@@ -2,7 +2,8 @@ import { ethers } from "ethers";
 
 export default function stringToBytes32(str: string) {
   const bytes = ethers.utils.toUtf8Bytes(str);
-  if (bytes.length > 31) {
+
+  if (bytes.length > 32) {
     throw new Error("too long");
   }
   return ethers.utils.concat([bytes, Zeros]).slice(0, 32);
