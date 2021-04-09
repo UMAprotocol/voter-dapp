@@ -9,19 +9,13 @@ import TextInput from "common/components/text-input";
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Select from "common/components/select";
-import { PostCommitVote } from "web3/postVotingContractMethods";
-import stringToBytes32 from "common/utils/web3/stringToBytes32";
 import { useVotingContract } from "hooks";
-import {
-  computeVoteHashAncillary,
-  getRandomSignedInt,
-  encryptMessage,
-} from "common/tempUmaFunctions";
 import { postCommitVotes } from "web3/postVotingContractMethods";
 
 import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { useVotesCommittedEvents } from "hooks";
+import { formatVoteDataToCommit } from "./helpers";
 
 export type FormData = {
   [key: string]: string;
@@ -217,75 +211,6 @@ const ActiveRequestsForm: FC<Props> = ({
     </StyledActiveRequestsForm>
   );
 };
-
-function toHex(str: string) {
-  var hex, i;
-
-  var result = "";
-  for (i = 0; i < str.length; i++) {
-    hex = str.charCodeAt(i).toString(16);
-    result += ("000" + hex).slice(-4);
-  }
-
-  return `0x${result}`;
-}
-
-async function formatVoteDataToCommit(
-  data: FormData,
-  activeRequests: PendingRequest[],
-  roundId: string,
-  address: string | null,
-  publicKey: string
-) {
-  const postValues = [] as PostCommitVote[];
-  await Promise.all(
-    activeRequests.map(async (el) => {
-      // Compute hash and encrypted vote
-      if (Object.keys(data).includes(el.identifier)) {
-        const datum = {} as PostCommitVote;
-        datum.identifier = stringToBytes32(el.identifier);
-        datum.time = Number(el.time);
-        let ancData = "";
-
-        // anc data is set to - or N/A in UI if empty, convert back to 0x.
-        if (el.ancillaryData === "-" || el.ancillaryData === "N/A") {
-          ancData = "0x";
-        } else {
-          ancData = toHex(el.ancillaryData);
-          // console.log(toUTF8Array(el.ancillaryData));
-          // ancData = toUTF8Array(el.ancillaryData);
-        }
-
-        datum.ancillaryData = ancData;
-        const price = data[el.identifier];
-        const salt = getRandomSignedInt().toString();
-        const hash = computeVoteHashAncillary({
-          price,
-          salt,
-          account: address || "",
-          time: el.time,
-          roundId,
-          identifier: el.identifier,
-          ancillaryData: ancData,
-        });
-        if (hash) {
-          datum.hash = hash;
-        }
-        if (address) {
-          const encryptedVote = await encryptMessage(
-            // stringToBytes32(address),
-            publicKey,
-            JSON.stringify({ price, salt })
-          );
-          datum.encryptedVote = encryptedVote;
-        }
-        postValues.push(datum);
-      }
-    })
-  );
-
-  return postValues;
-}
 
 interface StyledFormProps {
   isConnected: boolean;

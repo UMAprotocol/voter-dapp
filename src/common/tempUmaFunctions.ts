@@ -2,18 +2,9 @@
 // remove any dependencies in here later.
 import EthCrypto from "eth-crypto";
 import web3 from "web3";
-import stringToBytes32 from "common/utils/web3/stringToBytes32";
-
-// const signer = EthCrypto.recoverPublicKey(
-//   address, // signature
-//   EthCrypto.hash.keccak256("foobar") // message hash
-// );
 
 export async function encryptMessage(pubKey: string, message: string) {
-  // substr(2) removes the web3 friendly "0x" from the public key.
-
   const encryptedMessageObject = await EthCrypto.encryptWithPublicKey(
-    // pubKey.substr(2),
     pubKey,
     message
   );

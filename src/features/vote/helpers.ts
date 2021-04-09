@@ -1,35 +1,45 @@
 import { DateTime } from "luxon";
-import { PriceRound } from "web3/queryVotingContractEvents";
+// import { PriceRound } from "web3/queryVotingContractEvents";
 import { ethers } from "ethers";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import { queryRetrieveRewards } from "web3/queryVotingContractMethods";
 import { PastRequest } from "./PastRequests";
+import { PostCommitVote } from "web3/postVotingContractMethods";
+import { PendingRequest } from "web3/queryVotingContractMethods";
+import stringToBytes32 from "common/utils/web3/stringToBytes32";
+import {
+  computeVoteHashAncillary,
+  getRandomSignedInt,
+  encryptMessage,
+} from "common/tempUmaFunctions";
 
-const ACTIVE_DAYS_CONSTANT = 2.5;
+import { FormData } from "./ActiveRequestsForm";
 
-export function isActiveRequest(round: PriceRound) {
-  const currentTime = DateTime.local();
-  const roundTime = DateTime.fromSeconds(Number(round.time));
-  const diff = currentTime.diff(roundTime, ["days"]).toObject();
-  const { days } = diff;
-  if (days) {
-    return days > 0 && days <= ACTIVE_DAYS_CONSTANT ? true : false;
-  } else {
-    return false;
-  }
-}
+// const ACTIVE_DAYS_CONSTANT = 2.5;
 
-export function isPastRequest(round: PriceRound) {
-  const currentTime = DateTime.local();
-  const roundTime = DateTime.fromSeconds(Number(round.time));
-  const diff = currentTime.diff(roundTime, ["days"]).toObject();
-  const { days } = diff;
-  if (days) {
-    return days > 0 && days > ACTIVE_DAYS_CONSTANT ? true : false;
-  } else {
-    return false;
-  }
-}
+// export function isActiveRequest(round: PriceRound) {
+//   const currentTime = DateTime.local();
+//   const roundTime = DateTime.fromSeconds(Number(round.time));
+//   const diff = currentTime.diff(roundTime, ["days"]).toObject();
+//   const { days } = diff;
+//   if (days) {
+//     return days > 0 && days <= ACTIVE_DAYS_CONSTANT ? true : false;
+//   } else {
+//     return false;
+//   }
+// }
+
+// export function isPastRequest(round: PriceRound) {
+//   const currentTime = DateTime.local();
+//   const roundTime = DateTime.fromSeconds(Number(round.time));
+//   const diff = currentTime.diff(roundTime, ["days"]).toObject();
+//   const { days } = diff;
+//   if (days) {
+//     return days > 0 && days > ACTIVE_DAYS_CONSTANT ? true : false;
+//   } else {
+//     return false;
+//   }
+// }
 
 // Sorts and sets some default values for when the user isn't logged in.
 export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
@@ -141,4 +151,73 @@ export function formatPastRequestsByAddress(
     return datum;
   });
   return formattedData;
+}
+
+function toHex(str: string) {
+  var hex, i;
+
+  var result = "";
+  for (i = 0; i < str.length; i++) {
+    hex = str.charCodeAt(i).toString(16);
+    result += ("000" + hex).slice(-4);
+  }
+
+  return `0x${result}`;
+}
+
+export async function formatVoteDataToCommit(
+  data: FormData,
+  activeRequests: PendingRequest[],
+  roundId: string,
+  address: string | null,
+  publicKey: string
+) {
+  const postValues = [] as PostCommitVote[];
+  await Promise.all(
+    activeRequests.map(async (el) => {
+      // Compute hash and encrypted vote
+      if (Object.keys(data).includes(el.identifier)) {
+        const datum = {} as PostCommitVote;
+        datum.identifier = stringToBytes32(el.identifier);
+        datum.time = Number(el.time);
+        let ancData = "";
+
+        // anc data is set to - or N/A in UI if empty, convert back to 0x.
+        if (el.ancillaryData === "-" || el.ancillaryData === "N/A") {
+          ancData = "0x";
+        } else {
+          ancData = toHex(el.ancillaryData);
+          // console.log(toUTF8Array(el.ancillaryData));
+          // ancData = toUTF8Array(el.ancillaryData);
+        }
+
+        datum.ancillaryData = ancData;
+        const price = data[el.identifier];
+        const salt = getRandomSignedInt().toString();
+        const hash = computeVoteHashAncillary({
+          price,
+          salt,
+          account: address || "",
+          time: el.time,
+          roundId,
+          identifier: el.identifier,
+          ancillaryData: ancData,
+        });
+        if (hash) {
+          datum.hash = hash;
+        }
+        if (address) {
+          const encryptedVote = await encryptMessage(
+            // stringToBytes32(address),
+            publicKey,
+            JSON.stringify({ price, salt })
+          );
+          datum.encryptedVote = encryptedVote;
+        }
+        postValues.push(datum);
+      }
+    })
+  );
+
+  return postValues;
 }

@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import { FormData } from "features/vote/ActiveRequestsForm";
 
 export interface PostCommitVote {
   identifier: Uint8Array;
@@ -13,7 +12,6 @@ export const postCommitVotes = async (
   contract: ethers.Contract,
   data: PostCommitVote[]
 ) => {
-  console.log("whoop");
   try {
     const tx = await contract.functions[
       "batchCommit((bytes32,uint256,bytes,bytes32,bytes)[])"
