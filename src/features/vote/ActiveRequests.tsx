@@ -52,6 +52,7 @@ const ActiveRequests: FC<Props> = ({ publicKey }) => {
           publicKey={publicKey}
           isConnected={isConnected}
           activeRequests={activeRequests}
+          votePhase={votePhase}
         />
       ) : null}
     </StyledActiveRequests>

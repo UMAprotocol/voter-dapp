@@ -30,12 +30,14 @@ interface Props {
   activeRequests: PendingRequest[];
   isConnected: boolean;
   publicKey: string;
+  votePhase: string;
 }
 
 const ActiveRequestsForm: FC<Props> = ({
   activeRequests,
   isConnected,
   publicKey,
+  votePhase,
 }) => {
   const {
     state: { address, network, signer },
@@ -175,7 +177,7 @@ const ActiveRequestsForm: FC<Props> = ({
                 : "disabled"
             }
             onClick={() => {
-              if (showSummary().length) open();
+              if (showSummary().length && votePhase === "Commit") open();
             }}
           >
             Commit Votes
