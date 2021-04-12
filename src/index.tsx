@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "tailwindcss/dist/base.min.css";
+import "react-toastify/dist/ReactToastify.css";
 import { GlobalStyles } from "twin.macro";
 
 ReactDOM.render(

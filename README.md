@@ -23,7 +23,7 @@ In a separate terminal, go into the packages/core directory and run:
 
 You may also need to migrate.
 
-`npx truffle migrate`
+`npx truffle migrate --network=test`
 
 In this app, run:
 
@@ -36,7 +36,7 @@ This will walk you through the testing process.
 
 Once run_tests.sh is running, make sure to run ganache-cli in another terminal with the following command:
 
-`ganache-cli -p 9545 -e 10000000000 -l 9000000 -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --chainId 1337`
+`ganache-cli -p 9545 -e 10000000000 -l 9000000 -m "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat" --chainId 1337 --networkId 1337`
 
 This will run a local ganache server.
 

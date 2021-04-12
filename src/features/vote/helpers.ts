@@ -208,7 +208,6 @@ export async function formatVoteDataToCommit(
         }
         if (address) {
           const encryptedVote = await encryptMessage(
-            // stringToBytes32(address),
             publicKey,
             JSON.stringify({ price, salt })
           );

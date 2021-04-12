@@ -35,7 +35,6 @@ export const queryGetPendingRequests = async (contract: ethers.Contract) => {
     const requests: Array<
       Array<[string, ethers.BigNumber, string]>
     > = await contract.functions.getPendingRequests();
-
     // console.log("requests gets here?", requests);
     if (requests.length) {
       const values = [] as PendingRequest[];
@@ -57,6 +56,7 @@ export const queryGetPendingRequests = async (contract: ethers.Contract) => {
     }
   } catch (err) {
     console.log("err", err);
+    throw new Error(err.message);
   }
 };
 
