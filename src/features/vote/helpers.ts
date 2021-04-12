@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 // import { PriceRound } from "web3/queryVotingContractEvents";
 import { ethers } from "ethers";
+import web3 from "web3";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import { queryRetrieveRewards } from "web3/queryVotingContractMethods";
 import { PastRequest } from "./PastRequests";
@@ -186,7 +187,10 @@ export async function formatVoteDataToCommit(
         if (el.ancillaryData === "-" || el.ancillaryData === "N/A") {
           ancData = "0x";
         } else {
-          ancData = toHex(el.ancillaryData);
+          // ancData = toHex(el.ancillaryData);
+          // ancData = ethers.utils.hexlify(el.ancillaryData);
+          ancData = web3.utils.utf8ToHex(el.ancillaryData);
+          // ancData = ethers.utils.formatBytes32String(el.ancillaryData);
           // console.log(toUTF8Array(el.ancillaryData));
           // ancData = toUTF8Array(el.ancillaryData);
         }

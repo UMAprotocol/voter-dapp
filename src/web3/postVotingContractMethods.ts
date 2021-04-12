@@ -12,6 +12,7 @@ export const postCommitVotes = async (
   contract: ethers.Contract,
   data: PostCommitVote[]
 ) => {
+  console.log("contract", contract);
   try {
     const tx = await contract.functions[
       "batchCommit((bytes32,uint256,bytes,bytes32,bytes)[])"

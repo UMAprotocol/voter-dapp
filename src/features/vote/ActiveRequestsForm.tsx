@@ -61,29 +61,32 @@ const ActiveRequestsForm: FC<Props> = ({
     defaultValues: generateDefaultValues(),
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    const validValues = {} as FormData;
-    for (let i = 0; i < Object.keys(data).length; i++) {
-      if (Object.values(data)[i] !== "")
-        validValues[Object.keys(data)[i]] = Object.values(data)[i];
-    }
-
-    // Format data.
-    formatVoteDataToCommit(
-      validValues,
-      activeRequests,
-      roundId,
-      address,
-      publicKey
-    ).then((fd) => {
-      if (votingContract) {
-        postCommitVotes(votingContract, fd).then((tx) => {
-          console.log("tx created?", tx);
-        });
+  const onSubmit = useCallback(
+    (data: FormData) => {
+      console.log("does this submit on button click?");
+      const validValues = {} as FormData;
+      for (let i = 0; i < Object.keys(data).length; i++) {
+        if (Object.values(data)[i] !== "")
+          validValues[Object.keys(data)[i]] = Object.values(data)[i];
       }
-    });
-  };
+
+      // Format data.
+      formatVoteDataToCommit(
+        validValues,
+        activeRequests,
+        roundId,
+        address,
+        publicKey
+      ).then((fd) => {
+        if (votingContract) {
+          postCommitVotes(votingContract, fd).then((tx) => {
+            console.log("tx created?", tx);
+          });
+        }
+      });
+    },
+    [activeRequests, address, publicKey, roundId, votingContract]
+  );
   const watchAllFields = watch();
 
   const showSummary = useCallback(() => {
@@ -171,12 +174,13 @@ const ActiveRequestsForm: FC<Props> = ({
         </div>
         <div className="end-row-item">
           <Button
+            type="button"
             variant={
               Object.values(watchAllFields).filter((x) => x !== "").length
                 ? "secondary"
                 : "disabled"
             }
-            onClick={() => {
+            onClick={(event) => {
               if (showSummary().length && votePhase === "Commit") open();
             }}
           >
@@ -204,7 +208,11 @@ const ActiveRequestsForm: FC<Props> = ({
             <Button onClick={() => close()} variant="primary">
               Not Yet
             </Button>
-            <Button onClick={handleSubmit(onSubmit)} variant="secondary">
+            <Button
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+              variant="secondary"
+            >
               I'm Ready
             </Button>
           </div>
