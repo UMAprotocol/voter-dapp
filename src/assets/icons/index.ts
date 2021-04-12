@@ -7,3 +7,5 @@ export { ReactComponent as Settings } from "./settings.svg";
 export { ReactComponent as Timer } from "./timer.svg";
 export { ReactComponent as FooterLogo } from "./footer-logo.svg";
 export { ReactComponent as UnlockedIcon } from "./unlocked.svg";
+export { ReactComponent as UnlockedIconCommitting } from "./unlocked-committing.svg";
+export { ReactComponent as LockedIconCommitted } from "./locked-committed.svg";

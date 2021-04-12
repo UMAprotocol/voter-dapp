@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useCallback, useContext } from "react";
+import { FC, useCallback, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
-import { UnlockedIcon } from "assets/icons";
+import { UnlockedIcon, LockedIconCommitted } from "assets/icons";
 import { PendingRequest } from "web3/queryVotingContractMethods";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
@@ -39,8 +39,12 @@ const ActiveRequestsForm: FC<Props> = ({
   publicKey,
   votePhase,
 }) => {
+  const [modalState, setModalState] = useState<
+    "init" | "pending" | "success" | "error"
+  >("init");
+
   const {
-    state: { address, network, signer },
+    state: { address, network, signer, onboard },
   } = useContext(OnboardContext);
   const { votingContract } = useVotingContract(signer, isConnected, network);
   const { data } = useVotesCommittedEvents(votingContract, address);
@@ -48,6 +52,7 @@ const ActiveRequestsForm: FC<Props> = ({
 
   const { data: roundId } = useCurrentRoundId();
   const { isOpen, open, close, modalRef } = useModal();
+
   const generateDefaultValues = useCallback(() => {
     const dv = {} as FormData;
     activeRequests.forEach((el) => {
@@ -57,9 +62,16 @@ const ActiveRequestsForm: FC<Props> = ({
     return dv;
   }, [activeRequests]);
 
-  const { handleSubmit, control, watch } = useForm<FormData>({
+  const { handleSubmit, control, watch, reset } = useForm<FormData>({
     defaultValues: generateDefaultValues(),
   });
+
+  useEffect(() => {
+    if (onboard) {
+      console.log(onboard.getState());
+      onboard.walletCheck().then((res) => console.log("wallet res", res));
+    }
+  }, [onboard]);
 
   const onSubmit = useCallback(
     (data: FormData) => {
@@ -80,19 +92,24 @@ const ActiveRequestsForm: FC<Props> = ({
       ).then((fd) => {
         if (votingContract) {
           postCommitVotes(votingContract, fd).then((tx) => {
-            console.log("tx created?", tx);
+            // console.log("tx created?", tx);
+            setModalState("pending");
+            tx.wait(1).then((conf: any) => {
+              // Temporary, as mining is instant on local ganache.
+              setTimeout(() => setModalState("success"), 5000);
+              // console.log("Conf??", conf);
+            });
           });
         }
       });
     },
-    [activeRequests, address, publicKey, roundId, votingContract]
+    [activeRequests, address, publicKey, roundId, votingContract, setModalState]
   );
   const watchAllFields = watch();
 
   const showSummary = useCallback(() => {
     const anyFields = Object.values(watchAllFields).filter((x) => x !== "");
     if (anyFields.length) {
-      // console.log("any fields", anyFields);
       const showSummary = [] as Summary[];
       const identifiers = Object.keys(watchAllFields);
       const values = Object.values(watchAllFields);
@@ -191,9 +208,33 @@ const ActiveRequestsForm: FC<Props> = ({
       <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
         <StyledModal>
           <div className="icon-wrapper">
-            <UnlockedIcon className="unlocked-icon" />
+            {modalState === "pending" ? (
+              <div className="modal__ico modal__ico-animate">
+                <UnlockedIcon className="unlocked-icon" />
+
+                <div className="modal__ico-container">
+                  <div className="modal__ico-halfclip">
+                    <div className="modal__ico-halfcircle modal__ico-clipped"></div>
+                  </div>
+
+                  <div className="modal__ico-halfcircle modal__ico-fixed"></div>
+                </div>
+              </div>
+            ) : modalState === "success" ? (
+              <LockedIconCommitted className="unlocked-icon" />
+            ) : (
+              <UnlockedIcon className="unlocked-icon" />
+            )}
           </div>
-          <h3 className="header">Ready to commit these votes?</h3>
+
+          {modalState === "pending" ? (
+            <h3 className="header">Committing Votes...</h3>
+          ) : modalState === "success" ? (
+            <h3 className="header">Votes successfully committed</h3>
+          ) : (
+            <h3 className="header">Ready to commit these votes?</h3>
+          )}
+
           {showSummary().length
             ? showSummary().map((el, index) => {
                 return (
@@ -204,17 +245,39 @@ const ActiveRequestsForm: FC<Props> = ({
                 );
               })
             : null}
-          <div className="button-wrapper">
-            <Button onClick={() => close()} variant="primary">
-              Not Yet
-            </Button>
-            <Button
-              type="submit"
-              onClick={handleSubmit(onSubmit)}
-              variant="secondary"
-            >
-              I'm Ready
-            </Button>
+          <div
+            className={`button-wrapper ${
+              modalState === "pending" ? "pending" : ""
+            }`}
+          >
+            {modalState === "init" ||
+            modalState === "pending" ||
+            modalState === "error" ? (
+              <>
+                <Button onClick={() => close()} variant="primary">
+                  Not Yet
+                </Button>
+                <Button
+                  type="submit"
+                  onClick={handleSubmit(onSubmit)}
+                  variant="secondary"
+                >
+                  I'm Ready
+                </Button>
+              </>
+            ) : (
+              <Button
+                onClick={() => {
+                  // close modal and reset form values.
+                  close();
+                  reset();
+                  setModalState("init");
+                }}
+                variant="secondary"
+              >
+                Done
+              </Button>
+            )}
           </div>
         </StyledModal>
       </Modal>
@@ -341,12 +404,95 @@ const StyledModal = styled.div`
     }
   }
   .button-wrapper {
+    &.pending {
+      opacity: 0.5;
+      pointer-events: none;
+    }
     margin-top: 1.5rem;
     text-align: center;
 
     width: 400px;
     button {
       margin: 0 0.5rem;
+    }
+  }
+
+  .modal__ico {
+    position: relative;
+    /* display: inline-block; */
+    margin-bottom: 24px;
+  }
+
+  .modal__ico-container {
+    position: absolute;
+    width: 86px;
+    height: 86px;
+    top: -23px;
+    left: 157px;
+  }
+
+  .modal__ico-halfclip {
+    width: 50%;
+    height: 100%;
+    right: 0px;
+    position: absolute;
+    overflow: hidden;
+    transform-origin: left center;
+    animation: cliprotate 4s steps(2) infinite;
+  }
+
+  .modal__ico-halfcircle {
+    box-sizing: border-box;
+    height: 100%;
+    right: 0px;
+    position: absolute;
+    border: solid 2px transparent;
+    border-top-color: #ff4a4a;
+    border-left-color: #ff4a4a;
+    border-radius: 50%;
+  }
+
+  .modal__ico-clipped {
+    width: 200%;
+    animation: rotate 2s linear infinite;
+  }
+
+  .modal__ico-fixed {
+    width: 100%;
+    transform: rotate(135deg);
+    animation: showfixed 4s steps(2) infinite;
+  }
+
+  @keyframes cliprotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(-45deg);
+    }
+    100% {
+      transform: rotate(135deg);
+    }
+  }
+
+  @keyframes showfixed {
+    0% {
+      opacity: 0;
+    }
+    49.9% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 1;
     }
   }
 `;

@@ -154,17 +154,17 @@ export function formatPastRequestsByAddress(
   return formattedData;
 }
 
-function toHex(str: string) {
-  var hex, i;
+// function toHex(str: string) {
+//   var hex, i;
 
-  var result = "";
-  for (i = 0; i < str.length; i++) {
-    hex = str.charCodeAt(i).toString(16);
-    result += ("000" + hex).slice(-4);
-  }
+//   var result = "";
+//   for (i = 0; i < str.length; i++) {
+//     hex = str.charCodeAt(i).toString(16);
+//     result += ("000" + hex).slice(-4);
+//   }
 
-  return `0x${result}`;
-}
+//   return `0x${result}`;
+// }
 
 export async function formatVoteDataToCommit(
   data: FormData,

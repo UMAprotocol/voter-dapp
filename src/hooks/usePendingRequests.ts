@@ -21,7 +21,7 @@ const contract = createVoidSignerVotingContractInstance(
 export default function usePendingRequests() {
   const { addError } = useContext(ErrorContext);
 
-  const { data, error, isFetching, refetch, status } = useQuery<
+  const { data, error, isFetching, refetch } = useQuery<
     PendingRequest[],
     Error
   >(
@@ -42,7 +42,7 @@ export default function usePendingRequests() {
 
   useEffect(() => {
     if (error) addError(error!.message);
-  }, [error]);
+  }, [error, addError]);
 
   if (data) {
     return { data, error, isFetching, refetch };
