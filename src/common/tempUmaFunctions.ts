@@ -16,13 +16,18 @@ export async function encryptMessage(pubKey: string, message: string) {
   );
   return "0x" + EthCrypto.cipher.stringify(encryptedMessageObject);
 }
-
 // Decrypts a message that was encrypted using encryptMessage().
-export async function decryptMessage(pubKey: string, encryptedMessage: string) {
+export async function decryptMessage(
+  privKey: string,
+  encryptedMessage: string
+) {
   // substr(2) just removes the 0x at the beginning. parse() reverses the stringify() in encryptMessage().
-  const encryptedMessageObject = EthCrypto.cipher.parse(encryptedMessage);
-  console.log("ENCRYPTED OBJECT", encryptedMessageObject);
-  return await EthCrypto.decryptWithPrivateKey(pubKey, encryptedMessageObject);
+  const encryptedMessageObject = EthCrypto.cipher.parse(
+    encryptedMessage.substr(2)
+  );
+  console.log("privKey", privKey);
+  console.log("EMO", encryptedMessageObject);
+  return await EthCrypto.decryptWithPrivateKey(privKey, encryptedMessageObject);
 }
 
 interface Request {

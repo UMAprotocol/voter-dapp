@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { MAINNET_DEPLOY_BLOCK } from "common/config";
 import assert from "assert";
 import { decryptMessage } from "common/tempUmaFunctions";
-
+import web3 from "web3";
 import stringToBytes32 from "common/utils/web3/stringToBytes32";
 
 export interface PriceRound {
@@ -176,40 +176,30 @@ export const queryEncryptedVotes = async (
 
   try {
     const events = await contract.queryFilter(filter, 0);
-    console.log("events", events, privateKey, "PK");
-    const test = await Promise.all(
+    const decryptedEvents = await Promise.all(
       events.map(async (el) => {
-        try {
-          const { args } = el;
-          if (args) {
-            const vote = JSON.parse(
-              await decryptMessage(privateKey.substr(2), args[5])
-            );
-            // console.log("vote", vote, "args5", args[5]);
-            return vote;
+        const { args } = el;
+        const datum = {} as VoteEvent;
+        if (args) {
+          // console.log(ethers.utils.toUtf8String(args[5]));
+          let vote = "";
+          try {
+            vote = JSON.parse(await decryptMessage(privateKey, args[5]));
+            console.log("vote", vote);
+          } catch (err) {
+            console.log("err", err);
           }
-        } catch (err) {
-          // Logging this error and returning empty string, to follow the same pattern as return below.
-          console.error("Error decrypting vote status:", err);
-          return "";
+          datum.address = args[0];
+          datum.roundId = args[1].toString();
+          datum.identifier = ethers.utils.toUtf8String(args[2]);
+          datum.time = args[3].toString();
+          datum.ancillaryData = args[4];
+          datum.encryptedVote = vote;
         }
+        return datum;
       })
     );
-    // console.log("test", test);
-    return events.map((el) => {
-      const { args } = el;
-      const datum = {} as VoteEvent;
-      if (args) {
-        // console.log(ethers.utils.toUtf8String(args[5]));
-        datum.address = args[0];
-        datum.roundId = args[1].toString();
-        datum.identifier = ethers.utils.toUtf8String(args[2]);
-        datum.time = args[3].toString();
-        datum.ancillaryData = args[4];
-      }
-
-      return datum;
-    });
+    return decryptedEvents;
   } catch (err) {
     console.log("err", err);
   }

@@ -1,5 +1,4 @@
 import { DateTime } from "luxon";
-// import { PriceRound } from "web3/queryVotingContractEvents";
 import { ethers } from "ethers";
 import web3 from "web3";
 import { PriceRequestRound } from "common/hooks/useVoteData";
@@ -8,6 +7,7 @@ import { PastRequest } from "./PastRequests";
 import { PostCommitVote } from "web3/postVotingContractMethods";
 import { PendingRequest } from "web3/queryVotingContractMethods";
 import stringToBytes32 from "common/utils/web3/stringToBytes32";
+import EthCrypto from "eth-crypto";
 import {
   computeVoteHashAncillary,
   getRandomSignedInt,
@@ -221,4 +221,16 @@ export async function formatVoteDataToCommit(
   console.log("post value", postValues);
 
   return postValues;
+}
+
+export function recoverPublicKey(privateKey: string) {
+  // The "0x" is added to make the public key web3 friendly.
+  // return "0x" + EthCrypto.publicKeyByPrivateKey(privateKey);
+  return EthCrypto.publicKeyByPrivateKey(privateKey);
+}
+
+export function derivePrivateKey(signature: string) {
+  const pk = web3.utils.soliditySha3(signature);
+  if (pk) return pk;
+  return "";
 }
