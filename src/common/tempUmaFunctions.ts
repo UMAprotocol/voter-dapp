@@ -2,13 +2,27 @@
 // remove any dependencies in here later.
 import EthCrypto from "eth-crypto";
 import web3 from "web3";
+import { ethers } from "ethers";
 
 export async function encryptMessage(pubKey: string, message: string) {
+  // substr(2) removes the web3 friendly "0x" from the public key.
+  // const formatted = ethers.utils.hexZeroPad(pubKey, 128);
+  // console.log("formatted 0x", formatted);
+  console.log("Pubkey", pubKey, pubKey.length);
   const encryptedMessageObject = await EthCrypto.encryptWithPublicKey(
+    // pubKey.substr(2),
     pubKey,
     message
   );
   return "0x" + EthCrypto.cipher.stringify(encryptedMessageObject);
+}
+
+// Decrypts a message that was encrypted using encryptMessage().
+export async function decryptMessage(pubKey: string, encryptedMessage: string) {
+  // substr(2) just removes the 0x at the beginning. parse() reverses the stringify() in encryptMessage().
+  const encryptedMessageObject = EthCrypto.cipher.parse(encryptedMessage);
+  console.log("ENCRYPTED OBJECT", encryptedMessageObject);
+  return await EthCrypto.decryptWithPrivateKey(pubKey, encryptedMessageObject);
 }
 
 interface Request {

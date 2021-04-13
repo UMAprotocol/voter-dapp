@@ -187,12 +187,7 @@ export async function formatVoteDataToCommit(
         if (el.ancillaryData === "-" || el.ancillaryData === "N/A") {
           ancData = "0x";
         } else {
-          // ancData = toHex(el.ancillaryData);
-          // ancData = ethers.utils.hexlify(el.ancillaryData);
           ancData = web3.utils.utf8ToHex(el.ancillaryData);
-          // ancData = ethers.utils.formatBytes32String(el.ancillaryData);
-          // console.log(toUTF8Array(el.ancillaryData));
-          // ancData = toUTF8Array(el.ancillaryData);
         }
 
         datum.ancillaryData = ancData;
@@ -216,11 +211,14 @@ export async function formatVoteDataToCommit(
             JSON.stringify({ price, salt })
           );
           datum.encryptedVote = encryptedVote;
+          // datum.encryptedVote = web3.utils.hexToBytes(encryptedVote);
         }
         postValues.push(datum);
       }
     })
   );
+
+  console.log("post value", postValues);
 
   return postValues;
 }

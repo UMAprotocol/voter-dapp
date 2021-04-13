@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useCallback, useContext, useEffect, useState } from "react";
+import { FC, useCallback, useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { UnlockedIcon, LockedIconCommitted } from "assets/icons";
@@ -44,7 +44,7 @@ const ActiveRequestsForm: FC<Props> = ({
   >("init");
 
   const {
-    state: { address, network, signer, onboard },
+    state: { address, network, signer },
   } = useContext(OnboardContext);
   const { votingContract } = useVotingContract(signer, isConnected, network);
   const { data } = useVotesCommittedEvents(votingContract, address);
@@ -65,13 +65,6 @@ const ActiveRequestsForm: FC<Props> = ({
   const { handleSubmit, control, watch, reset } = useForm<FormData>({
     defaultValues: generateDefaultValues(),
   });
-
-  useEffect(() => {
-    if (onboard) {
-      console.log(onboard.getState());
-      onboard.walletCheck().then((res) => console.log("wallet res", res));
-    }
-  }, [onboard]);
 
   const onSubmit = useCallback(
     (data: FormData) => {
@@ -140,6 +133,7 @@ const ActiveRequestsForm: FC<Props> = ({
             <th>Requested Vote</th>
             <th>Proposal Detail</th>
             <th>Description</th>
+            <th>Commit Vote</th>
             <th>Your Vote</th>
             <th>Vote Status</th>
           </tr>
@@ -174,6 +168,9 @@ const ActiveRequestsForm: FC<Props> = ({
                       variant="currency"
                     />
                   )}
+                </td>
+                <td>
+                  <div>-</div>
                 </td>
                 <td>
                   <div>

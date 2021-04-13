@@ -3,26 +3,32 @@ import { FC, useContext } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import timerSVG from "assets/icons/timer.svg";
 import ActiveRequestsForm from "./ActiveRequestsForm";
-import { usePendingRequests, useVotePhase } from "hooks";
+import {
+  useVotingContract,
+  useEncryptedVotesEvents,
+  usePendingRequests,
+  useVotePhase,
+} from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 // import { DateTime } from "luxon";
 
 interface Props {
   // activeRequests: PriceRound[];
   publicKey: string;
+  privateKey: string;
 }
 
-const ActiveRequests: FC<Props> = ({ publicKey }) => {
-  const { data: activeRequests } = usePendingRequests();
+const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
   const {
-    state: { isConnected },
+    state: { address, network, signer, isConnected },
   } = useContext(OnboardContext);
-  const { data: votePhase } = useVotePhase();
 
-  // if (activeRequests.length) {
-  //   const date = DateTime.fromSeconds(Number(activeRequests[4].time));
-  //   console.log(date.toLocaleString());
-  // }
+  const { votingContract } = useVotingContract(signer, isConnected, network);
+
+  const { data: activeRequests } = usePendingRequests();
+
+  const { data: votePhase } = useVotePhase();
+  useEncryptedVotesEvents(votingContract, address, privateKey);
 
   return (
     <StyledActiveRequests className="ActiveRequests">

@@ -12,9 +12,28 @@ import { OnboardContext } from "common/context/OnboardContext";
 import { useVotingAddress, useVotingContract } from "hooks";
 // import { isActiveRequest } from "./helpers";
 import EthCrypto from "eth-crypto";
+import web3 from "web3";
+
+function recoverPublicKey(privateKey: string) {
+  // The "0x" is added to make the public key web3 friendly.
+  // return "0x" + EthCrypto.publicKeyByPrivateKey(privateKey);
+  return EthCrypto.publicKeyByPrivateKey(privateKey);
+}
+
+function deriveKeyPair(signature: string) {
+  // const privateKey = web3.utils.soliditySha3(signature);
+  const privateKey = web3.utils.keccak256(signature);
+  if (privateKey) {
+    const publicKey = recoverPublicKey(privateKey);
+    return { publicKey, privateKey };
+  } else {
+    return {} as { publicKey: string; privateKey: string };
+  }
+}
 
 const Vote = () => {
   const [publicKey, setPublicKey] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
   const { state } = useContext(OnboardContext);
   // const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
 
@@ -43,12 +62,23 @@ const Vote = () => {
       const message = "Login to UMA Voter dApp";
       state.signer
         .signMessage(message)
-        .then((res) => {
+        .then((msg) => {
+          // This does derive a public key, but maybe the wrong one.
           const derivedPubKey = EthCrypto.recoverPublicKey(
-            res, // signature
+            msg, // signature
             EthCrypto.hash.keccak256(message) // message hash
           );
-          setPublicKey(derivedPubKey);
+          const { publicKey, privateKey } = deriveKeyPair(msg);
+          console.log(
+            "publicKey",
+            publicKey,
+            publicKey.length,
+            "private Key",
+            privateKey
+          );
+          setPrivateKey(privateKey);
+          // setPublicKey(derivedPubKey);
+          setPublicKey(publicKey);
         })
         .catch((err) => {
           console.log("Sign failed");
@@ -69,6 +99,7 @@ const Vote = () => {
       <ActiveRequests
         // activeRequests={activeRequests}
         publicKey={publicKey}
+        privateKey={privateKey}
       />
       <PastRequests
         priceRounds={priceRequestRounds}

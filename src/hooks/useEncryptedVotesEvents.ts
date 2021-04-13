@@ -4,12 +4,13 @@ import { queryEncryptedVotes, VoteEvent } from "web3/queryVotingContractEvents";
 
 export default function useEncryptedVotesEvents(
   contract: ethers.Contract | null,
-  address: string | null
+  address: string | null,
+  privateKey: string
 ) {
   const { data, error, isFetching } = useQuery<VoteEvent[]>(
     "encryptedVotesEvents",
     () => {
-      return queryEncryptedVotes(contract, address).then((res) => {
+      return queryEncryptedVotes(contract, privateKey, address).then((res) => {
         if (res) {
           return res;
         } else {
