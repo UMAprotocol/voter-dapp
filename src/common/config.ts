@@ -3,7 +3,18 @@ type Network = ethers.providers.Network;
 
 export const infuraId = process.env.REACT_APP_PUBLIC_INFURA_ID || "";
 export const SUPPORTED_NETWORK_IDS = [1, 42, 1337] as const;
-export const MAINNET_DEPLOY_BLOCK = 11876839;
+
+const MAINNET_DEPLOY_BLOCK = 11876839;
+// Determine block based on current test environemnt
+// Defaults to Mainnet.
+export let VOTER_CONTRACT_BLOCK =
+  process.env.REACT_APP_CURRENT_ENV === "main"
+    ? MAINNET_DEPLOY_BLOCK
+    : process.env.REACT_APP_CURRENT_ENV === "test"
+    ? 0
+    : process.env.REACT_APP_CURRENT_ENV === "kovan"
+    ? 0
+    : MAINNET_DEPLOY_BLOCK;
 
 export const COIN_GECKO_UMA_TICKER_DATA = {
   id: "uma",

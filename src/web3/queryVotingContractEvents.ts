@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { MAINNET_DEPLOY_BLOCK } from "common/config";
+import { VOTER_CONTRACT_BLOCK } from "common/config";
 import assert from "assert";
 import { decryptMessage } from "common/tempUmaFunctions";
 import web3 from "web3";
@@ -35,7 +35,7 @@ export const queryPriceRoundEvents = async (
   try {
     const events = await contract.queryFilter(
       priceRequestFilter,
-      MAINNET_DEPLOY_BLOCK
+      VOTER_CONTRACT_BLOCK
     );
 
     return events.map((el) => {
@@ -97,10 +97,8 @@ export const queryVotesCommitted = async (
   try {
     const events = await contract.queryFilter(
       filter,
-      !process.env.REACT_APP_CURRENT_ENV ||
-        process.env.REACT_APP_CURRENT_ENV === "main"
-        ? MAINNET_DEPLOY_BLOCK
-        : 1
+
+      VOTER_CONTRACT_BLOCK
     );
     return events.map((el) => {
       const { args } = el;
@@ -175,7 +173,7 @@ export const queryEncryptedVotes = async (
   );
 
   try {
-    const events = await contract.queryFilter(filter, 0);
+    const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
     const decryptedEvents = await Promise.all(
       events.map(async (el) => {
         const { args } = el;
@@ -250,7 +248,7 @@ export const queryVoteRevealed = async (
   );
 
   try {
-    const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
+    const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
 
     return events.map((el) => {
       const { args } = el;
@@ -308,7 +306,7 @@ export const queryRewardsRetrieved = async (
   );
 
   try {
-    const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
+    const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
 
     return events.map((el) => {
       const { args } = el;
@@ -357,7 +355,7 @@ export const queryPriceResolved = async (contract: ethers.Contract | null) => {
   const filter = contract.filters.PriceResolved(null, null, null, null, null);
 
   try {
-    const events = await contract.queryFilter(filter, MAINNET_DEPLOY_BLOCK);
+    const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
 
     return events.map((el) => {
       const { args } = el;
