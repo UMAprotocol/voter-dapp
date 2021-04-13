@@ -11,6 +11,11 @@ import {
   useCurrentRoundId,
 } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
+import Button from "common/components/button";
+import { snapshotCurrentRound } from "web3/postVotingContractMethods";
+import web3 from "web3";
+import { ethers } from "ethers";
+import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
 
 interface Props {
   // activeRequests: PriceRound[];
@@ -20,7 +25,7 @@ interface Props {
 
 const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
   const {
-    state: { address, network, signer, isConnected },
+    state: { address, network, signer, isConnected, provider },
   } = useContext(OnboardContext);
 
   const { votingContract } = useVotingContract(signer, isConnected, network);
@@ -34,12 +39,14 @@ const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
     refetch: refetchEncryptedVotes,
   } = useEncryptedVotesEvents(votingContract, address, privateKey, roundId);
 
+  console.log("votePhase", votePhase);
+
   return (
     <StyledActiveRequests className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">
         <div tw="flex-grow">
           <div className="title">
-            Stage: <span>{votePhase} Votes</span>
+            Stage: <span>{votePhase ? votePhase : "Snapshot"} Votes</span>
           </div>
           <p className="big-title title">Active Requests</p>
         </div>
@@ -66,6 +73,76 @@ const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
           encryptedVotes={encryptedVotes}
           refetchEncryptedVotes={refetchEncryptedVotes}
         />
+      ) : null}
+      {activeRequests.length && !votePhase ? (
+        <Button
+          onClick={() => {
+            if (!signer || !votingContract || !provider) return;
+            // const message = `Sign For Snapshot`;
+            votingContract.functions["snapshotMessageHash"]().then((hash) => {
+              const sigHash = hash[0];
+              const sigBytesHash = ethers.utils.arrayify(sigHash);
+              if ((window as any).ethereum) {
+                const mm = (window as any).ethereum;
+                const Web3 = new web3(mm);
+                console.log("web3", Web3);
+                if (address) {
+                  getMessageSignatureMetamask(Web3, sigHash, address).then(
+                    (res) => {
+                      console.log("res", res);
+                      snapshotCurrentRound(votingContract, res).then((res) => {
+                        console.log("success?", res);
+                      });
+                    }
+                  );
+                }
+              }
+
+              // signer
+              //   .signMessage(sigBytesHash)
+              //   .then((signedMsg) => {
+              //     console.log("msg?", signedMsg);
+              //     const verify = ethers.utils.verifyMessage(
+              //       sigBytesHash,
+              //       signedMsg
+              //     );
+              //     console.log("verify", verify);
+              //     snapshotCurrentRound(votingContract, signedMsg).then(
+              //       (res) => {
+              //         console.log("success?", res);
+              //       }
+              //     );
+              //   })
+              //   .catch((err) => {
+              //     console.log("Sign failed", err);
+              //   });
+            });
+            // if (hashedMsg) {
+            //   const hashBytes = ethers.utils.arrayify(hashedMsg);
+            //   signer
+            //     .signMessage(hashedMsg)
+            //     .then((signedMsg) => {
+            //       console.log("msg?", signedMsg);
+            //       // const verify = ethers.utils.verifyMessage(
+            //       //   hashedMsg,
+            //       //   signedMsg
+            //       // );
+            //       // console.log("verify", verify);
+            //       snapshotCurrentRound(votingContract, signedMsg).then(
+            //         (res) => {
+            //           console.log("success?", res);
+            //         }
+            //       );
+            //     })
+            //     .catch((err) => {
+            //       console.log("Sign failed");
+            //     });
+            // }
+          }}
+          variant="secondary"
+        >
+          {signer ? "Snapshot Round" : "Connect Wallet to Snapshot"}
+        </Button>
       ) : null}
     </StyledActiveRequests>
   );

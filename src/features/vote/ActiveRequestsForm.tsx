@@ -17,6 +17,7 @@ import { OnboardContext } from "common/context/OnboardContext";
 // import { useVotesCommittedEvents } from "hooks";
 import { formatVoteDataToCommit } from "./helpers";
 import { EncryptedVote } from "web3/queryVotingContractEvents";
+import { VotePhases } from "web3/queryVotingContractMethods";
 
 export type FormData = {
   [key: string]: string;
@@ -142,6 +143,7 @@ const ActiveRequestsForm: FC<Props> = ({
     }
   }, [watchAllFields]);
 
+  // Take activeRequests and encryptedVotes and convert them into tableViews
   useEffect(() => {
     // Check if the user has voted in this round.
     if (activeRequests.length && !encryptedVotes.length) {
@@ -233,7 +235,15 @@ const ActiveRequestsForm: FC<Props> = ({
                 </td>
                 <td>
                   <div>
-                    <UnlockedIcon />
+                    {/* <UnlockedIcon /> */}
+                    {votePhase === "Commit" && el.vote
+                      ? "Committed"
+                      : votePhase === "Commit" && !el.vote
+                      ? "Uncommitted"
+                      : null}
+                    {votePhase === "Reveal" && el.vote
+                      ? "Reveal"
+                      : "Unrevealed"}
                   </div>
                 </td>
               </tr>
@@ -246,19 +256,26 @@ const ActiveRequestsForm: FC<Props> = ({
           Need to enable two key voting? Click here.
         </div>
         <div className="end-row-item">
-          <Button
-            type="button"
-            variant={
-              Object.values(watchAllFields).filter((x) => x !== "").length
-                ? "secondary"
-                : "disabled"
-            }
-            onClick={(event) => {
-              if (showModalSummary().length && votePhase === "Commit") open();
-            }}
-          >
-            Commit Votes
-          </Button>
+          {votePhase === "Commit" ? (
+            <Button
+              type="button"
+              variant={
+                Object.values(watchAllFields).filter((x) => x !== "").length
+                  ? "secondary"
+                  : "disabled"
+              }
+              onClick={(event) => {
+                if (showModalSummary().length && votePhase === "Commit") open();
+              }}
+            >
+              Commit Votes
+            </Button>
+          ) : null}
+          {votePhase === "Reveal" ? (
+            <Button onClick={() => {}} variant="secondary">
+              Reveal Votes
+            </Button>
+          ) : null}
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
