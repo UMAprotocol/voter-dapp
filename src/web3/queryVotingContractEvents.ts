@@ -2,7 +2,6 @@ import { ethers } from "ethers";
 import { VOTER_CONTRACT_BLOCK } from "common/config";
 import assert from "assert";
 import { decryptMessage } from "common/tempUmaFunctions";
-import web3 from "web3";
 import stringToBytes32 from "common/utils/web3/stringToBytes32";
 
 export interface PriceRound {
@@ -68,7 +67,6 @@ export interface VoteEvent {
   identifier: string;
   time: string;
   ancillaryData: string;
-  encryptedVote?: string;
 }
 
 export const queryVotesCommitted = async (
@@ -129,29 +127,15 @@ export const queryVotesCommitted = async (
 
 */
 
-// const currentVotes = await Promise.all(
-//   voteStatuses.map(async (voteStatus, index) => {
-//     if (voteStatus.committedValue) {
-//       try {
-//         return JSON.parse(
-//           await decryptMessage(decryptionKeys[account][currentRoundId].privateKey, voteStatus.committedValue)
-//         );
-//       } catch (err) {
-//         // Logging this error and returning empty string, to follow the same pattern as return below.
-//         console.error("Error decrypting vote status:", err);
-//         return "";
-//       }
-//     } else {
-//       return "";
-//     }
-//   })
-// );
+export interface EncryptedVote extends VoteEvent {
+  encryptedVote: string;
+}
 
 export const queryEncryptedVotes = async (
   contract: ethers.Contract | null,
   privateKey: string,
   address: string | null = null,
-  roundId: string | null = null,
+  roundId: string | null,
   identifier: string | null = null,
   time: number | null = null
 ) => {
@@ -165,7 +149,7 @@ export const queryEncryptedVotes = async (
   // EncryptedVote: (address,uint256,bytes32,uint256,bytes,bytes)
   const filter = contract.filters.EncryptedVote(
     address,
-    roundId,
+    roundId ? Number(roundId) : null,
     identifier,
     time,
     null,
@@ -177,13 +161,11 @@ export const queryEncryptedVotes = async (
     const decryptedEvents = await Promise.all(
       events.map(async (el) => {
         const { args } = el;
-        const datum = {} as VoteEvent;
+        const datum = {} as EncryptedVote;
         if (args) {
-          // console.log(ethers.utils.toUtf8String(args[5]));
           let vote = "";
           try {
-            vote = JSON.parse(await decryptMessage(privateKey, args[5]));
-            console.log("vote", vote);
+            vote = JSON.parse(await decryptMessage(privateKey, args[5])).price;
           } catch (err) {
             console.log("err", err);
           }

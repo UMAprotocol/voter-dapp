@@ -29,10 +29,6 @@ const Vote = () => {
     state.network
   );
 
-  if (state.onboard) {
-    console.log(state.onboard, state.onboard.getState());
-  }
-
   useEffect(() => {
     if (state.signer) {
       const message = "Login to UMA Voter dApp";

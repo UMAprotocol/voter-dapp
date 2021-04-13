@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useCallback, useContext, useState } from "react";
+import { FC, useCallback, useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { UnlockedIcon, LockedIconCommitted } from "assets/icons";
@@ -14,8 +14,9 @@ import { postCommitVotes } from "web3/postVotingContractMethods";
 
 import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
-import { useVotesCommittedEvents } from "hooks";
+// import { useVotesCommittedEvents } from "hooks";
 import { formatVoteDataToCommit } from "./helpers";
+import { EncryptedVote } from "web3/queryVotingContractEvents";
 
 export type FormData = {
   [key: string]: string;
@@ -31,6 +32,14 @@ interface Props {
   isConnected: boolean;
   publicKey: string;
   votePhase: string;
+  encryptedVotes: EncryptedVote[];
+  refetchEncryptedVotes: Function;
+}
+
+interface TableValue {
+  ancillaryData: string;
+  identifier: string;
+  vote: string;
 }
 
 const ActiveRequestsForm: FC<Props> = ({
@@ -38,6 +47,8 @@ const ActiveRequestsForm: FC<Props> = ({
   isConnected,
   publicKey,
   votePhase,
+  encryptedVotes,
+  refetchEncryptedVotes,
 }) => {
   const [modalState, setModalState] = useState<
     "init" | "pending" | "success" | "error"
@@ -47,8 +58,9 @@ const ActiveRequestsForm: FC<Props> = ({
     state: { address, network, signer },
   } = useContext(OnboardContext);
   const { votingContract } = useVotingContract(signer, isConnected, network);
-  const { data } = useVotesCommittedEvents(votingContract, address);
-  console.log("vote events", data);
+  // const { data } = useVotesCommittedEvents(votingContract, address);
+
+  const [tableValues, setTableValues] = useState<TableValue[]>([]);
 
   const { data: roundId } = useCurrentRoundId();
   const { isOpen, open, close, modalRef } = useModal();
@@ -68,7 +80,6 @@ const ActiveRequestsForm: FC<Props> = ({
 
   const onSubmit = useCallback(
     (data: FormData) => {
-      console.log("does this submit on button click?");
       const validValues = {} as FormData;
       for (let i = 0; i < Object.keys(data).length; i++) {
         if (Object.values(data)[i] !== "")
@@ -85,25 +96,35 @@ const ActiveRequestsForm: FC<Props> = ({
       ).then((fd) => {
         if (votingContract) {
           postCommitVotes(votingContract, fd).then((tx) => {
-            // console.log("tx created?", tx);
             setModalState("pending");
-            tx.wait(1).then((conf: any) => {
-              // Temporary, as mining is instant on local ganache.
-              setTimeout(() => setModalState("success"), 5000);
-              // console.log("Conf??", conf);
-            });
+            // Need to confirm if the user submits the vote.
+            if (tx) {
+              tx.wait(1).then((conf: any) => {
+                // Temporary, as mining is instant on local ganache.
+                setTimeout(() => setModalState("success"), 5000);
+                refetchEncryptedVotes();
+              });
+            }
           });
         }
       });
     },
-    [activeRequests, address, publicKey, roundId, votingContract, setModalState]
+    [
+      activeRequests,
+      address,
+      publicKey,
+      roundId,
+      votingContract,
+      setModalState,
+      refetchEncryptedVotes,
+    ]
   );
   const watchAllFields = watch();
 
-  const showSummary = useCallback(() => {
+  const showModalSummary = useCallback(() => {
     const anyFields = Object.values(watchAllFields).filter((x) => x !== "");
     if (anyFields.length) {
-      const showSummary = [] as Summary[];
+      const summary = [] as Summary[];
       const identifiers = Object.keys(watchAllFields);
       const values = Object.values(watchAllFields);
       for (let i = 0; i < identifiers.length; i++) {
@@ -112,14 +133,50 @@ const ActiveRequestsForm: FC<Props> = ({
             identifier: identifiers[i],
             value: values[i],
           };
-          showSummary.push(val);
+          summary.push(val);
         }
       }
-      return showSummary;
+      return summary;
     } else {
       return [];
     }
   }, [watchAllFields]);
+
+  useEffect(() => {
+    // Check if the user has voted in this round.
+    if (activeRequests.length && !encryptedVotes.length) {
+      const tv: TableValue[] = activeRequests.map((el) => {
+        return {
+          ancillaryData: el.ancillaryData,
+          vote: "-",
+          identifier: el.identifier,
+        };
+      });
+
+      setTableValues(tv);
+    }
+    if (activeRequests.length && encryptedVotes.length) {
+      const tv = [] as TableValue[];
+      activeRequests.forEach((el) => {
+        const datum = {} as TableValue;
+        datum.ancillaryData = el.ancillaryData;
+        datum.identifier = el.identifier;
+        let vote = "-";
+        // I believe latest events are on bottom. requires testing.
+        const latestVotesFirst = encryptedVotes.reverse();
+        const findVote = latestVotesFirst.find(
+          (x) => x.identifier === el.identifier
+        );
+        if (findVote) {
+          datum.vote = findVote.encryptedVote;
+        } else {
+          datum.vote = vote;
+        }
+        tv.push(datum);
+      });
+      setTableValues(tv);
+    }
+  }, [activeRequests, encryptedVotes]);
 
   return (
     <StyledActiveRequestsForm
@@ -139,7 +196,7 @@ const ActiveRequestsForm: FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {activeRequests.map((el, index) => {
+          {tableValues.map((el, index) => {
             return (
               <tr key={index}>
                 <td>
@@ -170,7 +227,9 @@ const ActiveRequestsForm: FC<Props> = ({
                   )}
                 </td>
                 <td>
-                  <div>-</div>
+                  <div>
+                    <p className="vote">{el.vote}</p>
+                  </div>
                 </td>
                 <td>
                   <div>
@@ -195,7 +254,7 @@ const ActiveRequestsForm: FC<Props> = ({
                 : "disabled"
             }
             onClick={(event) => {
-              if (showSummary().length && votePhase === "Commit") open();
+              if (showModalSummary().length && votePhase === "Commit") open();
             }}
           >
             Commit Votes
@@ -232,8 +291,8 @@ const ActiveRequestsForm: FC<Props> = ({
             <h3 className="header">Ready to commit these votes?</h3>
           )}
 
-          {showSummary().length
-            ? showSummary().map((el, index) => {
+          {showModalSummary().length
+            ? showModalSummary().map((el, index) => {
                 return (
                   <div className="vote-wrapper" key={index}>
                     <div>{el.identifier}</div>
@@ -339,6 +398,9 @@ const StyledActiveRequestsForm = styled.form<StyledFormProps>`
             margin: 0 auto;
           }
         }
+      }
+      .vote {
+        margin: 0 auto;
       }
     }
     .end-row {

@@ -8,9 +8,9 @@ import {
   useEncryptedVotesEvents,
   usePendingRequests,
   useVotePhase,
+  useCurrentRoundId,
 } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
-// import { DateTime } from "luxon";
 
 interface Props {
   // activeRequests: PriceRound[];
@@ -28,7 +28,11 @@ const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
   const { data: activeRequests } = usePendingRequests();
 
   const { data: votePhase } = useVotePhase();
-  useEncryptedVotesEvents(votingContract, address, privateKey);
+  const { data: roundId } = useCurrentRoundId();
+  const {
+    data: encryptedVotes,
+    refetch: refetchEncryptedVotes,
+  } = useEncryptedVotesEvents(votingContract, address, privateKey, roundId);
 
   return (
     <StyledActiveRequests className="ActiveRequests">
@@ -59,6 +63,8 @@ const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
           isConnected={isConnected}
           activeRequests={activeRequests}
           votePhase={votePhase}
+          encryptedVotes={encryptedVotes}
+          refetchEncryptedVotes={refetchEncryptedVotes}
         />
       ) : null}
     </StyledActiveRequests>
