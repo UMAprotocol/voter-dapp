@@ -16,32 +16,6 @@ import {
 
 import { FormData } from "./ActiveRequestsForm";
 
-// const ACTIVE_DAYS_CONSTANT = 2.5;
-
-// export function isActiveRequest(round: PriceRound) {
-//   const currentTime = DateTime.local();
-//   const roundTime = DateTime.fromSeconds(Number(round.time));
-//   const diff = currentTime.diff(roundTime, ["days"]).toObject();
-//   const { days } = diff;
-//   if (days) {
-//     return days > 0 && days <= ACTIVE_DAYS_CONSTANT ? true : false;
-//   } else {
-//     return false;
-//   }
-// }
-
-// export function isPastRequest(round: PriceRound) {
-//   const currentTime = DateTime.local();
-//   const roundTime = DateTime.fromSeconds(Number(round.time));
-//   const diff = currentTime.diff(roundTime, ["days"]).toObject();
-//   const { days } = diff;
-//   if (days) {
-//     return days > 0 && days > ACTIVE_DAYS_CONSTANT ? true : false;
-//   } else {
-//     return false;
-//   }
-// }
-
 // Sorts and sets some default values for when the user isn't logged in.
 export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
   const sortedByTime = data.slice().sort((a, b) => {
@@ -153,18 +127,6 @@ export function formatPastRequestsByAddress(
   });
   return formattedData;
 }
-
-// function toHex(str: string) {
-//   var hex, i;
-
-//   var result = "";
-//   for (i = 0; i < str.length; i++) {
-//     hex = str.charCodeAt(i).toString(16);
-//     result += ("000" + hex).slice(-4);
-//   }
-
-//   return `0x${result}`;
-// }
 
 export async function formatVoteDataToCommit(
   data: FormData,
