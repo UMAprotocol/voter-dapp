@@ -77,3 +77,42 @@ export default function config(network: Network | null) {
     },
   };
 }
+
+// WIP -- create config using a Map.
+const MAINNET_NETWORK_ID = 1;
+const KOVAN_NETWORK_ID = 42;
+const TESTNET_NETWORK_ID = 1337;
+interface ConfigObject {
+  deployBlock: number;
+  subgraphUrl: string;
+}
+
+export const Config = new Map<number, ConfigObject>([
+  [
+    MAINNET_NETWORK_ID,
+    {
+      deployBlock: MAINNET_DEPLOY_BLOCK,
+      subgraphUrl:
+        "https://api.thegraph.com/subgraphs/name/umaprotocol/mainnet-voting",
+    },
+  ],
+  [
+    KOVAN_NETWORK_ID,
+    {
+      deployBlock: KOVAN_BLOCK,
+      subgraphUrl: "",
+    },
+  ],
+  [
+    TESTNET_NETWORK_ID,
+    {
+      deployBlock: 0,
+      subgraphUrl: "",
+    },
+  ],
+]);
+
+// const isNetworkSupported = Config.has(networkid)
+
+// // We can get our network config:
+// const config = Config.get(networkid)
