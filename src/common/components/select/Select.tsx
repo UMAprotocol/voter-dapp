@@ -11,6 +11,7 @@ interface Props {
   placeholder?: string;
 }
 
+// Fancy Select coming. Basic one for testing.
 const _Select: ForwardRefRenderFunction<HTMLSelectElement, Props> = (
   props,
   externalRef
