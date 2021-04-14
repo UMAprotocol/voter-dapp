@@ -9,6 +9,7 @@ import {
   usePendingRequests,
   useVotePhase,
   useCurrentRoundId,
+  useRound,
 } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import Button from "common/components/button";
@@ -36,6 +37,8 @@ const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
     data: encryptedVotes,
     refetch: refetchEncryptedVotes,
   } = useEncryptedVotesEvents(votingContract, address, privateKey, roundId);
+
+  const { data: round } = useRound(Number(roundId));
 
   return (
     <StyledActiveRequests className="ActiveRequests">
@@ -70,7 +73,9 @@ const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
           refetchEncryptedVotes={refetchEncryptedVotes}
         />
       ) : null}
-      {activeRequests.length && !votePhase ? (
+      {activeRequests.length &&
+      votePhase === "Reveal" &&
+      round.snapshotId === "0" ? (
         <Button
           onClick={() => {
             if (!signer || !votingContract || !provider) return;

@@ -10,3 +10,4 @@ export { default as usePendingRequests } from "./usePendingRequests";
 export { default as useVotePhase } from "./useVotePhase";
 export { default as useVoteTiming } from "./useVoteTiming";
 export { default as useCurrentRoundId } from "./useCurrentRoundId";
+export { default as useRound } from "./useRound";
