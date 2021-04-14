@@ -128,7 +128,8 @@ export const queryVotesCommitted = async (
 */
 
 export interface EncryptedVote extends VoteEvent {
-  encryptedVote: string;
+  price: string;
+  salt: string;
 }
 
 export const queryEncryptedVotes = async (
@@ -163,9 +164,12 @@ export const queryEncryptedVotes = async (
         const { args } = el;
         const datum = {} as EncryptedVote;
         if (args) {
-          let vote = "";
+          let price = "";
+          let salt = "";
           try {
-            vote = JSON.parse(await decryptMessage(privateKey, args[5])).price;
+            const json = JSON.parse(await decryptMessage(privateKey, args[5]));
+            price = json.price;
+            salt = json.salt;
           } catch (err) {
             console.log("err", err);
           }
@@ -174,7 +178,8 @@ export const queryEncryptedVotes = async (
           datum.identifier = ethers.utils.toUtf8String(args[2]);
           datum.time = args[3].toString();
           datum.ancillaryData = args[4];
-          datum.encryptedVote = vote;
+          datum.price = price;
+          datum.salt = salt;
         }
         return datum;
       })

@@ -24,7 +24,7 @@ export async function decryptMessage(
   return await EthCrypto.decryptWithPrivateKey(privKey, encryptedMessageObject);
 }
 
-interface Request {
+export interface Request {
   price: string;
   salt: string;
   account: string;
@@ -74,9 +74,9 @@ export async function signMessage(
     const mutableSignature = await web3.eth.sign(innerMessageHash, account);
     const rs = mutableSignature.slice(0, 128 + 2);
     let v = mutableSignature.slice(128 + 2, 130 + 2);
-    if (v == "00") {
+    if (v === "00") {
       v = "1b";
-    } else if (v == "01") {
+    } else if (v === "01") {
       v = "1c";
     }
     return rs + v;

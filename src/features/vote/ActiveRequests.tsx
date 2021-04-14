@@ -14,11 +14,9 @@ import { OnboardContext } from "common/context/OnboardContext";
 import Button from "common/components/button";
 import { snapshotCurrentRound } from "web3/postVotingContractMethods";
 import web3 from "web3";
-import { ethers } from "ethers";
 import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
 
 interface Props {
-  // activeRequests: PriceRound[];
   publicKey: string;
   privateKey: string;
 }
@@ -38,8 +36,6 @@ const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
     data: encryptedVotes,
     refetch: refetchEncryptedVotes,
   } = useEncryptedVotesEvents(votingContract, address, privateKey, roundId);
-
-  console.log("votePhase", votePhase);
 
   return (
     <StyledActiveRequests className="ActiveRequests">
@@ -78,66 +74,23 @@ const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
         <Button
           onClick={() => {
             if (!signer || !votingContract || !provider) return;
-            // const message = `Sign For Snapshot`;
             votingContract.functions["snapshotMessageHash"]().then((hash) => {
               const sigHash = hash[0];
-              const sigBytesHash = ethers.utils.arrayify(sigHash);
               if ((window as any).ethereum) {
                 const mm = (window as any).ethereum;
                 const Web3 = new web3(mm);
-                console.log("web3", Web3);
                 if (address) {
                   getMessageSignatureMetamask(Web3, sigHash, address).then(
-                    (res) => {
-                      console.log("res", res);
-                      snapshotCurrentRound(votingContract, res).then((res) => {
-                        console.log("success?", res);
+                    (msg) => {
+                      snapshotCurrentRound(votingContract, msg).then((tx) => {
+                        // TODO: Refetch state after snapshot.
+                        console.log("success?", tx);
                       });
                     }
                   );
                 }
               }
-
-              // signer
-              //   .signMessage(sigBytesHash)
-              //   .then((signedMsg) => {
-              //     console.log("msg?", signedMsg);
-              //     const verify = ethers.utils.verifyMessage(
-              //       sigBytesHash,
-              //       signedMsg
-              //     );
-              //     console.log("verify", verify);
-              //     snapshotCurrentRound(votingContract, signedMsg).then(
-              //       (res) => {
-              //         console.log("success?", res);
-              //       }
-              //     );
-              //   })
-              //   .catch((err) => {
-              //     console.log("Sign failed", err);
-              //   });
             });
-            // if (hashedMsg) {
-            //   const hashBytes = ethers.utils.arrayify(hashedMsg);
-            //   signer
-            //     .signMessage(hashedMsg)
-            //     .then((signedMsg) => {
-            //       console.log("msg?", signedMsg);
-            //       // const verify = ethers.utils.verifyMessage(
-            //       //   hashedMsg,
-            //       //   signedMsg
-            //       // );
-            //       // console.log("verify", verify);
-            //       snapshotCurrentRound(votingContract, signedMsg).then(
-            //         (res) => {
-            //           console.log("success?", res);
-            //         }
-            //       );
-            //     })
-            //     .catch((err) => {
-            //       console.log("Sign failed");
-            //     });
-            // }
           }}
           variant="secondary"
         >

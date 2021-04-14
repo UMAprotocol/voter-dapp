@@ -211,14 +211,11 @@ export async function formatVoteDataToCommit(
             JSON.stringify({ price, salt })
           );
           datum.encryptedVote = encryptedVote;
-          // datum.encryptedVote = web3.utils.hexToBytes(encryptedVote);
         }
         postValues.push(datum);
       }
     })
   );
-
-  console.log("post value", postValues);
 
   return postValues;
 }

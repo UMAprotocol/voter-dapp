@@ -10,14 +10,20 @@ import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Select from "common/components/select";
 import { useVotingContract } from "hooks";
-import { postCommitVotes } from "web3/postVotingContractMethods";
+import {
+  postCommitVotes,
+  // PostRevealData,
+  // revealVotes,
+} from "web3/postVotingContractMethods";
+// import { ethers } from "ethers";
+// import toWeiSafe from "common/utils/web3/convertToWeiSafely";
+// import web3 from "web3";
+// import { computeVoteHashAncillary, Request } from "common/tempUmaFunctions";
 
 import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
-// import { useVotesCommittedEvents } from "hooks";
 import { formatVoteDataToCommit } from "./helpers";
 import { EncryptedVote } from "web3/queryVotingContractEvents";
-import { VotePhases } from "web3/queryVotingContractMethods";
 
 export type FormData = {
   [key: string]: string;
@@ -165,12 +171,12 @@ const ActiveRequestsForm: FC<Props> = ({
         datum.identifier = el.identifier;
         let vote = "-";
         // I believe latest events are on bottom. requires testing.
-        const latestVotesFirst = encryptedVotes.reverse();
+        const latestVotesFirst = [...encryptedVotes].reverse();
         const findVote = latestVotesFirst.find(
           (x) => x.identifier === el.identifier
         );
         if (findVote) {
-          datum.vote = findVote.encryptedVote;
+          datum.vote = findVote.price;
         } else {
           datum.vote = vote;
         }
@@ -272,7 +278,82 @@ const ActiveRequestsForm: FC<Props> = ({
             </Button>
           ) : null}
           {votePhase === "Reveal" ? (
-            <Button onClick={() => {}} variant="secondary">
+            <Button
+              type="button"
+              onClick={() => {
+                // WIP. Comment out for now.
+                // console.log("encryptedVotes", encryptedVotes);
+                // if (encryptedVotes.length && activeRequests.length) {
+                //   const postData = [] as PostRevealData[];
+                //   activeRequests.forEach((el, index) => {
+                //     const datum = {} as PostRevealData;
+                //     // I believe latest events are on bottom. requires testing.
+                //     const latestVotesFirst = [...encryptedVotes].reverse();
+                //     const findVote = latestVotesFirst.find(
+                //       (x) => x.identifier === el.identifier
+                //     );
+                //     if (findVote) {
+                //       if (findVote.price !== "yes" && address) {
+                //         const request = {} as Request;
+                //         request.price = findVote.price;
+                //         request.salt = findVote.salt;
+                //         if (
+                //           el.ancillaryData === "-" ||
+                //           el.ancillaryData === "N/A"
+                //         ) {
+                //           request.ancillaryData = "0x";
+                //         } else {
+                //           request.ancillaryData = web3.utils.utf8ToHex(
+                //             el.ancillaryData
+                //           );
+                //         }
+                //         request.account = address;
+                //         request.time = el.time;
+                //         request.roundId = roundId;
+                //         request.identifier = el.identifier;
+                //         const hash = computeVoteHashAncillary(request);
+                //         console.log("hash", hash);
+                //       }
+                //       datum.ancillaryData = el.ancillaryData;
+                //       // anc data is set to - or N/A in UI if empty, convert back to 0x.
+                //       if (
+                //         el.ancillaryData === "-" ||
+                //         el.ancillaryData === "N/A"
+                //       ) {
+                //         datum.ancillaryData = "0x";
+                //       } else {
+                //         datum.ancillaryData = web3.utils.utf8ToHex(
+                //           el.ancillaryData
+                //         );
+                //       }
+                //       datum.time = Number(el.time);
+                //       datum.identifier = ethers.utils.toUtf8Bytes(
+                //         el.identifier
+                //       );
+                //       // datum.salt = ethers.BigNumber.from(findVote.salt);
+                //       datum.salt = findVote.salt;
+                //       if (findVote.price === "yes" || findVote.price === "no") {
+                //         if (findVote.price === "yes") {
+                //           datum.price = toWeiSafe("1");
+                //         } else {
+                //           datum.price = toWeiSafe("0");
+                //         }
+                //       } else {
+                //         datum.price = toWeiSafe(findVote.price);
+                //       }
+                //       postData.push(datum);
+                //     }
+                //   });
+                //   console.log("Post data", postData);
+                //   if (votingContract) {
+                //     revealVotes(votingContract, postData).then((res) => {
+                //       console.log("woot");
+                //     });
+                //   }
+                // }
+              }}
+              variant="secondary"
+            >
               Reveal Votes
             </Button>
           ) : null}
@@ -403,12 +484,6 @@ const StyledActiveRequestsForm = styled.form<StyledFormProps>`
             max-width: 500px;
           }
         }
-        td:first-of-type {
-          /* div {
-
-      }
-      max-width: 150px; */
-        }
 
         td:last-child {
           svg {
@@ -493,6 +568,7 @@ const StyledModal = styled.div`
     }
   }
 
+  // CSS for transition from mockup.
   .modal__ico {
     position: relative;
     /* display: inline-block; */

@@ -5,8 +5,8 @@ export const infuraId = process.env.REACT_APP_PUBLIC_INFURA_ID || "";
 export const SUPPORTED_NETWORK_IDS = [1, 42, 1337] as const;
 
 const MAINNET_DEPLOY_BLOCK = 11876839;
-// Need to find out the proper block.
-const KOVAN_BLOCK = 0;
+const KOVAN_BLOCK = 23649096;
+const LOCAL_BLOCK = 0;
 
 // Determine block based on current test environemnt
 // Defaults to Mainnet.
@@ -14,7 +14,7 @@ export const VOTER_CONTRACT_BLOCK =
   process.env.REACT_APP_CURRENT_ENV === "main"
     ? MAINNET_DEPLOY_BLOCK
     : process.env.REACT_APP_CURRENT_ENV === "test"
-    ? 0
+    ? LOCAL_BLOCK
     : process.env.REACT_APP_CURRENT_ENV === "kovan"
     ? KOVAN_BLOCK
     : MAINNET_DEPLOY_BLOCK;
