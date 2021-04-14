@@ -8,6 +8,7 @@ import {
   formatPastRequestsNoAddress,
   formatPastRequestsByAddress,
 } from "./helpers";
+import RequestsWrapper from "./RequestsWrapper";
 
 export interface PastRequest {
   proposal: string;
@@ -129,12 +130,8 @@ const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
   );
 };
 
-const StyledPastRequests = styled.div`
+const StyledPastRequests = styled(RequestsWrapper)`
   &.PastRequests {
-    font-family: "Halyard Display";
-    background-color: #fff;
-    ${tw`max-w-7xl mx-auto py-5 my-10 mb-10`};
-
     .header-row {
       max-width: 1350px;
       margin: 0 auto;
