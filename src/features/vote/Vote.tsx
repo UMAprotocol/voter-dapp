@@ -8,7 +8,11 @@ import PastRequests from "./PastRequests";
 
 import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
-import { useVotingAddress, useVotingContract } from "hooks";
+import {
+  usePriceRequestAddedEvents,
+  useVotingAddress,
+  useVotingContract,
+} from "hooks";
 import { recoverPublicKey, derivePrivateKey } from "./helpers";
 
 const Vote = () => {
@@ -17,6 +21,7 @@ const Vote = () => {
   const { state } = useContext(OnboardContext);
 
   const { data: priceRequestRounds } = useVoteData();
+
   const { votingAddress } = useVotingAddress(
     state.address,
     state.signer,
@@ -28,6 +33,8 @@ const Vote = () => {
     state.isConnected,
     state.network
   );
+
+  usePriceRequestAddedEvents();
 
   useEffect(() => {
     if (state.signer) {
