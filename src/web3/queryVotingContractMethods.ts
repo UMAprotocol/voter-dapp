@@ -65,7 +65,6 @@ export enum VotePhases {
 }
 
 export const queryGetVotePhase = async (contract: ethers.Contract) => {
-  // console.log(contract);
   try {
     const phase: VotePhases[] = await contract.functions.getVotePhase();
     if (phase.length) {
