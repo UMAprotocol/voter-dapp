@@ -10,19 +10,24 @@ export default function useEncryptedVotesEvents(
   address: string | null,
   privateKey: string,
   roundId: string
+  // hotAddress: string | null
 ) {
   const { data, error, isFetching, refetch } = useQuery<EncryptedVote[]>(
     "encryptedVotesEvents",
     () => {
-      return queryEncryptedVotes(contract, privateKey, address, roundId).then(
-        (res) => {
-          if (res) {
-            return res;
-          } else {
-            return [];
-          }
+      return queryEncryptedVotes(
+        contract,
+        privateKey,
+        address,
+        roundId
+        // hotAddress
+      ).then((res) => {
+        if (res) {
+          return res;
+        } else {
+          return [];
         }
-      );
+      });
     },
     { enabled: contract !== null }
   );

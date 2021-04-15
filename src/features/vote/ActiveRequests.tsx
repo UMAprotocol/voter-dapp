@@ -9,6 +9,7 @@ import {
   useVotePhase,
   useCurrentRoundId,
   useRound,
+  useVotingAddress,
 } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import Button from "common/components/button";
@@ -32,6 +33,12 @@ const ActiveRequests: FC<Props> = ({
     state: { address, network, signer, isConnected, provider },
   } = useContext(OnboardContext);
 
+  const { votingAddress, hotAddress } = useVotingAddress(
+    address,
+    signer,
+    network
+  );
+
   const { votingContract } = useVotingContract(signer, isConnected, network);
 
   const { data: votePhase } = useVotePhase();
@@ -39,9 +46,17 @@ const ActiveRequests: FC<Props> = ({
   const {
     data: encryptedVotes,
     refetch: refetchEncryptedVotes,
-  } = useEncryptedVotesEvents(votingContract, address, privateKey, roundId);
+  } = useEncryptedVotesEvents(
+    votingContract,
+    votingAddress,
+    privateKey,
+    roundId
+    // hotAddress
+  );
 
   const { data: round } = useRound(Number(roundId));
+
+  console.log("encrypted votes", encryptedVotes);
 
   return (
     <StyledActiveRequests className="ActiveRequests">
@@ -85,15 +100,17 @@ const ActiveRequests: FC<Props> = ({
               if ((window as any).ethereum) {
                 const mm = (window as any).ethereum;
                 const Web3 = new web3(mm);
-                if (address) {
-                  getMessageSignatureMetamask(Web3, sigHash, address).then(
-                    (msg) => {
-                      snapshotCurrentRound(votingContract, msg).then((tx) => {
-                        // TODO: Refetch state after snapshot.
-                        console.log("success?", tx);
-                      });
-                    }
-                  );
+                if (votingAddress) {
+                  getMessageSignatureMetamask(
+                    Web3,
+                    sigHash,
+                    votingAddress
+                  ).then((msg) => {
+                    snapshotCurrentRound(votingContract, msg).then((tx) => {
+                      // TODO: Refetch state after snapshot.
+                      console.log("success?", tx);
+                    });
+                  });
                 }
               }
             });

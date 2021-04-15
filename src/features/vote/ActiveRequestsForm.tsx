@@ -249,7 +249,8 @@ const ActiveRequestsForm: FC<Props> = ({
                       : null}
                     {votePhase === "Reveal" && el.vote
                       ? "Reveal"
-                      : "Unrevealed"}
+                      : /* this is incorrect -- just wanna hide this string for now. */
+                        null}
                   </div>
                 </td>
               </tr>
