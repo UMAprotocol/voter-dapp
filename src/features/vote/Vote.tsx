@@ -66,7 +66,6 @@ const Vote = () => {
       const filtered = priceRequestsAdded.filter((el) => {
         const startOfRequests = DateTime.fromSeconds(Number(el.time));
         const now = DateTime.local();
-        console.log(startOfRequests.diff(now).toObject().milliseconds);
         const diff = startOfRequests.diff(now).toObject().milliseconds;
         if (diff) {
           // if time is greater than the current time, request is upcoming.
@@ -78,8 +77,6 @@ const Vote = () => {
       setUpcomingRequests(filtered);
     }
   }, [priceRequestsAdded]);
-
-  console.log("priceRequestsAdded", priceRequestsAdded);
 
   return (
     <StyledVote>

@@ -35,8 +35,6 @@ const ActiveRequests: FC<Props> = ({
 
   const { votingAddress } = useVotingAddress(address, signer, network);
 
-  console.log("voting address", votingAddress);
-
   const { votingContract } = useVotingContract(signer, isConnected, network);
 
   const { data: votePhase } = useVotePhase();
@@ -52,8 +50,6 @@ const ActiveRequests: FC<Props> = ({
   );
 
   const { data: round } = useRound(Number(roundId));
-
-  // console.log("encrypted votes", encryptedVotes);
 
   return (
     <StyledActiveRequests className="ActiveRequests">
