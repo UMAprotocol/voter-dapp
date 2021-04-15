@@ -47,13 +47,13 @@ const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
 
   return (
     <StyledPastRequests className="PastRequests">
-      <div className="header-row">
+      <div className="requests-header-row">
         <div>
-          <p className="big-title title">Past Requests</p>
+          <p className="requests-title-lg title">Past Requests</p>
         </div>
       </div>
       {pastRequests.length ? (
-        <table className="table">
+        <table className="requests-table">
           <thead>
             <tr>
               <th>Proposal</th>

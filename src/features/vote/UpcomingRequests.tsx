@@ -10,9 +10,9 @@ interface Props {
 const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
   return (
     <StyledUpcomingRequests className="UpcomingRequests">
-      <div className="header-row">
+      <div className="requests-header-row">
         <div>
-          <p className="big-title title">Upcoming Requests</p>
+          <p className="requests-title-lg title">Upcoming Requests</p>
         </div>
       </div>
     </StyledUpcomingRequests>
