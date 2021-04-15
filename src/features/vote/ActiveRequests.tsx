@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useContext } from "react";
+import { FC, useContext, useState, useEffect } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import timerSVG from "assets/icons/timer.svg";
 import ActiveRequestsForm from "./ActiveRequestsForm";
@@ -17,6 +17,7 @@ import { snapshotCurrentRound } from "web3/postVotingContractMethods";
 import web3 from "web3";
 import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
 import { PendingRequest } from "web3/queryVotingContractMethods";
+import { DateTime } from "luxon";
 
 interface Props {
   publicKey: string;
@@ -29,6 +30,11 @@ const ActiveRequests: FC<Props> = ({
   privateKey,
   activeRequests,
 }) => {
+  const [timeRemaining, setTimeRemaining] = useState<Timer>({
+    hours: "00",
+    minutes: "00",
+  });
+
   const {
     state: { address, network, signer, isConnected, provider },
   } = useContext(OnboardContext);
@@ -51,6 +57,50 @@ const ActiveRequests: FC<Props> = ({
 
   const { data: round } = useRound(Number(roundId));
 
+  // Set time remaining depending if it's the Commit or Reveal
+  // Note: the requests are all slightly differently in there final vote time. I'll use the last
+  // Vote added.
+  useEffect(() => {
+    if (votePhase === "Commit") {
+      const arLength = activeRequests.length;
+      const requestTimestamp = DateTime.fromSeconds(
+        Number(activeRequests[arLength - 1].time)
+      );
+      // Add two days, as the price requests are added 24 hours before, and commit ends 48 hours after that.
+      // For some reason need to add 1 hour? Daylights saving times issue?
+      const endOfCommit = requestTimestamp
+        .plus({ days: 2, hours: 1 })
+        .toSeconds();
+      const now = DateTime.local().toSeconds();
+
+      calculateTimeRemaining(now, endOfCommit);
+
+      const timer = setTimeout(() => {
+        setTimeRemaining(calculateTimeRemaining(now, endOfCommit));
+      }, 30000);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (votePhase === "Reveal") {
+      const arLength = activeRequests.length;
+      const requestTimestamp = DateTime.fromSeconds(
+        Number(activeRequests[arLength - 1].time)
+      );
+      // Add three days, as the price requests are added 24 hours before, and reveal ends 72 hours after that.
+      const endOfCommit = requestTimestamp.plus({ days: 3 }).toSeconds();
+      const now = DateTime.local().toSeconds();
+
+      calculateTimeRemaining(now, endOfCommit);
+
+      const timer = setTimeout(() => {
+        setTimeRemaining(calculateTimeRemaining(now, endOfCommit));
+      }, 30000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [activeRequests, votePhase]);
+
   return (
     <StyledActiveRequests className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">
@@ -64,7 +114,7 @@ const ActiveRequests: FC<Props> = ({
           <div className="title">Time Remaining</div>
           {activeRequests.length ? (
             <div className="time">
-              00:00
+              {timeRemaining.hours}:{timeRemaining.minutes}
               <span>
                 <img src={timerSVG} alt="timer_img" />
               </span>
@@ -115,6 +165,29 @@ const ActiveRequests: FC<Props> = ({
       ) : null}
     </StyledActiveRequests>
   );
+};
+
+interface Timer {
+  hours: string;
+  minutes: string;
+}
+
+const calculateTimeRemaining = (start: number, end: number) => {
+  const difference = end - start;
+  let timeLeft = {
+    hours: "00",
+    minutes: "00",
+  };
+
+  if (difference > 0) {
+    timeLeft = {
+      hours: Math.floor((difference / (60 * 60)) % 24).toString(),
+      minutes: Math.floor((difference / 60) % 60).toString(),
+    };
+    if (timeLeft.hours === "0") timeLeft.hours = "00";
+  }
+
+  return timeLeft;
 };
 
 const StyledActiveRequests = styled.div`
