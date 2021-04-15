@@ -73,7 +73,7 @@ const ActiveRequests: FC<Props> = ({
         .toSeconds();
       const now = DateTime.local().toSeconds();
 
-      calculateTimeRemaining(now, endOfCommit);
+      setTimeRemaining(calculateTimeRemaining(now, endOfCommit));
 
       const timer = setTimeout(() => {
         setTimeRemaining(calculateTimeRemaining(now, endOfCommit));
@@ -91,7 +91,7 @@ const ActiveRequests: FC<Props> = ({
       const endOfCommit = requestTimestamp.plus({ days: 3 }).toSeconds();
       const now = DateTime.local().toSeconds();
 
-      calculateTimeRemaining(now, endOfCommit);
+      setTimeRemaining(calculateTimeRemaining(now, endOfCommit));
 
       const timer = setTimeout(() => {
         setTimeRemaining(calculateTimeRemaining(now, endOfCommit));
