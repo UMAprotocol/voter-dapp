@@ -53,7 +53,7 @@ const ActiveRequests: FC<Props> = ({
 
   const { data: round } = useRound(Number(roundId));
 
-  console.log("encrypted votes", encryptedVotes);
+  // console.log("encrypted votes", encryptedVotes);
 
   return (
     <StyledActiveRequests className="ActiveRequests">

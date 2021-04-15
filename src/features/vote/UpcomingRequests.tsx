@@ -1,24 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import {
-  FC,
-  useEffect,
-  // useState
-} from "react";
+import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { PriceRequestAdded } from "web3/queryVotingContractEvents";
 import RequestsWrapper from "./RequestsWrapper";
 
 interface Props {
-  priceRequestsAdded: PriceRequestAdded[];
+  upcomingRequests: PriceRequestAdded[];
 }
-const UpcomingRequests: FC<Props> = ({ priceRequestsAdded }) => {
-  // const [upcomingRequests, setUpcomingRequests] = useState([]);
-
-  useEffect(() => {
-    if (priceRequestsAdded.length) {
-      // console.log("PRA", priceRequestsAdded);
-    }
-  }, [priceRequestsAdded]);
+const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
   return (
     <StyledUpcomingRequests className="UpcomingRequests">
       <div className="header-row">

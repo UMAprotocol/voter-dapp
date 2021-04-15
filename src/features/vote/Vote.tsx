@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useContext, useEffect, useState } from "react";
 import tw, { styled } from "twin.macro";
+import { DateTime } from "luxon";
 
 // Components
 import ActiveRequests from "./ActiveRequests";
@@ -16,10 +17,14 @@ import {
   usePendingRequests,
 } from "hooks";
 import { recoverPublicKey, derivePrivateKey } from "./helpers";
+import { PriceRequestAdded } from "web3/queryVotingContractEvents";
 
 const Vote = () => {
   const [publicKey, setPublicKey] = useState("");
   const [privateKey, setPrivateKey] = useState("");
+  const [upcomingRequests, setUpcomingRequests] = useState<PriceRequestAdded[]>(
+    []
+  );
   const { state } = useContext(OnboardContext);
 
   const { data: priceRequestRounds } = useVoteData();
@@ -56,6 +61,26 @@ const Vote = () => {
     }
   }, [state.signer]);
 
+  useEffect(() => {
+    if (priceRequestsAdded.length) {
+      const filtered = priceRequestsAdded.filter((el) => {
+        const startOfRequests = DateTime.fromSeconds(Number(el.time));
+        const now = DateTime.local();
+        console.log(startOfRequests.diff(now).toObject().milliseconds);
+        const diff = startOfRequests.diff(now).toObject().milliseconds;
+        if (diff) {
+          // if time is greater than the current time, request is upcoming.
+          return diff > 0;
+        } else {
+          return false;
+        }
+      });
+      setUpcomingRequests(filtered);
+    }
+  }, [priceRequestsAdded]);
+
+  console.log("priceRequestsAdded", priceRequestsAdded);
+
   return (
     <StyledVote>
       {activeRequests.length ? (
@@ -72,7 +97,7 @@ const Vote = () => {
         contract={votingContract}
       />
       {priceRequestsAdded.length ? (
-        <UpcomingRequests priceRequestsAdded={priceRequestsAdded} />
+        <UpcomingRequests upcomingRequests={upcomingRequests} />
       ) : null}
     </StyledVote>
   );
