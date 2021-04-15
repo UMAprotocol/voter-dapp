@@ -136,7 +136,6 @@ export const queryEncryptedVotes = async (
   contract: ethers.Contract | null,
   privateKey: string,
   address: string | null = null,
-  // hotAddress: string | null,
   roundId: string | null,
   identifier: string | null = null,
   time: number | null = null

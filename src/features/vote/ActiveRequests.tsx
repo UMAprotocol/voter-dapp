@@ -33,11 +33,9 @@ const ActiveRequests: FC<Props> = ({
     state: { address, network, signer, isConnected, provider },
   } = useContext(OnboardContext);
 
-  const { votingAddress, hotAddress } = useVotingAddress(
-    address,
-    signer,
-    network
-  );
+  const { votingAddress } = useVotingAddress(address, signer, network);
+
+  console.log("voting address", votingAddress);
 
   const { votingContract } = useVotingContract(signer, isConnected, network);
 
@@ -51,7 +49,6 @@ const ActiveRequests: FC<Props> = ({
     votingAddress,
     privateKey,
     roundId
-    // hotAddress
   );
 
   const { data: round } = useRound(Number(roundId));

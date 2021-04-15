@@ -10,7 +10,6 @@ export default function useEncryptedVotesEvents(
   address: string | null,
   privateKey: string,
   roundId: string
-  // hotAddress: string | null
 ) {
   const { data, error, isFetching, refetch } = useQuery<EncryptedVote[]>(
     "encryptedVotesEvents",
