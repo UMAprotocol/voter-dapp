@@ -47,8 +47,8 @@ const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
 
   return (
     <StyledPastRequests className="PastRequests">
-      <div className="header-row" tw="flex items-stretch p-10">
-        <div tw="flex-grow">
+      <div className="header-row">
+        <div>
           <p className="big-title title">Past Requests</p>
         </div>
       </div>
@@ -132,73 +132,6 @@ const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
 
 const StyledPastRequests = styled(RequestsWrapper)`
   &.PastRequests {
-    .header-row {
-      max-width: 1350px;
-      margin: 0 auto;
-      padding-bottom: 2rem;
-      .big-title {
-        font-size: 2.5rem;
-        font-weight: 600;
-        line-height: 1.38;
-        background-color: white;
-      }
-    }
-    .table {
-      ${tw`table-auto p-10`};
-      width: 100%;
-      max-width: 1250px;
-      margin: 0 auto;
-      border-collapse: separate;
-      border-spacing: 0 15px;
-
-      thead {
-        tr {
-          text-align: left;
-          margin-bottom: 2rem;
-        }
-        th {
-          padding-bottom: 1rem;
-          border-bottom: 1px solid #e5e5e5;
-        }
-        th:last-child {
-          text-align: center;
-        }
-      }
-
-      tbody {
-        td {
-          div {
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #e5e5e5;
-            padding: 0.5rem;
-            padding-bottom: 3rem;
-            min-height: 125px;
-          }
-          .description {
-            max-width: 500px;
-          }
-        }
-
-        td:last-child {
-          svg {
-            margin: 0 auto;
-          }
-        }
-      }
-    }
-    .bottom-row {
-      text-align: center;
-      button {
-        width: 150px;
-      }
-    }
-    .loading {
-      padding: 2rem;
-      font-size: 1.5rem;
-      margin-left: 2rem;
-      font-weight: 600;
-    }
   }
 `;
 

@@ -6,7 +6,6 @@ import ActiveRequestsForm from "./ActiveRequestsForm";
 import {
   useVotingContract,
   useEncryptedVotesEvents,
-  usePendingRequests,
   useVotePhase,
   useCurrentRoundId,
   useRound,
@@ -16,20 +15,24 @@ import Button from "common/components/button";
 import { snapshotCurrentRound } from "web3/postVotingContractMethods";
 import web3 from "web3";
 import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
+import { PendingRequest } from "web3/queryVotingContractMethods";
 
 interface Props {
   publicKey: string;
   privateKey: string;
+  activeRequests: PendingRequest[];
 }
 
-const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
+const ActiveRequests: FC<Props> = ({
+  publicKey,
+  privateKey,
+  activeRequests,
+}) => {
   const {
     state: { address, network, signer, isConnected, provider },
   } = useContext(OnboardContext);
 
   const { votingContract } = useVotingContract(signer, isConnected, network);
-
-  const { data: activeRequests } = usePendingRequests();
 
   const { data: votePhase } = useVotePhase();
   const { data: roundId } = useCurrentRoundId();
@@ -42,76 +45,64 @@ const ActiveRequests: FC<Props> = ({ publicKey, privateKey }) => {
 
   return (
     <StyledActiveRequests className="ActiveRequests">
-      {activeRequests.length ? (
-        <>
-          <div className="header-row" tw="flex items-stretch p-10">
-            <div tw="flex-grow">
-              <div className="title">
-                Stage: <span>{votePhase ? votePhase : "Snapshot"} Votes</span>
-              </div>
-              <p className="big-title title">Active Requests</p>
-            </div>
-            <div tw="flex-grow text-right">
-              <div className="title">Time Remaining</div>
-              {activeRequests.length ? (
-                <div className="time">
-                  00:00
-                  <span>
-                    <img src={timerSVG} alt="timer_img" />
-                  </span>
-                </div>
-              ) : (
-                <div className="time">N/A</div>
-              )}
-            </div>
+      <div className="header-row" tw="flex items-stretch p-10">
+        <div tw="flex-grow">
+          <div className="title">
+            Stage: <span>{votePhase ? votePhase : "Snapshot"} Votes</span>
           </div>
-          <ActiveRequestsForm
-            publicKey={publicKey}
-            isConnected={isConnected}
-            activeRequests={activeRequests}
-            votePhase={votePhase}
-            encryptedVotes={encryptedVotes}
-            refetchEncryptedVotes={refetchEncryptedVotes}
-          />
-          {activeRequests.length &&
-          votePhase === "Reveal" &&
-          round.snapshotId === "0" ? (
-            <Button
-              onClick={() => {
-                if (!signer || !votingContract || !provider) return;
-                votingContract.functions["snapshotMessageHash"]().then(
-                  (hash) => {
-                    const sigHash = hash[0];
-                    if ((window as any).ethereum) {
-                      const mm = (window as any).ethereum;
-                      const Web3 = new web3(mm);
-                      if (address) {
-                        getMessageSignatureMetamask(
-                          Web3,
-                          sigHash,
-                          address
-                        ).then((msg) => {
-                          snapshotCurrentRound(votingContract, msg).then(
-                            (tx) => {
-                              // TODO: Refetch state after snapshot.
-                              console.log("success?", tx);
-                            }
-                          );
-                        });
-                      }
+          <p className="big-title title">Active Requests</p>
+        </div>
+        <div tw="flex-grow text-right">
+          <div className="title">Time Remaining</div>
+          {activeRequests.length ? (
+            <div className="time">
+              00:00
+              <span>
+                <img src={timerSVG} alt="timer_img" />
+              </span>
+            </div>
+          ) : (
+            <div className="time">N/A</div>
+          )}
+        </div>
+      </div>
+      <ActiveRequestsForm
+        publicKey={publicKey}
+        isConnected={isConnected}
+        activeRequests={activeRequests}
+        votePhase={votePhase}
+        encryptedVotes={encryptedVotes}
+        refetchEncryptedVotes={refetchEncryptedVotes}
+      />
+      {activeRequests.length &&
+      votePhase === "Reveal" &&
+      round.snapshotId === "0" ? (
+        <Button
+          onClick={() => {
+            if (!signer || !votingContract || !provider) return;
+            votingContract.functions["snapshotMessageHash"]().then((hash) => {
+              const sigHash = hash[0];
+              if ((window as any).ethereum) {
+                const mm = (window as any).ethereum;
+                const Web3 = new web3(mm);
+                if (address) {
+                  getMessageSignatureMetamask(Web3, sigHash, address).then(
+                    (msg) => {
+                      snapshotCurrentRound(votingContract, msg).then((tx) => {
+                        // TODO: Refetch state after snapshot.
+                        console.log("success?", tx);
+                      });
                     }
-                  }
-                );
-              }}
-              variant="secondary"
-            >
-              {signer ? "Snapshot Round" : "Connect Wallet to Snapshot"}
-            </Button>
-          ) : null}
-        </>
-      ) : (
-        <div />
-      )}
+                  );
+                }
+              }
+            });
+          }}
+          variant="secondary"
+        >
+          {signer ? "Snapshot Round" : "Connect Wallet to Snapshot"}
+        </Button>
+      ) : null}
     </StyledActiveRequests>
   );
 };

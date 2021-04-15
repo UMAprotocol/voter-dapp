@@ -5,6 +5,7 @@ import tw, { styled } from "twin.macro";
 // Components
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
+import UpcomingRequests from "./UpcomingRequests";
 
 import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
@@ -12,6 +13,7 @@ import {
   usePriceRequestAddedEvents,
   useVotingAddress,
   useVotingContract,
+  usePendingRequests,
 } from "hooks";
 import { recoverPublicKey, derivePrivateKey } from "./helpers";
 
@@ -34,7 +36,8 @@ const Vote = () => {
     state.network
   );
 
-  usePriceRequestAddedEvents();
+  const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
+  const { data: activeRequests } = usePendingRequests();
 
   useEffect(() => {
     if (state.signer) {
@@ -55,16 +58,22 @@ const Vote = () => {
 
   return (
     <StyledVote>
-      <ActiveRequests
-        // activeRequests={activeRequests}
-        publicKey={publicKey}
-        privateKey={privateKey}
-      />
+      {activeRequests.length ? (
+        <ActiveRequests
+          activeRequests={activeRequests}
+          publicKey={publicKey}
+          privateKey={privateKey}
+        />
+      ) : null}
+
       <PastRequests
         priceRounds={priceRequestRounds}
         address={votingAddress}
         contract={votingContract}
       />
+      {priceRequestsAdded.length ? (
+        <UpcomingRequests priceRequestsAdded={priceRequestsAdded} />
+      ) : null}
     </StyledVote>
   );
 };
