@@ -93,7 +93,7 @@ const Vote = () => {
         address={votingAddress}
         contract={votingContract}
       />
-      {priceRequestsAdded.length ? (
+      {upcomingRequests.length ? (
         <UpcomingRequests upcomingRequests={upcomingRequests} />
       ) : null}
     </StyledVote>
