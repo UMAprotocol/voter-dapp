@@ -71,15 +71,18 @@ const ActiveRequests: FC<Props> = ({
       const endOfCommit = requestTimestamp
         .plus({ days: 2, hours: 1 })
         .toSeconds();
-      const now = DateTime.local().toSeconds();
 
-      setTimeRemaining(calculateTimeRemaining(now, endOfCommit));
+      setTimeRemaining(
+        calculateTimeRemaining(DateTime.local().toSeconds(), endOfCommit)
+      );
 
-      const timer = setTimeout(() => {
-        setTimeRemaining(calculateTimeRemaining(now, endOfCommit));
+      const timer = setInterval(() => {
+        setTimeRemaining(
+          calculateTimeRemaining(DateTime.local().toSeconds(), endOfCommit)
+        );
       }, 30000);
 
-      return () => clearTimeout(timer);
+      return () => clearInterval(timer);
     }
 
     if (votePhase === "Reveal") {
@@ -89,15 +92,18 @@ const ActiveRequests: FC<Props> = ({
       );
       // Add three days, as the price requests are added 24 hours before, and reveal ends 72 hours after that.
       const endOfCommit = requestTimestamp.plus({ days: 3 }).toSeconds();
-      const now = DateTime.local().toSeconds();
 
-      setTimeRemaining(calculateTimeRemaining(now, endOfCommit));
+      setTimeRemaining(
+        calculateTimeRemaining(DateTime.local().toSeconds(), endOfCommit)
+      );
 
-      const timer = setTimeout(() => {
-        setTimeRemaining(calculateTimeRemaining(now, endOfCommit));
+      const timer = setInterval(() => {
+        setTimeRemaining(
+          calculateTimeRemaining(DateTime.local().toSeconds(), endOfCommit)
+        );
       }, 30000);
 
-      return () => clearTimeout(timer);
+      return () => clearInterval(timer);
     }
   }, [activeRequests, votePhase]);
 
