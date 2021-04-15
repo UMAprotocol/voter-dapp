@@ -61,11 +61,12 @@ const ActiveRequests: FC<Props> = ({
   // Note: the requests are all slightly differently in there final vote time. I'll use the last
   // Vote added.
   useEffect(() => {
+    const arLength = activeRequests.length;
+    const requestTimestamp = DateTime.fromSeconds(
+      Number(activeRequests[arLength - 1].time)
+    );
+
     if (votePhase === "Commit") {
-      const arLength = activeRequests.length;
-      const requestTimestamp = DateTime.fromSeconds(
-        Number(activeRequests[arLength - 1].time)
-      );
       // Add two days, as the price requests are added 24 hours before, and commit ends 48 hours after that.
       // For some reason need to add 1 hour? Daylights saving times issue?
       const endOfCommit = requestTimestamp
@@ -86,10 +87,6 @@ const ActiveRequests: FC<Props> = ({
     }
 
     if (votePhase === "Reveal") {
-      const arLength = activeRequests.length;
-      const requestTimestamp = DateTime.fromSeconds(
-        Number(activeRequests[arLength - 1].time)
-      );
       // Add three days, as the price requests are added 24 hours before, and reveal ends 72 hours after that.
       const endOfCommit = requestTimestamp.plus({ days: 3 }).toSeconds();
 
