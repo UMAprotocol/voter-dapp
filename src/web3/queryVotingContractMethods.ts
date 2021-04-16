@@ -38,7 +38,6 @@ export const queryGetPendingRequests = async (contract: ethers.Contract) => {
       Array<[string, ethers.BigNumber, string]>
     > = await contract.functions.getPendingRequests();
     if (requests.length) {
-      console.log("requests", requests);
       const values = [] as PendingRequest[];
       requests.forEach((el) => {
         if (el.length) {

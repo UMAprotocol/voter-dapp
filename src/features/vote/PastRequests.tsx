@@ -6,7 +6,7 @@ import Button from "common/components/button";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import { formatPastRequestsNoAddress } from "./helpers/formatPastRequestsNoAddress";
 import { formatPastRequestsByAddress } from "./helpers/formatPastRequestByAddress";
-import RequestsWrapper from "./RequestsWrapper";
+import RequestsWrapper from "./styled/RequestsWrapper";
 
 export interface PastRequest {
   proposal: string;

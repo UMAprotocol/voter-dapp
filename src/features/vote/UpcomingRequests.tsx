@@ -2,7 +2,7 @@
 import { FC, useEffect, useState } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { PriceRequestAdded } from "web3/queryVotingContractEvents";
-import RequestsWrapper from "./RequestsWrapper";
+import RequestsWrapper from "./styled/RequestsWrapper";
 import { DateTime } from "luxon";
 
 interface FormattedRequest {
