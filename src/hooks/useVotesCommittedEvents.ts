@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import { ethers } from "ethers";
-import { queryVotesCommitted, VoteEvent } from "web3/queryVotingContractEvents";
+import { queryVotesCommittedEvents } from "web3/get/queryVotesCommittedEvents";
+import { VoteEvent } from "web3/types.web3";
 
 export default function useVotesCommittedEvents(
   contract: ethers.Contract | null,
@@ -9,7 +10,7 @@ export default function useVotesCommittedEvents(
   const { data, error, isFetching } = useQuery<VoteEvent[]>(
     "votesCommittedEvents",
     () => {
-      return queryVotesCommitted(contract, address).then((res) => {
+      return queryVotesCommittedEvents(contract, address).then((res) => {
         if (res) {
           return res;
         } else {

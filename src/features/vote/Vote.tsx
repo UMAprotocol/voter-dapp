@@ -19,7 +19,7 @@ import {
 import { recoverPublicKey } from "./helpers/recoverPublicKey";
 import { derivePrivateKey } from "./helpers/derivePrivateKey";
 
-import { PriceRequestAdded } from "web3/queryVotingContractEvents";
+import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
 
 const Vote = () => {
   const [publicKey, setPublicKey] = useState("");

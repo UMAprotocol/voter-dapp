@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import {
   queryPriceRequestAdded,
   PriceRequestAdded,
-} from "web3/queryVotingContractEvents";
+} from "web3/get/queryPriceRequestAddedEvents";
 
 import provider from "common/utils/web3/createProvider";
 import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";

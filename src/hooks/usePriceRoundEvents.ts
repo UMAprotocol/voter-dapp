@@ -7,7 +7,7 @@ import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork"
 import {
   queryPriceRoundEvents,
   PriceRound,
-} from "web3/queryVotingContractEvents";
+} from "web3/get/queryPriceRoundEvents";
 
 const signer = provider.getSigner();
 const contract = createVotingContractInstance(

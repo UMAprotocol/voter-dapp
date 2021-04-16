@@ -3,7 +3,7 @@ import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingC
 import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork";
 import { useQuery } from "react-query";
 
-import { queryGetVotePhase } from "web3/queryVotingContractMethods";
+import { queryGetVotePhase } from "web3/get/queryGetVotePhase";
 
 const contract = createVoidSignerVotingContractInstance(
   provider,

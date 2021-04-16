@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import {
   queryPriceResolved,
   PriceResolved,
-} from "web3/queryVotingContractEvents";
+} from "web3/get/queryPriceResolvedEvents";
 
 export default function usePriceResolvedEvents(
   contract: ethers.Contract | null

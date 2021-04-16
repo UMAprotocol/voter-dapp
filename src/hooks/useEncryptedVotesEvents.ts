@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import {
   queryEncryptedVotes,
   EncryptedVote,
-} from "web3/queryVotingContractEvents";
+} from "web3/get/queryEncryptedVotesEvents";
 
 export default function useEncryptedVotesEvents(
   contract: ethers.Contract | null,

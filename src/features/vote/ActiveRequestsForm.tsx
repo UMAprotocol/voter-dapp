@@ -10,17 +10,15 @@ import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Select from "common/components/select";
 import { useVotingContract } from "hooks";
-import {
-  postCommitVotes,
-  PostRevealData,
-  revealVotes,
-} from "web3/postVotingContractMethods";
+import { commitVotes } from "web3/post/commitVotes";
+import { revealVotes, PostRevealData } from "web3/post/revealVotes";
+
 import { ethers } from "ethers";
 import web3 from "web3";
 import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
-import { EncryptedVote } from "web3/queryVotingContractEvents";
+import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 
 export type FormData = {
   [key: string]: string;
@@ -101,7 +99,7 @@ const ActiveRequestsForm: FC<Props> = ({
         ).then((fd) => {
           // console.log("fd", fd);
           if (votingContract) {
-            postCommitVotes(votingContract, fd).then((tx) => {
+            commitVotes(votingContract, fd).then((tx) => {
               setModalState("pending");
               // Need to confirm if the user submits the vote.
               if (tx) {

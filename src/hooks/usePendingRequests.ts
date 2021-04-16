@@ -9,7 +9,7 @@ import { useQuery } from "react-query";
 import {
   queryGetPendingRequests,
   PendingRequest,
-} from "web3/queryVotingContractMethods";
+} from "web3/get/queryGetPendingRequests";
 import { ErrorContext } from "common/context/ErrorContext";
 
 const contract = createVoidSignerVotingContractInstance(

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { FC, useEffect, useState } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
-import { PriceRequestAdded } from "web3/queryVotingContractEvents";
+import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
 import RequestsWrapper from "./styled/RequestsWrapper";
 import { DateTime } from "luxon";
 

@@ -1,4 +1,7 @@
+/** @jsxImportSource @emotion/react */
 import { FC, useContext, useState, useEffect } from "react";
+import tw from "twin.macro"; // eslint-disable-line
+
 import ActiveRequestsForm from "./ActiveRequestsForm";
 import {
   useVotingContract,
@@ -10,7 +13,7 @@ import {
 } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import Button from "common/components/button";
-import { snapshotCurrentRound } from "web3/postVotingContractMethods";
+import { snapshotCurrentRound } from "web3/post/snapshotCurrentRound";
 import web3 from "web3";
 import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";

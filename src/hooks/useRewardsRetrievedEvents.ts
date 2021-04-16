@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import {
   queryRewardsRetrieved,
   RewardsRetrieved,
-} from "web3/queryVotingContractEvents";
+} from "web3/get/queryRewardsRetrievedEvents";
 
 export default function useRewardsRetrievedEvents(
   contract: ethers.Contract | null,

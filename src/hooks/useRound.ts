@@ -5,7 +5,7 @@ import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork"
 
 import { useQuery } from "react-query";
 
-import { queryRounds, Round } from "web3/queryVotingContractMethods";
+import { queryRounds, Round } from "web3/get/queryRounds";
 
 const contract = createVoidSignerVotingContractInstance(
   provider,
