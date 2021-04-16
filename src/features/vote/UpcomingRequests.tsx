@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { FC, useEffect, useState } from "react";
-import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
-import RequestsWrapper from "./styled/RequestsWrapper";
 import { DateTime } from "luxon";
+import { Wrapper } from "./styled/UpcomingRequests.styled";
 
 interface FormattedRequest {
   proposal: string;
@@ -44,7 +43,7 @@ const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
   }, [upcomingRequests]);
 
   return (
-    <StyledUpcomingRequests className="UpcomingRequests">
+    <Wrapper className="UpcomingRequests">
       <div className="requests-header-row">
         <div>
           <p className="requests-title-lg title">Upcoming Requests</p>
@@ -78,13 +77,8 @@ const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
           })}
         </tbody>
       </table>
-    </StyledUpcomingRequests>
+    </Wrapper>
   );
 };
-
-const StyledUpcomingRequests = styled(RequestsWrapper)`
-  &.UpcomingRequests {
-  }
-`;
 
 export default UpcomingRequests;

@@ -6,7 +6,7 @@ import Button from "common/components/button";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import { formatPastRequestsNoAddress } from "./helpers/formatPastRequestsNoAddress";
 import { formatPastRequestsByAddress } from "./helpers/formatPastRequestByAddress";
-import RequestsWrapper from "./styled/RequestsWrapper";
+import { Wrapper } from "./styled/PastRequests.styled";
 
 export interface PastRequest {
   proposal: string;
@@ -44,7 +44,7 @@ const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
   }, [priceRounds, address, contract, showAll]);
 
   return (
-    <StyledPastRequests className="PastRequests">
+    <Wrapper className="PastRequests">
       <div className="requests-header-row">
         <div>
           <p className="requests-title-lg title">Past Requests</p>
@@ -124,13 +124,8 @@ const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
           </Button>
         </div>
       ) : null}
-    </StyledPastRequests>
+    </Wrapper>
   );
 };
-
-const StyledPastRequests = styled(RequestsWrapper)`
-  &.PastRequests {
-  }
-`;
 
 export default PastRequests;
