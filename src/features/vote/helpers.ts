@@ -13,6 +13,7 @@ import {
   getRandomSignedInt,
   encryptMessage,
 } from "common/tempUmaFunctions";
+import toWei from "common/utils/web3/convertToWeiSafely";
 
 import { FormData } from "./ActiveRequestsForm";
 
@@ -128,11 +129,13 @@ export function formatPastRequestsByAddress(
   return formattedData;
 }
 
+// For the hashing being done here, we must adhere to the format expected later in the process by revealVote.
+// IE: identifier needs to be a hexstring, "yes" and "no" need to be 1 x 10**18 and 0 respectively, etc.
 export async function formatVoteDataToCommit(
   data: FormData,
   activeRequests: PendingRequest[],
   roundId: string,
-  address: string | null,
+  address: string,
   publicKey: string
 ) {
   const postValues = [] as PostCommitVote[];
@@ -153,17 +156,45 @@ export async function formatVoteDataToCommit(
         }
 
         datum.ancillaryData = ancData;
-        const price = data[el.identifier];
+        let price = data[el.identifier];
+        // change yes/no to numbers.
+        if (price === "yes" || price === "no") {
+          if (price === "no") {
+            price = "0";
+          } else {
+            price = toWei("1").toString();
+          }
+        } else {
+          price = toWei(price).toString();
+        }
+
         const salt = getRandomSignedInt().toString();
         const hash = computeVoteHashAncillary({
           price,
           salt,
-          account: address || "",
+          account: address,
           time: el.time,
           roundId,
           identifier: el.identifier,
           ancillaryData: ancData,
         });
+
+        console.log(
+          "ancData",
+          ancData,
+          "price",
+          price,
+          "identifier",
+          el.identifier,
+          "time",
+          el.time,
+          "address",
+          address,
+          "roundId",
+          roundId
+        );
+
+        console.log("hash", hash);
         if (hash) {
           datum.hash = hash;
         }

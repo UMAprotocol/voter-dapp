@@ -93,28 +93,31 @@ const ActiveRequestsForm: FC<Props> = ({
           validValues[Object.keys(data)[i]] = Object.values(data)[i];
       }
 
-      // Format data.
-      formatVoteDataToCommit(
-        validValues,
-        activeRequests,
-        roundId,
-        address,
-        publicKey
-      ).then((fd) => {
-        if (votingContract) {
-          postCommitVotes(votingContract, fd).then((tx) => {
-            setModalState("pending");
-            // Need to confirm if the user submits the vote.
-            if (tx) {
-              tx.wait(1).then((conf: any) => {
-                // Temporary, as mining is instant on local ganache.
-                setTimeout(() => setModalState("success"), 5000);
-                refetchEncryptedVotes();
-              });
-            }
-          });
-        }
-      });
+      if (address) {
+        // Format data.
+        formatVoteDataToCommit(
+          validValues,
+          activeRequests,
+          roundId,
+          address,
+          publicKey
+        ).then((fd) => {
+          console.log("fd", fd);
+          // if (votingContract) {
+          //   postCommitVotes(votingContract, fd).then((tx) => {
+          //     setModalState("pending");
+          //     // Need to confirm if the user submits the vote.
+          //     if (tx) {
+          //       tx.wait(1).then((conf: any) => {
+          //         // Temporary, as mining is instant on local ganache.
+          //         setTimeout(() => setModalState("success"), 5000);
+          //         refetchEncryptedVotes();
+          //       });
+          //     }
+          //   });
+          // }
+        });
+      }
     },
     [
       activeRequests,
