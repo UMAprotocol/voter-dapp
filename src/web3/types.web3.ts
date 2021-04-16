@@ -7,3 +7,11 @@ export interface PendingRequest {
   idenHex: string;
   timeBN: ethers.BigNumber;
 }
+
+export interface VoteEvent {
+  address: string;
+  roundId: string;
+  identifier: string;
+  time: string;
+  ancillaryData: string;
+}
