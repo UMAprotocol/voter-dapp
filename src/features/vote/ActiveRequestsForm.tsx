@@ -18,12 +18,10 @@ import {
 import { ethers } from "ethers";
 import web3 from "web3";
 import { computeVoteHashAncillary, Request } from "common/tempUmaFunctions";
-import toWeiSafe from "common/utils/web3/convertToWeiSafely";
 import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
-import { formatVoteDataToCommit } from "./helpers";
+import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
 import { EncryptedVote } from "web3/queryVotingContractEvents";
-import EthCrypto from "eth-crypto";
 
 export type FormData = {
   [key: string]: string;

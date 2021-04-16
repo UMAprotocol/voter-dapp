@@ -4,10 +4,8 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { ethers } from "ethers";
 import Button from "common/components/button";
 import { PriceRequestRound } from "common/hooks/useVoteData";
-import {
-  formatPastRequestsNoAddress,
-  formatPastRequestsByAddress,
-} from "./helpers";
+import { formatPastRequestsNoAddress } from "./helpers/formatPastRequestsNoAddress";
+import { formatPastRequestsByAddress } from "./helpers/formatPastRequestByAddress";
 import RequestsWrapper from "./RequestsWrapper";
 
 export interface PastRequest {

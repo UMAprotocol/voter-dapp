@@ -16,7 +16,9 @@ import {
   useVotingContract,
   usePendingRequests,
 } from "hooks";
-import { recoverPublicKey, derivePrivateKey } from "./helpers";
+import { recoverPublicKey } from "./helpers/recoverPublicKey";
+import { derivePrivateKey } from "./helpers/derivePrivateKey";
+
 import { PriceRequestAdded } from "web3/queryVotingContractEvents";
 
 const Vote = () => {
