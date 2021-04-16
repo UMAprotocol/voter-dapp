@@ -1,6 +1,7 @@
 // Pulled from @uma/common temporarily, as it has no type declarations.
 // remove any dependencies in here later.
 import EthCrypto from "eth-crypto";
+import { ethers } from "ethers";
 import Web3 from "web3";
 import web3 from "web3";
 
@@ -28,9 +29,9 @@ export interface Request {
   price: string;
   salt: string;
   account: string;
-  time: string;
+  time: number;
   ancillaryData: string;
-  roundId: string;
+  roundId: number;
   identifier: string;
 }
 

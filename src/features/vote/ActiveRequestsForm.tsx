@@ -12,19 +12,18 @@ import Select from "common/components/select";
 import { useVotingContract } from "hooks";
 import {
   postCommitVotes,
-  // PostRevealData,
-  // revealVotes,
+  PostRevealData,
+  revealVotes,
 } from "web3/postVotingContractMethods";
-// import { ethers } from "ethers";
-// import convertFromWei from "common/utils/web3/convertFromWei";
 import { ethers } from "ethers";
-// import web3 from "web3";
-// import { computeVoteHashAncillary, Request } from "common/tempUmaFunctions";
-
+import web3 from "web3";
+import { computeVoteHashAncillary, Request } from "common/tempUmaFunctions";
+import toWeiSafe from "common/utils/web3/convertToWeiSafely";
 import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { formatVoteDataToCommit } from "./helpers";
 import { EncryptedVote } from "web3/queryVotingContractEvents";
+import EthCrypto from "eth-crypto";
 
 export type FormData = {
   [key: string]: string;
@@ -291,75 +290,62 @@ const ActiveRequestsForm: FC<Props> = ({
               type="button"
               onClick={() => {
                 // WIP. Comment out for now.
-                // console.log("encryptedVotes", encryptedVotes);
-                // if (encryptedVotes.length && activeRequests.length) {
-                //   const postData = [] as PostRevealData[];
-                //   activeRequests.forEach((el, index) => {
-                //     const datum = {} as PostRevealData;
-                //     // I believe latest events are on bottom. requires testing.
-                //     const latestVotesFirst = [...encryptedVotes].reverse();
-                //     const findVote = latestVotesFirst.find(
-                //       (x) => x.identifier === el.identifier
-                //     );
-                //     if (findVote) {
-                //       if (findVote.price !== "yes" && address) {
-                //         const request = {} as Request;
-                //         request.price = findVote.price;
-                //         request.salt = findVote.salt;
-                //         if (
-                //           el.ancillaryData === "-" ||
-                //           el.ancillaryData === "N/A"
-                //         ) {
-                //           request.ancillaryData = "0x";
-                //         } else {
-                //           request.ancillaryData = web3.utils.utf8ToHex(
-                //             el.ancillaryData
-                //           );
-                //         }
-                //         request.account = address;
-                //         request.time = el.time;
-                //         request.roundId = roundId;
-                //         request.identifier = el.identifier;
-                //         const hash = computeVoteHashAncillary(request);
-                //         console.log("hash", hash);
-                //       }
-                //       datum.ancillaryData = el.ancillaryData;
-                //       // anc data is set to - or N/A in UI if empty, convert back to 0x.
-                //       if (
-                //         el.ancillaryData === "-" ||
-                //         el.ancillaryData === "N/A"
-                //       ) {
-                //         datum.ancillaryData = "0x";
-                //       } else {
-                //         datum.ancillaryData = web3.utils.utf8ToHex(
-                //           el.ancillaryData
-                //         );
-                //       }
-                //       datum.time = Number(el.time);
-                //       datum.identifier = ethers.utils.toUtf8Bytes(
-                //         el.identifier
-                //       );
-                //       // datum.salt = ethers.BigNumber.from(findVote.salt);
-                //       datum.salt = findVote.salt;
-                //       if (findVote.price === "yes" || findVote.price === "no") {
-                //         if (findVote.price === "yes") {
-                //           datum.price = toWeiSafe("1");
-                //         } else {
-                //           datum.price = toWeiSafe("0");
-                //         }
-                //       } else {
-                //         datum.price = toWeiSafe(findVote.price);
-                //       }
-                //       postData.push(datum);
-                //     }
-                //   });
-                //   console.log("Post data", postData);
-                //   if (votingContract) {
-                //     revealVotes(votingContract, postData).then((res) => {
-                //       console.log("woot");
-                //     });
-                //   }
-                // }
+                console.log("encryptedVotes", encryptedVotes);
+                if (encryptedVotes.length && activeRequests.length) {
+                  const postData = [] as PostRevealData[];
+                  activeRequests.forEach((el, index) => {
+                    const datum = {} as PostRevealData;
+                    // I believe latest events are on bottom. requires testing.
+                    const latestVotesFirst = [...encryptedVotes].reverse();
+                    const findVote = latestVotesFirst.find(
+                      (x) => x.identifier === el.identifier
+                    );
+
+                    if (findVote) {
+                      datum.ancillaryData = el.ancillaryData;
+                      // anc data is set to - or N/A in UI if empty, convert back to 0x.
+                      if (
+                        el.ancillaryData === "-" ||
+                        el.ancillaryData === "N/A"
+                      ) {
+                        datum.ancillaryData = "0x";
+                      } else {
+                        datum.ancillaryData = web3.utils.utf8ToHex(
+                          el.ancillaryData
+                        );
+                      }
+                      datum.time = Number(el.time);
+                      datum.identifier = el.idenHex;
+                      datum.salt = findVote.salt;
+                      // datum.price = toWeiSafe(findVote.price).toString();
+                      datum.price = findVote.price.toString();
+                      postData.push(datum);
+
+                      if (address) {
+                        const salt = "100";
+                        const r: Request = {
+                          price: datum.price,
+                          salt,
+                          account: address,
+                          time: datum.time,
+                          ancillaryData: datum.ancillaryData,
+                          roundId: Number(roundId),
+                          identifier: datum.identifier,
+                        };
+                        console.log("request in REVEAL", r);
+                        const hash = computeVoteHashAncillary(r);
+
+                        console.log("<<<REVEAL HASH>>>>", hash);
+                      }
+                    }
+                  });
+                  console.log("Post data", postData);
+                  if (votingContract) {
+                    revealVotes(votingContract, postData).then((res) => {
+                      console.log("woot");
+                    });
+                  }
+                }
               }}
               variant="secondary"
             >

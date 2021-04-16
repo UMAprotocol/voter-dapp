@@ -25,6 +25,8 @@ export interface PendingRequest {
   time: string;
   identifier: string;
   ancillaryData: string;
+  idenHex: string;
+  timeBN: ethers.BigNumber;
 }
 
 const NULL_ANC_DATA = "0x";
@@ -36,6 +38,7 @@ export const queryGetPendingRequests = async (contract: ethers.Contract) => {
       Array<[string, ethers.BigNumber, string]>
     > = await contract.functions.getPendingRequests();
     if (requests.length) {
+      console.log("requests", requests);
       const values = [] as PendingRequest[];
       requests.forEach((el) => {
         if (el.length) {
@@ -43,9 +46,11 @@ export const queryGetPendingRequests = async (contract: ethers.Contract) => {
             const datum = {} as PendingRequest;
             datum.identifier = ethers.utils.toUtf8String(x[0]);
             datum.time = x[1].toString();
+            datum.timeBN = x[1];
             datum.ancillaryData =
               x[2] !== NULL_ANC_DATA ? ethers.utils.toUtf8String(x[2]) : "-";
             values.push(datum);
+            datum.idenHex = x[0];
           });
         }
       });

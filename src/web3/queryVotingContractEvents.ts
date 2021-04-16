@@ -130,6 +130,7 @@ export const queryVotesCommitted = async (
 export interface EncryptedVote extends VoteEvent {
   price: string;
   salt: string;
+  idenHex: string;
 }
 
 export const queryEncryptedVotes = async (
@@ -159,6 +160,7 @@ export const queryEncryptedVotes = async (
 
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
+    console.log("events", events);
     const decryptedEvents = await Promise.all(
       events.map(async (el) => {
         const { args } = el;
@@ -180,6 +182,7 @@ export const queryEncryptedVotes = async (
           datum.ancillaryData = args[4];
           datum.price = price;
           datum.salt = salt;
+          datum.idenHex = args[2];
         }
         return datum;
       })

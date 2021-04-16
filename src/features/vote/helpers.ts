@@ -12,6 +12,7 @@ import {
   computeVoteHashAncillary,
   getRandomSignedInt,
   encryptMessage,
+  Request,
 } from "common/tempUmaFunctions";
 import toWei from "common/utils/web3/convertToWeiSafely";
 
@@ -141,11 +142,14 @@ export async function formatVoteDataToCommit(
   const postValues = [] as PostCommitVote[];
   await Promise.all(
     activeRequests.map(async (el) => {
+      console.log("AR", activeRequests);
       // Compute hash and encrypted vote
       if (Object.keys(data).includes(el.identifier)) {
         const datum = {} as PostCommitVote;
-        datum.identifier = stringToBytes32(el.identifier);
-        datum.time = Number(el.time);
+        // datum.identifier = stringToBytes32(el.identifier);
+        datum.identifier = el.idenHex;
+        // datum.time = el.time;
+        datum.time = el.timeBN.toNumber();
         let ancData = "";
 
         // anc data is set to - or N/A in UI if empty, convert back to 0x.
@@ -158,6 +162,8 @@ export async function formatVoteDataToCommit(
         datum.ancillaryData = ancData;
         let price = data[el.identifier];
         // change yes/no to numbers.
+        // When converting price to wei here, we need precision
+        // Default to 18 decimals -- could be different.
         if (price === "yes" || price === "no") {
           if (price === "no") {
             price = "0";
@@ -168,38 +174,17 @@ export async function formatVoteDataToCommit(
           price = toWei(price).toString();
         }
 
-        // console.log(
-        //   "identifier check to hex string",
-        //   web3.utils.utf8ToHex(el.identifier)
-        // );
-
         const salt = getRandomSignedInt().toString();
-        const hash = computeVoteHashAncillary({
+        const r: Request = {
           price,
           salt,
           account: address,
-          time: el.time,
-          roundId,
-          identifier: web3.utils.utf8ToHex(el.identifier),
+          time: el.timeBN.toNumber(),
+          roundId: Number(roundId),
+          identifier: el.idenHex,
           ancillaryData: ancData,
-        });
-
-        console.log(
-          "ancData",
-          ancData,
-          "price",
-          price,
-          "identifier",
-          el.identifier,
-          "time",
-          el.time,
-          "address",
-          address,
-          "roundId",
-          roundId
-        );
-
-        console.log("hash", hash);
+        };
+        const hash = computeVoteHashAncillary(r);
         if (hash) {
           datum.hash = hash;
         }
