@@ -23,7 +23,6 @@ export async function formatVoteDataToCommit(
   const postValues = [] as PostCommitVote[];
   await Promise.all(
     activeRequests.map(async (el) => {
-      console.log("AR", activeRequests);
       // Compute hash and encrypted vote
       if (Object.keys(data).includes(el.identifier)) {
         const datum = {} as PostCommitVote;

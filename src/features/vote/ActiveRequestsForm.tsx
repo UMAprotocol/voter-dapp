@@ -17,7 +17,6 @@ import {
 } from "web3/postVotingContractMethods";
 import { ethers } from "ethers";
 import web3 from "web3";
-import { computeVoteHashAncillary, Request } from "common/tempUmaFunctions";
 import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
@@ -100,7 +99,7 @@ const ActiveRequestsForm: FC<Props> = ({
           address,
           publicKey
         ).then((fd) => {
-          console.log("fd", fd);
+          // console.log("fd", fd);
           if (votingContract) {
             postCommitVotes(votingContract, fd).then((tx) => {
               setModalState("pending");
@@ -288,7 +287,7 @@ const ActiveRequestsForm: FC<Props> = ({
               type="button"
               onClick={() => {
                 // WIP. Comment out for now.
-                console.log("encryptedVotes", encryptedVotes);
+                // console.log("encryptedVotes", encryptedVotes);
                 if (encryptedVotes.length && activeRequests.length) {
                   const postData = [] as PostRevealData[];
                   activeRequests.forEach((el, index) => {
@@ -318,26 +317,9 @@ const ActiveRequestsForm: FC<Props> = ({
                       // datum.price = toWeiSafe(findVote.price).toString();
                       datum.price = findVote.price.toString();
                       postData.push(datum);
-
-                      if (address) {
-                        const salt = "100";
-                        const r: Request = {
-                          price: datum.price,
-                          salt,
-                          account: address,
-                          time: datum.time,
-                          ancillaryData: datum.ancillaryData,
-                          roundId: Number(roundId),
-                          identifier: datum.identifier,
-                        };
-                        console.log("request in REVEAL", r);
-                        const hash = computeVoteHashAncillary(r);
-
-                        console.log("<<<REVEAL HASH>>>>", hash);
-                      }
                     }
                   });
-                  console.log("Post data", postData);
+                  // console.log("Post data", postData);
                   if (votingContract) {
                     revealVotes(votingContract, postData).then((res) => {
                       console.log("woot");
