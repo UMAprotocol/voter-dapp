@@ -103,19 +103,19 @@ const ActiveRequestsForm: FC<Props> = ({
           publicKey
         ).then((fd) => {
           console.log("fd", fd);
-          // if (votingContract) {
-          //   postCommitVotes(votingContract, fd).then((tx) => {
-          //     setModalState("pending");
-          //     // Need to confirm if the user submits the vote.
-          //     if (tx) {
-          //       tx.wait(1).then((conf: any) => {
-          //         // Temporary, as mining is instant on local ganache.
-          //         setTimeout(() => setModalState("success"), 5000);
-          //         refetchEncryptedVotes();
-          //       });
-          //     }
-          //   });
-          // }
+          if (votingContract) {
+            postCommitVotes(votingContract, fd).then((tx) => {
+              setModalState("pending");
+              // Need to confirm if the user submits the vote.
+              if (tx) {
+                tx.wait(1).then((conf: any) => {
+                  // Temporary, as mining is instant on local ganache.
+                  setTimeout(() => setModalState("success"), 5000);
+                  refetchEncryptedVotes();
+                });
+              }
+            });
+          }
         });
       }
     },

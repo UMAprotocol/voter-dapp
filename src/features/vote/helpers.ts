@@ -168,6 +168,11 @@ export async function formatVoteDataToCommit(
           price = toWei(price).toString();
         }
 
+        // console.log(
+        //   "identifier check to hex string",
+        //   web3.utils.utf8ToHex(el.identifier)
+        // );
+
         const salt = getRandomSignedInt().toString();
         const hash = computeVoteHashAncillary({
           price,
@@ -175,7 +180,7 @@ export async function formatVoteDataToCommit(
           account: address,
           time: el.time,
           roundId,
-          identifier: el.identifier,
+          identifier: web3.utils.utf8ToHex(el.identifier),
           ancillaryData: ancData,
         });
 
