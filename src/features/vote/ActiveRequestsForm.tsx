@@ -16,7 +16,8 @@ import {
   // revealVotes,
 } from "web3/postVotingContractMethods";
 // import { ethers } from "ethers";
-// import toWeiSafe from "common/utils/web3/convertToWeiSafely";
+// import convertFromWei from "common/utils/web3/convertFromWei";
+import { ethers } from "ethers";
 // import web3 from "web3";
 // import { computeVoteHashAncillary, Request } from "common/tempUmaFunctions";
 
@@ -179,7 +180,11 @@ const ActiveRequestsForm: FC<Props> = ({
           (x) => x.identifier === el.identifier
         );
         if (findVote) {
-          datum.vote = findVote.price;
+          datum.vote = ethers.utils.formatEther(findVote.price);
+          if (el.identifier.includes("Admin")) {
+            if (datum.vote === "1" || datum.vote === "1.0") datum.vote = "Yes";
+            if (datum.vote === "0" || datum.vote === "0.0") datum.vote = "No";
+          }
         } else {
           datum.vote = vote;
         }
