@@ -160,7 +160,6 @@ export const queryEncryptedVotes = async (
 
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
-    console.log("events", events);
     const decryptedEvents = await Promise.all(
       events.map(async (el) => {
         const { args } = el;

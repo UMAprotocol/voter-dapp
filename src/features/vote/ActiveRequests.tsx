@@ -18,11 +18,17 @@ import web3 from "web3";
 import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
 import { PendingRequest } from "web3/queryVotingContractMethods";
 import { DateTime } from "luxon";
+import { calculateTimeRemaining } from "./helpers/calculateTimeRemaining";
 
 interface Props {
   publicKey: string;
   privateKey: string;
   activeRequests: PendingRequest[];
+}
+
+interface Timer {
+  hours: string;
+  minutes: string;
 }
 
 const ActiveRequests: FC<Props> = ({
@@ -168,31 +174,6 @@ const ActiveRequests: FC<Props> = ({
       ) : null}
     </StyledActiveRequests>
   );
-};
-
-interface Timer {
-  hours: string;
-  minutes: string;
-}
-
-const calculateTimeRemaining = (start: number, end: number) => {
-  const difference = end - start;
-  let timeLeft = {
-    hours: "00",
-    minutes: "00",
-  };
-
-  if (difference > 0) {
-    timeLeft = {
-      hours: Math.floor((difference / (60 * 60)) % 24).toString(),
-      minutes: Math.floor((difference / 60) % 60).toString(),
-    };
-    if (Number(timeLeft.hours) < 10) timeLeft.hours = `0${timeLeft.hours}`;
-    if (Number(timeLeft.minutes) < 10)
-      timeLeft.minutes = `0${timeLeft.minutes}`;
-  }
-
-  return timeLeft;
 };
 
 const StyledActiveRequests = styled.div`
