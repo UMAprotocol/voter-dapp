@@ -187,7 +187,9 @@ const calculateTimeRemaining = (start: number, end: number) => {
       hours: Math.floor((difference / (60 * 60)) % 24).toString(),
       minutes: Math.floor((difference / 60) % 60).toString(),
     };
-    if (timeLeft.hours === "0") timeLeft.hours = "00";
+    if (Number(timeLeft.hours) < 10) timeLeft.hours = `0${timeLeft.hours}`;
+    if (Number(timeLeft.minutes) < 10)
+      timeLeft.minutes = `0${timeLeft.minutes}`;
   }
 
   return timeLeft;
