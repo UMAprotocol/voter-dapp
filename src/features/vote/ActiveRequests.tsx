@@ -13,7 +13,7 @@ import Button from "common/components/button";
 import { snapshotCurrentRound } from "web3/postVotingContractMethods";
 import web3 from "web3";
 import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
-import { PendingRequest } from "web3/queryVotingContractMethods";
+import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { DateTime } from "luxon";
 import { calculateTimeRemaining } from "./helpers/calculateTimeRemaining";
 import { Wrapper } from "./styled/ActiveRequests.styled";

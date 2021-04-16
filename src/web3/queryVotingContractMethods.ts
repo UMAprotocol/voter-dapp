@@ -106,7 +106,7 @@ export const queryCurrentRoundId = async (contract: ethers.Contract) => {
   }
 };
 
-export const quertRequestPrice = async (
+export const queryRequestPrice = async (
   contract: ethers.Contract,
   identifier: string,
   time: string,

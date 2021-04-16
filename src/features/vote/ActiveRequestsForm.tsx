@@ -3,7 +3,7 @@ import { FC, useCallback, useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { UnlockedIcon, LockedIconCommitted } from "assets/icons";
-import { PendingRequest } from "web3/queryVotingContractMethods";
+import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
 import Modal from "common/components/modal";
