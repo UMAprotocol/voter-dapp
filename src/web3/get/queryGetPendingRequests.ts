@@ -26,10 +26,18 @@ export const queryGetPendingRequests = async (contract: ethers.Contract) => {
             datum.identifier = ethers.utils.toUtf8String(x[0]);
             datum.time = x[1].toString();
             datum.timeBN = x[1];
-            datum.ancillaryData =
-              x[2] !== NULL_ANC_DATA ? ethers.utils.toUtf8String(x[2]) : "-";
             values.push(datum);
             datum.idenHex = x[0];
+            let ancData = "-";
+            if (x[2] !== NULL_ANC_DATA) {
+              try {
+                ancData = ethers.utils.toUtf8String(x[2]);
+              } catch (err) {
+                console.log("Invalid ancillaryData coding");
+                ancData = "Bad anc data encoding.";
+              }
+            }
+            datum.ancillaryData = ancData;
           });
         }
       });
