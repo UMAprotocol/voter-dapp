@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { FC, useState, useEffect } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
+import { ethers } from "ethers";
 import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Button from "common/components/button";
@@ -8,6 +9,11 @@ import useOnboard from "common/hooks/useOnboard";
 import { Settings } from "assets/icons";
 import getUmaBalance from "common/utils/web3/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
+import {
+  useVotingAddress,
+  useRewardsRetrievedEvents,
+  useVotingContract,
+} from "hooks";
 
 interface Props {
   // connect: Connect;
@@ -16,8 +22,8 @@ interface Props {
 
 const Wallet: FC<Props> = () => {
   const [umaBalance, setUmaBalance] = useState("0");
-  const [totalUmaCollected] = useState("0");
-  const [availableRewards] = useState("0");
+  const [totalUmaCollected, setTotalUmaCollected] = useState("0");
+  const [availableRewards, setAvailableRewards] = useState("0");
   const { data: umaPrice } = useUmaPriceData();
   const { isOpen, open, close, modalRef } = useModal();
   const {
@@ -28,16 +34,43 @@ const Wallet: FC<Props> = () => {
     disconnect,
     signer,
     address,
+    network,
   } = useOnboard();
+
+  const { votingAddress } = useVotingAddress(address, signer, network);
+  const { votingContract } = useVotingContract(signer, isConnected, network);
+  const { data: rewardsEvents } = useRewardsRetrievedEvents(
+    votingContract,
+    votingAddress
+  );
 
   useEffect(() => {
     // When Address changes in MM, balance will change, as the address in context is changing from Onboard.
-    if (signer && address) {
-      getUmaBalance(address, signer).then((balance) => {
-        setUmaBalance(balance);
-      });
+    if (votingAddress && signer && network) {
+      getUmaBalance(votingAddress, signer, network.chainId.toString()).then(
+        (balance) => {
+          setUmaBalance(balance);
+        }
+      );
     }
-  }, [signer, address]);
+    if (!isConnected) {
+      setUmaBalance("0");
+      setTotalUmaCollected("0");
+      setAvailableRewards("0");
+    }
+  }, [signer, votingAddress, network, isConnected]);
+
+  // Iterate over reward events to determine total UMA collected from voting.
+  useEffect(() => {
+    if (rewardsEvents.length) {
+      let totalRewards = ethers.BigNumber.from("0");
+      rewardsEvents.forEach(({ numTokens }) => {
+        totalRewards = totalRewards.add(ethers.BigNumber.from(numTokens));
+      });
+
+      setTotalUmaCollected(ethers.utils.formatEther(totalRewards.toString()));
+    }
+  }, [rewardsEvents]);
 
   return (
     <StyledWallet>
@@ -99,7 +132,16 @@ const Wallet: FC<Props> = () => {
               <span>{formatWalletBalance(totalUmaCollected)[0]}</span>
               <span>{formatWalletBalance(totalUmaCollected)[1]}</span>
             </div>
-            <p className="value-dollars">$00.00 USD</p>
+            <p className="value-dollars">
+              ${" "}
+              {totalUmaCollected && umaPrice
+                ? calculateUMATotalValue(
+                    umaPrice.market_data.current_price.usd,
+                    totalUmaCollected
+                  )
+                : "$00.00"}{" "}
+              USD
+            </p>
           </div>
           <div tw="my-5 mx-3 pl-5 flex-grow">
             <p className="sm-title">Available Rewards</p>
@@ -257,7 +299,13 @@ function formatWalletBalance(balance: string): string[] {
 
 function calculateUMATotalValue(price: number, balance: string) {
   const bal = Number(balance);
-  return (price * bal).toFixed(2).toLocaleString();
+  return (
+    (price * bal)
+      .toFixed(2)
+      // Add commas
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      .toLocaleString()
+  );
 }
 
 export default Wallet;

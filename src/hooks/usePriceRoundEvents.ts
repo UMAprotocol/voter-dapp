@@ -2,13 +2,18 @@ import provider from "common/utils/web3/createProvider";
 import createVotingContractInstance from "web3/createVotingContractInstance";
 import { useQuery } from "react-query";
 
+import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork";
+
 import {
   queryPriceRoundEvents,
   PriceRound,
-} from "web3/queryVotingContractEvents";
+} from "web3/get/queryPriceRoundEvents";
 
 const signer = provider.getSigner();
-const contract = createVotingContractInstance(signer);
+const contract = createVotingContractInstance(
+  signer,
+  determineBlockchainNetwork()
+);
 
 // This can be accessed without logging the user in.
 export default function usePriceRoundEvents() {

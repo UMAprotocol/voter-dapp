@@ -1,15 +1,18 @@
 import { useQuery } from "react-query";
 import { ethers } from "ethers";
-import { queryVotesCommitted, VoteEvent } from "web3/queryVotingContractEvents";
+import {
+  queryVoteRevealed,
+  VoteRevealed,
+} from "web3/get/queryVotesRevealedEvents";
 
-export default function useVotesCommittedEvents(
+export default function useVotesRevealedEvents(
   contract: ethers.Contract | null,
   address: string | null
 ) {
-  const { data, error, isFetching } = useQuery<VoteEvent[]>(
-    "votesCommittedEvents",
+  const { data, error, isFetching } = useQuery<VoteRevealed[]>(
+    "votesRevealedEvents",
     () => {
-      return queryVotesCommitted(contract, address).then((res) => {
+      return queryVoteRevealed(contract, address).then((res) => {
         if (res) {
           return res;
         } else {
@@ -23,6 +26,6 @@ export default function useVotesCommittedEvents(
   if (data) {
     return { data, error, isFetching };
   } else {
-    return { data: [] as VoteEvent[], error, isFetching };
+    return { data: [] as VoteRevealed[], error, isFetching };
   }
 }

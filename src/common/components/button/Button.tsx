@@ -27,6 +27,18 @@ const Button = styled.button<Props>`
       : variant === "secondary"
       ? "#FF4A4A"
       : "#F1F0F0"};
+
+  border: ${({ variant }) =>
+    variant === "primary"
+      ? "1px solid #FF4A4A"
+      : variant === "secondary"
+      ? "1px solid #ffffff"
+      : " 1px solid #F1F0F0"};
+
+  cursor: ${({ variant }) =>
+    variant === "disabled" ? "not-allowed" : "pointer"};
+
+  pointer-events: ${({ variant }) => (variant === "disabled" ? "none" : "all")};
 `;
 
 Button.defaultProps = {

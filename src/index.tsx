@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import "./index.scss";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "tailwindcss/dist/base.min.css";
+import "react-toastify/dist/ReactToastify.css";
 import { GlobalStyles } from "twin.macro";
 
 ReactDOM.render(

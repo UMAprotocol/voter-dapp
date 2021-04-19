@@ -1,81 +1,103 @@
 /** @jsxImportSource @emotion/react */
-import { useState, useEffect, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import tw, { styled } from "twin.macro";
-import { ethers } from "ethers";
+import { DateTime } from "luxon";
 
 // Components
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
-import { PriceRound } from "web3/queryVotingContractEvents";
-import { usePriceRoundEvents } from "./hooks";
+import UpcomingRequests from "./UpcomingRequests";
+
 import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
-import createVotingContractInstance from "web3/createVotingContractInstance";
-import { isActiveRequest } from "./helpers";
-import createDesignatedVotingContractInstance from "common/utils/web3/createDesignatedVotingContractInstance";
+import {
+  usePriceRequestAddedEvents,
+  useVotingAddress,
+  useVotingContract,
+  usePendingRequests,
+} from "hooks";
+import { recoverPublicKey } from "./helpers/recoverPublicKey";
+import { derivePrivateKey } from "./helpers/derivePrivateKey";
+
+import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
 
 const Vote = () => {
-  const { state } = useContext(OnboardContext);
-  const [votingContract, setVotingContract] = useState<ethers.Contract | null>(
-    null
+  const [publicKey, setPublicKey] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
+  const [upcomingRequests, setUpcomingRequests] = useState<PriceRequestAdded[]>(
+    []
   );
-  const [activeRequests, setActiveRequests] = useState<PriceRound[]>([]);
-  const [votingAddress, setVotingAddress] = useState<string | null>(null);
-  const [, setHotAddress] = useState<string | null>(null);
-  // This is determined before a user connects.
-  const { data: priceRoundsEvents } = usePriceRoundEvents();
+  const { state } = useContext(OnboardContext);
 
   const { data: priceRequestRounds } = useVoteData();
 
-  // Need to determine if user is using a two key contract.
-  useEffect(() => {
-    if (state.address && state.signer) {
-      const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+  const { votingAddress } = useVotingAddress(
+    state.address,
+    state.signer,
+    state.network
+  );
 
-      const designatedContract = createDesignatedVotingContractInstance(
-        state.signer
-      );
-      designatedContract
-        .designatedVotingContracts(state.address)
-        .then((res: string) => {
-          if (res === NULL_ADDRESS) {
-            setVotingAddress(state.address);
-          } else {
-            setVotingAddress(res);
-            setHotAddress(state.address);
-          }
+  const { votingContract } = useVotingContract(
+    state.signer,
+    state.isConnected,
+    state.network
+  );
+
+  const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
+  const { data: activeRequests } = usePendingRequests();
+
+  useEffect(() => {
+    if (state.signer) {
+      const message = "Login to UMA Voter dApp";
+      state.signer
+        .signMessage(message)
+        .then((msg) => {
+          const privateKey = derivePrivateKey(msg);
+          const publicKey = recoverPublicKey(privateKey);
+          setPrivateKey(privateKey.substr(2));
+          setPublicKey(publicKey);
+        })
+        .catch((err) => {
+          console.log("Sign failed");
         });
     }
-    setVotingAddress(state.address);
-  }, [state.address, state.signer]);
+  }, [state.signer]);
 
   useEffect(() => {
-    // If connected, try to create contract with assigned signer.
-    if (state.isConnected) {
-      // Signer can be null check for null and if we've already defined a contract.
-      if (state.signer && !votingContract) {
-        const contract = createVotingContractInstance(state.signer);
-        setVotingContract(contract);
-      }
+    if (priceRequestsAdded.length) {
+      const filtered = priceRequestsAdded.filter((el) => {
+        const startOfRequests = DateTime.fromSeconds(Number(el.time));
+        const now = DateTime.local();
+        const diff = startOfRequests.diff(now).toObject().milliseconds;
+        if (diff) {
+          // if time is greater than the current time, request is upcoming.
+          return diff > 0;
+        } else {
+          return false;
+        }
+      });
+      setUpcomingRequests(filtered);
     }
-  }, [state.isConnected, state.signer, state.address, votingContract]);
-
-  // Once priceRounds are pulled from contract, filter them into requests.
-  useEffect(() => {
-    if (priceRoundsEvents.length) {
-      const ar = priceRoundsEvents.filter(isActiveRequest);
-      setActiveRequests(ar);
-    }
-  }, [priceRoundsEvents]);
+  }, [priceRequestsAdded]);
 
   return (
     <StyledVote>
-      <ActiveRequests activeRequests={activeRequests} />
+      {activeRequests.length ? (
+        <ActiveRequests
+          activeRequests={activeRequests}
+          publicKey={publicKey}
+          privateKey={privateKey}
+        />
+      ) : null}
+
       <PastRequests
         priceRounds={priceRequestRounds}
         address={votingAddress}
         contract={votingContract}
       />
+      {upcomingRequests.length ? (
+        <UpcomingRequests upcomingRequests={upcomingRequests} />
+      ) : null}
     </StyledVote>
   );
 };

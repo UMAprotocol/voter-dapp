@@ -4,6 +4,22 @@ import { ethers } from "ethers";
 import { Wallet } from "bnc-onboard/dist/src/interfaces";
 import { SUPPORTED_NETWORK_IDS } from "common/config";
 
+type ChainId = 1 | 42 | 1337;
+
+const getNetworkName = (chainId: ChainId) => {
+  switch (chainId) {
+    case 1: {
+      return "homestead";
+    }
+    case 42: {
+      return "kovan";
+    }
+    case 1337: {
+      return "test";
+    }
+  }
+};
+
 export default function useOnboard() {
   const [initOnboard, setInitOnboard] = useState(false);
   const context = useContext(OnboardContext);
@@ -33,6 +49,13 @@ export default function useOnboard() {
             );
           }
           onboard?.config({ networkId: networkId });
+          dispatch({
+            type: actions.SET_NETWORK,
+            payload: {
+              chainId: networkId,
+              name: getNetworkName(networkId as ChainId),
+            },
+          });
         },
         wallet: async (wallet: Wallet) => {
           if (wallet.provider) {
