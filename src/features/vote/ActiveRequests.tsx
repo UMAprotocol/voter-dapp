@@ -10,6 +10,7 @@ import {
   useCurrentRoundId,
   useRound,
   useVotingAddress,
+  useVotesRevealedEvents,
 } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import Button from "common/components/button";
@@ -61,6 +62,11 @@ const ActiveRequests: FC<Props> = ({
     votingAddress,
     privateKey,
     roundId
+  );
+
+  const { data: revealedVotes } = useVotesRevealedEvents(
+    votingContract,
+    votingAddress
   );
 
   const { data: round } = useRound(Number(roundId));
@@ -142,6 +148,7 @@ const ActiveRequests: FC<Props> = ({
         votePhase={votePhase}
         encryptedVotes={encryptedVotes}
         refetchEncryptedVotes={refetchEncryptedVotes}
+        revealedVotes={revealedVotes}
       />
       {activeRequests.length &&
       votePhase === "Reveal" &&

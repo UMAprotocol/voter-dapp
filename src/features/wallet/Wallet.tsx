@@ -13,6 +13,7 @@ import {
   useVotingAddress,
   useRewardsRetrievedEvents,
   useVotingContract,
+  useVotesRevealedEvents,
 } from "hooks";
 
 interface Props {
@@ -43,6 +44,13 @@ const Wallet: FC<Props> = () => {
     votingContract,
     votingAddress
   );
+
+  const { data: votesRevealed } = useVotesRevealedEvents(
+    votingContract,
+    votingAddress
+  );
+
+  console.log("data", votesRevealed);
 
   useEffect(() => {
     // When Address changes in MM, balance will change, as the address in context is changing from Onboard.
