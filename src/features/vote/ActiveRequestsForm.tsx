@@ -229,7 +229,7 @@ const ActiveRequestsForm: FC<Props> = ({
         <thead>
           <tr>
             <th>Requested Vote</th>
-            <th>Proposal Detail</th>
+            {/* <th>Proposal Detail</th> */}
             <th>Description</th>
             <th>Commit Vote</th>
             <th>Your Vote</th>
@@ -243,7 +243,7 @@ const ActiveRequestsForm: FC<Props> = ({
                 <td>
                   <div className="identifier">{el.identifier}</div>
                 </td>
-                <td>{el.ancillaryData}</td>
+                {/* <td>{el.ancillaryData}</td> */}
                 <td>
                   <div className="description">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.

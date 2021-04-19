@@ -16,6 +16,9 @@ import {
   useVotesRevealedEvents,
 } from "hooks";
 
+import { queryRetrieveRewards } from "web3/get/queryRetrieveRewards";
+import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+
 interface Props {
   // connect: Connect;
   // disconnect: Disconnect;
@@ -50,7 +53,17 @@ const Wallet: FC<Props> = () => {
     votingAddress
   );
 
-  console.log("data", votesRevealed);
+  console.log("data", votesRevealed, "VC", votingContract);
+
+  useEffect(() => {
+    if (votesRevealed.length && votingContract && votingAddress) {
+      checkAvailableRewards(votesRevealed, votingAddress, votingContract).then(
+        (balance) => {
+          setAvailableRewards(balance.toString());
+        }
+      );
+    }
+  }, [votesRevealed, votingContract, votingAddress]);
 
   useEffect(() => {
     // When Address changes in MM, balance will change, as the address in context is changing from Onboard.
@@ -183,6 +196,33 @@ const Wallet: FC<Props> = () => {
     </StyledWallet>
   );
 };
+
+async function checkAvailableRewards(
+  data: VoteRevealed[],
+  address: string,
+  contract: ethers.Contract
+) {
+  const promises = data.map(async (vote) => {
+    const rewardAvailable = await queryRetrieveRewards(
+      contract,
+      address,
+      vote.roundId,
+      vote.identifier,
+      vote.time
+    );
+    if (rewardAvailable) return parseFloat(rewardAvailable);
+  });
+
+  return Promise.all(promises).then((values) => {
+    let balance = 0;
+    values.map((val) => {
+      if (val && val) return (balance += val);
+      return false;
+    });
+
+    return balance;
+  });
+}
 
 const StyledWallet = styled.div`
   background-color: #f5f5f5;
