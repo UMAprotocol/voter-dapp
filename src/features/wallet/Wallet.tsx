@@ -160,17 +160,36 @@ const Wallet: FC<Props> = () => {
                     umaPrice.market_data.current_price.usd,
                     totalUmaCollected
                   )
-                : "$00.00"}{" "}
+                : "$00.00"}
               USD
             </p>
           </div>
           <div tw="my-5 mx-3 pl-5 flex-grow">
-            <p className="sm-title">Available Rewards</p>
+            <p className="sm-title">
+              Available Rewards{" "}
+              {availableRewards ? (
+                <span
+                  onClick={() => collectRewards()}
+                  className="Wallet-collect"
+                >
+                  Collect
+                </span>
+              ) : null}
+            </p>
             <div className="value-tokens">
               <span>{formatWalletBalance(availableRewards)[0]}</span>
               <span>{formatWalletBalance(availableRewards)[1]}</span>
             </div>
-            <p className="value-dollars">$00.00 USD</p>
+            <p className="value-dollars">
+              $
+              {availableRewards && umaPrice
+                ? calculateUMATotalValue(
+                    umaPrice.market_data.current_price.usd,
+                    availableRewards
+                  )
+                : "$00.00"}
+              USD
+            </p>
           </div>
           <div tw="py-10 pl-5 ml-auto flex-none">
             <Settings onClick={() => open()} tw="cursor-pointer" />
@@ -259,6 +278,15 @@ const StyledWallet = styled.div`
   .connect-btn {
     /* margin-left: 12px; */
     width: 150px;
+  }
+  .Wallet-collect {
+    text-decoration: underline;
+    cursor: pointer;
+    color: #ff4a4a;
+    /* font-size: 0.875rem; */
+    margin-left: 4px;
+    margin-bottom: 1px;
+    line-height: 1rem;
   }
 `;
 
@@ -354,6 +382,10 @@ function calculateUMATotalValue(price: number, balance: string) {
       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
       .toLocaleString()
   );
+}
+
+function collectRewards() {
+  console.log("clicked");
 }
 
 export default Wallet;
