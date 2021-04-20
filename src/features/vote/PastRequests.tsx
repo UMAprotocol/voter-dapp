@@ -27,8 +27,6 @@ const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [showAll, setShowAll] = useState(false);
 
-  console.log("priceRound", priceRounds);
-
   useEffect(() => {
     // Handle past requests differently depending on if user is logged in or not.
     if (priceRounds.length) {
