@@ -24,10 +24,12 @@ interface Props {
   // disconnect: Disconnect;
 }
 
+const DEFAULT_BALANCE = "0";
+
 const Wallet: FC<Props> = () => {
-  const [umaBalance, setUmaBalance] = useState("0");
-  const [totalUmaCollected, setTotalUmaCollected] = useState("0");
-  const [availableRewards, setAvailableRewards] = useState("0");
+  const [umaBalance, setUmaBalance] = useState(DEFAULT_BALANCE);
+  const [totalUmaCollected, setTotalUmaCollected] = useState(DEFAULT_BALANCE);
+  const [availableRewards, setAvailableRewards] = useState(DEFAULT_BALANCE);
   const { data: umaPrice } = useUmaPriceData();
   const { isOpen, open, close, modalRef } = useModal();
   const {
@@ -62,6 +64,8 @@ const Wallet: FC<Props> = () => {
           setAvailableRewards(balance.toString());
         }
       );
+    } else {
+      setAvailableRewards(DEFAULT_BALANCE);
     }
   }, [votesRevealed, votingContract, votingAddress]);
 
@@ -75,9 +79,9 @@ const Wallet: FC<Props> = () => {
       );
     }
     if (!isConnected) {
-      setUmaBalance("0");
-      setTotalUmaCollected("0");
-      setAvailableRewards("0");
+      setUmaBalance(DEFAULT_BALANCE);
+      setTotalUmaCollected(DEFAULT_BALANCE);
+      setAvailableRewards(DEFAULT_BALANCE);
     }
   }, [signer, votingAddress, network, isConnected]);
 
@@ -167,7 +171,7 @@ const Wallet: FC<Props> = () => {
           <div tw="my-5 mx-3 pl-5 flex-grow">
             <p className="sm-title">
               Available Rewards{" "}
-              {availableRewards ? (
+              {availableRewards !== DEFAULT_BALANCE ? (
                 <span
                   onClick={() => collectRewards()}
                   className="Wallet-collect"

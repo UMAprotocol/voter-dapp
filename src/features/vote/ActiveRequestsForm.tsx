@@ -282,9 +282,11 @@ const ActiveRequestsForm: FC<Props> = ({
                       : null}
                     {votePhase === "Reveal" && el.revealed
                       ? "Revealed"
-                      : el.vote && !el.revealed
+                      : votePhase === "Reveal" && el.vote && !el.revealed
                       ? "Reveal"
-                      : "Uncommitted"}
+                      : votePhase === "Reveal" && !el.vote
+                      ? "Uncommitted"
+                      : null}
                   </div>
                 </td>
               </tr>
@@ -361,11 +363,11 @@ const ActiveRequestsForm: FC<Props> = ({
             >
               Reveal Votes
             </Button>
-          ) : (
+          ) : votePhase === "Reveal" && !canReveal ? (
             <Button type="button" variant="disabled">
               Reveal Votes
             </Button>
-          )}
+          ) : null}
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
