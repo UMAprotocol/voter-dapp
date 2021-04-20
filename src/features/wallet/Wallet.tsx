@@ -61,7 +61,7 @@ const Wallet: FC<Props> = () => {
     votingAddress
   );
 
-  // console.log("data", votesRevealed, "VC", votingContract);
+  console.log("data", rewardsEvents);
 
   useEffect(() => {
     if (votesRevealed.length && votingContract && votingAddress) {
@@ -181,7 +181,11 @@ const Wallet: FC<Props> = () => {
                 <span
                   onClick={() => {
                     if (votingContract && votesRevealed) {
-                      collectRewards(votingContract, votesRevealed);
+                      collectRewards(
+                        votingContract,
+                        votesRevealed,
+                        setAvailableRewards
+                      );
                     }
                   }}
                   className="Wallet-collect"
@@ -398,7 +402,11 @@ function calculateUMATotalValue(price: number, balance: string) {
   );
 }
 
-function collectRewards(contract: ethers.Contract, data: RewardsRetrieved[]) {
+function collectRewards(
+  contract: ethers.Contract,
+  data: RewardsRetrieved[],
+  setAvailableRewards: Function
+) {
   const postData = {} as PostRetrieveReward;
   const pendingRequestData = [] as PendingRequestRetrieveReward[];
 
@@ -413,7 +421,13 @@ function collectRewards(contract: ethers.Contract, data: RewardsRetrieved[]) {
   });
 
   postData.pendingRequests = pendingRequestData;
-  retrieveRewards(contract, postData);
+  retrieveRewards(contract, postData).then((tx) => {
+    tx.wait(1).then((conf: any) => {
+      // This function should collect all available rewards. Set balance to 0.
+      // Note: This still needs to be tested for N-1, N-2, ... rounds.
+      setAvailableRewards(DEFAULT_BALANCE);
+    });
+  });
 }
 
 export default Wallet;
