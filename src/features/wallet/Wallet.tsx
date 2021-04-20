@@ -20,7 +20,8 @@ import { queryRetrieveRewards } from "web3/get/queryRetrieveRewards";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import {
   retrieveRewards,
-  PostRetrieveRewards,
+  PostRetrieveReward,
+  PendingRequestRetrieveReward,
 } from "web3/post/retrieveRewards";
 import { RewardsRetrieved } from "web3/get/queryRewardsRetrievedEvents";
 
@@ -60,7 +61,7 @@ const Wallet: FC<Props> = () => {
     votingAddress
   );
 
-  console.log("data", votesRevealed, "VC", votingContract);
+  // console.log("data", votesRevealed, "VC", votingContract);
 
   useEffect(() => {
     if (votesRevealed.length && votingContract && votingAddress) {
@@ -179,8 +180,8 @@ const Wallet: FC<Props> = () => {
               {availableRewards !== DEFAULT_BALANCE ? (
                 <span
                   onClick={() => {
-                    if (votingContract && rewardsEvents) {
-                      collectRewards(votingContract, rewardsEvents);
+                    if (votingContract && votesRevealed) {
+                      collectRewards(votingContract, votesRevealed);
                     }
                   }}
                   className="Wallet-collect"
@@ -397,6 +398,22 @@ function calculateUMATotalValue(price: number, balance: string) {
   );
 }
 
-function collectRewards(contract: ethers.Contract, data: RewardsRetrieved[]) {}
+function collectRewards(contract: ethers.Contract, data: RewardsRetrieved[]) {
+  const postData = {} as PostRetrieveReward;
+  const pendingRequestData = [] as PendingRequestRetrieveReward[];
+
+  postData.voterAddress = data[0].address;
+  postData.roundId = data[0].roundId;
+  data.forEach((el) => {
+    const pendingRequest = {} as PendingRequestRetrieveReward;
+    pendingRequest.ancillaryData = el.ancillaryData ? el.ancillaryData : "0x";
+    pendingRequest.identifier = ethers.utils.toUtf8Bytes(el.identifier);
+    pendingRequest.time = el.time;
+    pendingRequestData.push(pendingRequest);
+  });
+
+  postData.pendingRequests = pendingRequestData;
+  retrieveRewards(contract, postData);
+}
 
 export default Wallet;

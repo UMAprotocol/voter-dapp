@@ -1,16 +1,18 @@
 import { ethers } from "ethers";
 
-export interface PostRetrieveRewards {
-  address: string;
+export interface PostRetrieveReward {
+  voterAddress: string;
   roundId: string;
-  pendingRequests: {
-    // hexstring
-    ancillaryData: string;
-    // bytes32: hexstring or UIntArray
-    identifier: Uint8Array | string;
-    // uint.
-    time: string | number;
-  }[];
+  pendingRequests: PendingRequestRetrieveReward[];
+}
+
+export interface PendingRequestRetrieveReward {
+  // hexstring
+  ancillaryData: string;
+  // bytes32: hexstring or UIntArray
+  identifier: Uint8Array | string;
+  // uint.
+  time: string | number;
 }
 
 /**
@@ -25,12 +27,13 @@ export interface PostRetrieveRewards {
 
 export const retrieveRewards = async (
   contract: ethers.Contract,
-  data: PostRetrieveRewards[]
+  data: PostRetrieveReward
 ) => {
+  console.log("data in RR", data);
   try {
     const tx = await contract.functions[
       "retrieveRewards(address,uint256,(bytes32,uint256,bytes)[])"
-    ](data);
+    ](data.voterAddress, data.roundId, data.pendingRequests);
     console.log("retrieve rewards TX?", tx);
     return tx;
   } catch (err) {
