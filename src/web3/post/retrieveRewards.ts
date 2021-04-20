@@ -29,11 +29,11 @@ export const retrieveRewards = async (
   contract: ethers.Contract,
   data: PostRetrieveReward
 ) => {
-  console.log("data in RR", data);
   try {
     const tx = await contract.functions[
       "retrieveRewards(address,uint256,(bytes32,uint256,bytes)[])"
     ](data.voterAddress, data.roundId, data.pendingRequests);
+
     console.log("retrieve rewards TX?", tx);
     return tx;
   } catch (err) {
