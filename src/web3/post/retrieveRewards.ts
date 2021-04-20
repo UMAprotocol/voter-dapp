@@ -1,6 +1,28 @@
 import { ethers } from "ethers";
 
-interface PostRetrieveRewards {}
+export interface PostRetrieveRewards {
+  address: string;
+  roundId: string;
+  pendingRequests: {
+    // hexstring
+    ancillaryData: string;
+    // bytes32: hexstring or UIntArray
+    identifier: Uint8Array | string;
+    // uint.
+    time: string | number;
+  }[];
+}
+
+/**
+ * @notice Retrieves rewards owed for a set of resolved price requests.
+ * @dev Can only retrieve rewards if calling for a valid round and if the call is done within the timeout threshold
+ * (not expired). Note that a named return value is used here to avoid a stack to deep error.
+ * @param voterAddress voter for which rewards will be retrieved. Does not have to be the caller.
+ * @param roundId the round from which voting rewards will be retrieved from.
+ * @param toRetrieve array of PendingRequests which rewards are retrieved from.
+ * @return totalRewardToIssue total amount of rewards returned to the voter.
+ */
+
 export const retrieveRewards = async (
   contract: ethers.Contract,
   data: PostRetrieveRewards[]

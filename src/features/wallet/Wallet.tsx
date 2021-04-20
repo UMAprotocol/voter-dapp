@@ -18,6 +18,11 @@ import {
 
 import { queryRetrieveRewards } from "web3/get/queryRetrieveRewards";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import {
+  retrieveRewards,
+  PostRetrieveRewards,
+} from "web3/post/retrieveRewards";
+import { RewardsRetrieved } from "web3/get/queryRewardsRetrievedEvents";
 
 interface Props {
   // connect: Connect;
@@ -173,7 +178,11 @@ const Wallet: FC<Props> = () => {
               Available Rewards{" "}
               {availableRewards !== DEFAULT_BALANCE ? (
                 <span
-                  onClick={() => collectRewards()}
+                  onClick={() => {
+                    if (votingContract && rewardsEvents) {
+                      collectRewards(votingContract, rewardsEvents);
+                    }
+                  }}
                   className="Wallet-collect"
                 >
                   Collect
@@ -388,8 +397,6 @@ function calculateUMATotalValue(price: number, balance: string) {
   );
 }
 
-function collectRewards() {
-  console.log("clicked");
-}
+function collectRewards(contract: ethers.Contract, data: RewardsRetrieved[]) {}
 
 export default Wallet;

@@ -48,6 +48,8 @@ interface TableValue {
   revealed: boolean;
 }
 
+const UNDEFINED_VOTE = "-";
+
 const ActiveRequestsForm: FC<Props> = ({
   activeRequests,
   isConnected,
@@ -82,6 +84,8 @@ const ActiveRequestsForm: FC<Props> = ({
           // If there are no revealed votes and some encrypted votes, set can reveal to true.
           if (!findRevealedVote) setCanReveal(true);
         });
+      } else {
+        setCanReveal(true);
       }
     } else {
       setCanReveal(false);
@@ -275,16 +279,18 @@ const ActiveRequestsForm: FC<Props> = ({
                 <td>
                   <div>
                     {/* <UnlockedIcon /> */}
-                    {votePhase === "Commit" && el.vote !== "-"
+                    {votePhase === "Commit" && el.vote !== UNDEFINED_VOTE
                       ? "Committed"
                       : votePhase === "Commit"
                       ? "Uncommitted"
                       : null}
                     {votePhase === "Reveal" && el.revealed
                       ? "Revealed"
-                      : votePhase === "Reveal" && el.vote && !el.revealed
+                      : votePhase === "Reveal" &&
+                        el.vote !== UNDEFINED_VOTE &&
+                        !el.revealed
                       ? "Reveal"
-                      : votePhase === "Reveal" && !el.vote
+                      : votePhase === "Reveal" && el.vote === UNDEFINED_VOTE
                       ? "Uncommitted"
                       : null}
                   </div>
@@ -334,7 +340,7 @@ const ActiveRequestsForm: FC<Props> = ({
                       datum.ancillaryData = el.ancillaryData;
                       // anc data is set to - or N/A in UI if empty, convert back to 0x.
                       if (
-                        el.ancillaryData === "-" ||
+                        el.ancillaryData === UNDEFINED_VOTE ||
                         el.ancillaryData === "N/A"
                       ) {
                         datum.ancillaryData = "0x";
