@@ -16,14 +16,11 @@ import {
   useVotesRevealedEvents,
 } from "hooks";
 
-import { queryRetrieveRewards } from "web3/get/queryRetrieveRewards";
-import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
-import {
-  retrieveRewards,
-  PostRetrieveReward,
-  PendingRequestRetrieveReward,
-} from "web3/post/retrieveRewards";
-import { RewardsRetrieved } from "web3/get/queryRewardsRetrievedEvents";
+// Helpers
+import formatWalletBalance from "./helpers/formatWalletBalance";
+import calculateUMATotalValue from "./helpers/calculateUMATotalValue";
+import checkAvailableRewards from "./helpers/checkAvailableRewards";
+import collectRewards from "./helpers/collectRewards";
 
 interface Props {
   // connect: Connect;
@@ -234,33 +231,6 @@ const Wallet: FC<Props> = () => {
   );
 };
 
-async function checkAvailableRewards(
-  data: VoteRevealed[],
-  address: string,
-  contract: ethers.Contract
-) {
-  const promises = data.map(async (vote) => {
-    const rewardAvailable = await queryRetrieveRewards(
-      contract,
-      address,
-      vote.roundId,
-      vote.identifier,
-      vote.time
-    );
-    if (rewardAvailable) return parseFloat(rewardAvailable);
-  });
-
-  return Promise.all(promises).then((values) => {
-    let balance = 0;
-    values.map((val) => {
-      if (val && val) return (balance += val);
-      return false;
-    });
-
-    return balance;
-  });
-}
-
 const StyledWallet = styled.div`
   background-color: #f5f5f5;
 
@@ -361,73 +331,5 @@ const Disconnected = styled(Connected)`
     opacity: 0.5;
   }
 `;
-
-// There are two different colours for the first 4 digits and last 4 digits of the number.
-// Hence we need to return an array of strings.
-// We want to limit the overall string length to ~8 digits.
-function formatWalletBalance(balance: string): string[] {
-  if (balance.includes(".")) {
-    const strArray: string[] = [];
-    const split = balance.split(".");
-    const MAX_LENGTH_RIGHT_SIDE = 9 - split[0].length;
-    let rightSide = "";
-    // Need to confirm is the left whole number isn't a massive amount.
-    // If it is, just show 1 decimal.
-    if (MAX_LENGTH_RIGHT_SIDE > 0) {
-      rightSide = split[1].substr(0, MAX_LENGTH_RIGHT_SIDE);
-    } else {
-      rightSide = split[1].substr(0, 1);
-    }
-    strArray.push(`${split[0]}.`);
-    strArray.push(rightSide.substr(0, 8));
-    return strArray;
-  } else {
-    const MAX_LENGTH_RIGHT_SIDE = 9 - balance.length;
-    let trailingZeros = "";
-    for (let i = 0; i < MAX_LENGTH_RIGHT_SIDE; i++) {
-      trailingZeros = trailingZeros.concat("0");
-    }
-    return [`${balance}.`, trailingZeros];
-  }
-}
-
-function calculateUMATotalValue(price: number, balance: string) {
-  const bal = Number(balance);
-  return (
-    (price * bal)
-      .toFixed(2)
-      // Add commas
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      .toLocaleString()
-  );
-}
-
-function collectRewards(
-  contract: ethers.Contract,
-  data: RewardsRetrieved[],
-  setAvailableRewards: Function
-) {
-  const postData = {} as PostRetrieveReward;
-  const pendingRequestData = [] as PendingRequestRetrieveReward[];
-
-  postData.voterAddress = data[0].address;
-  postData.roundId = data[0].roundId;
-  data.forEach((el) => {
-    const pendingRequest = {} as PendingRequestRetrieveReward;
-    pendingRequest.ancillaryData = el.ancillaryData ? el.ancillaryData : "0x";
-    pendingRequest.identifier = ethers.utils.toUtf8Bytes(el.identifier);
-    pendingRequest.time = el.time;
-    pendingRequestData.push(pendingRequest);
-  });
-
-  postData.pendingRequests = pendingRequestData;
-  retrieveRewards(contract, postData).then((tx) => {
-    tx.wait(1).then((conf: any) => {
-      // This function should collect all available rewards. Set balance to 0.
-      // Note: This still needs to be tested for N-1, N-2, ... rounds.
-      setAvailableRewards(DEFAULT_BALANCE);
-    });
-  });
-}
 
 export default Wallet;
