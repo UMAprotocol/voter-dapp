@@ -48,7 +48,6 @@ export function formatPastRequestsByAddress(
       reward = ethers.utils.formatEther(findReward.numTokens);
     } else {
       if (contract && findVote) {
-        console.log("ELLL", el);
         const checkIfRewardAvailable = await queryRetrieveRewards(
           contract,
           address,
