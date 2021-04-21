@@ -79,7 +79,10 @@ const ActiveRequestsForm: FC<Props> = ({
       if (revealedVotes.length) {
         revealedVotes.forEach((el) => {
           const findRevealedVote = encryptedVotes.find(
-            (x) => x.identifier === el.identifier
+            (x) =>
+              x.identifier === el.identifier &&
+              x.ancillaryData === el.ancillaryData &&
+              x.time === el.time
           );
           // If there are no revealed votes and some encrypted votes, set can reveal to true.
           if (!findRevealedVote) setCanReveal(true);
@@ -197,7 +200,10 @@ const ActiveRequestsForm: FC<Props> = ({
         // I believe latest events are on bottom. requires testing.
         const latestVotesFirst = [...encryptedVotes].reverse();
         const findVote = latestVotesFirst.find(
-          (x) => x.identifier === el.identifier
+          (x) =>
+            x.identifier === el.identifier &&
+            x.ancillaryData === el.ancillaryData &&
+            x.time === el.time
         );
         if (findVote) {
           datum.vote = ethers.utils.formatEther(findVote.price);
@@ -209,7 +215,10 @@ const ActiveRequestsForm: FC<Props> = ({
           datum.vote = vote;
         }
         const findReveal = revealedVotes.find(
-          (x) => x.identifier === el.identifier
+          (x) =>
+            x.identifier === el.identifier &&
+            x.ancillaryData === el.ancillaryData &&
+            x.time === el.time
         );
         if (findReveal) {
           datum.revealed = true;
