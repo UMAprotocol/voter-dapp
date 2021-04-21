@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import { ethers } from "ethers";
 import { RewardsRetrieved } from "web3/get/queryRewardsRetrievedEvents";
 import {
@@ -11,7 +12,8 @@ const DEFAULT_BALANCE = "0";
 export default function collectRewards(
   contract: ethers.Contract,
   data: RewardsRetrieved[],
-  setAvailableRewards: Function
+  // Type returned by useState variable in Wallet.tsx
+  setAvailableRewards: Dispatch<SetStateAction<string>>
 ) {
   const postData = {} as PostRetrieveReward;
   const pendingRequestData = [] as PendingRequestRetrieveReward[];
