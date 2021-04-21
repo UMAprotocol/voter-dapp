@@ -21,7 +21,7 @@ export default async function checkAvailableRewards(
   const values = await Promise.all(promises);
 
   return values.reduce((balance, val) => {
-    if (val) return balance ? balance : 0 + val;
+    if (val) return (balance ? balance : 0) + val;
     return balance;
   }, 0);
 }
