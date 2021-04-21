@@ -233,6 +233,7 @@ const ActiveRequestsForm: FC<Props> = ({
         <thead>
           <tr>
             <th>Requested Vote</th>
+            {/* Commented out for now -- might move the anc data elsewhere */}
             {/* <th>Proposal Detail</th> */}
             <th>Description</th>
             <th>Commit Vote</th>
@@ -247,6 +248,7 @@ const ActiveRequestsForm: FC<Props> = ({
                 <td>
                   <div className="identifier">{el.identifier}</div>
                 </td>
+                {/* Commented out for now -- might move the anc data elsewhere */}
                 {/* <td>{el.ancillaryData}</td> */}
                 <td>
                   <div className="description">
@@ -278,7 +280,6 @@ const ActiveRequestsForm: FC<Props> = ({
                 </td>
                 <td>
                   <div>
-                    {/* <UnlockedIcon /> */}
                     {votePhase === "Commit" && el.vote !== UNDEFINED_VOTE
                       ? "Committed"
                       : votePhase === "Commit"
