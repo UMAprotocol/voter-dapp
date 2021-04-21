@@ -69,7 +69,7 @@ const Wallet: FC<Props> = () => {
     if (votesRevealed.length && votingContract && votingAddress) {
       checkAvailableRewards(votesRevealed, votingAddress, votingContract).then(
         (balance) => {
-          setAvailableRewards(balance.toString());
+          setAvailableRewards(balance ? balance.toString() : DEFAULT_BALANCE);
         }
       );
     } else {

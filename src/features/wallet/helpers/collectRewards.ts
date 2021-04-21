@@ -27,11 +27,16 @@ export default function collectRewards(
   });
 
   postData.pendingRequests = pendingRequestData;
-  retrieveRewards(contract, postData).then((tx) => {
-    tx.wait(1).then((conf: any) => {
-      // This function should collect all available rewards. Set balance to 0.
-      // Note: This still needs to be tested for N-1, N-2, ... rounds.
-      setAvailableRewards(DEFAULT_BALANCE);
-    });
-  });
+  // this should be returned so we can catch error upstream
+  return (
+    retrieveRewards(contract, postData)
+      // wait for at least 1 block conf.
+      .then((tx) => tx.wait(1))
+      .then((conf: any) => {
+        // This function should collect all available rewards. Set balance to 0.
+        // Note: This still needs to be tested for N-1, N-2, ... rounds.
+        setAvailableRewards(DEFAULT_BALANCE);
+      })
+      .catch((err) => console.log("err in retrieve rewards", err))
+  );
 }

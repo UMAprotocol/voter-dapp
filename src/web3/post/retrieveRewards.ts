@@ -34,7 +34,6 @@ export const retrieveRewards = async (
       "retrieveRewards(address,uint256,(bytes32,uint256,bytes)[])"
     ](data.voterAddress, data.roundId, data.pendingRequests);
 
-    console.log("retrieve rewards TX?", tx);
     return tx;
   } catch (err) {
     console.log("Err in attempted retrieveRewards transaction", err);

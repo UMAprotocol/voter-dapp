@@ -18,13 +18,10 @@ export default async function checkAvailableRewards(
     if (rewardAvailable) return parseFloat(rewardAvailable);
   });
 
-  return Promise.all(promises).then((values) => {
-    let balance = 0;
-    values.map((val) => {
-      if (val && val) return (balance += val);
-      return false;
-    });
+  const values = await Promise.all(promises);
 
+  return values.reduce((balance, val) => {
+    if (val) return balance ? balance : 0 + val;
     return balance;
-  });
+  }, 0);
 }
