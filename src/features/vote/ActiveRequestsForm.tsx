@@ -46,6 +46,7 @@ interface TableValue {
   identifier: string;
   vote: string;
   revealed: boolean;
+  ancHex: string;
 }
 
 const UNDEFINED_VOTE = "-";
@@ -185,6 +186,7 @@ const ActiveRequestsForm: FC<Props> = ({
           vote: "-",
           identifier: el.identifier,
           revealed: false,
+          ancHex: el.idenHex,
         };
       });
 
@@ -202,9 +204,10 @@ const ActiveRequestsForm: FC<Props> = ({
         const findVote = latestVotesFirst.find(
           (x) =>
             x.identifier === el.identifier &&
-            x.ancillaryData === el.ancillaryData &&
+            x.ancillaryData === el.ancHex &&
             x.time === el.time
         );
+
         if (findVote) {
           datum.vote = ethers.utils.formatEther(findVote.price);
           if (el.identifier.includes("Admin")) {
@@ -217,7 +220,7 @@ const ActiveRequestsForm: FC<Props> = ({
         const findReveal = revealedVotes.find(
           (x) =>
             x.identifier === el.identifier &&
-            x.ancillaryData === el.ancillaryData &&
+            x.ancillaryData === el.ancHex &&
             x.time === el.time
         );
         if (findReveal) {

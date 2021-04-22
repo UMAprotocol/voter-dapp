@@ -8,14 +8,19 @@ export default async function checkAvailableRewards(
   contract: ethers.Contract
 ) {
   const promises = data.map(async (vote) => {
-    const rewardAvailable = await queryRetrieveRewards(
-      contract,
-      address,
-      vote.roundId,
-      vote.identifier,
-      vote.time
-    );
-    if (rewardAvailable) return parseFloat(rewardAvailable);
+    try {
+      const rewardAvailable = await queryRetrieveRewards(
+        contract,
+        address,
+        vote.roundId,
+        vote.identifier,
+        vote.time,
+        vote.ancillaryData
+      );
+      if (rewardAvailable) return parseFloat(rewardAvailable);
+    } catch (err) {
+      console.log("err: reward collected.", err);
+    }
   });
 
   const values = await Promise.all(promises);

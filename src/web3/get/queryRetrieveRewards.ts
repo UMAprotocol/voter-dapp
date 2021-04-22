@@ -16,17 +16,25 @@ export const queryRetrieveRewards = async (
   address: string,
   roundId: string,
   identifier: string,
-  time: string
+  time: string,
+  // hexstring
+  ancillaryData: string
 ) => {
   try {
     const reward: ethers.BigNumber = await contract.callStatic[
-      "retrieveRewards(address,uint256,(bytes32,uint256)[])"
-    ](address, Number(roundId), [
-      { identifier: stringToBytes32(identifier), time: Number(time) },
+      "retrieveRewards(address,uint256,(bytes32,uint256,bytes)[])"
+    ](address, roundId, [
+      {
+        identifier: stringToBytes32(identifier),
+        time: Number(time),
+        ancillaryData,
+      },
     ]);
 
     return ethers.utils.formatEther(reward.toString());
   } catch (err) {
+    console.log("identifier", identifier);
+
     console.log("err", err);
   }
 };

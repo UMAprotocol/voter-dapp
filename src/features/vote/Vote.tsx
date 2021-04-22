@@ -90,11 +90,11 @@ const Vote = () => {
         />
       ) : null}
 
-      <PastRequests
+      {/* <PastRequests
         priceRounds={priceRequestRounds}
         address={votingAddress}
         contract={votingContract}
-      />
+      /> */}
       {upcomingRequests.length ? (
         <UpcomingRequests upcomingRequests={upcomingRequests} />
       ) : null}

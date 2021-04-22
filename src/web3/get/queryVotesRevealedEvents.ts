@@ -37,6 +37,7 @@ export const queryVotesRevealedEvents = async (
 
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
+    console.log("VR events", events);
     return events.map((el) => {
       const { args } = el;
       const datum = {} as VoteRevealed;
@@ -46,6 +47,7 @@ export const queryVotesRevealedEvents = async (
         datum.identifier = ethers.utils.toUtf8String(args[2]);
         datum.time = args[3].toString();
         datum.price = ethers.utils.formatEther(args[4]);
+        datum.ancillaryData = args[5];
         datum.numTokens = args[6].toString();
       }
 

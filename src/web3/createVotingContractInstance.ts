@@ -23,5 +23,6 @@ export default function createVotingContractInstance(
     signer
   );
 
+  console.log("VC", contract);
   return contract;
 }

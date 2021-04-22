@@ -9,6 +9,7 @@ export interface PendingRequest {
   ancillaryData: string;
   idenHex: string;
   timeBN: ethers.BigNumber;
+  ancHex: string;
 }
 
 export const queryGetPendingRequests = async (contract: ethers.Contract) => {
@@ -38,6 +39,7 @@ export const queryGetPendingRequests = async (contract: ethers.Contract) => {
               }
             }
             datum.ancillaryData = ancData;
+            datum.ancHex = x[2];
           });
         }
       });
