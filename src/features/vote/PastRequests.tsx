@@ -18,31 +18,31 @@ export interface PastRequest {
 }
 
 interface Props {
-  priceRounds: PriceRequestRound[];
+  voteSummaryData: PriceRequestRound[];
   address: string | null;
   contract: ethers.Contract | null;
 }
 
-const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
+const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [showAll, setShowAll] = useState(false);
-  console.log("data", priceRounds);
+  console.log("data", voteSummaryData);
 
-  useEffect(() => {
-    // Handle past requests differently depending on if user is logged in or not.
-    if (priceRounds.length) {
-      if (address && contract) {
-        const pr = formatPastRequestsByAddress(priceRounds, address, contract);
-        Promise.all(pr).then((res) => {
-          setPastRequests(!showAll ? res.slice(0, 10) : res);
-        });
-      } else {
-        const pr = formatPastRequestsNoAddress(priceRounds);
+  // useEffect(() => {
+  //   // Handle past requests differently depending on if user is logged in or not.
+  //   if (priceRounds.length) {
+  //     if (address && contract) {
+  //       const pr = formatPastRequestsByAddress(priceRounds, address, contract);
+  //       Promise.all(pr).then((res) => {
+  //         setPastRequests(!showAll ? res.slice(0, 10) : res);
+  //       });
+  //     } else {
+  //       const pr = formatPastRequestsNoAddress(priceRounds);
 
-        setPastRequests(!showAll ? pr.slice(0, 10) : pr);
-      }
-    }
-  }, [priceRounds, address, contract, showAll]);
+  //       setPastRequests(!showAll ? pr.slice(0, 10) : pr);
+  //     }
+  //   }
+  // }, [priceRounds, address, contract, showAll]);
 
   return (
     <Wrapper className="PastRequests">
