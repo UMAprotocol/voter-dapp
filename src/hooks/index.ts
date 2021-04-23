@@ -12,3 +12,4 @@ export { default as useVotePhase } from "./useVotePhase";
 export { default as useVoteTiming } from "./useVoteTiming";
 export { default as useCurrentRoundId } from "./useCurrentRoundId";
 export { default as useRound } from "./useRound";
+export { default as useMulticall } from "./useMulticall";

@@ -14,6 +14,7 @@ import {
   useRewardsRetrievedEvents,
   useVotingContract,
   useVotesRevealedEvents,
+  useMulticall,
 } from "hooks";
 
 // Helpers
@@ -59,6 +60,9 @@ const Wallet: FC<Props> = () => {
     votingContract,
     votingAddress
   );
+
+  const { multicallContract } = useMulticall(signer, isConnected, network);
+  console.log("MCC", multicallContract);
 
   const { data: votesRevealed } = useVotesRevealedEvents(
     votingContract,
