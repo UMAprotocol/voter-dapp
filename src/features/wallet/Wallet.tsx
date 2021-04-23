@@ -62,7 +62,6 @@ const Wallet: FC<Props> = () => {
   );
 
   const { multicallContract } = useMulticall(signer, isConnected, network);
-  console.log("MCC", multicallContract);
 
   const { data: votesRevealed } = useVotesRevealedEvents(
     votingContract,
@@ -186,11 +185,12 @@ const Wallet: FC<Props> = () => {
               {availableRewards !== DEFAULT_BALANCE ? (
                 <span
                   onClick={() => {
-                    if (votingContract && votesRevealed) {
+                    if (votingContract && votesRevealed && multicallContract) {
                       collectRewards(
                         votingContract,
                         votesRevealed,
-                        setAvailableRewards
+                        setAvailableRewards,
+                        multicallContract
                       );
                     }
                   }}

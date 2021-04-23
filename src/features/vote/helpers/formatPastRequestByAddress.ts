@@ -2,7 +2,7 @@ import { PriceRequestRound } from "common/hooks/useVoteData";
 import { PastRequest } from "../PastRequests";
 import { DateTime } from "luxon";
 import { ethers } from "ethers";
-import { queryRetrieveRewards } from "web3/get/queryRetrieveRewards";
+// import { queryRetrieveRewards } from "web3/get/queryRetrieveRewards";
 
 export function formatPastRequestsByAddress(
   data: PriceRequestRound[],

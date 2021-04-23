@@ -2,44 +2,76 @@ import { Dispatch, SetStateAction } from "react";
 import { ethers } from "ethers";
 import { RewardsRetrieved } from "web3/get/queryRewardsRetrievedEvents";
 import {
-  retrieveRewards,
   PostRetrieveReward,
   PendingRequestRetrieveReward,
 } from "web3/post/retrieveRewards";
 
+import VotingArtifact from "@uma/core/build/contracts/Voting.json";
+
 const DEFAULT_BALANCE = "0";
+
+interface MulticallCollectRewards {
+  // contract address
+  target: string;
+  callData: string;
+}
 
 export default function collectRewards(
   contract: ethers.Contract,
   data: RewardsRetrieved[],
   // Type returned by useState variable in Wallet.tsx
-  setAvailableRewards: Dispatch<SetStateAction<string>>
+  setAvailableRewards: Dispatch<SetStateAction<string>>,
+  multicallContract: ethers.Contract
 ) {
-  console.log("data", data);
-  const postData = {} as PostRetrieveReward;
-  const pendingRequestData = [] as PendingRequestRetrieveReward[];
+  const multicallCollectRewards = [] as MulticallCollectRewards[];
+  const votingInterface = new ethers.utils.Interface(VotingArtifact.abi);
 
-  postData.voterAddress = data[0].address;
-  postData.roundId = data[0].roundId;
-  data.forEach((el) => {
-    const pendingRequest = {} as PendingRequestRetrieveReward;
-    pendingRequest.ancillaryData = el.ancillaryData ? el.ancillaryData : "0x";
-    pendingRequest.identifier = ethers.utils.toUtf8Bytes(el.identifier);
-    pendingRequest.time = el.time;
-    pendingRequestData.push(pendingRequest);
+  // find the unique roundIds
+  const uniqueRoundIds = data
+    .map((item) => item.roundId)
+    .filter((value, index, self) => self.indexOf(value) === index);
+  console.log("unique Ids", uniqueRoundIds, data);
+
+  uniqueRoundIds.forEach((roundId) => {
+    const mcr = {} as MulticallCollectRewards;
+    const postData = {} as PostRetrieveReward;
+    const pendingRequestData = [] as PendingRequestRetrieveReward[];
+
+    data.forEach((datum) => {
+      if (datum.roundId === roundId) {
+        const pendingRequest = {} as PendingRequestRetrieveReward;
+        postData.roundId = datum.roundId;
+        postData.voterAddress = datum.address;
+        pendingRequest.ancillaryData = datum.ancillaryData
+          ? datum.ancillaryData
+          : "0x";
+        pendingRequest.identifier = ethers.utils.toUtf8Bytes(datum.identifier);
+        pendingRequest.time = datum.time;
+        pendingRequestData.push(pendingRequest);
+      }
+    });
+
+    postData.pendingRequests = pendingRequestData;
+    mcr.target = contract.address;
+    mcr.callData = votingInterface.encodeFunctionData(
+      "retrieveRewards(address,uint256,(bytes32,uint256,bytes)[])",
+      [postData.voterAddress, postData.roundId, postData.pendingRequests]
+    );
+
+    multicallCollectRewards.push(mcr);
   });
 
-  postData.pendingRequests = pendingRequestData;
-  // this should be returned so we can catch error upstream
-  // return (
-  //   retrieveRewards(contract, postData)
-  //     // wait for at least 1 block conf.
-  //     .then((tx) => tx.wait(1))
-  //     .then((conf: any) => {
-  //       // This function should collect all available rewards. Set balance to 0.
-  //       // Note: This still needs to be tested for N-1, N-2, ... rounds.
-  //       setAvailableRewards(DEFAULT_BALANCE);
-  //     })
-  //     .catch((err) => console.log("err in retrieve rewards", err))
-  // );
+  // console.log("multi calls sorted?", multicallCollectRewards);
+
+  return (
+    multicallContract.functions["aggregate((address,bytes)[])"](
+      multicallCollectRewards
+    )
+      // wait for at least 1 block conf.
+      .then((tx) => tx.wait(1))
+      .then((conf: any) => {
+        setAvailableRewards(DEFAULT_BALANCE);
+      })
+      .catch((err) => console.log("err in retrieve rewards", err))
+  );
 }

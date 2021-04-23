@@ -5,15 +5,15 @@ import { DateTime } from "luxon";
 
 // Components
 import ActiveRequests from "./ActiveRequests";
-import PastRequests from "./PastRequests";
+// import PastRequests from "./PastRequests";
 import UpcomingRequests from "./UpcomingRequests";
 
-import useVoteData from "common/hooks/useVoteData";
+// import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
 import {
   usePriceRequestAddedEvents,
-  useVotingAddress,
-  useVotingContract,
+  // useVotingAddress,
+  // useVotingContract,
   usePendingRequests,
 } from "hooks";
 import { recoverPublicKey } from "./helpers/recoverPublicKey";
@@ -29,19 +29,19 @@ const Vote = () => {
   );
   const { state } = useContext(OnboardContext);
 
-  const { data: priceRequestRounds } = useVoteData();
+  // const { data: priceRequestRounds } = useVoteData();
 
-  const { votingAddress } = useVotingAddress(
-    state.address,
-    state.signer,
-    state.network
-  );
+  // const { votingAddress } = useVotingAddress(
+  //   state.address,
+  //   state.signer,
+  //   state.network
+  // );
 
-  const { votingContract } = useVotingContract(
-    state.signer,
-    state.isConnected,
-    state.network
-  );
+  // const { votingContract } = useVotingContract(
+  //   state.signer,
+  //   state.isConnected,
+  //   state.network
+  // );
 
   const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
   const { data: activeRequests } = usePendingRequests();

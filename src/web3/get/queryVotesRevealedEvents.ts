@@ -37,7 +37,6 @@ export const queryVotesRevealedEvents = async (
 
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
-    console.log("VR events", events);
     return events.map((el) => {
       const { args } = el;
       const datum = {} as VoteRevealed;
