@@ -5449,10 +5449,10 @@
     "@uniswap/v2-core" "1.0.0"
     "@uniswap/v2-periphery" "1.1.0-beta.0"
 
-"@uma/core@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@uma/core/-/core-2.1.0.tgz#7ad611a6d7fac6666317c6d5f7ee23000c8c859e"
-  integrity sha512-dxz9+cnx/YegKCFMNdPX/hK0Nij1iQvdtk4nkfqLw6zwLrv66yIR+gr4JHDmZdk0vj7sB6/4HUEdWvzGuSHBpA==
+"@uma/core@2.2.0-alpha.0":
+  version "2.2.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@uma/core/-/core-2.2.0-alpha.0.tgz#43f46f075db3387aa2b7ccbcaed173f15643e0cf"
+  integrity sha512-hDu2PLRSdvBOhTS2L9Riu31K0BQp6duHqU18ttx/7lTZZHaLiop6pz3KChW34SUA5YsFx89SQB4LUaA50gLrcQ==
   dependencies:
     "@truffle/contract" "^4.2.20"
     "@uma/common" "^2.1.0"

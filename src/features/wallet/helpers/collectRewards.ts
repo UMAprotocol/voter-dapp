@@ -10,6 +10,7 @@ import VotingArtifact from "@uma/core/build/contracts/Voting.json";
 
 const DEFAULT_BALANCE = "0";
 
+// This interface is defined because we are going to batch the requests using the multicallContract: (https://github.com/UMAprotocol/protocol/blob/master/packages/core/contracts/common/interfaces/Multicall.sol)
 interface MulticallCollectRewards {
   // contract address
   target: string;

@@ -33,8 +33,6 @@ export const queryRetrieveRewards = async (
 
     return ethers.utils.formatEther(reward.toString());
   } catch (err) {
-    console.log("identifier", identifier);
-
     console.log("err", err);
   }
 };
