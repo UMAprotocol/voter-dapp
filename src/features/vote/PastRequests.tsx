@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { FC, useState, useEffect } from "react";
-import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { ethers } from "ethers";
 import Button from "common/components/button";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import { formatPastRequestsNoAddress } from "./helpers/formatPastRequestsNoAddress";
 import { formatPastRequestsByAddress } from "./helpers/formatPastRequestByAddress";
 import { Wrapper } from "./styled/PastRequests.styled";
+
+import { usePriceRequestAddedEvents } from "hooks";
 
 export interface PastRequest {
   proposal: string;
@@ -21,12 +22,22 @@ interface Props {
   voteSummaryData: PriceRequestRound[];
   address: string | null;
   contract: ethers.Contract | null;
+  roundId: string;
 }
 
-const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
+const PastRequests: FC<Props> = ({
+  voteSummaryData,
+  address,
+  contract,
+  roundId,
+}) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [showAll, setShowAll] = useState(false);
-  console.log("data", voteSummaryData);
+  // console.log("data", voteSummaryData);
+
+  const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
+  console.log("PRA", priceRequestsAdded);
+  console.log("roundId", roundId);
 
   // useEffect(() => {
   //   // Handle past requests differently depending on if user is logged in or not.

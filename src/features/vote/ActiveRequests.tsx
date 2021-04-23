@@ -3,18 +3,11 @@ import { FC, useContext, useState, useEffect } from "react";
 import tw from "twin.macro"; // eslint-disable-line
 
 import ActiveRequestsForm from "./ActiveRequestsForm";
-import {
-  useVotingContract,
-  useEncryptedVotesEvents,
-  useVotePhase,
-  useCurrentRoundId,
-  useRound,
-  useVotingAddress,
-  useVotesRevealedEvents,
-} from "hooks";
+import { useVotePhase, useRound } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import Button from "common/components/button";
 import { snapshotCurrentRound } from "web3/post/snapshotCurrentRound";
+import { ethers } from "ethers";
 import web3 from "web3";
 import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
@@ -22,11 +15,19 @@ import { DateTime } from "luxon";
 import { calculateTimeRemaining } from "./helpers/calculateTimeRemaining";
 import { Wrapper } from "./styled/ActiveRequests.styled";
 import timerSVG from "assets/icons/timer.svg";
+import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
+import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 
 interface Props {
   publicKey: string;
   privateKey: string;
   activeRequests: PendingRequest[];
+  roundId: string;
+  encryptedVotes: EncryptedVote[];
+  refetchEncryptedVotes: Function;
+  revealedVotes: VoteRevealed[];
+  votingAddress: string | null;
+  votingContract: ethers.Contract | null;
 }
 
 interface Timer {
@@ -36,8 +37,13 @@ interface Timer {
 
 const ActiveRequests: FC<Props> = ({
   publicKey,
-  privateKey,
   activeRequests,
+  roundId,
+  revealedVotes,
+  encryptedVotes,
+  votingAddress,
+  votingContract,
+  refetchEncryptedVotes,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState<Timer>({
     hours: "00",
@@ -45,29 +51,10 @@ const ActiveRequests: FC<Props> = ({
   });
 
   const {
-    state: { address, network, signer, isConnected, provider },
+    state: { signer, isConnected, provider },
   } = useContext(OnboardContext);
 
-  const { votingAddress } = useVotingAddress(address, signer, network);
-
-  const { votingContract } = useVotingContract(signer, isConnected, network);
-
   const { data: votePhase } = useVotePhase();
-  const { data: roundId } = useCurrentRoundId();
-  const {
-    data: encryptedVotes,
-    refetch: refetchEncryptedVotes,
-  } = useEncryptedVotesEvents(
-    votingContract,
-    votingAddress,
-    privateKey,
-    roundId
-  );
-
-  const { data: revealedVotes } = useVotesRevealedEvents(
-    votingContract,
-    votingAddress
-  );
 
   const { data: round } = useRound(Number(roundId));
 

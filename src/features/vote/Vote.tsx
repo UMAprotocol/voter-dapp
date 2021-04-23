@@ -15,6 +15,9 @@ import {
   useVotingAddress,
   useVotingContract,
   usePendingRequests,
+  useCurrentRoundId,
+  useVotesRevealedEvents,
+  useEncryptedVotesEvents,
 } from "hooks";
 import { recoverPublicKey } from "./helpers/recoverPublicKey";
 import { derivePrivateKey } from "./helpers/derivePrivateKey";
@@ -45,6 +48,22 @@ const Vote = () => {
 
   const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
   const { data: activeRequests } = usePendingRequests();
+  const { data: roundId } = useCurrentRoundId();
+
+  const { data: revealedVotes } = useVotesRevealedEvents(
+    votingContract,
+    votingAddress
+  );
+
+  const {
+    data: encryptedVotes,
+    refetch: refetchEncryptedVotes,
+  } = useEncryptedVotesEvents(
+    votingContract,
+    votingAddress,
+    privateKey,
+    roundId
+  );
 
   useEffect(() => {
     if (state.signer) {
@@ -87,6 +106,12 @@ const Vote = () => {
           activeRequests={activeRequests}
           publicKey={publicKey}
           privateKey={privateKey}
+          roundId={roundId}
+          encryptedVotes={encryptedVotes}
+          refetchEncryptedVotes={refetchEncryptedVotes}
+          revealedVotes={revealedVotes}
+          votingAddress={votingAddress}
+          votingContract={votingContract}
         />
       ) : null}
 
@@ -94,6 +119,7 @@ const Vote = () => {
         voteSummaryData={voteSummaryData}
         address={votingAddress}
         contract={votingContract}
+        roundId={roundId}
       />
       {upcomingRequests.length ? (
         <UpcomingRequests upcomingRequests={upcomingRequests} />
