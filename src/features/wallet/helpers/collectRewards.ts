@@ -30,7 +30,6 @@ export default function collectRewards(
   const uniqueRoundIds = data
     .map((item) => item.roundId)
     .filter((value, index, self) => self.indexOf(value) === index);
-  console.log("unique Ids", uniqueRoundIds, data);
 
   uniqueRoundIds.forEach((roundId) => {
     const mcr = {} as MulticallCollectRewards;
