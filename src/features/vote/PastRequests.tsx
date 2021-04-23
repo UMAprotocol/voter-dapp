@@ -26,6 +26,7 @@ interface Props {
 const PastRequests: FC<Props> = ({ priceRounds, address, contract }) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [showAll, setShowAll] = useState(false);
+  console.log("data", priceRounds);
 
   useEffect(() => {
     // Handle past requests differently depending on if user is logged in or not.

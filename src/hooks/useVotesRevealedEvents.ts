@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { ethers } from "ethers";
 import {
-  queryVoteRevealed,
+  queryVotesRevealedEvents,
   VoteRevealed,
 } from "web3/get/queryVotesRevealedEvents";
 
@@ -12,7 +12,7 @@ export default function useVotesRevealedEvents(
   const { data, error, isFetching } = useQuery<VoteRevealed[]>(
     "votesRevealedEvents",
     () => {
-      return queryVoteRevealed(contract, address).then((res) => {
+      return queryVotesRevealedEvents(contract, address).then((res) => {
         if (res) {
           return res;
         } else {

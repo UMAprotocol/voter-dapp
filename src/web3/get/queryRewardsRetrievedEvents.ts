@@ -16,6 +16,7 @@ import { VOTER_CONTRACT_BLOCK } from "common/config";
 
 export interface RewardsRetrieved extends VoteEvent {
   numTokens: string;
+  ancillaryData: string;
 }
 
 export const queryRewardsRetrieved = async (
@@ -50,6 +51,7 @@ export const queryRewardsRetrieved = async (
         datum.roundId = args[1].toString();
         datum.identifier = ethers.utils.toUtf8String(args[2]);
         datum.time = args[3].toString();
+        datum.ancillaryData = args[4];
         datum.numTokens = args[5].toString();
       }
 

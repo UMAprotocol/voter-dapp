@@ -8,7 +8,7 @@ export interface VoteRevealed extends VoteEvent {
   numTokens: string;
 }
 
-export const queryVoteRevealed = async (
+export const queryVotesRevealedEvents = async (
   contract: ethers.Contract | null,
   address: string | null = null,
   roundId: string | null = null,
@@ -37,7 +37,6 @@ export const queryVoteRevealed = async (
 
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
-
     return events.map((el) => {
       const { args } = el;
       const datum = {} as VoteRevealed;
@@ -47,6 +46,7 @@ export const queryVoteRevealed = async (
         datum.identifier = ethers.utils.toUtf8String(args[2]);
         datum.time = args[3].toString();
         datum.price = ethers.utils.formatEther(args[4]);
+        datum.ancillaryData = args[5];
         datum.numTokens = args[6].toString();
       }
 

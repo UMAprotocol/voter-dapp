@@ -1,5 +1,19 @@
 import { ethers } from "ethers";
-import stringToBytes32 from "common/utils/web3/stringToBytes32";
+
+export interface PostRetrieveReward {
+  voterAddress: string;
+  roundId: string;
+  pendingRequests: PendingRequestRetrieveReward[];
+}
+
+export interface PendingRequestRetrieveReward {
+  // hexstring
+  ancillaryData: string;
+  // bytes32: hexstring or UIntArray
+  identifier: Uint8Array | string;
+  // uint.
+  time: string | number;
+}
 
 /**
  * @notice Retrieves rewards owed for a set of resolved price requests.
@@ -11,28 +25,17 @@ import stringToBytes32 from "common/utils/web3/stringToBytes32";
  * @return totalRewardToIssue total amount of rewards returned to the voter.
  */
 
-export const queryRetrieveRewards = async (
+export const retrieveRewards = async (
   contract: ethers.Contract,
-  address: string,
-  roundId: string,
-  identifier: string,
-  time: string,
-  // hexstring
-  ancillaryData: string
+  data: PostRetrieveReward
 ) => {
   try {
-    const reward: ethers.BigNumber = await contract.callStatic[
+    const tx = await contract.functions[
       "retrieveRewards(address,uint256,(bytes32,uint256,bytes)[])"
-    ](address, roundId, [
-      {
-        identifier: stringToBytes32(identifier),
-        time: Number(time),
-        ancillaryData,
-      },
-    ]);
+    ](data.voterAddress, data.roundId, data.pendingRequests);
 
-    return ethers.utils.formatEther(reward.toString());
+    return tx;
   } catch (err) {
-    console.log("err", err);
+    console.log("Err in attempted retrieveRewards transaction", err);
   }
 };

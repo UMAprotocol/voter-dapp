@@ -2,7 +2,7 @@ import { PriceRequestRound } from "common/hooks/useVoteData";
 import { PastRequest } from "../PastRequests";
 import { DateTime } from "luxon";
 import { ethers } from "ethers";
-import { queryRetrieveRewards } from "web3/get/queryRetrieveRewards";
+// import { queryRetrieveRewards } from "web3/get/queryRetrieveRewards";
 
 export function formatPastRequestsByAddress(
   data: PriceRequestRound[],
@@ -47,16 +47,17 @@ export function formatPastRequestsByAddress(
     if (findReward) {
       reward = ethers.utils.formatEther(findReward.numTokens);
     } else {
-      if (contract && findVote) {
-        const checkIfRewardAvailable = await queryRetrieveRewards(
-          contract,
-          address,
-          el.roundId,
-          el.identifier.id,
-          el.time
-        );
-        if (checkIfRewardAvailable) reward = checkIfRewardAvailable;
-      }
+      // if (contract && findVote) {
+      //   const checkIfRewardAvailable = await queryRetrieveRewards(
+      //     contract,
+      //     address,
+      //     el.roundId,
+      //     el.identifier.id,
+      //     el.time,
+      //     el.ancillaryData
+      //   );
+      //   if (checkIfRewardAvailable) reward = checkIfRewardAvailable;
+      // }
     }
 
     // Determine if the user has revealed a vote and has not retrieved their rewards yet.

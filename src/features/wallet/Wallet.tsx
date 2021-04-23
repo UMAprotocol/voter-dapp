@@ -13,17 +13,34 @@ import {
   useVotingAddress,
   useRewardsRetrievedEvents,
   useVotingContract,
+  useVotesRevealedEvents,
+  useMulticall,
 } from "hooks";
+
+// Helpers
+import formatWalletBalance from "./helpers/formatWalletBalance";
+import calculateUMATotalValue from "./helpers/calculateUMATotalValue";
+import checkAvailableRewards from "./helpers/checkAvailableRewards";
+import collectRewards from "./helpers/collectRewards";
+
+import {
+  Wrapper,
+  Connected,
+  Disconnected,
+  ModalWrapper,
+} from "./styled/Wallet.styled";
 
 interface Props {
   // connect: Connect;
   // disconnect: Disconnect;
 }
 
+const DEFAULT_BALANCE = "0";
+
 const Wallet: FC<Props> = () => {
-  const [umaBalance, setUmaBalance] = useState("0");
-  const [totalUmaCollected, setTotalUmaCollected] = useState("0");
-  const [availableRewards, setAvailableRewards] = useState("0");
+  const [umaBalance, setUmaBalance] = useState(DEFAULT_BALANCE);
+  const [totalUmaCollected, setTotalUmaCollected] = useState(DEFAULT_BALANCE);
+  const [availableRewards, setAvailableRewards] = useState(DEFAULT_BALANCE);
   const { data: umaPrice } = useUmaPriceData();
   const { isOpen, open, close, modalRef } = useModal();
   const {
@@ -44,6 +61,25 @@ const Wallet: FC<Props> = () => {
     votingAddress
   );
 
+  const { multicallContract } = useMulticall(signer, isConnected, network);
+
+  const { data: votesRevealed } = useVotesRevealedEvents(
+    votingContract,
+    votingAddress
+  );
+
+  useEffect(() => {
+    if (votesRevealed.length && votingContract && votingAddress) {
+      checkAvailableRewards(votesRevealed, votingAddress, votingContract).then(
+        (balance) => {
+          setAvailableRewards(balance ? balance.toString() : DEFAULT_BALANCE);
+        }
+      );
+    } else {
+      setAvailableRewards(DEFAULT_BALANCE);
+    }
+  }, [votesRevealed, votingContract, votingAddress]);
+
   useEffect(() => {
     // When Address changes in MM, balance will change, as the address in context is changing from Onboard.
     if (votingAddress && signer && network) {
@@ -54,9 +90,9 @@ const Wallet: FC<Props> = () => {
       );
     }
     if (!isConnected) {
-      setUmaBalance("0");
-      setTotalUmaCollected("0");
-      setAvailableRewards("0");
+      setUmaBalance(DEFAULT_BALANCE);
+      setTotalUmaCollected(DEFAULT_BALANCE);
+      setAvailableRewards(DEFAULT_BALANCE);
     }
   }, [signer, votingAddress, network, isConnected]);
 
@@ -73,7 +109,7 @@ const Wallet: FC<Props> = () => {
   }, [rewardsEvents]);
 
   return (
-    <StyledWallet>
+    <Wrapper>
       <div className="wrapper">
         <div tw="flex items-stretch items-center">
           <div tw="py-8 pl-5 flex-grow">
@@ -139,24 +175,52 @@ const Wallet: FC<Props> = () => {
                     umaPrice.market_data.current_price.usd,
                     totalUmaCollected
                   )
-                : "$00.00"}{" "}
+                : "$00.00"}
               USD
             </p>
           </div>
           <div tw="my-5 mx-3 pl-5 flex-grow">
-            <p className="sm-title">Available Rewards</p>
+            <p className="sm-title">
+              Available Rewards{" "}
+              {availableRewards !== DEFAULT_BALANCE ? (
+                <span
+                  onClick={() => {
+                    if (votingContract && votesRevealed && multicallContract) {
+                      collectRewards(
+                        votingContract,
+                        votesRevealed,
+                        setAvailableRewards,
+                        multicallContract
+                      );
+                    }
+                  }}
+                  className="Wallet-collect"
+                >
+                  Collect
+                </span>
+              ) : null}
+            </p>
             <div className="value-tokens">
               <span>{formatWalletBalance(availableRewards)[0]}</span>
               <span>{formatWalletBalance(availableRewards)[1]}</span>
             </div>
-            <p className="value-dollars">$00.00 USD</p>
+            <p className="value-dollars">
+              $
+              {availableRewards && umaPrice
+                ? calculateUMATotalValue(
+                    umaPrice.market_data.current_price.usd,
+                    availableRewards
+                  )
+                : "$00.00"}
+              USD
+            </p>
           </div>
           <div tw="py-10 pl-5 ml-auto flex-none">
             <Settings onClick={() => open()} tw="cursor-pointer" />
           </div>
         </div>
         <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
-          <StyledModal>
+          <ModalWrapper>
             <h3 className="header">Two Key Voting</h3>
             <p tw="opacity-50 mb-4 text-center">
               You are not currently using a two key voting system. To deploy
@@ -169,143 +233,11 @@ const Wallet: FC<Props> = () => {
                 Add Cold Wallet Address
               </div>
             </div>
-          </StyledModal>
+          </ModalWrapper>
         </Modal>
       </div>
-    </StyledWallet>
+    </Wrapper>
   );
 };
-
-const StyledWallet = styled.div`
-  background-color: #f5f5f5;
-
-  ${tw`max-w-full pt-5 mt-5 pb-1`};
-  .wrapper {
-    ${tw`max-w-7xl mx-auto py-5 px-8 my-10`}
-    background-color: #fff;
-  }
-  .wallet-title {
-    font-weight: 600;
-    font-size: 1.5rem;
-  }
-  .sm-title {
-    color: #000;
-    margin: 0 0 12px;
-    font-weight: 400;
-    opacity: 0.5;
-  }
-  .value-tokens {
-    font-size: 1.5rem;
-    margin: 0 0 11px;
-    span {
-      font-weight: 500;
-    }
-    span:last-child {
-      font-weight: 500;
-      opacity: 0.3;
-    }
-  }
-  .value-dollars {
-    font-size: 0.8rem;
-  }
-  .connect-btn {
-    /* margin-left: 12px; */
-    width: 150px;
-  }
-`;
-
-const StyledModal = styled.div`
-  max-width: 375px;
-  padding: 2rem 1.5rem;
-  height: auto;
-  position: relative;
-  background-color: #fff;
-  z-index: 1;
-  overflow-y: auto;
-  border-radius: 12px;
-  margin: 0;
-  outline: 0;
-  box-sizing: border-box;
-  font-family: "Halyard Display";
-  border: none;
-  .header {
-    text-align: center;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    font-size: 1.25rem;
-  }
-  .header-body {
-    border-color: #e5e5e5;
-    padding-bottom: 4rem;
-  }
-  .open-form {
-    color: #ff4a4a;
-    font-size: 0.8rem;
-    line-height: 2rem;
-    text-decoration: underline;
-  }
-`;
-
-const Connected = styled.div`
-  font-size: 0.8rem;
-  line-height: 2rem;
-  flex-basis: 1;
-  &::before {
-    content: " ";
-    display: inline-flex;
-    width: 6px;
-    height: 6px;
-    background-color: #ff4a4a;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-`;
-
-const Disconnected = styled(Connected)`
-  &::before {
-    background-color: #000;
-    opacity: 0.5;
-  }
-`;
-
-// There are two different colours for the first 4 digits and last 4 digits of the number.
-// Hence we need to return an array of strings.
-// We want to limit the overall string length to ~8 digits.
-function formatWalletBalance(balance: string): string[] {
-  if (balance.includes(".")) {
-    const strArray: string[] = [];
-    const split = balance.split(".");
-    const MAX_LENGTH_RIGHT_SIDE = 9 - split[0].length;
-    let rightSide = "";
-    // Need to confirm is the left whole number isn't a massive amount.
-    // If it is, just show 1 decimal.
-    if (MAX_LENGTH_RIGHT_SIDE > 0) {
-      rightSide = split[1].substr(0, MAX_LENGTH_RIGHT_SIDE);
-    } else {
-      rightSide = split[1].substr(0, 1);
-    }
-    strArray.push(`${split[0]}.`);
-    strArray.push(rightSide.substr(0, 8));
-    return strArray;
-  } else {
-    const MAX_LENGTH_RIGHT_SIDE = 9 - balance.length;
-    let trailingZeros = "";
-    for (let i = 0; i < MAX_LENGTH_RIGHT_SIDE; i++) {
-      trailingZeros = trailingZeros.concat("0");
-    }
-    return [`${balance}.`, trailingZeros];
-  }
-}
-
-function calculateUMATotalValue(price: number, balance: string) {
-  const bal = Number(balance);
-  return (
-    (price * bal)
-      .toFixed(2)
-      // Add commas
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      .toLocaleString()
-  );
-}
 
 export default Wallet;

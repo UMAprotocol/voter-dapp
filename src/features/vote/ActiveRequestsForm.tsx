@@ -20,6 +20,7 @@ import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 
 import { FormWrapper, ModalWrapper } from "./styled/ActiveRequestsForm.styled";
+import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 
 export type FormData = {
   [key: string]: string;
@@ -37,13 +38,18 @@ interface Props {
   votePhase: string;
   encryptedVotes: EncryptedVote[];
   refetchEncryptedVotes: Function;
+  revealedVotes: VoteRevealed[];
 }
 
 interface TableValue {
   ancillaryData: string;
   identifier: string;
   vote: string;
+  revealed: boolean;
+  ancHex: string;
 }
+
+const UNDEFINED_VOTE = "-";
 
 const ActiveRequestsForm: FC<Props> = ({
   activeRequests,
@@ -52,6 +58,7 @@ const ActiveRequestsForm: FC<Props> = ({
   votePhase,
   encryptedVotes,
   refetchEncryptedVotes,
+  revealedVotes,
 }) => {
   const [modalState, setModalState] = useState<
     "init" | "pending" | "success" | "error"
@@ -61,12 +68,33 @@ const ActiveRequestsForm: FC<Props> = ({
     state: { address, network, signer },
   } = useContext(OnboardContext);
   const { votingContract } = useVotingContract(signer, isConnected, network);
-  // const { data } = useVotesCommittedEvents(votingContract, address);
 
   const [tableValues, setTableValues] = useState<TableValue[]>([]);
 
   const { data: roundId } = useCurrentRoundId();
   const { isOpen, open, close, modalRef } = useModal();
+  const [canReveal, setCanReveal] = useState(false);
+
+  useEffect(() => {
+    if (encryptedVotes.length && votePhase === "Reveal") {
+      if (revealedVotes.length) {
+        revealedVotes.forEach((el) => {
+          const findRevealedVote = encryptedVotes.find(
+            (x) =>
+              x.identifier === el.identifier &&
+              x.ancillaryData === el.ancillaryData &&
+              x.time === el.time
+          );
+          // If there are no revealed votes and some encrypted votes, set can reveal to true.
+          if (!findRevealedVote) setCanReveal(true);
+        });
+      } else {
+        setCanReveal(true);
+      }
+    } else {
+      setCanReveal(false);
+    }
+  }, [encryptedVotes, votePhase, revealedVotes]);
 
   const generateDefaultValues = useCallback(() => {
     const dv = {} as FormData;
@@ -157,6 +185,8 @@ const ActiveRequestsForm: FC<Props> = ({
           ancillaryData: el.ancillaryData,
           vote: "-",
           identifier: el.identifier,
+          revealed: false,
+          ancHex: el.idenHex,
         };
       });
 
@@ -172,8 +202,12 @@ const ActiveRequestsForm: FC<Props> = ({
         // I believe latest events are on bottom. requires testing.
         const latestVotesFirst = [...encryptedVotes].reverse();
         const findVote = latestVotesFirst.find(
-          (x) => x.identifier === el.identifier
+          (x) =>
+            x.identifier === el.identifier &&
+            x.ancillaryData === el.ancHex &&
+            x.time === el.time
         );
+
         if (findVote) {
           datum.vote = ethers.utils.formatEther(findVote.price);
           if (el.identifier.includes("Admin")) {
@@ -183,11 +217,23 @@ const ActiveRequestsForm: FC<Props> = ({
         } else {
           datum.vote = vote;
         }
+        const findReveal = revealedVotes.find(
+          (x) =>
+            x.identifier === el.identifier &&
+            x.ancillaryData === el.ancHex &&
+            x.time === el.time
+        );
+        if (findReveal) {
+          datum.revealed = true;
+        } else {
+          datum.revealed = false;
+        }
+
         tv.push(datum);
       });
       setTableValues(tv);
     }
-  }, [activeRequests, encryptedVotes]);
+  }, [activeRequests, encryptedVotes, revealedVotes]);
 
   return (
     <FormWrapper
@@ -199,7 +245,8 @@ const ActiveRequestsForm: FC<Props> = ({
         <thead>
           <tr>
             <th>Requested Vote</th>
-            <th>Proposal Detail</th>
+            {/* Commented out for now -- might move the anc data elsewhere */}
+            {/* <th>Proposal Detail</th> */}
             <th>Description</th>
             <th>Commit Vote</th>
             <th>Your Vote</th>
@@ -213,7 +260,8 @@ const ActiveRequestsForm: FC<Props> = ({
                 <td>
                   <div className="identifier">{el.identifier}</div>
                 </td>
-                <td>{el.ancillaryData}</td>
+                {/* Commented out for now -- might move the anc data elsewhere */}
+                {/* <td>{el.ancillaryData}</td> */}
                 <td>
                   <div className="description">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -244,16 +292,20 @@ const ActiveRequestsForm: FC<Props> = ({
                 </td>
                 <td>
                   <div>
-                    {/* <UnlockedIcon /> */}
-                    {votePhase === "Commit" && el.vote
+                    {votePhase === "Commit" && el.vote !== UNDEFINED_VOTE
                       ? "Committed"
-                      : votePhase === "Commit" && !el.vote
+                      : votePhase === "Commit"
                       ? "Uncommitted"
                       : null}
-                    {votePhase === "Reveal" && el.vote
+                    {votePhase === "Reveal" && el.revealed
+                      ? "Revealed"
+                      : votePhase === "Reveal" &&
+                        el.vote !== UNDEFINED_VOTE &&
+                        !el.revealed
                       ? "Reveal"
-                      : /* this is incorrect -- just wanna hide this string for now. */
-                        null}
+                      : votePhase === "Reveal" && el.vote === UNDEFINED_VOTE
+                      ? "Uncommitted"
+                      : null}
                   </div>
                 </td>
               </tr>
@@ -281,7 +333,7 @@ const ActiveRequestsForm: FC<Props> = ({
               Commit Votes
             </Button>
           ) : null}
-          {votePhase === "Reveal" ? (
+          {votePhase === "Reveal" && canReveal ? (
             <Button
               type="button"
               onClick={() => {
@@ -301,7 +353,7 @@ const ActiveRequestsForm: FC<Props> = ({
                       datum.ancillaryData = el.ancillaryData;
                       // anc data is set to - or N/A in UI if empty, convert back to 0x.
                       if (
-                        el.ancillaryData === "-" ||
+                        el.ancillaryData === UNDEFINED_VOTE ||
                         el.ancillaryData === "N/A"
                       ) {
                         datum.ancillaryData = "0x";
@@ -328,6 +380,10 @@ const ActiveRequestsForm: FC<Props> = ({
               }}
               variant="secondary"
             >
+              Reveal Votes
+            </Button>
+          ) : votePhase === "Reveal" && !canReveal ? (
+            <Button type="button" variant="disabled">
               Reveal Votes
             </Button>
           ) : null}
