@@ -38,4 +38,36 @@ export const Proposal = styled.div`
   font-size: 1.5rem;
   font-weight: 500;
   color: #000;
+  margin-bottom: 2rem;
+`;
+
+export const Description = styled.p`
+  line-height: 1.71rem;
+  color: grey;
+  max-width: 500px;
+  margin-bottom: 1.25rem;
+`;
+
+export const DiscordWrapper = styled.div`
+  padding: 1rem 0;
+  border-bottom: 1px solid #e4e5e4;
+  span {
+    div {
+      display: inline-block;
+      margin-right: 12px;
+      border: 1px solid #ff4a4a;
+      border-radius: 20px;
+      padding: 4px 6px;
+      svg {
+        margin-bottom: 4px;
+      }
+    }
+
+    a {
+      color: #ff4a4a;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 `;

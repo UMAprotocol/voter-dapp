@@ -53,6 +53,8 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
     }
   }, [voteSummaryData, address, contract, showAll]);
 
+  // console.log("VSD", voteSummaryData);
+
   return (
     <Wrapper className="PastRequests">
       <div className="requests-header-row">
