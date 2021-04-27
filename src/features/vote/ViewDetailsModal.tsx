@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { ForwardRefRenderFunction, PropsWithChildren, forwardRef } from "react";
 import Modal from "common/components/modal";
 import { ModalWrapper, MiniHeader } from "./styled/ViewDetailsModal.styled";
 interface Props {
@@ -7,10 +7,13 @@ interface Props {
   ref: (node: HTMLElement | null) => void;
 }
 
-const ViewDetailsModal: FC<Props> = ({ isOpen, close, ref }) => {
+const _ViewDetailsModal: ForwardRefRenderFunction<
+  HTMLElement,
+  PropsWithChildren<Props>
+> = ({ isOpen, close }, externalRef) => {
   return (
     <>
-      <Modal isOpen={isOpen} onClose={close} ref={ref}>
+      <Modal isOpen={isOpen} onClose={close} ref={externalRef}>
         <ModalWrapper>
           <MiniHeader>Proposal</MiniHeader>
         </ModalWrapper>
@@ -18,5 +21,7 @@ const ViewDetailsModal: FC<Props> = ({ isOpen, close, ref }) => {
     </>
   );
 };
+
+const ViewDetailsModal = forwardRef(_ViewDetailsModal);
 
 export default ViewDetailsModal;

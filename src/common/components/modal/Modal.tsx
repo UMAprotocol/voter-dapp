@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, PropsWithChildren, ForwardRefRenderFunction } from "react";
 import tw, { styled } from "twin.macro";
 import { Times } from "assets/icons";
 
@@ -9,22 +9,22 @@ type Props = {
   onClose: () => void;
 };
 
-const _Modal: React.ForwardRefRenderFunction<
+const _Modal: ForwardRefRenderFunction<
   HTMLElement,
-  React.PropsWithChildren<Props>
+  PropsWithChildren<Props>
 > = ({ children, isOpen, onClose }, externalRef) => {
   if (!isOpen) {
     return null;
   }
   return (
     <Portal>
-      <Wrapper ref={externalRef}>
+      <Wrapper ref={externalRef} coords={{ y: window.scrollY }}>
         <ExitButton onClick={onClose}>
           <Times />
         </ExitButton>
         <Content>{children}</Content>
       </Wrapper>
-      <BgBlur />
+      <BgBlur coords={{ y: window.scrollY }} />
     </Portal>
   );
 };
@@ -32,15 +32,37 @@ const _Modal: React.ForwardRefRenderFunction<
 const Modal = forwardRef(_Modal);
 Modal.displayName = "Modal";
 
-export const Wrapper = styled.aside`
+interface StyledProps {
+  coords?: {
+    y?: number;
+    x?: number;
+  };
+}
+
+const DEFAULT_TOP_VALUE = 150;
+
+export const Wrapper = styled.aside<StyledProps>`
   ${tw`z-20 bg-white rounded border-0 border-opacity-10 absolute inset-x-0 mx-auto p-5 max-w-max flex flex-col items-center`};
-  top: 150px;
+  top: ${(props) => {
+    console.log("Props", props);
+    return props.coords && props.coords.y
+      ? `${props.coords.y + DEFAULT_TOP_VALUE}px`
+      : `${DEFAULT_TOP_VALUE}px`;
+  }};
 `;
 
 const Content = tw.div`pb-7 px-5`;
 
-const BgBlur = tw.div`
-  absolute z-10 inset-0 bg-black bg-opacity-50
+const BgBlur = styled.div<StyledProps>`
+  ${tw`absolute z-10 bg-black bg-opacity-50`};
+
+  height: 100%;
+  top: ${(props) => {
+    return props.coords && props.coords.y ? `${props.coords.y}px` : `0px`;
+  }};
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
 `;
 const ExitButton = tw.button`w-4 h-4 text-gray self-end`;
 
