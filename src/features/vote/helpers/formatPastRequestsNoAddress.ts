@@ -16,7 +16,6 @@ export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
     datum.correct = "N/A";
     datum.vote = "N/A";
     datum.reward = "N/A";
-    datum.rewardCollected = true;
     datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
       month: "short",
       day: "2-digit",

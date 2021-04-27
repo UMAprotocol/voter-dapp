@@ -7,15 +7,12 @@ import { formatPastRequestsNoAddress } from "./helpers/formatPastRequestsNoAddre
 import { formatPastRequestsByAddress } from "./helpers/formatPastRequestByAddress";
 import { Wrapper } from "./styled/PastRequests.styled";
 
-import { usePriceRequestAddedEvents } from "hooks";
-
 export interface PastRequest {
   proposal: string;
   correct: string;
   vote: string;
   reward: string;
   timestamp: string;
-  rewardCollected: boolean;
 }
 
 interface Props {
@@ -25,35 +22,25 @@ interface Props {
   roundId: string;
 }
 
-const PastRequests: FC<Props> = ({
-  voteSummaryData,
-  address,
-  contract,
-  roundId,
-}) => {
+const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [showAll, setShowAll] = useState(false);
-  // console.log("data", voteSummaryData);
 
-  const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
-  console.log("PRA", priceRequestsAdded);
-  console.log("roundId", roundId);
+  useEffect(() => {
+    // Handle past requests differently depending on if user is logged in or not.
+    if (voteSummaryData.length) {
+      if (address && contract) {
+        const pr = formatPastRequestsByAddress(voteSummaryData, address);
+        Promise.all(pr).then((res) => {
+          setPastRequests(!showAll ? res.slice(0, 10) : res);
+        });
+      } else {
+        const pr = formatPastRequestsNoAddress(voteSummaryData);
 
-  // useEffect(() => {
-  //   // Handle past requests differently depending on if user is logged in or not.
-  //   if (priceRounds.length) {
-  //     if (address && contract) {
-  //       const pr = formatPastRequestsByAddress(priceRounds, address, contract);
-  //       Promise.all(pr).then((res) => {
-  //         setPastRequests(!showAll ? res.slice(0, 10) : res);
-  //       });
-  //     } else {
-  //       const pr = formatPastRequestsNoAddress(priceRounds);
-
-  //       setPastRequests(!showAll ? pr.slice(0, 10) : pr);
-  //     }
-  //   }
-  // }, [priceRounds, address, contract, showAll]);
+        setPastRequests(!showAll ? pr.slice(0, 10) : pr);
+      }
+    }
+  }, [voteSummaryData, address, contract, showAll]);
 
   return (
     <Wrapper className="PastRequests">
@@ -71,7 +58,6 @@ const PastRequests: FC<Props> = ({
               <th>Your Vote</th>
               <th>Earned Rewards</th>
               <th>Timestamp</th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -79,7 +65,10 @@ const PastRequests: FC<Props> = ({
               return (
                 <tr key={index}>
                   <td>
-                    <div className="identifier">{el.proposal}</div>
+                    <div className="identifier">
+                      <p>{el.proposal}</p>
+                      <p className="PastRequests-view-details">View Details</p>
+                    </div>
                   </td>
                   <td>
                     <div>{el.correct}</div>
@@ -93,33 +82,6 @@ const PastRequests: FC<Props> = ({
                   <td>
                     <div>{el.timestamp}</div>
                   </td>
-                  {el.vote === el.correct && el.vote !== "N/A" ? (
-                    <td>
-                      <div>
-                        <Button
-                          variant={
-                            !el.rewardCollected &&
-                            el.vote === el.correct &&
-                            el.reward !== "0"
-                              ? "primary"
-                              : "disabled"
-                          }
-                        >
-                          {!el.rewardCollected &&
-                          el.vote === el.correct &&
-                          el.reward !== "0"
-                            ? "Collect Reward"
-                            : el.reward === "0"
-                            ? "Expired"
-                            : "Collected"}
-                        </Button>
-                      </div>
-                    </td>
-                  ) : (
-                    <td>
-                      <div />
-                    </td>
-                  )}
                 </tr>
               );
             })}
