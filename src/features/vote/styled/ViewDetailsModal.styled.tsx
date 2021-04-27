@@ -32,6 +32,7 @@ export const MiniHeader = styled.div`
   color: #ff4a4a;
   font-size: 0.8rem;
   margin-bottom: 1rem;
+  margin-top: 1rem;
 `;
 
 export const Proposal = styled.div`
@@ -53,21 +54,22 @@ export const DiscordWrapper = styled.div`
   border-bottom: 1px solid #e4e5e4;
   margin-bottom: 2rem;
   span {
+    a {
+      display: flex;
+      max-width: 200px;
+      color: #ff4a4a;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
     div {
       display: inline-block;
       margin-right: 12px;
       border: 1px solid #ff4a4a;
       border-radius: 20px;
-      padding: 4px 6px;
+      padding: 6px;
       svg {
-        margin-bottom: 4px;
-      }
-    }
-
-    a {
-      color: #ff4a4a;
-      &:hover {
-        text-decoration: underline;
+        margin-bottom: 2px;
       }
     }
   }

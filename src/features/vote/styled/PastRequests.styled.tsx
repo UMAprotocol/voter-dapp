@@ -7,7 +7,7 @@ export const Wrapper = styled(RequestsWrapper)`
     .identifier {
       align-items: flex-start;
       flex-direction: column;
-      p:first-child {
+      p:first-of-type {
         margin-bottom: 0.5rem;
       }
       .PastRequests-view-details {

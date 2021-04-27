@@ -48,6 +48,8 @@ export const Wrapper = styled.aside<StyledProps>`
       ? `${props.coords.y + DEFAULT_TOP_VALUE}px`
       : `${DEFAULT_TOP_VALUE}px`;
   }};
+  overflow-y: scroll;
+  max-height: 800px;
 `;
 
 const Content = tw.div`pb-7 px-5`;

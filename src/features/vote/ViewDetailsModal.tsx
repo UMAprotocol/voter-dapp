@@ -24,19 +24,43 @@ interface Props {
   proposal: string;
   setModalState: Dispatch<SetStateAction<ModalState>>;
   totalSupply: string;
+  correct: string;
+  numberCommitVoters: number;
+  numberRevealVoters: number;
+  timestamp: string;
 }
 
 const _ViewDetailsModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
-> = ({ isOpen, close, proposal, setModalState, totalSupply }, externalRef) => {
+> = (
+  {
+    isOpen,
+    close,
+    proposal,
+    setModalState,
+    totalSupply,
+    correct,
+    numberCommitVoters,
+    numberRevealVoters,
+    timestamp,
+  },
+  externalRef
+) => {
   return (
     <>
       <Modal
         isOpen={isOpen}
         onClose={() => {
           close();
-          setModalState({ proposal: "", correct: "", totalSupply: "" });
+          setModalState({
+            proposal: "",
+            correct: "",
+            totalSupply: "",
+            numberCommitVoters: 0,
+            numberRevealVoters: 0,
+            timestamp: "",
+          });
         }}
         ref={externalRef}
       >
@@ -72,8 +96,20 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
               </a>
             </span>
           </DiscordWrapper>
+          <MiniHeader>Correct Vote</MiniHeader>
+          <StateValue>{correct}</StateValue>
+
           <MiniHeader>Total Supply</MiniHeader>
           <StateValue>{totalSupply}</StateValue>
+
+          <MiniHeader>Unique Commit Addresses</MiniHeader>
+          <StateValue>{numberCommitVoters}</StateValue>
+
+          <MiniHeader>Unique Reveal Addresses</MiniHeader>
+          <StateValue>{numberRevealVoters}</StateValue>
+
+          <MiniHeader>Proposal Timestamp</MiniHeader>
+          <StateValue>{timestamp}</StateValue>
         </ModalWrapper>
       </Modal>
     </>
