@@ -73,6 +73,10 @@ export function formatPastRequestsByAddress(
       timeZoneName: "short",
     });
 
+    datum.numberCommitVoters = el.committedVotes.length;
+    datum.numberRevealVoters = el.revealedVotes.length;
+    datum.totalSupply = el.totalSupplyAtSnapshot;
+
     return datum;
   });
   return formattedData;

@@ -49,8 +49,9 @@ export const Description = styled.p`
 `;
 
 export const DiscordWrapper = styled.div`
-  padding: 1rem 0;
+  padding: 1rem 0 2rem;
   border-bottom: 1px solid #e4e5e4;
+  margin-bottom: 2rem;
   span {
     div {
       display: inline-block;
@@ -70,4 +71,11 @@ export const DiscordWrapper = styled.div`
       }
     }
   }
+`;
+
+export const StateValue = styled.div`
+  padding: 0.5rem 0 1rem;
+  border-bottom: 1px solid #e4e5e4;
+  color: #000;
+  font-size: 1.5rem;
 `;

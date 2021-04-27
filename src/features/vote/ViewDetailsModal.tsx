@@ -12,6 +12,7 @@ import {
   Proposal,
   Description,
   DiscordWrapper,
+  StateValue,
 } from "./styled/ViewDetailsModal.styled";
 import { ModalState } from "./PastRequests";
 import { DiscordRed } from "assets/icons";
@@ -22,19 +23,20 @@ interface Props {
   ref: (node: HTMLElement | null) => void;
   proposal: string;
   setModalState: Dispatch<SetStateAction<ModalState>>;
+  totalSupply: string;
 }
 
 const _ViewDetailsModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
-> = ({ isOpen, close, proposal, setModalState }, externalRef) => {
+> = ({ isOpen, close, proposal, setModalState, totalSupply }, externalRef) => {
   return (
     <>
       <Modal
         isOpen={isOpen}
         onClose={() => {
           close();
-          setModalState({ proposal: "" });
+          setModalState({ proposal: "", correct: "", totalSupply: "" });
         }}
         ref={externalRef}
       >
@@ -70,6 +72,8 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
               </a>
             </span>
           </DiscordWrapper>
+          <MiniHeader>Total Supply</MiniHeader>
+          <StateValue>{totalSupply}</StateValue>
         </ModalWrapper>
       </Modal>
     </>

@@ -11,6 +11,8 @@ import ViewDetailsModal from "./ViewDetailsModal";
 
 export interface ModalState {
   proposal: string;
+  correct: string;
+  totalSupply: string;
 }
 
 export interface PastRequest {
@@ -19,6 +21,9 @@ export interface PastRequest {
   vote: string;
   reward: string;
   timestamp: string;
+  totalSupply: string;
+  numberCommitVoters: number;
+  numberRevealVoters: number;
 }
 
 interface Props {
@@ -35,6 +40,8 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
   const { isOpen, open, close, modalRef } = useModal();
   const [modalState, setModalState] = useState<ModalState>({
     proposal: "",
+    correct: "",
+    totalSupply: "",
   });
 
   useEffect(() => {
@@ -53,7 +60,7 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
     }
   }, [voteSummaryData, address, contract, showAll]);
 
-  // console.log("VSD", voteSummaryData);
+  console.log("VSD", voteSummaryData);
 
   return (
     <Wrapper className="PastRequests">
@@ -85,6 +92,8 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
                           open();
                           setModalState({
                             proposal: el.proposal,
+                            correct: el.correct,
+                            totalSupply: el.totalSupply,
                           });
                         }}
                         className="PastRequests-view-details"
@@ -126,6 +135,7 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
         close={close}
         ref={modalRef}
         proposal={modalState.proposal}
+        totalSupply={ethers.utils.commify(modalState.totalSupply)}
         setModalState={setModalState}
       />
     </Wrapper>
