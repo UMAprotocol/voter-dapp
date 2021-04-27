@@ -6,6 +6,8 @@ import { PriceRequestRound } from "common/hooks/useVoteData";
 import { formatPastRequestsNoAddress } from "./helpers/formatPastRequestsNoAddress";
 import { formatPastRequestsByAddress } from "./helpers/formatPastRequestByAddress";
 import { Wrapper } from "./styled/PastRequests.styled";
+import useModal from "common/hooks/useModal";
+import ViewDetailsModal from "./ViewDetailsModal";
 
 export interface PastRequest {
   proposal: string;
@@ -25,6 +27,8 @@ interface Props {
 const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [showAll, setShowAll] = useState(false);
+
+  const { isOpen, open, close, modalRef } = useModal();
 
   useEffect(() => {
     // Handle past requests differently depending on if user is logged in or not.
@@ -67,7 +71,12 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
                   <td>
                     <div className="identifier">
                       <p>{el.proposal}</p>
-                      <p className="PastRequests-view-details">View Details</p>
+                      <p
+                        onClick={() => open()}
+                        className="PastRequests-view-details"
+                      >
+                        View Details
+                      </p>
                     </div>
                   </td>
                   <td>
@@ -98,6 +107,7 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
           </Button>
         </div>
       ) : null}
+      <ViewDetailsModal isOpen={isOpen} close={close} ref={modalRef} />
     </Wrapper>
   );
 };
