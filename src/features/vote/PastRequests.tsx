@@ -9,6 +9,10 @@ import { Wrapper } from "./styled/PastRequests.styled";
 import useModal from "common/hooks/useModal";
 import ViewDetailsModal from "./ViewDetailsModal";
 
+export interface ModalState {
+  proposal: string;
+}
+
 export interface PastRequest {
   proposal: string;
   correct: string;
@@ -29,6 +33,9 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
   const [showAll, setShowAll] = useState(false);
 
   const { isOpen, open, close, modalRef } = useModal();
+  const [modalState, setModalState] = useState<ModalState>({
+    proposal: "",
+  });
 
   useEffect(() => {
     // Handle past requests differently depending on if user is logged in or not.
@@ -72,7 +79,12 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
                     <div className="identifier">
                       <p>{el.proposal}</p>
                       <p
-                        onClick={() => open()}
+                        onClick={() => {
+                          open();
+                          setModalState({
+                            proposal: el.proposal,
+                          });
+                        }}
                         className="PastRequests-view-details"
                       >
                         View Details
@@ -107,7 +119,13 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
           </Button>
         </div>
       ) : null}
-      <ViewDetailsModal isOpen={isOpen} close={close} ref={modalRef} />
+      <ViewDetailsModal
+        isOpen={isOpen}
+        close={close}
+        ref={modalRef}
+        proposal={modalState.proposal}
+        setModalState={setModalState}
+      />
     </Wrapper>
   );
 };

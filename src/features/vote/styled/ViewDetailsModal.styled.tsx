@@ -33,3 +33,9 @@ export const MiniHeader = styled.div`
   font-size: 0.8rem;
   margin-bottom: 1rem;
 `;
+
+export const Proposal = styled.div`
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #000;
+`;
