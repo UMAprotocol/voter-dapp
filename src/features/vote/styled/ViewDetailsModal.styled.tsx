@@ -81,3 +81,20 @@ export const StateValue = styled.div`
   color: #000;
   font-size: 1.5rem;
 `;
+
+export const StateValueAddress = styled(StateValue)`
+  border-bottom: none;
+`;
+
+export const RevealHeader = styled.div`
+  font-size: 0.75rem;
+  color: #000;
+  font-weight: 600;
+`;
+
+export const RevealPercentage = styled.div`
+  font-size: 0.75rem;
+  color: #000;
+  border-bottom: 1px solid #e4e5e4;
+  padding-bottom: 1rem;
+`;

@@ -13,6 +13,9 @@ import {
   Description,
   DiscordWrapper,
   StateValue,
+  StateValueAddress,
+  RevealHeader,
+  RevealPercentage,
 } from "./styled/ViewDetailsModal.styled";
 import { ModalState } from "./PastRequests";
 import { DiscordRed } from "assets/icons";
@@ -110,10 +113,15 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
           <StateValue>{ethers.utils.formatEther(rewardsClaimed)}</StateValue>
 
           <MiniHeader>Unique Commit Addresses</MiniHeader>
-          <StateValue>{numberCommitVoters}</StateValue>
+          <StateValueAddress>{numberCommitVoters}</StateValueAddress>
 
-          <MiniHeader>Unique Reveal Addresses</MiniHeader>
-          <StateValue>{numberRevealVoters}</StateValue>
+          <RevealHeader>
+            {numberRevealVoters} Unique Reveal Addresses
+          </RevealHeader>
+          <RevealPercentage>
+            {((numberRevealVoters / numberCommitVoters) * 100).toFixed(2)}% of
+            Unique Commit Addresses
+          </RevealPercentage>
 
           <MiniHeader>Proposal Timestamp</MiniHeader>
           <StateValue>{timestamp}</StateValue>
