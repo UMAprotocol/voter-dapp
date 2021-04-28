@@ -14,6 +14,9 @@ export const Wrapper = styled(RequestsWrapper)`
         color: #ff4a4a;
         text-decoration: underline;
         font-weight: 600;
+        &:hover {
+          cursor: pointer;
+        }
       }
     }
   }
