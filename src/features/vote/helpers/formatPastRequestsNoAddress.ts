@@ -1,6 +1,7 @@
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import { PastRequest } from "../PastRequests";
 import { DateTime } from "luxon";
+import { ethers } from "ethers";
 
 // Sorts and sets some default values for when the user isn't logged in.
 export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
@@ -12,8 +13,18 @@ export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
 
   const formattedData = sortedByTime.map((el) => {
     const datum = {} as PastRequest;
+    let correct = ethers.utils.formatEther(
+      el.request.price !== null ? el.request.price : "0"
+    );
+
+    if (el.identifier.id.includes("Admin")) {
+      correct = Number(correct) > 0 ? "YES" : "NO";
+    }
+
+    console.log("el.request.price", el.request.price);
+
     datum.proposal = el.identifier.id;
-    datum.correct = "N/A";
+    datum.correct = correct;
     datum.vote = "N/A";
     datum.reward = "N/A";
     datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
