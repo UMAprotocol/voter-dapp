@@ -16,6 +16,7 @@ export interface ModalState {
   numberCommitVoters: number;
   numberRevealVoters: number;
   timestamp: string;
+  rewardsClaimed: string;
 }
 
 export interface PastRequest {
@@ -27,6 +28,7 @@ export interface PastRequest {
   totalSupply: string;
   numberCommitVoters: number;
   numberRevealVoters: number;
+  rewardsClaimed: string;
 }
 
 interface Props {
@@ -48,6 +50,7 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
     numberCommitVoters: 0,
     numberRevealVoters: 0,
     timestamp: "",
+    rewardsClaimed: "0",
   });
 
   useEffect(() => {
@@ -101,6 +104,7 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
                             numberCommitVoters: el.numberCommitVoters,
                             numberRevealVoters: el.numberRevealVoters,
                             timestamp: el.timestamp,
+                            rewardsClaimed: el.rewardsClaimed,
                           });
                         }}
                         className="PastRequests-view-details"
@@ -148,6 +152,7 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
         numberCommitVoters={modalState.numberCommitVoters}
         numberRevealVoters={modalState.numberRevealVoters}
         timestamp={modalState.timestamp}
+        rewardsClaimed={modalState.rewardsClaimed}
       />
     </Wrapper>
   );

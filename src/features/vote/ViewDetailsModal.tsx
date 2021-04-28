@@ -28,6 +28,7 @@ interface Props {
   numberCommitVoters: number;
   numberRevealVoters: number;
   timestamp: string;
+  rewardsClaimed: string;
 }
 
 const _ViewDetailsModal: ForwardRefRenderFunction<
@@ -44,6 +45,7 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
     numberCommitVoters,
     numberRevealVoters,
     timestamp,
+    rewardsClaimed,
   },
   externalRef
 ) => {
@@ -60,6 +62,7 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
             numberCommitVoters: 0,
             numberRevealVoters: 0,
             timestamp: "",
+            rewardsClaimed: "0",
           });
         }}
         ref={externalRef}
@@ -101,6 +104,9 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
 
           <MiniHeader>Total Supply</MiniHeader>
           <StateValue>{totalSupply}</StateValue>
+
+          <MiniHeader>Rewards Claimed</MiniHeader>
+          <StateValue>{rewardsClaimed}</StateValue>
 
           <MiniHeader>Unique Commit Addresses</MiniHeader>
           <StateValue>{numberCommitVoters}</StateValue>

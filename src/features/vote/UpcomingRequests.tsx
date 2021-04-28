@@ -37,7 +37,6 @@ const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
 
         return datum;
       });
-      console.log("values", values);
       setFormattedRequests(values);
     }
   }, [upcomingRequests]);

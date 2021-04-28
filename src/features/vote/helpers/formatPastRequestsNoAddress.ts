@@ -21,8 +21,6 @@ export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
       correct = Number(correct) > 0 ? "YES" : "NO";
     }
 
-    console.log("el.request.price", el.request.price);
-
     datum.proposal = el.identifier.id;
     datum.correct = correct;
     datum.vote = "N/A";
@@ -37,9 +35,28 @@ export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
       timeZoneName: "short",
     });
 
-    datum.numberCommitVoters = el.committedVotes.length;
-    datum.numberRevealVoters = el.revealedVotes.length;
+    // find the unique commits
+    const numberCommitVoters = el.committedVotes
+      .map((item) => item.voter.address)
+      .filter((value, index, self) => self.indexOf(value) === index);
+
+    // find the unique reveals
+    const numberRevealVoters = el.revealedVotes
+      .map((item) => item.voter.address)
+      .filter((value, index, self) => self.indexOf(value) === index);
+
+    // This entire thing might be very unperformant, but not sure how else to calculate this value.
+    let rewardsClaimed = ethers.BigNumber.from("0");
+    el.rewardsClaimed.forEach((item) => {
+      const reward = ethers.BigNumber.from(item.numTokens);
+      rewardsClaimed = rewardsClaimed.add(reward);
+    });
+
+    datum.numberCommitVoters = numberCommitVoters.length;
+    datum.numberRevealVoters = numberRevealVoters.length;
     datum.totalSupply = el.totalSupplyAtSnapshot;
+    datum.rewardsClaimed = rewardsClaimed.toString();
+
     return datum;
   });
 
