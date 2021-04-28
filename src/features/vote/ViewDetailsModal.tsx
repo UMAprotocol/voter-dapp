@@ -16,6 +16,7 @@ import {
 } from "./styled/ViewDetailsModal.styled";
 import { ModalState } from "./PastRequests";
 import { DiscordRed } from "assets/icons";
+import { ethers } from "ethers";
 
 interface Props {
   isOpen: boolean;
@@ -106,7 +107,7 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
           <StateValue>{totalSupply}</StateValue>
 
           <MiniHeader>Rewards Claimed</MiniHeader>
-          <StateValue>{rewardsClaimed}</StateValue>
+          <StateValue>{ethers.utils.formatEther(rewardsClaimed)}</StateValue>
 
           <MiniHeader>Unique Commit Addresses</MiniHeader>
           <StateValue>{numberCommitVoters}</StateValue>
