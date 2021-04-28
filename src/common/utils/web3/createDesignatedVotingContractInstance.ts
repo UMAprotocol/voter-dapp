@@ -1,5 +1,7 @@
 import DesignatedVotingArtifact from "@uma/core/build/contracts/DesignatedVotingFactory.json";
+
 import { ethers } from "ethers";
+console.log("DVA", DesignatedVotingArtifact);
 
 interface Network {
   [key: string]: {
@@ -22,6 +24,8 @@ export default function createDesignatedVotingContractInstance(
     DesignatedVotingArtifact.abi,
     signer
   );
+
+  console.log("DVA contract", contract);
 
   return contract;
 }
