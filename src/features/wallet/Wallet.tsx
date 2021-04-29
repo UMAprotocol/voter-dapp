@@ -50,7 +50,11 @@ const Wallet: FC<Props> = () => {
     network,
   } = useOnboard();
 
-  const { votingAddress } = useVotingAddress(address, signer, network);
+  const { votingAddress, hotAddress } = useVotingAddress(
+    address,
+    signer,
+    network
+  );
   const { votingContract } = useVotingContract(signer, isConnected, network);
   const { data: rewardsEvents } = useRewardsRetrievedEvents(
     votingContract,
@@ -215,7 +219,13 @@ const Wallet: FC<Props> = () => {
             <Settings onClick={() => open()} tw="cursor-pointer" />
           </div>
         </div>
-        <TwoKeyContractModal isOpen={isOpen} close={close} ref={modalRef} />
+        <TwoKeyContractModal
+          isOpen={isOpen}
+          close={close}
+          ref={modalRef}
+          hotAddress={hotAddress}
+          isConnected={isConnected}
+        />
       </div>
     </Wrapper>
   );
