@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { FC, useState, useEffect } from "react";
-import tw, { styled } from "twin.macro"; // eslint-disable-line
+import tw from "twin.macro"; // eslint-disable-line
 import { ethers } from "ethers";
-import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Button from "common/components/button";
 import useOnboard from "common/hooks/useOnboard";
@@ -17,18 +16,15 @@ import {
   useMulticall,
 } from "hooks";
 
+import TwoKeyContractModal from "./TwoKeyContractModal";
+
 // Helpers
 import formatWalletBalance from "./helpers/formatWalletBalance";
 import calculateUMATotalValue from "./helpers/calculateUMATotalValue";
 import checkAvailableRewards from "./helpers/checkAvailableRewards";
 import collectRewards from "./helpers/collectRewards";
 
-import {
-  Wrapper,
-  Connected,
-  Disconnected,
-  ModalWrapper,
-} from "./styled/Wallet.styled";
+import { Wrapper, Connected, Disconnected } from "./styled/Wallet.styled";
 
 interface Props {
   // connect: Connect;
@@ -219,22 +215,7 @@ const Wallet: FC<Props> = () => {
             <Settings onClick={() => open()} tw="cursor-pointer" />
           </div>
         </div>
-        <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
-          <ModalWrapper>
-            <h3 className="header">Two Key Voting</h3>
-            <p tw="opacity-50 mb-4 text-center">
-              You are not currently using a two key voting system. To deploy
-              one, provide your cold key address. Click here to learn more about
-              the two key voting system.
-            </p>
-            <div tw="flex items-stretch">
-              <Disconnected tw="flex-grow">Not Connected</Disconnected>
-              <div className="open-form" tw="flex-grow text-right">
-                Add Cold Wallet Address
-              </div>
-            </div>
-          </ModalWrapper>
-        </Modal>
+        <TwoKeyContractModal isOpen={isOpen} close={close} ref={modalRef} />
       </div>
     </Wrapper>
   );
