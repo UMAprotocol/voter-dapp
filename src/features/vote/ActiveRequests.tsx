@@ -27,6 +27,7 @@ interface Props {
   refetchEncryptedVotes: Function;
   revealedVotes: VoteRevealed[];
   votingAddress: string | null;
+  hotAddress: string | null;
   votingContract: ethers.Contract | null;
 }
 
@@ -44,6 +45,7 @@ const ActiveRequests: FC<Props> = ({
   votingAddress,
   votingContract,
   refetchEncryptedVotes,
+  hotAddress,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState<Timer>({
     hours: "00",
@@ -136,6 +138,7 @@ const ActiveRequests: FC<Props> = ({
         encryptedVotes={encryptedVotes}
         refetchEncryptedVotes={refetchEncryptedVotes}
         revealedVotes={revealedVotes}
+        hotAddress={hotAddress}
       />
       {activeRequests.length &&
       votePhase === "Reveal" &&

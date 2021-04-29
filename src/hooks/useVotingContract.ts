@@ -5,11 +5,17 @@ import createVotingContractInstance from "web3/createVotingContractInstance";
 export default function useVotingContract(
   signer: ethers.Signer | null,
   isConnected: boolean,
-  network: ethers.providers.Network | null
+  network: ethers.providers.Network | null,
+  hotAddress: string | null
 ) {
   const [votingContract, setVotingContract] = useState<ethers.Contract | null>(
     null
   );
+
+  const [
+    designatedVotingContract,
+    setDesignatedVotingContract,
+  ] = useState<ethers.Contract | null>(null);
 
   useEffect(() => {
     // If connected, try to create contract with assigned signer.

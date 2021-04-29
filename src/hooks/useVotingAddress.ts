@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import createDesignatedVotingContractInstance from "common/utils/web3/createDesignatedVotingContractInstance";
+import createDesignatedVotingContractFactoryInstance from "common/utils/web3/createDesignatedVotingContractFactoryInstance";
 
 // Need to determine if user is using a two key contract.
 // Return their hot wallet address and cold wallet address.
@@ -14,7 +14,7 @@ export default function useVotingAddress(
 
   useEffect(() => {
     if (address && signer && network) {
-      const designatedContract = createDesignatedVotingContractInstance(
+      const designatedContract = createDesignatedVotingContractFactoryInstance(
         signer,
         network.chainId.toString()
       );

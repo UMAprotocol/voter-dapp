@@ -1,12 +1,12 @@
 import { ethers } from "ethers";
-import createDesignatedVotingContractInstance from "common/utils/web3/createDesignatedVotingContractInstance";
+import createDesignatedVotingContractFactoryInstance from "common/utils/web3/createDesignatedVotingContractFactoryInstance";
 
 export default async function createDesignatedVotingContract(
   address: string,
   signer: ethers.Signer,
   network: ethers.providers.Network
 ) {
-  const dvcFactory = createDesignatedVotingContractInstance(
+  const dvcFactory = createDesignatedVotingContractFactoryInstance(
     signer,
     network.chainId.toString()
   );

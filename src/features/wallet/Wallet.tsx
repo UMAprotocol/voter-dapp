@@ -56,7 +56,12 @@ const Wallet: FC<Props> = () => {
     signer,
     network
   );
-  const { votingContract } = useVotingContract(signer, isConnected, network);
+  const { votingContract } = useVotingContract(
+    signer,
+    isConnected,
+    network,
+    hotAddress
+  );
   const { data: rewardsEvents } = useRewardsRetrievedEvents(
     votingContract,
     votingAddress

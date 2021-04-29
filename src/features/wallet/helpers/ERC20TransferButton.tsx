@@ -23,7 +23,7 @@ const ERC20TransferButton: FC<Props> = ({ network, signer, votingAddress }) => {
           erc20.functions
             .transfer(
               votingAddress,
-              // ethers.BigNumber.from("50000000000000000000000").toString()
+              // 50k tokens, adjust as needed
               "50000000000000000000000"
             )
             .then((res) => {

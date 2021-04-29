@@ -39,6 +39,7 @@ interface Props {
   encryptedVotes: EncryptedVote[];
   refetchEncryptedVotes: Function;
   revealedVotes: VoteRevealed[];
+  hotAddress: string | null;
 }
 
 interface TableValue {
@@ -59,6 +60,7 @@ const ActiveRequestsForm: FC<Props> = ({
   encryptedVotes,
   refetchEncryptedVotes,
   revealedVotes,
+  hotAddress,
 }) => {
   const [modalState, setModalState] = useState<
     "init" | "pending" | "success" | "error"
@@ -67,7 +69,12 @@ const ActiveRequestsForm: FC<Props> = ({
   const {
     state: { address, network, signer },
   } = useContext(OnboardContext);
-  const { votingContract } = useVotingContract(signer, isConnected, network);
+  const { votingContract } = useVotingContract(
+    signer,
+    isConnected,
+    network,
+    hotAddress
+  );
 
   const [tableValues, setTableValues] = useState<TableValue[]>([]);
 
@@ -314,9 +321,9 @@ const ActiveRequestsForm: FC<Props> = ({
         </tbody>
       </table>
       <div className="end-row">
-        <div className="end-row-item">
+        {/* <div className="end-row-item">
           Need to enable two key voting? Click here.
-        </div>
+        </div> */}
         <div className="end-row-item">
           {votePhase === "Commit" ? (
             <Button
@@ -326,7 +333,7 @@ const ActiveRequestsForm: FC<Props> = ({
                   ? "secondary"
                   : "disabled"
               }
-              onClick={(event) => {
+              onClick={() => {
                 if (showModalSummary().length && votePhase === "Commit") open();
               }}
             >
