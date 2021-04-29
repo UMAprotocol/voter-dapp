@@ -33,6 +33,7 @@ const Vote = () => {
   const { state } = useContext(OnboardContext);
 
   const { data: voteSummaryData } = useVoteData();
+  console.log("VSD", voteSummaryData);
 
   const { votingAddress } = useVotingAddress(
     state.address,

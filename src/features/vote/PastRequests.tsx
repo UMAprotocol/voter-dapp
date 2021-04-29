@@ -146,7 +146,12 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
         close={close}
         ref={modalRef}
         proposal={modalState.proposal}
-        totalSupply={ethers.utils.commify(modalState.totalSupply)}
+        totalSupply={
+          // Null check in case this value is displayed for before snapshot indexed on thegraph
+          modalState.totalSupply !== "0"
+            ? ethers.utils.commify(modalState.totalSupply)
+            : "0"
+        }
         correct={modalState.correct}
         setModalState={setModalState}
         numberCommitVoters={modalState.numberCommitVoters}

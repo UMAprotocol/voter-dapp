@@ -4,6 +4,8 @@ import {
   forwardRef,
   Dispatch,
   SetStateAction,
+  useEffect,
+  useState,
 } from "react";
 import Modal from "common/components/modal";
 import {
@@ -53,6 +55,16 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
   },
   externalRef
 ) => {
+  const [formattedRewardsClaimed, setFormattedRewardsClaimed] = useState("0");
+
+  // Format rewards to 6 decs. It is a Big Num as it the value is in wei.
+  useEffect(() => {
+    const formatRCArr = ethers.utils.formatEther(rewardsClaimed).split(".");
+    formatRCArr[1] = formatRCArr[1].substring(0, 6);
+    const formatRC = formatRCArr.join(".");
+    setFormattedRewardsClaimed(formatRC);
+  }, [rewardsClaimed]);
+
   return (
     <>
       <Modal
@@ -110,7 +122,7 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
           <StateValue>{totalSupply}</StateValue>
 
           <MiniHeader>Rewards Claimed</MiniHeader>
-          <StateValue>{ethers.utils.formatEther(rewardsClaimed)}</StateValue>
+          <StateValue>{formattedRewardsClaimed}</StateValue>
 
           <MiniHeader>Unique Commit Addresses</MiniHeader>
           <StateValueAddress>{numberCommitVoters}</StateValueAddress>
