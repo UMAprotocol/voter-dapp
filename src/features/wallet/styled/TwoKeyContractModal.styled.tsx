@@ -30,5 +30,8 @@ export const ModalWrapper = styled.div`
     font-size: 0.8rem;
     line-height: 2rem;
     text-decoration: underline;
+    &:hover {
+      cursor: pointer;
+    }
   }
 `;

@@ -4,19 +4,26 @@ import tw from "twin.macro"; // eslint-disable-line
 import Modal from "common/components/modal";
 import { ModalWrapper } from "./styled/TwoKeyContractModal.styled";
 import { Disconnected, Connected } from "./styled/Wallet.styled";
-
+import createDesignatedVotingContract from "./helpers/createDesignatedVotingContract";
+import { ethers } from "ethers";
 interface Props {
   isOpen: boolean;
   close: () => void;
   ref: (node: HTMLElement | null) => void;
   hotAddress: string | null;
+  votingAddress: string | null;
   isConnected: boolean;
+  network: ethers.providers.Network | null;
+  signer: ethers.Signer | null;
 }
 
 const _TwoKeyContractModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
-> = ({ isOpen, close, hotAddress, isConnected }, externalRef) => {
+> = (
+  { isOpen, close, hotAddress, votingAddress, isConnected, network, signer },
+  externalRef
+) => {
   return (
     <Modal isOpen={isOpen} onClose={close} ref={externalRef}>
       <ModalWrapper>
@@ -39,7 +46,21 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
               {!hotAddress ? (
                 <>
                   <Disconnected tw="flex-grow">Not Connected</Disconnected>
-                  <div className="open-form" tw="flex-grow text-right">
+                  <div
+                    onClick={() => {
+                      if (votingAddress && network && signer) {
+                        createDesignatedVotingContract(
+                          votingAddress,
+                          signer,
+                          network
+                        ).then((res) => {
+                          console.log("Success dvc?", res);
+                        });
+                      }
+                    }}
+                    className="open-form"
+                    tw="flex-grow text-right"
+                  >
                     Add Cold Wallet Address
                   </div>
                 </>

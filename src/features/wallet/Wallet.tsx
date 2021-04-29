@@ -25,6 +25,7 @@ import checkAvailableRewards from "./helpers/checkAvailableRewards";
 import collectRewards from "./helpers/collectRewards";
 
 import { Wrapper, Connected, Disconnected } from "./styled/Wallet.styled";
+// import ERC20TransferButton from "./helpers/ERC20TransferButton";
 
 interface Props {
   // connect: Connect;
@@ -117,6 +118,13 @@ const Wallet: FC<Props> = () => {
             {isConnected ? (
               <Connected>
                 Connected with {onboard?.getState().wallet.name}
+                {/* Testing helper */}
+                {/* <ERC20TransferButton
+                  network={network}
+                  signer={signer}
+                  hotAddress={hotAddress}
+                  votingAddress={votingAddress}
+                /> */}
               </Connected>
             ) : (
               <Disconnected>Not Connected</Disconnected>
@@ -224,7 +232,10 @@ const Wallet: FC<Props> = () => {
           close={close}
           ref={modalRef}
           hotAddress={hotAddress}
+          votingAddress={votingAddress}
           isConnected={isConnected}
+          network={network}
+          signer={signer}
         />
       </div>
     </Wrapper>
