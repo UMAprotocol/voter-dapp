@@ -38,7 +38,12 @@ interface Props {
   roundId: string;
 }
 
-const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
+const PastRequests: FC<Props> = ({
+  voteSummaryData,
+  address,
+  contract,
+  roundId,
+}) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [showAll, setShowAll] = useState(false);
 
@@ -55,19 +60,23 @@ const PastRequests: FC<Props> = ({ voteSummaryData, address, contract }) => {
 
   useEffect(() => {
     // Handle past requests differently depending on if user is logged in or not.
-    if (voteSummaryData.length) {
+    if (voteSummaryData.length && roundId) {
+      const filteredByRound = voteSummaryData.filter(
+        (el) => Number(el.roundId) < Number(roundId)
+      );
+
       if (address && contract) {
-        const pr = formatPastRequestsByAddress(voteSummaryData, address);
+        const pr = formatPastRequestsByAddress(filteredByRound, address);
         Promise.all(pr).then((res) => {
           setPastRequests(!showAll ? res.slice(0, 10) : res);
         });
       } else {
-        const pr = formatPastRequestsNoAddress(voteSummaryData);
+        const pr = formatPastRequestsNoAddress(filteredByRound);
 
         setPastRequests(!showAll ? pr.slice(0, 10) : pr);
       }
     }
-  }, [voteSummaryData, address, contract, showAll]);
+  }, [voteSummaryData, address, contract, showAll, roundId]);
 
   return (
     <Wrapper className="PastRequests">
