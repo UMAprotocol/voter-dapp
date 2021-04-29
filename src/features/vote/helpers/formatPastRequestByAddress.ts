@@ -75,7 +75,12 @@ export function formatPastRequestsByAddress(
 
     datum.numberCommitVoters = el.committedVotes.length;
     datum.numberRevealVoters = el.revealedVotes.length;
-    datum.totalSupply = el.totalSupplyAtSnapshot;
+
+    // Double check the totalsupply has been indexed to avoid a null error.
+    datum.totalSupply =
+      el.totalSupplyAtSnapshot !== null
+        ? Number(el.totalSupplyAtSnapshot).toFixed(6).toString()
+        : "0";
 
     return datum;
   });
