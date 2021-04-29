@@ -2,12 +2,10 @@ import { PriceRequestRound } from "common/hooks/useVoteData";
 import { PastRequest } from "../PastRequests";
 import { DateTime } from "luxon";
 import { ethers } from "ethers";
-// import { queryRetrieveRewards } from "web3/get/queryRetrieveRewards";
 
 export function formatPastRequestsByAddress(
   data: PriceRequestRound[],
-  address: string,
-  contract: ethers.Contract | null
+  address: string
 ) {
   const sortedByTime = data.slice().sort((a, b) => {
     if (Number(b.time) > Number(a.time)) return 1;
@@ -60,18 +58,11 @@ export function formatPastRequestsByAddress(
       // }
     }
 
-    // Determine if the user has revealed a vote and has not retrieved their rewards yet.
-    let rewardCollected = true;
-    if (!findReward && findVote) {
-      rewardCollected = false;
-    }
-
     const datum = {} as PastRequest;
     datum.proposal = el.identifier.id;
     datum.correct = correct;
     datum.vote = vote;
     datum.reward = reward;
-    datum.rewardCollected = rewardCollected;
     datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
       month: "short",
       day: "2-digit",
@@ -81,6 +72,15 @@ export function formatPastRequestsByAddress(
       hourCycle: "h24",
       timeZoneName: "short",
     });
+
+    datum.numberCommitVoters = el.committedVotes.length;
+    datum.numberRevealVoters = el.revealedVotes.length;
+
+    // Double check the totalsupply has been indexed to avoid a null error.
+    datum.totalSupply =
+      el.totalSupplyAtSnapshot !== null
+        ? Number(el.totalSupplyAtSnapshot).toFixed(6).toString()
+        : "0";
 
     return datum;
   });

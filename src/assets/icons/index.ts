@@ -1,5 +1,6 @@
 export { ReactComponent as Times } from "./times.svg";
 export { ReactComponent as Discord } from "./ico-discord.svg";
+export { ReactComponent as DiscordRed } from "./ico-discord-red.svg";
 export { ReactComponent as Github } from "./ico-github.svg";
 export { ReactComponent as Medium } from "./ico-medium.svg";
 export { ReactComponent as Twitter } from "./ico-tw.svg";

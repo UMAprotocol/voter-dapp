@@ -5,16 +5,19 @@ import { DateTime } from "luxon";
 
 // Components
 import ActiveRequests from "./ActiveRequests";
-// import PastRequests from "./PastRequests";
+import PastRequests from "./PastRequests";
 import UpcomingRequests from "./UpcomingRequests";
 
-// import useVoteData from "common/hooks/useVoteData";
+import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
 import {
   usePriceRequestAddedEvents,
-  // useVotingAddress,
-  // useVotingContract,
+  useVotingAddress,
+  useVotingContract,
   usePendingRequests,
+  useCurrentRoundId,
+  useVotesRevealedEvents,
+  useEncryptedVotesEvents,
 } from "hooks";
 import { recoverPublicKey } from "./helpers/recoverPublicKey";
 import { derivePrivateKey } from "./helpers/derivePrivateKey";
@@ -29,22 +32,38 @@ const Vote = () => {
   );
   const { state } = useContext(OnboardContext);
 
-  // const { data: priceRequestRounds } = useVoteData();
+  const { data: voteSummaryData } = useVoteData();
 
-  // const { votingAddress } = useVotingAddress(
-  //   state.address,
-  //   state.signer,
-  //   state.network
-  // );
+  const { votingAddress } = useVotingAddress(
+    state.address,
+    state.signer,
+    state.network
+  );
 
-  // const { votingContract } = useVotingContract(
-  //   state.signer,
-  //   state.isConnected,
-  //   state.network
-  // );
+  const { votingContract } = useVotingContract(
+    state.signer,
+    state.isConnected,
+    state.network
+  );
 
   const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
   const { data: activeRequests } = usePendingRequests();
+  const { data: roundId } = useCurrentRoundId();
+
+  const { data: revealedVotes } = useVotesRevealedEvents(
+    votingContract,
+    votingAddress
+  );
+
+  const {
+    data: encryptedVotes,
+    refetch: refetchEncryptedVotes,
+  } = useEncryptedVotesEvents(
+    votingContract,
+    votingAddress,
+    privateKey,
+    roundId
+  );
 
   useEffect(() => {
     if (state.signer) {
@@ -87,14 +106,21 @@ const Vote = () => {
           activeRequests={activeRequests}
           publicKey={publicKey}
           privateKey={privateKey}
+          roundId={roundId}
+          encryptedVotes={encryptedVotes}
+          refetchEncryptedVotes={refetchEncryptedVotes}
+          revealedVotes={revealedVotes}
+          votingAddress={votingAddress}
+          votingContract={votingContract}
         />
       ) : null}
 
-      {/* <PastRequests
-        priceRounds={priceRequestRounds}
+      <PastRequests
+        voteSummaryData={voteSummaryData}
         address={votingAddress}
         contract={votingContract}
-      /> */}
+        roundId={roundId}
+      />
       {upcomingRequests.length ? (
         <UpcomingRequests upcomingRequests={upcomingRequests} />
       ) : null}
