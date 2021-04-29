@@ -1,7 +1,6 @@
 import DesignatedVotingArtifact from "@uma/core/build/contracts/DesignatedVotingFactory.json";
 
 import { ethers } from "ethers";
-console.log("DVA", DesignatedVotingArtifact);
 
 interface Network {
   [key: string]: {

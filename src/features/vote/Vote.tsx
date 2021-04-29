@@ -44,6 +44,7 @@ const Vote = () => {
     state.signer,
     state.isConnected,
     state.network,
+    votingAddress,
     hotAddress
   );
 

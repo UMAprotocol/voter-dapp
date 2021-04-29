@@ -138,6 +138,7 @@ const ActiveRequests: FC<Props> = ({
         encryptedVotes={encryptedVotes}
         refetchEncryptedVotes={refetchEncryptedVotes}
         revealedVotes={revealedVotes}
+        votingAddress={votingAddress}
         hotAddress={hotAddress}
       />
       {activeRequests.length &&

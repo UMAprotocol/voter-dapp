@@ -60,6 +60,7 @@ const Wallet: FC<Props> = () => {
     signer,
     isConnected,
     network,
+    votingAddress,
     hotAddress
   );
   const { data: rewardsEvents } = useRewardsRetrievedEvents(

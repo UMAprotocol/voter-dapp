@@ -40,6 +40,7 @@ interface Props {
   refetchEncryptedVotes: Function;
   revealedVotes: VoteRevealed[];
   hotAddress: string | null;
+  votingAddress: string | null;
 }
 
 interface TableValue {
@@ -60,6 +61,7 @@ const ActiveRequestsForm: FC<Props> = ({
   encryptedVotes,
   refetchEncryptedVotes,
   revealedVotes,
+  votingAddress,
   hotAddress,
 }) => {
   const [modalState, setModalState] = useState<
@@ -73,6 +75,7 @@ const ActiveRequestsForm: FC<Props> = ({
     signer,
     isConnected,
     network,
+    votingAddress,
     hotAddress
   );
 

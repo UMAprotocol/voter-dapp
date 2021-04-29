@@ -25,7 +25,5 @@ export default function createERC20ContractInstance(
   const artifact: Network = VotingTokenArtifact.networks;
   const network = artifact[networkId];
 
-  console.log("erc20 ", network.address);
-
   return new ethers.Contract(network.address, abi, signer);
 }
