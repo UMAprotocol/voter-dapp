@@ -69,9 +69,9 @@ const ActiveRequestsForm: FC<Props> = ({
   >("init");
 
   const {
-    state: { address, network, signer },
+    state: { network, signer },
   } = useContext(OnboardContext);
-  const { votingContract } = useVotingContract(
+  const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
     isConnected,
     network,
@@ -127,18 +127,20 @@ const ActiveRequestsForm: FC<Props> = ({
           validValues[Object.keys(data)[i]] = Object.values(data)[i];
       }
 
-      if (address) {
+      if (votingAddress) {
         // Format data.
         formatVoteDataToCommit(
           validValues,
           activeRequests,
           roundId,
-          address,
+          votingAddress,
           publicKey
         ).then((fd) => {
-          // console.log("fd", fd);
-          if (votingContract) {
-            commitVotes(votingContract, fd).then((tx) => {
+          // If the DVC exists, use that to commit votes instead.
+          let vc = votingContract;
+          if (designatedVotingContract) vc = designatedVotingContract;
+          if (vc) {
+            commitVotes(vc, fd).then((tx) => {
               setModalState("pending");
               // Need to confirm if the user submits the vote.
               if (tx) {
@@ -155,12 +157,13 @@ const ActiveRequestsForm: FC<Props> = ({
     },
     [
       activeRequests,
-      address,
       publicKey,
       roundId,
       votingContract,
       setModalState,
       refetchEncryptedVotes,
+      designatedVotingContract,
+      votingAddress,
     ]
   );
   const watchAllFields = watch();
@@ -381,8 +384,12 @@ const ActiveRequestsForm: FC<Props> = ({
                     }
                   });
                   // console.log("Post data", postData);
-                  if (votingContract) {
-                    revealVotes(votingContract, postData).then((res) => {
+
+                  // Make sure to use the two key contract for revealing if it exists
+                  let vc = votingContract;
+                  if (designatedVotingContract) vc = designatedVotingContract;
+                  if (vc) {
+                    revealVotes(vc, postData).then((res) => {
                       console.log("woot");
                     });
                   }

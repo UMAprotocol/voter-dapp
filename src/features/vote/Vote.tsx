@@ -52,6 +52,8 @@ const Vote = () => {
   const { data: activeRequests } = usePendingRequests();
   const { data: roundId } = useCurrentRoundId();
 
+  console.log("roundID", roundId);
+
   const { data: revealedVotes } = useVotesRevealedEvents(
     votingContract,
     votingAddress

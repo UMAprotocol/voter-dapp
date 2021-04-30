@@ -32,7 +32,8 @@ export const queryRewardsRetrieved = async (
   // Otherwise this will likely return no values.
   // RewardsRetrieved(address,uint256,bytes32,uint256,bytes,uint256)
   const filter = contract.filters.RewardsRetrieved(
-    address,
+    // address,
+    null,
     null,
     null,
     null,
@@ -42,7 +43,6 @@ export const queryRewardsRetrieved = async (
 
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
-
     return events.map((el) => {
       const { args } = el;
       const datum = {} as RewardsRetrieved;

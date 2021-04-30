@@ -19,8 +19,6 @@ export const revealVotes = async (
   contract: ethers.Contract,
   data: PostRevealData[]
 ) => {
-  console.log("contract", contract);
-  console.log("data in RV", data);
   try {
     const tx = await contract.functions[
       "batchReveal((bytes32,uint256,int256,bytes,int256)[])"

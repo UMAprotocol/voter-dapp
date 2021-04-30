@@ -8,6 +8,7 @@ import useOnboard from "common/hooks/useOnboard";
 import { Settings } from "assets/icons";
 import getUmaBalance from "common/utils/web3/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
+
 import {
   useVotingAddress,
   useRewardsRetrievedEvents,
@@ -56,17 +57,28 @@ const Wallet: FC<Props> = () => {
     signer,
     network
   );
-  const { votingContract } = useVotingContract(
+  const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
     isConnected,
     network,
     votingAddress,
     hotAddress
   );
+
+  // console.log(
+  //   "DVC",
+  //   designatedVotingContract,
+  //   "VC",
+  //   votingContract,
+  //   "hotAddress",
+  //   hotAddress
+  // );
   const { data: rewardsEvents } = useRewardsRetrievedEvents(
     votingContract,
     votingAddress
   );
+
+  // console.log("rewards events", rewardsEvents);
 
   const { multicallContract } = useMulticall(signer, isConnected, network);
 
@@ -74,6 +86,8 @@ const Wallet: FC<Props> = () => {
     votingContract,
     votingAddress
   );
+
+  console.log("revealed", votesRevealed);
 
   useEffect(() => {
     if (votesRevealed.length && votingContract && votingAddress) {
@@ -85,7 +99,7 @@ const Wallet: FC<Props> = () => {
     } else {
       setAvailableRewards(DEFAULT_BALANCE);
     }
-  }, [votesRevealed, votingContract, votingAddress]);
+  }, [votesRevealed, votingContract, votingAddress, designatedVotingContract]);
 
   useEffect(() => {
     // When Address changes in MM, balance will change, as the address in context is changing from Onboard.

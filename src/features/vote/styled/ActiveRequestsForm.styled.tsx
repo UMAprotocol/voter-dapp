@@ -60,7 +60,7 @@ export const FormWrapper = styled.form<StyledFormProps>`
     .end-row {
       margin-top: 1rem;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       .end-row-item {
       }
     }

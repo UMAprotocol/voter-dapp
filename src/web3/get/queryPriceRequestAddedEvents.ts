@@ -21,10 +21,10 @@ export const queryPriceRequestAdded = async (
   // PriceRequestAdded(uint256,bytes32,uint256)
   const filter = contract.filters.PriceRequestAdded(null, null, null);
 
-  // console.log("voterContractblock", VOTER_CONTRACT_BLOCK, "contract", contract);
+  console.log("voterContractblock", VOTER_CONTRACT_BLOCK, "contract", contract);
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
-
+    // console.log("events", events);
     return events.map((el) => {
       const { args } = el;
       const datum = {} as PriceRequestAdded;

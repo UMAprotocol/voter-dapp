@@ -152,12 +152,12 @@ const ActiveRequests: FC<Props> = ({
               if ((window as any).ethereum) {
                 const mm = (window as any).ethereum;
                 const Web3 = new web3(mm);
-                if (votingAddress) {
-                  getMessageSignatureMetamask(
-                    Web3,
-                    sigHash,
-                    votingAddress
-                  ).then((msg) => {
+
+                // Make sure we use the hot address if the are using a two key contract.
+                let va = votingAddress;
+                if (hotAddress) va = hotAddress;
+                if (va) {
+                  getMessageSignatureMetamask(Web3, sigHash, va).then((msg) => {
                     snapshotCurrentRound(votingContract, msg).then((tx) => {
                       // TODO: Refetch state after snapshot.
                       console.log("success?", tx);
