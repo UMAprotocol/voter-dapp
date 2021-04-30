@@ -9,7 +9,6 @@ export default async function checkAvailableRewards(
 ) {
   const promises = data.map(async (vote) => {
     try {
-      console.log("Vote in check", vote);
       const rewardAvailable = await queryRetrieveRewards(
         contract,
         address,

@@ -65,20 +65,10 @@ const Wallet: FC<Props> = () => {
     hotAddress
   );
 
-  // console.log(
-  //   "DVC",
-  //   designatedVotingContract,
-  //   "VC",
-  //   votingContract,
-  //   "hotAddress",
-  //   hotAddress
-  // );
   const { data: rewardsEvents } = useRewardsRetrievedEvents(
     votingContract,
     votingAddress
   );
-
-  // console.log("rewards events", rewardsEvents);
 
   const { multicallContract } = useMulticall(signer, isConnected, network);
 
@@ -86,8 +76,6 @@ const Wallet: FC<Props> = () => {
     votingContract,
     votingAddress
   );
-
-  console.log("revealed", votesRevealed);
 
   useEffect(() => {
     if (votesRevealed.length && votingContract && votingAddress) {

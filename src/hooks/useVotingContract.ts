@@ -35,7 +35,6 @@ export default function useVotingContract(
             voterAddress
           );
           setDesignatedVotingContract(dvc);
-          // console.log("DVC in hook?", dvc);
         }
       }
     }
