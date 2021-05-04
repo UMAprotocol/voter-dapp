@@ -6,6 +6,7 @@ import { VOTER_CONTRACT_BLOCK } from "common/config";
 export interface VoteRevealed extends VoteEvent {
   price: string;
   numTokens: string;
+  idenHex: string;
 }
 
 export const queryVotesRevealedEvents = async (
@@ -44,6 +45,7 @@ export const queryVotesRevealedEvents = async (
         datum.address = args[0];
         datum.roundId = args[1].toString();
         datum.identifier = ethers.utils.toUtf8String(args[2]);
+        datum.idenHex = args[2];
         datum.time = args[3].toString();
         datum.price = ethers.utils.formatEther(args[4]);
         datum.ancillaryData = args[5];

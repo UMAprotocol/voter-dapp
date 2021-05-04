@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { FC, useState, useEffect } from "react";
-import tw, { styled } from "twin.macro"; // eslint-disable-line
+import tw from "twin.macro"; // eslint-disable-line
 import { ethers } from "ethers";
-import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Button from "common/components/button";
 import useOnboard from "common/hooks/useOnboard";
 import { Settings } from "assets/icons";
 import getUmaBalance from "common/utils/web3/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
+
 import {
   useVotingAddress,
   useRewardsRetrievedEvents,
@@ -17,18 +17,16 @@ import {
   useMulticall,
 } from "hooks";
 
+import TwoKeyContractModal from "./TwoKeyContractModal";
+
 // Helpers
 import formatWalletBalance from "./helpers/formatWalletBalance";
 import calculateUMATotalValue from "./helpers/calculateUMATotalValue";
 import checkAvailableRewards from "./helpers/checkAvailableRewards";
 import collectRewards from "./helpers/collectRewards";
 
-import {
-  Wrapper,
-  Connected,
-  Disconnected,
-  ModalWrapper,
-} from "./styled/Wallet.styled";
+import { Wrapper, Connected, Disconnected } from "./styled/Wallet.styled";
+// import ERC20TransferButton from "./helpers/ERC20TransferButton";
 
 interface Props {
   // connect: Connect;
@@ -54,8 +52,19 @@ const Wallet: FC<Props> = () => {
     network,
   } = useOnboard();
 
-  const { votingAddress } = useVotingAddress(address, signer, network);
-  const { votingContract } = useVotingContract(signer, isConnected, network);
+  const { votingAddress, hotAddress } = useVotingAddress(
+    address,
+    signer,
+    network
+  );
+  const { votingContract, designatedVotingContract } = useVotingContract(
+    signer,
+    isConnected,
+    network,
+    votingAddress,
+    hotAddress
+  );
+
   const { data: rewardsEvents } = useRewardsRetrievedEvents(
     votingContract,
     votingAddress
@@ -78,7 +87,7 @@ const Wallet: FC<Props> = () => {
     } else {
       setAvailableRewards(DEFAULT_BALANCE);
     }
-  }, [votesRevealed, votingContract, votingAddress]);
+  }, [votesRevealed, votingContract, votingAddress, designatedVotingContract]);
 
   useEffect(() => {
     // When Address changes in MM, balance will change, as the address in context is changing from Onboard.
@@ -117,6 +126,13 @@ const Wallet: FC<Props> = () => {
             {isConnected ? (
               <Connected>
                 Connected with {onboard?.getState().wallet.name}
+                {/* Testing helper */}
+                {/* <ERC20TransferButton
+                  network={network}
+                  signer={signer}
+                  hotAddress={hotAddress}
+                  votingAddress={votingAddress}
+                /> */}
               </Connected>
             ) : (
               <Disconnected>Not Connected</Disconnected>
@@ -219,22 +235,16 @@ const Wallet: FC<Props> = () => {
             <Settings onClick={() => open()} tw="cursor-pointer" />
           </div>
         </div>
-        <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
-          <ModalWrapper>
-            <h3 className="header">Two Key Voting</h3>
-            <p tw="opacity-50 mb-4 text-center">
-              You are not currently using a two key voting system. To deploy
-              one, provide your cold key address. Click here to learn more about
-              the two key voting system.
-            </p>
-            <div tw="flex items-stretch">
-              <Disconnected tw="flex-grow">Not Connected</Disconnected>
-              <div className="open-form" tw="flex-grow text-right">
-                Add Cold Wallet Address
-              </div>
-            </div>
-          </ModalWrapper>
-        </Modal>
+        <TwoKeyContractModal
+          isOpen={isOpen}
+          close={close}
+          ref={modalRef}
+          hotAddress={hotAddress}
+          votingAddress={votingAddress}
+          isConnected={isConnected}
+          network={network}
+          signer={signer}
+        />
       </div>
     </Wrapper>
   );

@@ -15,3 +15,11 @@ export interface VoteEvent {
   time: string;
   ancillaryData: string;
 }
+
+export interface PendingRequestAncillary {
+  // bytes32: hexstring or bytes array
+  identifier: string | Uint8Array;
+  time: string | number;
+  // hexstring
+  ancillaryData: string;
+}

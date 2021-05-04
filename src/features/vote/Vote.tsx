@@ -34,7 +34,7 @@ const Vote = () => {
 
   const { data: voteSummaryData } = useVoteData();
 
-  const { votingAddress } = useVotingAddress(
+  const { votingAddress, hotAddress } = useVotingAddress(
     state.address,
     state.signer,
     state.network
@@ -43,7 +43,9 @@ const Vote = () => {
   const { votingContract } = useVotingContract(
     state.signer,
     state.isConnected,
-    state.network
+    state.network,
+    votingAddress,
+    hotAddress
   );
 
   const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
@@ -112,6 +114,7 @@ const Vote = () => {
           revealedVotes={revealedVotes}
           votingAddress={votingAddress}
           votingContract={votingContract}
+          hotAddress={hotAddress}
         />
       ) : null}
 

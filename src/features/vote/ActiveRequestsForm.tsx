@@ -39,6 +39,8 @@ interface Props {
   encryptedVotes: EncryptedVote[];
   refetchEncryptedVotes: Function;
   revealedVotes: VoteRevealed[];
+  hotAddress: string | null;
+  votingAddress: string | null;
 }
 
 interface TableValue {
@@ -59,15 +61,23 @@ const ActiveRequestsForm: FC<Props> = ({
   encryptedVotes,
   refetchEncryptedVotes,
   revealedVotes,
+  votingAddress,
+  hotAddress,
 }) => {
   const [modalState, setModalState] = useState<
     "init" | "pending" | "success" | "error"
   >("init");
 
   const {
-    state: { address, network, signer },
+    state: { network, signer },
   } = useContext(OnboardContext);
-  const { votingContract } = useVotingContract(signer, isConnected, network);
+  const { votingContract, designatedVotingContract } = useVotingContract(
+    signer,
+    isConnected,
+    network,
+    votingAddress,
+    hotAddress
+  );
 
   const [tableValues, setTableValues] = useState<TableValue[]>([]);
 
@@ -117,18 +127,20 @@ const ActiveRequestsForm: FC<Props> = ({
           validValues[Object.keys(data)[i]] = Object.values(data)[i];
       }
 
-      if (address) {
+      if (votingAddress) {
         // Format data.
         formatVoteDataToCommit(
           validValues,
           activeRequests,
           roundId,
-          address,
+          votingAddress,
           publicKey
         ).then((fd) => {
-          // console.log("fd", fd);
-          if (votingContract) {
-            commitVotes(votingContract, fd).then((tx) => {
+          // If the DVC exists, use that to commit votes instead.
+          let vc = votingContract;
+          if (designatedVotingContract) vc = designatedVotingContract;
+          if (vc) {
+            commitVotes(vc, fd).then((tx) => {
               setModalState("pending");
               // Need to confirm if the user submits the vote.
               if (tx) {
@@ -145,12 +157,13 @@ const ActiveRequestsForm: FC<Props> = ({
     },
     [
       activeRequests,
-      address,
       publicKey,
       roundId,
       votingContract,
       setModalState,
       refetchEncryptedVotes,
+      designatedVotingContract,
+      votingAddress,
     ]
   );
   const watchAllFields = watch();
@@ -314,9 +327,9 @@ const ActiveRequestsForm: FC<Props> = ({
         </tbody>
       </table>
       <div className="end-row">
-        <div className="end-row-item">
+        {/* <div className="end-row-item">
           Need to enable two key voting? Click here.
-        </div>
+        </div> */}
         <div className="end-row-item">
           {votePhase === "Commit" ? (
             <Button
@@ -326,7 +339,7 @@ const ActiveRequestsForm: FC<Props> = ({
                   ? "secondary"
                   : "disabled"
               }
-              onClick={(event) => {
+              onClick={() => {
                 if (showModalSummary().length && votePhase === "Commit") open();
               }}
             >
@@ -371,8 +384,12 @@ const ActiveRequestsForm: FC<Props> = ({
                     }
                   });
                   // console.log("Post data", postData);
-                  if (votingContract) {
-                    revealVotes(votingContract, postData).then((res) => {
+
+                  // Make sure to use the two key contract for revealing if it exists
+                  let vc = votingContract;
+                  if (designatedVotingContract) vc = designatedVotingContract;
+                  if (vc) {
+                    revealVotes(vc, postData).then((res) => {
                       console.log("woot");
                     });
                   }
