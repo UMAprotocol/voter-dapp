@@ -1,16 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { FC, useCallback, useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { UnlockedIcon, LockedIconCommitted } from "assets/icons";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
-import Modal from "common/components/modal";
 import useModal from "common/hooks/useModal";
 import Select from "common/components/select";
 import { useVotingContract } from "hooks";
 import { commitVotes } from "web3/post/commitVotes";
 import { revealVotes, PostRevealData } from "web3/post/revealVotes";
+import SubmitModal from "./SubmitModal";
 
 import { ethers } from "ethers";
 import web3 from "web3";
@@ -19,14 +18,14 @@ import { OnboardContext } from "common/context/OnboardContext";
 import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 
-import { FormWrapper, ModalWrapper } from "./styled/ActiveRequestsForm.styled";
+import { FormWrapper } from "./styled/ActiveRequestsForm.styled";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 
 export type FormData = {
   [key: string]: string;
 };
 
-interface Summary {
+export interface Summary {
   identifier: string;
   value: string;
 }
@@ -406,82 +405,17 @@ const ActiveRequestsForm: FC<Props> = ({
           ) : null}
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={close} ref={modalRef}>
-        <ModalWrapper>
-          <div className="icon-wrapper">
-            {modalState === "pending" ? (
-              <div className="modal__ico modal__ico-animate">
-                <UnlockedIcon className="unlocked-icon" />
-
-                <div className="modal__ico-container">
-                  <div className="modal__ico-halfclip">
-                    <div className="modal__ico-halfcircle modal__ico-clipped"></div>
-                  </div>
-
-                  <div className="modal__ico-halfcircle modal__ico-fixed"></div>
-                </div>
-              </div>
-            ) : modalState === "success" ? (
-              <LockedIconCommitted className="unlocked-icon" />
-            ) : (
-              <UnlockedIcon className="unlocked-icon" />
-            )}
-          </div>
-
-          {modalState === "pending" ? (
-            <h3 className="header">Committing Votes...</h3>
-          ) : modalState === "success" ? (
-            <h3 className="header">Votes successfully committed</h3>
-          ) : (
-            <h3 className="header">Ready to commit these votes?</h3>
-          )}
-
-          {showModalSummary().length
-            ? showModalSummary().map((el, index) => {
-                return (
-                  <div className="vote-wrapper" key={index}>
-                    <div>{el.identifier}</div>
-                    <div>{el.value}</div>
-                  </div>
-                );
-              })
-            : null}
-          <div
-            className={`button-wrapper ${
-              modalState === "pending" ? "pending" : ""
-            }`}
-          >
-            {modalState === "init" ||
-            modalState === "pending" ||
-            modalState === "error" ? (
-              <>
-                <Button onClick={() => close()} variant="primary">
-                  Not Yet
-                </Button>
-                <Button
-                  type="submit"
-                  onClick={handleSubmit(onSubmit)}
-                  variant="secondary"
-                >
-                  I'm Ready
-                </Button>
-              </>
-            ) : (
-              <Button
-                onClick={() => {
-                  // close modal and reset form values.
-                  close();
-                  reset();
-                  setModalState("init");
-                }}
-                variant="secondary"
-              >
-                Done
-              </Button>
-            )}
-          </div>
-        </ModalWrapper>
-      </Modal>
+      <SubmitModal
+        isOpen={isOpen}
+        close={close}
+        ref={modalRef}
+        modalState={modalState}
+        setModalState={setModalState}
+        showModalSummary={showModalSummary}
+        reset={reset}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+      />
     </FormWrapper>
   );
 };
