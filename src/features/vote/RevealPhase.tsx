@@ -1,4 +1,4 @@
-import { FC, useState, useContext } from "react";
+import { FC, useState, useContext, useEffect } from "react";
 import web3 from "web3";
 import { FormWrapper } from "./styled/ActiveRequestsForm.styled";
 import Button from "common/components/button";
@@ -10,6 +10,8 @@ import { OnboardContext } from "common/context/OnboardContext";
 import { Round } from "web3/get/queryRounds";
 import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
 import { snapshotCurrentRound } from "web3/post/snapshotCurrentRound";
+import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import { ethers } from "ethers";
 
 interface Props {
   isConnected: boolean;
@@ -19,6 +21,7 @@ interface Props {
   hotAddress: string | null;
   votingAddress: string | null;
   round: Round;
+  revealedVotes: VoteRevealed[];
 }
 
 interface TableValue {
@@ -37,6 +40,7 @@ const RevealPhase: FC<Props> = ({
   votingAddress,
   hotAddress,
   round,
+  revealedVotes,
 }) => {
   const [tableValues, setTableValues] = useState<TableValue[]>([]);
   const [canReveal, setCanReveal] = useState(false);
@@ -51,6 +55,86 @@ const RevealPhase: FC<Props> = ({
     votingAddress,
     hotAddress
   );
+
+  useEffect(() => {
+    if (encryptedVotes.length && votePhase === "Reveal") {
+      if (revealedVotes.length) {
+        revealedVotes.forEach((el) => {
+          const findRevealedVote = encryptedVotes.find(
+            (x) =>
+              x.identifier === el.identifier &&
+              x.ancillaryData === el.ancillaryData &&
+              x.time === el.time
+          );
+          // If there are no revealed votes and some encrypted votes, set can reveal to true.
+          if (!findRevealedVote) setCanReveal(true);
+        });
+      } else {
+        setCanReveal(true);
+      }
+    } else {
+      setCanReveal(false);
+    }
+  }, [encryptedVotes, votePhase, revealedVotes]);
+
+  // Take activeRequests and encryptedVotes and convert them into tableViews
+  useEffect(() => {
+    // Check if the user has voted in this round.
+    if (activeRequests.length && !encryptedVotes.length) {
+      const tv: TableValue[] = activeRequests.map((el) => {
+        return {
+          ancillaryData: el.ancillaryData,
+          vote: "-",
+          identifier: el.identifier,
+          revealed: false,
+          ancHex: el.idenHex,
+        };
+      });
+
+      setTableValues(tv);
+    }
+    if (activeRequests.length && encryptedVotes.length) {
+      const tv = [] as TableValue[];
+      activeRequests.forEach((el) => {
+        const datum = {} as TableValue;
+        datum.ancillaryData = el.ancillaryData;
+        datum.identifier = el.identifier;
+        let vote = "-";
+        // I believe latest events are on bottom. requires testing.
+        const latestVotesFirst = [...encryptedVotes].reverse();
+        const findVote = latestVotesFirst.find(
+          (x) =>
+            x.identifier === el.identifier &&
+            x.ancillaryData === el.ancHex &&
+            x.time === el.time
+        );
+
+        if (findVote) {
+          datum.vote = ethers.utils.formatEther(findVote.price);
+          if (el.identifier.includes("Admin")) {
+            if (datum.vote === "1" || datum.vote === "1.0") datum.vote = "Yes";
+            if (datum.vote === "0" || datum.vote === "0.0") datum.vote = "No";
+          }
+        } else {
+          datum.vote = vote;
+        }
+        const findReveal = revealedVotes.find(
+          (x) =>
+            x.identifier === el.identifier &&
+            x.ancillaryData === el.ancHex &&
+            x.time === el.time
+        );
+        if (findReveal) {
+          datum.revealed = true;
+        } else {
+          datum.revealed = false;
+        }
+
+        tv.push(datum);
+      });
+      setTableValues(tv);
+    }
+  }, [activeRequests, encryptedVotes, revealedVotes]);
 
   return (
     <FormWrapper className="RevealPhase" isConnected={isConnected}>
