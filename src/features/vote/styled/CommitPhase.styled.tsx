@@ -6,7 +6,11 @@ interface StyledFormProps {
 }
 
 export const FormWrapper = styled.form<StyledFormProps>`
+<<<<<<< HEAD
   &.CommitPhase {
+=======
+  &.ActiveRequestsForm {
+>>>>>>> de68851 (Fixed styling with submit modal and reveal phase.)
     .table {
       ${tw`table-auto`};
       width: 100%;
