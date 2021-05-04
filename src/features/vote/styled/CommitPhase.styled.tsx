@@ -6,7 +6,7 @@ interface StyledFormProps {
 }
 
 export const FormWrapper = styled.form<StyledFormProps>`
-  &.ActiveRequestsForm {
+  &.CommitPhase {
     .table {
       ${tw`table-auto`};
       width: 100%;

@@ -5,7 +5,6 @@ import tw from "twin.macro"; // eslint-disable-line
 import CommitPhase from "./CommitPhase";
 import { useVotePhase, useRound } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
-import { ethers } from "ethers";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { DateTime } from "luxon";
 import { calculateTimeRemaining } from "./helpers/calculateTimeRemaining";
@@ -25,7 +24,6 @@ interface Props {
   revealedVotes: VoteRevealed[];
   votingAddress: string | null;
   hotAddress: string | null;
-  votingContract: ethers.Contract | null;
 }
 
 interface Timer {
@@ -40,7 +38,6 @@ const ActiveRequests: FC<Props> = ({
   revealedVotes,
   encryptedVotes,
   votingAddress,
-  votingContract,
   refetchEncryptedVotes,
   hotAddress,
 }) => {
@@ -132,7 +129,6 @@ const ActiveRequests: FC<Props> = ({
           publicKey={publicKey}
           isConnected={isConnected}
           activeRequests={activeRequests}
-          votePhase={votePhase}
           encryptedVotes={encryptedVotes}
           refetchEncryptedVotes={refetchEncryptedVotes}
           revealedVotes={revealedVotes}
@@ -143,13 +139,13 @@ const ActiveRequests: FC<Props> = ({
       {votePhase === "Reveal" ? (
         <RevealPhase
           isConnected={isConnected}
-          votePhase={votePhase}
           encryptedVotes={encryptedVotes}
           activeRequests={activeRequests}
           hotAddress={hotAddress}
           votingAddress={votingAddress}
           round={round}
           revealedVotes={revealedVotes}
+          refetchEncryptedVotes={refetchEncryptedVotes}
         />
       ) : null}
     </Wrapper>

@@ -16,13 +16,13 @@ import { ethers } from "ethers";
 
 interface Props {
   isConnected: boolean;
-  votePhase: string;
   encryptedVotes: EncryptedVote[];
   activeRequests: PendingRequest[];
   hotAddress: string | null;
   votingAddress: string | null;
   round: Round;
   revealedVotes: VoteRevealed[];
+  refetchEncryptedVotes: Function;
 }
 
 interface TableValue {
@@ -35,13 +35,13 @@ interface TableValue {
 
 const RevealPhase: FC<Props> = ({
   isConnected,
-  votePhase,
   encryptedVotes,
   activeRequests,
   votingAddress,
   hotAddress,
   round,
   revealedVotes,
+  refetchEncryptedVotes,
 }) => {
   const [tableValues, setTableValues] = useState<TableValue[]>([]);
   const [canReveal, setCanReveal] = useState(false);
@@ -58,7 +58,7 @@ const RevealPhase: FC<Props> = ({
   );
 
   useEffect(() => {
-    if (encryptedVotes.length && votePhase === "Reveal") {
+    if (encryptedVotes.length) {
       if (revealedVotes.length) {
         revealedVotes.forEach((el) => {
           const findRevealedVote = encryptedVotes.find(
@@ -76,7 +76,7 @@ const RevealPhase: FC<Props> = ({
     } else {
       setCanReveal(false);
     }
-  }, [encryptedVotes, votePhase, revealedVotes]);
+  }, [encryptedVotes, revealedVotes]);
 
   // Take activeRequests and encryptedVotes and convert them into tableViews
   useEffect(() => {
@@ -143,8 +143,6 @@ const RevealPhase: FC<Props> = ({
         <thead>
           <tr>
             <th>Requested Vote</th>
-            {/* Commented out for now -- might move the anc data elsewhere */}
-            {/* <th>Proposal Detail</th> */}
             <th>Description</th>
             <th>Your Vote</th>
             <th>Vote Status</th>
@@ -157,8 +155,6 @@ const RevealPhase: FC<Props> = ({
                 <td>
                   <div className="identifier">{el.identifier}</div>
                 </td>
-                {/* Commented out for now -- might move the anc data elsewhere */}
-                {/* <td>{el.ancillaryData}</td> */}
                 <td>
                   <div className="description">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -189,9 +185,6 @@ const RevealPhase: FC<Props> = ({
         </tbody>
       </table>
       <div className="end-row">
-        {/* <div className="end-row-item">
-        Need to enable two key voting? Click here.
-      </div> */}
         <div className="end-row-item">
           {round.snapshotId === "0" ? (
             <Button
@@ -264,14 +257,15 @@ const RevealPhase: FC<Props> = ({
                       postData.push(datum);
                     }
                   });
-                  // console.log("Post data", postData);
 
                   // Make sure to use the two key contract for revealing if it exists
                   let vc = votingContract;
                   if (designatedVotingContract) vc = designatedVotingContract;
                   if (vc) {
                     revealVotes(vc, postData).then((res) => {
-                      console.log("woot");
+                      // refetch votes.
+                      console.log("successfully revealed");
+                      refetchEncryptedVotes();
                     });
                   }
                 }

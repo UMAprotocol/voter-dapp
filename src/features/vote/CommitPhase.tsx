@@ -32,7 +32,6 @@ interface Props {
   activeRequests: PendingRequest[];
   isConnected: boolean;
   publicKey: string;
-  votePhase: string;
   encryptedVotes: EncryptedVote[];
   refetchEncryptedVotes: Function;
   revealedVotes: VoteRevealed[];
@@ -56,7 +55,6 @@ const ActiveRequestsForm: FC<Props> = ({
   activeRequests,
   isConnected,
   publicKey,
-  votePhase,
   encryptedVotes,
   refetchEncryptedVotes,
   revealedVotes,
@@ -225,7 +223,7 @@ const ActiveRequestsForm: FC<Props> = ({
 
   return (
     <FormWrapper
-      className="ActiveRequestsForm"
+      className="CommitPhase"
       isConnected={isConnected}
       onSubmit={handleSubmit(onSubmit)}
     >
@@ -276,11 +274,7 @@ const ActiveRequestsForm: FC<Props> = ({
                 </td>
                 <td>
                   <div>
-                    {votePhase === "Commit" && el.vote !== UNDEFINED_VOTE
-                      ? "Committed"
-                      : votePhase === "Commit"
-                      ? "Uncommitted"
-                      : null}
+                    {el.vote !== UNDEFINED_VOTE ? "Committed" : "Uncommitted"}
                   </div>
                 </td>
               </tr>
@@ -290,21 +284,19 @@ const ActiveRequestsForm: FC<Props> = ({
       </table>
       <div className="end-row">
         <div className="end-row-item">
-          {votePhase === "Commit" ? (
-            <Button
-              type="button"
-              variant={
-                Object.values(watchAllFields).filter((x) => x !== "").length
-                  ? "secondary"
-                  : "disabled"
-              }
-              onClick={() => {
-                if (showModalSummary().length && votePhase === "Commit") open();
-              }}
-            >
-              Commit Votes
-            </Button>
-          ) : null}
+          <Button
+            type="button"
+            variant={
+              Object.values(watchAllFields).filter((x) => x !== "").length
+                ? "secondary"
+                : "disabled"
+            }
+            onClick={() => {
+              if (showModalSummary().length) open();
+            }}
+          >
+            Commit Votes
+          </Button>
         </div>
       </div>
       <SubmitModal
