@@ -9,7 +9,7 @@ import {
 } from "common/tempUmaFunctions";
 import toWei from "common/utils/web3/convertToWeiSafely";
 
-import { FormData } from "../ActiveRequestsForm";
+import { FormData } from "../CommitPhase";
 
 // For the hashing being done here, we must adhere to the format expected later in the process by revealVote.
 // IE: identifier needs to be a hexstring, "yes" and "no" need to be 1 x 10**18 and 0 respectively, etc.

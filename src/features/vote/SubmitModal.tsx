@@ -10,7 +10,7 @@ import {
 import Modal from "common/components/modal";
 import Button from "common/components/button";
 import { ModalWrapper } from "./styled/ActiveRequestsForm.styled";
-import { SubmitModalState, Summary, FormData } from "./ActiveRequestsForm";
+import { SubmitModalState, Summary, FormData } from "./CommitPhase";
 import { UnlockedIcon, LockedIconCommitted } from "assets/icons";
 import {
   FieldValues,

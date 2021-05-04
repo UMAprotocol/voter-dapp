@@ -2,7 +2,7 @@
 import { FC, useContext, useState, useEffect } from "react";
 import tw from "twin.macro"; // eslint-disable-line
 
-import ActiveRequestsForm from "./ActiveRequestsForm";
+import CommitPhase from "./CommitPhase";
 import { useVotePhase, useRound } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import Button from "common/components/button";
@@ -130,7 +130,7 @@ const ActiveRequests: FC<Props> = ({
           )}
         </div>
       </div>
-      <ActiveRequestsForm
+      <CommitPhase
         publicKey={publicKey}
         isConnected={isConnected}
         activeRequests={activeRequests}
