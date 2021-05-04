@@ -53,6 +53,8 @@ interface TableValue {
 
 const UNDEFINED_VOTE = "-";
 
+export type SubmitModalState = "init" | "pending" | "success" | "error";
+
 const ActiveRequestsForm: FC<Props> = ({
   activeRequests,
   isConnected,
@@ -64,9 +66,7 @@ const ActiveRequestsForm: FC<Props> = ({
   votingAddress,
   hotAddress,
 }) => {
-  const [modalState, setModalState] = useState<
-    "init" | "pending" | "success" | "error"
-  >("init");
+  const [modalState, setModalState] = useState<SubmitModalState>("init");
 
   const {
     state: { network, signer },
