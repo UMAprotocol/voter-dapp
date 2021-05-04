@@ -5,11 +5,7 @@ import tw from "twin.macro"; // eslint-disable-line
 import CommitPhase from "./CommitPhase";
 import { useVotePhase, useRound } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
-import Button from "common/components/button";
-import { snapshotCurrentRound } from "web3/post/snapshotCurrentRound";
 import { ethers } from "ethers";
-import web3 from "web3";
-import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { DateTime } from "luxon";
 import { calculateTimeRemaining } from "./helpers/calculateTimeRemaining";
@@ -17,6 +13,7 @@ import { Wrapper } from "./styled/ActiveRequests.styled";
 import timerSVG from "assets/icons/timer.svg";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import RevealPhase from "./RevealPhase";
 
 interface Props {
   publicKey: string;
@@ -53,7 +50,7 @@ const ActiveRequests: FC<Props> = ({
   });
 
   const {
-    state: { signer, isConnected, provider },
+    state: { isConnected },
   } = useContext(OnboardContext);
 
   const { data: votePhase } = useVotePhase();
@@ -130,47 +127,30 @@ const ActiveRequests: FC<Props> = ({
           )}
         </div>
       </div>
-      <CommitPhase
-        publicKey={publicKey}
-        isConnected={isConnected}
-        activeRequests={activeRequests}
-        votePhase={votePhase}
-        encryptedVotes={encryptedVotes}
-        refetchEncryptedVotes={refetchEncryptedVotes}
-        revealedVotes={revealedVotes}
-        votingAddress={votingAddress}
-        hotAddress={hotAddress}
-      />
-      {activeRequests.length &&
-      votePhase === "Reveal" &&
-      round.snapshotId === "0" ? (
-        <Button
-          onClick={() => {
-            if (!signer || !votingContract || !provider) return;
-            votingContract.functions["snapshotMessageHash"]().then((hash) => {
-              const sigHash = hash[0];
-              if ((window as any).ethereum) {
-                const mm = (window as any).ethereum;
-                const Web3 = new web3(mm);
-
-                // Make sure we use the hot address if the are using a two key contract.
-                let va = votingAddress;
-                if (hotAddress) va = hotAddress;
-                if (va) {
-                  getMessageSignatureMetamask(Web3, sigHash, va).then((msg) => {
-                    snapshotCurrentRound(votingContract, msg).then((tx) => {
-                      // TODO: Refetch state after snapshot.
-                      console.log("success?", tx);
-                    });
-                  });
-                }
-              }
-            });
-          }}
-          variant="secondary"
-        >
-          {signer ? "Snapshot Round" : "Connect Wallet to Snapshot"}
-        </Button>
+      {votePhase === "Commit" ? (
+        <CommitPhase
+          publicKey={publicKey}
+          isConnected={isConnected}
+          activeRequests={activeRequests}
+          votePhase={votePhase}
+          encryptedVotes={encryptedVotes}
+          refetchEncryptedVotes={refetchEncryptedVotes}
+          revealedVotes={revealedVotes}
+          votingAddress={votingAddress}
+          hotAddress={hotAddress}
+        />
+      ) : null}
+      {votePhase === "Reveal" ? (
+        <RevealPhase
+          isConnected={isConnected}
+          votePhase={votePhase}
+          encryptedVotes={encryptedVotes}
+          activeRequests={activeRequests}
+          hotAddress={hotAddress}
+          votingAddress={votingAddress}
+          round={round}
+          revealedVotes={revealedVotes}
+        />
       ) : null}
     </Wrapper>
   );
