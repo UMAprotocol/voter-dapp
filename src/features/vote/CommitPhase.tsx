@@ -8,17 +8,15 @@ import useModal from "common/hooks/useModal";
 import Select from "common/components/select";
 import { useVotingContract } from "hooks";
 import { commitVotes } from "web3/post/commitVotes";
-import { revealVotes, PostRevealData } from "web3/post/revealVotes";
 import SubmitModal from "./SubmitModal";
 
 import { ethers } from "ethers";
-import web3 from "web3";
 import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 
-import { FormWrapper } from "./styled/ActiveRequestsForm.styled";
+import { FormWrapper } from "./styled/CommitPhase.styled";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 
 export type FormData = {
@@ -82,28 +80,6 @@ const ActiveRequestsForm: FC<Props> = ({
 
   const { data: roundId } = useCurrentRoundId();
   const { isOpen, open, close, modalRef } = useModal();
-  const [canReveal, setCanReveal] = useState(false);
-
-  useEffect(() => {
-    if (encryptedVotes.length && votePhase === "Reveal") {
-      if (revealedVotes.length) {
-        revealedVotes.forEach((el) => {
-          const findRevealedVote = encryptedVotes.find(
-            (x) =>
-              x.identifier === el.identifier &&
-              x.ancillaryData === el.ancillaryData &&
-              x.time === el.time
-          );
-          // If there are no revealed votes and some encrypted votes, set can reveal to true.
-          if (!findRevealedVote) setCanReveal(true);
-        });
-      } else {
-        setCanReveal(true);
-      }
-    } else {
-      setCanReveal(false);
-    }
-  }, [encryptedVotes, votePhase, revealedVotes]);
 
   const generateDefaultValues = useCallback(() => {
     const dv = {} as FormData;
@@ -257,8 +233,6 @@ const ActiveRequestsForm: FC<Props> = ({
         <thead>
           <tr>
             <th>Requested Vote</th>
-            {/* Commented out for now -- might move the anc data elsewhere */}
-            {/* <th>Proposal Detail</th> */}
             <th>Description</th>
             <th>Commit Vote</th>
             <th>Your Vote</th>
@@ -272,8 +246,6 @@ const ActiveRequestsForm: FC<Props> = ({
                 <td>
                   <div className="identifier">{el.identifier}</div>
                 </td>
-                {/* Commented out for now -- might move the anc data elsewhere */}
-                {/* <td>{el.ancillaryData}</td> */}
                 <td>
                   <div className="description">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -309,15 +281,6 @@ const ActiveRequestsForm: FC<Props> = ({
                       : votePhase === "Commit"
                       ? "Uncommitted"
                       : null}
-                    {votePhase === "Reveal" && el.revealed
-                      ? "Revealed"
-                      : votePhase === "Reveal" &&
-                        el.vote !== UNDEFINED_VOTE &&
-                        !el.revealed
-                      ? "Reveal"
-                      : votePhase === "Reveal" && el.vote === UNDEFINED_VOTE
-                      ? "Uncommitted"
-                      : null}
                   </div>
                 </td>
               </tr>
@@ -326,9 +289,6 @@ const ActiveRequestsForm: FC<Props> = ({
         </tbody>
       </table>
       <div className="end-row">
-        {/* <div className="end-row-item">
-          Need to enable two key voting? Click here.
-        </div> */}
         <div className="end-row-item">
           {votePhase === "Commit" ? (
             <Button
@@ -343,64 +303,6 @@ const ActiveRequestsForm: FC<Props> = ({
               }}
             >
               Commit Votes
-            </Button>
-          ) : null}
-          {votePhase === "Reveal" && canReveal ? (
-            <Button
-              type="button"
-              onClick={() => {
-                // WIP. Comment out for now.
-                // console.log("encryptedVotes", encryptedVotes);
-                if (encryptedVotes.length && activeRequests.length) {
-                  const postData = [] as PostRevealData[];
-                  activeRequests.forEach((el, index) => {
-                    const datum = {} as PostRevealData;
-                    // I believe latest events are on bottom. requires testing.
-                    const latestVotesFirst = [...encryptedVotes].reverse();
-                    const findVote = latestVotesFirst.find(
-                      (x) => x.identifier === el.identifier
-                    );
-
-                    if (findVote) {
-                      datum.ancillaryData = el.ancillaryData;
-                      // anc data is set to - or N/A in UI if empty, convert back to 0x.
-                      if (
-                        el.ancillaryData === UNDEFINED_VOTE ||
-                        el.ancillaryData === "N/A"
-                      ) {
-                        datum.ancillaryData = "0x";
-                      } else {
-                        datum.ancillaryData = web3.utils.utf8ToHex(
-                          el.ancillaryData
-                        );
-                      }
-                      datum.time = Number(el.time);
-                      datum.identifier = el.idenHex;
-                      datum.salt = findVote.salt;
-                      // datum.price = toWeiSafe(findVote.price).toString();
-                      datum.price = findVote.price.toString();
-                      postData.push(datum);
-                    }
-                  });
-                  // console.log("Post data", postData);
-
-                  // Make sure to use the two key contract for revealing if it exists
-                  let vc = votingContract;
-                  if (designatedVotingContract) vc = designatedVotingContract;
-                  if (vc) {
-                    revealVotes(vc, postData).then((res) => {
-                      console.log("woot");
-                    });
-                  }
-                }
-              }}
-              variant="secondary"
-            >
-              Reveal Votes
-            </Button>
-          ) : votePhase === "Reveal" && !canReveal ? (
-            <Button type="button" variant="disabled">
-              Reveal Votes
             </Button>
           ) : null}
         </div>
