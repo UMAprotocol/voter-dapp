@@ -8,12 +8,12 @@ export const queryGetPriceRequestStatuses = async (
   data: PendingRequestAncillary[]
 ) => {
   try {
-    // const phase: VotePhases[] = await contract.functions.getVotePhase();
     const tx = await contract.functions[
       "getPriceRequestStatuses((bytes32,uint256,bytes)[])"
     ](data);
     if (tx.length) {
       console.log("tx", tx);
+      return tx;
     } else {
       return [];
     }

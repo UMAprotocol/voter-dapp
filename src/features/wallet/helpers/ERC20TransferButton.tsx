@@ -7,22 +7,21 @@ import createERC20ContractInstance from "common/utils/web3/createERC20ContractIn
 interface Props {
   network: ethers.providers.Network | null;
   signer: ethers.Signer | null;
-  votingAddress: string | null;
-  hotAddress: string | null;
+  address: string | null;
 }
-const ERC20TransferButton: FC<Props> = ({ network, signer, votingAddress }) => {
+const ERC20TransferButton: FC<Props> = ({ network, signer, address }) => {
   return (
     <Button
       variant="secondary"
       onClick={() => {
-        if (network && signer && votingAddress) {
+        if (network && signer && address) {
           const erc20 = createERC20ContractInstance(
             signer,
             network.chainId.toString()
           );
           erc20.functions
             .transfer(
-              votingAddress,
+              address,
               // 50k tokens, adjust as needed
               "50000000000000000000000"
             )

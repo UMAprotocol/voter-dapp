@@ -24,7 +24,5 @@ export default function createDesignatedVotingContractInstance(
     signer
   );
 
-  // console.log("DVA contract", contract);
-
   return contract;
 }

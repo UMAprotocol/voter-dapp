@@ -39,7 +39,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
                 ? `You are not currently using a two key voting system. To deploy one,
           provide your cold key address. Click here to learn more about the two
           key voting system.`
-                : `Your hot wallet address is: ${hotAddress}`}
+                : `Your hot wallet address is: ${hotAddress} and your cold wallet address is ${votingAddress}`}
             </p>
 
             <div tw="flex items-stretch">
