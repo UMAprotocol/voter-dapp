@@ -158,7 +158,10 @@ const RevealPhase: FC<Props> = ({
             return (
               <tr key={index}>
                 <td>
-                  <div className="identifier">{el.identifier}</div>
+                  <div className="identifier">
+                    <p>{el.identifier}</p>
+                    <p className="view-details">View Details</p>
+                  </div>
                 </td>
                 <td>
                   <div className="description">

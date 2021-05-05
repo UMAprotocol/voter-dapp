@@ -13,6 +13,12 @@ import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import RevealPhase from "./RevealPhase";
 
+export interface ModalState {
+  proposal: string;
+  timestamp: string;
+  ancData: string;
+}
+
 interface Props {
   publicKey: string;
   privateKey: string;
@@ -36,6 +42,12 @@ const ActiveRequests: FC<Props> = ({
   hotAddress,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState("00:00");
+
+  const [modalState, setModalState] = useState<ModalState>({
+    proposal: "",
+    timestamp: "",
+    ancData: "",
+  });
 
   const {
     state: { isConnected },

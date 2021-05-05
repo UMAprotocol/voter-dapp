@@ -7,7 +7,7 @@ import { formatPastRequestsNoAddress } from "./helpers/formatPastRequestsNoAddre
 import { formatPastRequestsByAddress } from "./helpers/formatPastRequestByAddress";
 import { Wrapper } from "./styled/PastRequests.styled";
 import useModal from "common/hooks/useModal";
-import ViewDetailsModal from "./ViewDetailsModal";
+import PastViewDetailsModal from "./PastViewDetailsModal";
 
 export interface ModalState {
   proposal: string;
@@ -150,7 +150,7 @@ const PastRequests: FC<Props> = ({
           </Button>
         </div>
       ) : null}
-      <ViewDetailsModal
+      <PastViewDetailsModal
         isOpen={isOpen}
         close={close}
         ref={modalRef}

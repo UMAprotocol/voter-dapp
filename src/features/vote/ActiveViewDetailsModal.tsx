@@ -15,11 +15,8 @@ import {
   Description,
   DiscordWrapper,
   StateValue,
-  StateValueAddress,
-  RevealHeader,
-  RevealPercentage,
-} from "./styled/ViewDetailsModal.styled";
-import { ModalState } from "./PastRequests";
+} from "./styled/PastViewDetailsModal.styled";
+import { ModalState } from "./ActiveRequests";
 import { DiscordRed } from "assets/icons";
 import { ethers } from "ethers";
 
@@ -37,22 +34,11 @@ interface Props {
   rewardsClaimed: string;
 }
 
-const _ViewDetailsModal: ForwardRefRenderFunction<
+const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
 > = (
-  {
-    isOpen,
-    close,
-    proposal,
-    setModalState,
-    totalSupply,
-    correct,
-    numberCommitVoters,
-    numberRevealVoters,
-    timestamp,
-    rewardsClaimed,
-  },
+  { isOpen, close, proposal, setModalState, timestamp, rewardsClaimed },
   externalRef
 ) => {
   const [formattedRewardsClaimed, setFormattedRewardsClaimed] = useState("0");
@@ -73,12 +59,8 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
           close();
           setModalState({
             proposal: "",
-            correct: "",
-            totalSupply: "",
-            numberCommitVoters: 0,
-            numberRevealVoters: 0,
             timestamp: "",
-            rewardsClaimed: "0",
+            ancData: "0x",
           });
         }}
         ref={externalRef}
@@ -115,25 +97,6 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
               </a>
             </span>
           </DiscordWrapper>
-          <MiniHeader>Correct Vote</MiniHeader>
-          <StateValue>{correct}</StateValue>
-
-          <MiniHeader>Total Supply</MiniHeader>
-          <StateValue>{totalSupply}</StateValue>
-
-          <MiniHeader>Rewards Claimed</MiniHeader>
-          <StateValue>{formattedRewardsClaimed}</StateValue>
-
-          <MiniHeader>Unique Commit Addresses</MiniHeader>
-          <StateValueAddress>{numberCommitVoters}</StateValueAddress>
-
-          <RevealHeader>
-            {numberRevealVoters} Unique Reveal Addresses
-          </RevealHeader>
-          <RevealPercentage>
-            {((numberRevealVoters / numberCommitVoters) * 100).toFixed(2)}% of
-            Unique Commit Addresses
-          </RevealPercentage>
 
           <MiniHeader>Proposal Timestamp</MiniHeader>
           <StateValue>{timestamp}</StateValue>
@@ -143,7 +106,7 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
   );
 };
 
-const ViewDetailsModal = forwardRef(_ViewDetailsModal);
-ViewDetailsModal.displayName = "ViewDetailsModal";
+const ActiveViewDetailsModal = forwardRef(_ActiveViewDetailsModal);
+ActiveViewDetailsModal.displayName = "ActiveViewDetailsModal";
 
-export default ViewDetailsModal;
+export default ActiveViewDetailsModal;

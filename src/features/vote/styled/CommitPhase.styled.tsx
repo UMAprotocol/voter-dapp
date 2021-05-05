@@ -7,6 +7,21 @@ interface StyledFormProps {
 
 export const FormWrapper = styled.form<StyledFormProps>`
   &.CommitPhase {
+    .identifier {
+      align-items: flex-start;
+      flex-direction: column;
+      p:first-of-type {
+        margin-bottom: 0.5rem;
+      }
+      .view-details {
+        color: #ff4a4a;
+        text-decoration: underline;
+        font-weight: 600;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
     .table {
       ${tw`table-auto`};
       width: 100%;
