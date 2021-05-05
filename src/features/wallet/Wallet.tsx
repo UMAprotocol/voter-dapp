@@ -123,18 +123,16 @@ const Wallet: FC<Props> = () => {
 
   // recheck balance if total collected or available rewards changes.
   useEffect(() => {
-    if (votingAddress && votingContract) {
+    if (network && signer && votingAddress) {
       if (
         prevTotalCollected !== totalUmaCollected ||
         prevAvailableReweards !== availableRewards
       ) {
-        checkAvailableRewards(
-          votesRevealed,
-          votingAddress,
-          votingContract
-        ).then((balance) => {
-          setAvailableRewards(balance ? balance.toString() : DEFAULT_BALANCE);
-        });
+        getUmaBalance(votingAddress, signer, network.chainId.toString()).then(
+          (balance) => {
+            setUmaBalance(balance);
+          }
+        );
       }
     }
   }, [
@@ -143,8 +141,8 @@ const Wallet: FC<Props> = () => {
     totalUmaCollected,
     prevAvailableReweards,
     availableRewards,
-    votesRevealed,
-    votingContract,
+    network,
+    signer,
   ]);
 
   return (
