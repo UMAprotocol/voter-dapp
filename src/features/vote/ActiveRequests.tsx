@@ -12,6 +12,8 @@ import timerSVG from "assets/icons/timer.svg";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import RevealPhase from "./RevealPhase";
+import ActiveViewDetailsModal from "./ActiveViewDetailsModal";
+import useModal from "common/hooks/useModal";
 
 export interface ModalState {
   proposal: string;
@@ -48,6 +50,8 @@ const ActiveRequests: FC<Props> = ({
     timestamp: "",
     ancData: "",
   });
+
+  const { isOpen, open, close, modalRef } = useModal();
 
   const {
     state: { isConnected },
@@ -103,6 +107,8 @@ const ActiveRequests: FC<Props> = ({
           revealedVotes={revealedVotes}
           votingAddress={votingAddress}
           hotAddress={hotAddress}
+          setViewDetailsModalState={setModalState}
+          openViewDetailsModal={open}
         />
       ) : null}
       {votePhase === "Reveal" ? (
@@ -115,8 +121,19 @@ const ActiveRequests: FC<Props> = ({
           round={round}
           revealedVotes={revealedVotes}
           refetchEncryptedVotes={refetchEncryptedVotes}
+          setViewDetailsModalState={setModalState}
+          openViewDetailsModal={open}
         />
       ) : null}
+      <ActiveViewDetailsModal
+        isOpen={isOpen}
+        close={close}
+        ref={modalRef}
+        setModalState={setModalState}
+        proposal={modalState.proposal}
+        timestamp={modalState.timestamp}
+        ancData={modalState.ancData}
+      />
     </Wrapper>
   );
 };

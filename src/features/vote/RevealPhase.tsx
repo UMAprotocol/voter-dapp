@@ -1,4 +1,11 @@
-import { FC, useState, useContext, useEffect } from "react";
+import {
+  FC,
+  useState,
+  useContext,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import tw from "twin.macro"; // eslint-disable-line
 import web3 from "web3";
 import { Wrapper } from "./styled/RevealPhase.styled";
@@ -13,6 +20,7 @@ import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
 import { snapshotCurrentRound } from "web3/post/snapshotCurrentRound";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ethers } from "ethers";
+import { ModalState } from "./ActiveRequests";
 
 interface Props {
   isConnected: boolean;
@@ -23,6 +31,8 @@ interface Props {
   round: Round;
   revealedVotes: VoteRevealed[];
   refetchEncryptedVotes: Function;
+  setViewDetailsModalState: Dispatch<SetStateAction<ModalState>>;
+  openViewDetailsModal: () => void;
 }
 
 interface TableValue {
@@ -42,6 +52,8 @@ const RevealPhase: FC<Props> = ({
   round,
   revealedVotes,
   refetchEncryptedVotes,
+  setViewDetailsModalState,
+  openViewDetailsModal,
 }) => {
   const [tableValues, setTableValues] = useState<TableValue[]>([]);
   const [postRevealData, setPostRevealData] = useState<PostRevealData[]>([]);
