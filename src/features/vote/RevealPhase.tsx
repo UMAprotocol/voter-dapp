@@ -21,6 +21,7 @@ import { snapshotCurrentRound } from "web3/post/snapshotCurrentRound";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ethers } from "ethers";
 import { ModalState } from "./ActiveRequests";
+import { DateTime } from "luxon";
 
 interface Props {
   isConnected: boolean;
@@ -41,6 +42,7 @@ interface TableValue {
   vote: string;
   revealed: boolean;
   ancHex: string;
+  timestamp: string;
 }
 
 const RevealPhase: FC<Props> = ({
@@ -101,6 +103,15 @@ const RevealPhase: FC<Props> = ({
           identifier: el.identifier,
           revealed: false,
           ancHex: el.idenHex,
+          timestamp: DateTime.fromSeconds(Number(el.time)).toLocaleString({
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hourCycle: "h24",
+            timeZoneName: "short",
+          }),
         };
       });
 
@@ -143,6 +154,16 @@ const RevealPhase: FC<Props> = ({
           datum.revealed = false;
         }
 
+        datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h24",
+          timeZoneName: "short",
+        });
+
         tv.push(datum);
       });
       setTableValues(tv);
@@ -167,7 +188,19 @@ const RevealPhase: FC<Props> = ({
                 <td>
                   <div className="identifier">
                     <p>{el.identifier}</p>
-                    <p className="view-details">View Details</p>
+                    <p
+                      onClick={() => {
+                        openViewDetailsModal();
+                        setViewDetailsModalState({
+                          timestamp: el.timestamp,
+                          ancData: el.ancHex,
+                          proposal: el.identifier,
+                        });
+                      }}
+                      className="view-details"
+                    >
+                      View Details
+                    </p>
                   </div>
                 </td>
                 <td>

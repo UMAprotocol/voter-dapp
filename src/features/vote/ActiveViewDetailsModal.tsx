@@ -4,8 +4,6 @@ import {
   forwardRef,
   Dispatch,
   SetStateAction,
-  useEffect,
-  useState,
 } from "react";
 import Modal from "common/components/modal";
 import {
@@ -18,7 +16,6 @@ import {
 } from "./styled/PastViewDetailsModal.styled";
 import { ModalState } from "./ActiveRequests";
 import { DiscordRed } from "assets/icons";
-import { ethers } from "ethers";
 
 interface Props {
   isOpen: boolean;
@@ -54,6 +51,8 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
         <ModalWrapper>
           <MiniHeader>Proposal</MiniHeader>
           <Proposal>{proposal}</Proposal>
+          <MiniHeader>Ancillary Data (raw hexstring)</MiniHeader>
+          <StateValue>{ancData}</StateValue>
           <MiniHeader>Description</MiniHeader>
           <Description>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu
