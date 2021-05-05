@@ -1,5 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useCallback, useContext, useState, useEffect } from "react";
+import {
+  FC,
+  useCallback,
+  useContext,
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { useForm } from "react-hook-form";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
@@ -18,6 +26,8 @@ import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 
 import { FormWrapper } from "./styled/CommitPhase.styled";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import { ModalState } from "./ActiveRequests";
+import { DateTime } from "luxon";
 
 export type FormData = {
   [key: string]: string;
@@ -37,6 +47,8 @@ interface Props {
   revealedVotes: VoteRevealed[];
   hotAddress: string | null;
   votingAddress: string | null;
+  setViewDetailsModalState: Dispatch<SetStateAction<ModalState>>;
+  openViewDetailsModal: () => void;
 }
 
 interface TableValue {
@@ -45,13 +57,14 @@ interface TableValue {
   vote: string;
   revealed: boolean;
   ancHex: string;
+  timestamp: string;
 }
 
 const UNDEFINED_VOTE = "-";
 
 export type SubmitModalState = "init" | "pending" | "success" | "error";
 
-const ActiveRequestsForm: FC<Props> = ({
+const CommitPhase: FC<Props> = ({
   activeRequests,
   isConnected,
   publicKey,
@@ -60,6 +73,8 @@ const ActiveRequestsForm: FC<Props> = ({
   revealedVotes,
   votingAddress,
   hotAddress,
+  setViewDetailsModalState,
+  openViewDetailsModal,
 }) => {
   const [modalState, setModalState] = useState<SubmitModalState>("init");
 
@@ -173,6 +188,15 @@ const ActiveRequestsForm: FC<Props> = ({
           identifier: el.identifier,
           revealed: false,
           ancHex: el.idenHex,
+          timestamp: DateTime.fromSeconds(Number(el.time)).toLocaleString({
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hourCycle: "h24",
+            timeZoneName: "short",
+          }),
         };
       });
 
@@ -215,6 +239,16 @@ const ActiveRequestsForm: FC<Props> = ({
           datum.revealed = false;
         }
 
+        datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h24",
+          timeZoneName: "short",
+        });
+
         tv.push(datum);
       });
       setTableValues(tv);
@@ -245,7 +279,19 @@ const ActiveRequestsForm: FC<Props> = ({
                 <td>
                   <div className="identifier">
                     <p>{el.identifier}</p>
-                    <p className="view-details">View Details</p>
+                    <p
+                      onClick={() => {
+                        openViewDetailsModal();
+                        setViewDetailsModalState({
+                          timestamp: el.timestamp,
+                          ancData: el.ancHex,
+                          proposal: el.identifier,
+                        });
+                      }}
+                      className="view-details"
+                    >
+                      View Details
+                    </p>
                   </div>
                 </td>
                 <td>
@@ -299,7 +345,7 @@ const ActiveRequestsForm: FC<Props> = ({
               if (showModalSummary().length) open();
             }}
           >
-            Commit Votes
+            Commit Vote(s)
           </Button>
         </div>
       </div>
@@ -318,4 +364,4 @@ const ActiveRequestsForm: FC<Props> = ({
   );
 };
 
-export default ActiveRequestsForm;
+export default CommitPhase;
