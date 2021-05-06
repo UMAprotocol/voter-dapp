@@ -21,6 +21,14 @@ export const Wrapper = styled.div<StyledProps>`
         }
       }
     }
+    .status {
+      p {
+        margin: 0 auto;
+      }
+    }
+    .center-header {
+      text-align: center;
+    }
     .table {
       ${tw`table-auto`};
       width: 100%;
@@ -45,16 +53,13 @@ export const Wrapper = styled.div<StyledProps>`
           text-align: left;
           margin-bottom: 2rem;
         }
-        th:last-child {
-          text-align: center;
-        }
       }
 
       tbody {
         td {
           div {
             display: flex;
-            align-items: center;
+            /* align-items: center; */
           }
           .description {
             max-width: 500px;

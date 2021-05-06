@@ -181,8 +181,8 @@ const RevealPhase: FC<Props> = ({
           <tr>
             <th>Requested Vote</th>
             <th>Description</th>
-            <th>Your Vote</th>
-            <th>Vote Status</th>
+            <th className="center-header">Your Vote</th>
+            <th className="center-header">Vote Status</th>
           </tr>
         </thead>
         <tbody>
@@ -221,14 +221,14 @@ const RevealPhase: FC<Props> = ({
                   </div>
                 </td>
                 <td>
-                  <div>
-                    {el.revealed
-                      ? "Revealed"
-                      : el.vote !== UNDEFINED_VOTE && !el.revealed
-                      ? "Reveal"
-                      : el.vote === UNDEFINED_VOTE
-                      ? "Uncommitted"
-                      : null}
+                  <div className="status">
+                    {el.revealed ? (
+                      <p>Revealed</p>
+                    ) : el.vote !== UNDEFINED_VOTE && !el.revealed ? (
+                      <p>Reveal</p>
+                    ) : el.vote === UNDEFINED_VOTE ? (
+                      <p>Uncommitted</p>
+                    ) : null}
                   </div>
                 </td>
               </tr>
