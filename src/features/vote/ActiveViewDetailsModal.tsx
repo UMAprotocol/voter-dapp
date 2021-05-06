@@ -4,6 +4,7 @@ import {
   forwardRef,
   Dispatch,
   SetStateAction,
+  useState,
 } from "react";
 import Modal from "common/components/modal";
 import {
@@ -37,6 +38,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   { isOpen, close, proposal, setModalState, timestamp, ancData },
   externalRef
 ) => {
+  const [copySuccess, setCopySuccess] = useState(false);
   return (
     <>
       <Modal
@@ -86,13 +88,17 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
             </IconsItem>
             <IconsItem>
               <div
-                onClick={() => navigator.clipboard.writeText(ancData)}
+                onClick={() => {
+                  navigator.clipboard.writeText(ancData);
+                  setCopySuccess(true);
+                  setTimeout(() => setCopySuccess(false), 2000);
+                }}
                 className="copy-wrapper"
               >
                 <Icon>
                   <CopyIcon />
                 </Icon>
-                Copy Link
+                {copySuccess ? "Successfully copied" : "Copy Link"}
               </div>
             </IconsItem>
           </IconsWrapper>
