@@ -162,7 +162,7 @@ const RevealPhase: FC<Props> = ({
                 // Make sure to use the two key contract for revealing if it exists
                 let vc = votingContract;
                 if (designatedVotingContract) vc = designatedVotingContract;
-                if (vc) {
+                if (vc && postRevealData.length) {
                   revealVotes(vc, postRevealData).then((res) => {
                     // refetch votes.
                     refetchEncryptedVotes();
