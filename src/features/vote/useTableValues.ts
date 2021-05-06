@@ -4,6 +4,8 @@ import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { DateTime } from "luxon";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ethers } from "ethers";
+import { PostRevealData } from "web3/post/revealVotes";
+import web3 from "web3";
 
 interface TableValue {
   ancillaryData: string;
@@ -20,6 +22,7 @@ export default function useTableValues(
   revealedVotes: VoteRevealed[]
 ) {
   const [tableValues, setTableValues] = useState<TableValue[]>([]);
+  const [postRevealData, setPostRevealData] = useState<PostRevealData[]>([]);
 
   // Take activeRequests and encryptedVotes and convert them into tableViews
   useEffect(() => {
@@ -48,6 +51,8 @@ export default function useTableValues(
     }
     if (activeRequests.length && encryptedVotes.length) {
       const tv = [] as TableValue[];
+      const postData = [] as PostRevealData[];
+
       activeRequests.forEach((el) => {
         const datum = {} as TableValue;
         datum.ancillaryData = el.ancillaryData;
@@ -94,13 +99,39 @@ export default function useTableValues(
         });
 
         tv.push(datum);
+        // Gather up PostRevealData here to save complexity
+        const prd = {} as PostRevealData;
+
+        if (findVote && !findReveal) {
+          prd.ancillaryData = el.ancillaryData;
+          // anc data is set to - or N/A in UI if empty, convert back to 0x.
+          if (
+            el.ancillaryData === UNDEFINED_VOTE ||
+            el.ancillaryData === "N/A"
+          ) {
+            prd.ancillaryData = "0x";
+          } else {
+            prd.ancillaryData = web3.utils.utf8ToHex(el.ancillaryData);
+          }
+          prd.time = Number(el.time);
+          prd.identifier = el.idenHex;
+          prd.salt = findVote.salt;
+          // datum.price = toWeiSafe(findVote.price).toString();
+          prd.price = findVote.price.toString();
+          postData.push(prd);
+        }
       });
       setTableValues(tv);
+      setPostRevealData(postData);
     }
   }, [activeRequests, encryptedVotes, revealedVotes]);
 
   return {
     tableValues,
     setTableValues,
+    postRevealData,
+    setPostRevealData,
   };
 }
+
+const UNDEFINED_VOTE = "-";
