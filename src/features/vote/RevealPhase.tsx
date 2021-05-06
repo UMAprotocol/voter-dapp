@@ -44,7 +44,8 @@ const RevealPhase: FC<Props> = ({
   refetchEncryptedVotes,
 }) => {
   const [tableValues, setTableValues] = useState<TableValue[]>([]);
-  const [canReveal, setCanReveal] = useState(false);
+  const [postRevealData, setPostRevealData] = useState<PostRevealData[]>([]);
+
   const {
     state: { network, signer, provider },
   } = useContext(OnboardContext);
@@ -56,27 +57,6 @@ const RevealPhase: FC<Props> = ({
     votingAddress,
     hotAddress
   );
-
-  useEffect(() => {
-    if (encryptedVotes.length) {
-      if (revealedVotes.length) {
-        revealedVotes.forEach((el) => {
-          const findRevealedVote = encryptedVotes.find(
-            (x) =>
-              x.identifier === el.identifier &&
-              x.ancillaryData === el.ancillaryData &&
-              x.time === el.time
-          );
-          // If there are no revealed votes and some encrypted votes, set can reveal to true.
-          if (!findRevealedVote) setCanReveal(true);
-        });
-      } else {
-        setCanReveal(true);
-      }
-    } else {
-      setCanReveal(false);
-    }
-  }, [encryptedVotes, revealedVotes]);
 
   // Take activeRequests and encryptedVotes and convert them into tableViews
   useEffect(() => {
@@ -96,6 +76,7 @@ const RevealPhase: FC<Props> = ({
     }
     if (activeRequests.length && encryptedVotes.length) {
       const tv = [] as TableValue[];
+      const postData = [] as PostRevealData[];
       // I believe latest events are on bottom. requires testing.
       const latestVotesFirst = [...encryptedVotes].reverse();
       activeRequests.forEach((el) => {
@@ -132,10 +113,34 @@ const RevealPhase: FC<Props> = ({
         }
 
         tv.push(datum);
+
+        // Gather up PostRevealData here to save complexity
+        const prd = {} as PostRevealData;
+
+        if (findVote && !findReveal) {
+          prd.ancillaryData = el.ancillaryData;
+          // anc data is set to - or N/A in UI if empty, convert back to 0x.
+          if (
+            el.ancillaryData === UNDEFINED_VOTE ||
+            el.ancillaryData === "N/A"
+          ) {
+            prd.ancillaryData = "0x";
+          } else {
+            prd.ancillaryData = web3.utils.utf8ToHex(el.ancillaryData);
+          }
+          prd.time = Number(el.time);
+          prd.identifier = el.idenHex;
+          prd.salt = findVote.salt;
+          // datum.price = toWeiSafe(findVote.price).toString();
+          prd.price = findVote.price.toString();
+          postData.push(prd);
+        }
       });
+
       setTableValues(tv);
+      setPostRevealData(postData);
     }
-  }, [activeRequests, encryptedVotes, revealedVotes]);
+  }, [activeRequests, encryptedVotes, revealedVotes, setPostRevealData]);
 
   return (
     <Wrapper className="RequestPhase" isConnected={isConnected}>
@@ -220,66 +225,28 @@ const RevealPhase: FC<Props> = ({
             >
               {signer ? "Snapshot Round" : "Connect Wallet to Snapshot"}
             </Button>
-          ) : canReveal ? (
+          ) : postRevealData.length ? (
             <Button
               type="button"
               onClick={() => {
-                // WIP. Comment out for now.
-                // console.log("encryptedVotes", encryptedVotes);
-                if (encryptedVotes.length && activeRequests.length) {
-                  const postData = [] as PostRevealData[];
-                  // I believe latest events are on bottom. requires testing.
-                  const latestVotesFirst = [...encryptedVotes].reverse();
-
-                  activeRequests.forEach((el, index) => {
-                    const datum = {} as PostRevealData;
-
-                    const findVote = latestVotesFirst.find(
-                      (x) =>
-                        x.identifier === el.identifier &&
-                        x.ancillaryData === el.ancHex &&
-                        x.time === el.time
-                    );
-
-                    if (findVote) {
-                      datum.ancillaryData = el.ancillaryData;
-                      // anc data is set to - or N/A in UI if empty, convert back to 0x.
-                      if (
-                        el.ancillaryData === UNDEFINED_VOTE ||
-                        el.ancillaryData === "N/A"
-                      ) {
-                        datum.ancillaryData = "0x";
-                      } else {
-                        datum.ancillaryData = web3.utils.utf8ToHex(
-                          el.ancillaryData
-                        );
-                      }
-                      datum.time = Number(el.time);
-                      datum.identifier = el.idenHex;
-                      datum.salt = findVote.salt;
-                      // datum.price = toWeiSafe(findVote.price).toString();
-                      datum.price = findVote.price.toString();
-                      postData.push(datum);
-                    }
+                console.log("PSR", postRevealData);
+                // Make sure to use the two key contract for revealing if it exists
+                let vc = votingContract;
+                if (designatedVotingContract) vc = designatedVotingContract;
+                if (vc) {
+                  revealVotes(vc, postRevealData).then((res) => {
+                    // refetch votes.
+                    console.log("successfully revealed");
+                    refetchEncryptedVotes();
+                    setPostRevealData([]);
                   });
-
-                  // Make sure to use the two key contract for revealing if it exists
-                  let vc = votingContract;
-                  if (designatedVotingContract) vc = designatedVotingContract;
-                  if (vc) {
-                    revealVotes(vc, postData).then((res) => {
-                      // refetch votes.
-                      console.log("successfully revealed");
-                      refetchEncryptedVotes();
-                    });
-                  }
                 }
               }}
               variant="secondary"
             >
               Reveal Votes
             </Button>
-          ) : !canReveal ? (
+          ) : !postRevealData.length ? (
             <Button type="button" variant="disabled">
               Reveal Votes
             </Button>
