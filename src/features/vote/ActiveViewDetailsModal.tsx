@@ -13,7 +13,8 @@ import {
   Description,
   DiscordWrapper,
   StateValue,
-} from "./styled/PastViewDetailsModal.styled";
+  StateValueAncData,
+} from "./styled/DetailModals.styled";
 import { ModalState } from "./ActiveRequests";
 import { DiscordRed } from "assets/icons";
 
@@ -52,7 +53,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
           <MiniHeader>Proposal</MiniHeader>
           <Proposal>{proposal}</Proposal>
           <MiniHeader>Ancillary Data (raw hexstring)</MiniHeader>
-          <StateValue>{ancData}</StateValue>
+          <StateValueAncData>{ancData}</StateValueAncData>
           <MiniHeader>Description</MiniHeader>
           <Description>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu

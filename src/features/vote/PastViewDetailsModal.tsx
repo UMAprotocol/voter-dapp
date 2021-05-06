@@ -18,7 +18,7 @@ import {
   StateValueAddress,
   RevealHeader,
   RevealPercentage,
-} from "./styled/PastViewDetailsModal.styled";
+} from "./styled/DetailModals.styled";
 import { ModalState } from "./PastRequests";
 import { DiscordRed } from "assets/icons";
 import { ethers } from "ethers";
