@@ -8,6 +8,7 @@ import useOnboard from "common/hooks/useOnboard";
 import { Settings } from "assets/icons";
 import getUmaBalance from "common/utils/web3/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
+import usePrevious from "common/hooks/usePrevious";
 
 import {
   useVotingAddress,
@@ -51,6 +52,9 @@ const Wallet: FC<Props> = () => {
     address,
     network,
   } = useOnboard();
+
+  const prevTotalCollected = usePrevious(totalUmaCollected);
+  const prevAvailableReweards = usePrevious(availableRewards);
 
   const { votingAddress, hotAddress } = useVotingAddress(
     address,
@@ -116,6 +120,30 @@ const Wallet: FC<Props> = () => {
       setTotalUmaCollected(ethers.utils.formatEther(totalRewards.toString()));
     }
   }, [rewardsEvents]);
+
+  // recheck balance if total collected or available rewards changes.
+  useEffect(() => {
+    if (network && signer && votingAddress) {
+      if (
+        prevTotalCollected !== totalUmaCollected ||
+        prevAvailableReweards !== availableRewards
+      ) {
+        getUmaBalance(votingAddress, signer, network.chainId.toString()).then(
+          (balance) => {
+            setUmaBalance(balance);
+          }
+        );
+      }
+    }
+  }, [
+    votingAddress,
+    prevTotalCollected,
+    totalUmaCollected,
+    prevAvailableReweards,
+    availableRewards,
+    network,
+    signer,
+  ]);
 
   return (
     <Wrapper>

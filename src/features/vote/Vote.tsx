@@ -113,7 +113,6 @@ const Vote = () => {
           refetchEncryptedVotes={refetchEncryptedVotes}
           revealedVotes={revealedVotes}
           votingAddress={votingAddress}
-          votingContract={votingContract}
           hotAddress={hotAddress}
         />
       ) : null}
