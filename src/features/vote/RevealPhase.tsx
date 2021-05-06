@@ -211,7 +211,6 @@ const RevealPhase: FC<Props> = ({
                             snapshotCurrentRound(votingContract, msg).then(
                               (tx) => {
                                 // TODO: Refetch state after snapshot.
-                                console.log("success?", tx);
                               }
                             );
                           }
@@ -229,14 +228,12 @@ const RevealPhase: FC<Props> = ({
             <Button
               type="button"
               onClick={() => {
-                console.log("PSR", postRevealData);
                 // Make sure to use the two key contract for revealing if it exists
                 let vc = votingContract;
                 if (designatedVotingContract) vc = designatedVotingContract;
                 if (vc) {
                   revealVotes(vc, postRevealData).then((res) => {
                     // refetch votes.
-                    console.log("successfully revealed");
                     refetchEncryptedVotes();
                     setPostRevealData([]);
                   });
