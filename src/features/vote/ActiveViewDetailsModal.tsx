@@ -98,7 +98,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
                 <Icon>
                   <CopyIcon />
                 </Icon>
-                {copySuccess ? "Successfully copied" : "Copy Link"}
+                {copySuccess ? "Successfully copied" : "Copy Ancillary Data"}
               </div>
             </IconsItem>
           </IconsWrapper>
