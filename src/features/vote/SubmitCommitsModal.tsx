@@ -52,7 +52,7 @@ interface Props {
   onSubmit: (data: FormData) => void;
 }
 
-const _SubmitModal: ForwardRefRenderFunction<
+const _SubmitCommitsModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
 > = (
@@ -150,7 +150,7 @@ const _SubmitModal: ForwardRefRenderFunction<
   );
 };
 
-const SubmitModal = forwardRef(_SubmitModal);
-SubmitModal.displayName = "SubmitModal";
+const SubmitCommitsModal = forwardRef(_SubmitCommitsModal);
+SubmitCommitsModal.displayName = "SubmitCommitsModal";
 
-export default SubmitModal;
+export default SubmitCommitsModal;
