@@ -86,6 +86,10 @@ export const StateValueAddress = styled(StateValue)`
   border-bottom: none;
 `;
 
+export const StateValueAncData = styled(StateValue)`
+  max-width: 400px;
+  word-wrap: break-word;
+`;
 export const RevealHeader = styled.div`
   font-size: 0.75rem;
   color: #000;
