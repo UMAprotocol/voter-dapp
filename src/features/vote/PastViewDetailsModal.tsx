@@ -13,7 +13,7 @@ import {
   MiniHeader,
   Proposal,
   Description,
-  DiscordWrapper,
+  IconsWrapper,
   StateValue,
   StateValueAddress,
   RevealHeader,
@@ -101,7 +101,7 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
             eleifend in metus in, eleifend dapibus ante. Donec nec egestas
             lacus.
           </Description>
-          <DiscordWrapper>
+          <IconsWrapper>
             <span>
               <a
                 target="_blank"
@@ -114,7 +114,7 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
                 Join the UMA Discord
               </a>
             </span>
-          </DiscordWrapper>
+          </IconsWrapper>
           <MiniHeader>Correct Vote</MiniHeader>
           <StateValue>{correct}</StateValue>
 

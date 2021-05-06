@@ -11,12 +11,14 @@ import {
   MiniHeader,
   Proposal,
   Description,
-  DiscordWrapper,
+  IconsWrapper,
   StateValue,
   StateValueAncData,
+  IconsItem,
+  Icon,
 } from "./styled/DetailModals.styled";
 import { ModalState } from "./ActiveRequests";
-import { DiscordRed } from "assets/icons";
+import { DiscordRed, CopyIcon } from "assets/icons";
 
 interface Props {
   isOpen: boolean;
@@ -69,20 +71,31 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
             eleifend in metus in, eleifend dapibus ante. Donec nec egestas
             lacus.
           </Description>
-          <DiscordWrapper>
-            <span>
+          <IconsWrapper>
+            <IconsItem>
               <a
                 target="_blank"
                 href="https://discord.umaproject.org"
                 rel="noreferrer"
               >
-                <div>
+                <Icon>
                   <DiscordRed />
-                </div>
+                </Icon>
                 Join the UMA Discord
               </a>
-            </span>
-          </DiscordWrapper>
+            </IconsItem>
+            <IconsItem>
+              <div
+                onClick={() => navigator.clipboard.writeText(ancData)}
+                className="copy-wrapper"
+              >
+                <Icon>
+                  <CopyIcon />
+                </Icon>
+                Copy Link
+              </div>
+            </IconsItem>
+          </IconsWrapper>
 
           <MiniHeader>Proposal Timestamp</MiniHeader>
           <StateValue>{timestamp}</StateValue>
