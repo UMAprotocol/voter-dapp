@@ -4,7 +4,6 @@ import {
   useCallback,
   useContext,
   useState,
-  useEffect,
   Dispatch,
   SetStateAction,
 } from "react";
@@ -18,7 +17,6 @@ import { useVotingContract } from "hooks";
 import { commitVotes } from "web3/post/commitVotes";
 import SubmitCommitsModal from "./SubmitCommitsModal";
 
-import { ethers } from "ethers";
 import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
@@ -27,7 +25,8 @@ import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { FormWrapper } from "./styled/CommitPhase.styled";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
-import { DateTime } from "luxon";
+
+import useTableValues from "./useTableValues";
 
 export type FormData = {
   [key: string]: string;
@@ -49,15 +48,6 @@ interface Props {
   votingAddress: string | null;
   setViewDetailsModalState: Dispatch<SetStateAction<ModalState>>;
   openViewDetailsModal: () => void;
-}
-
-interface TableValue {
-  ancillaryData: string;
-  identifier: string;
-  vote: string;
-  revealed: boolean;
-  ancHex: string;
-  timestamp: string;
 }
 
 const UNDEFINED_VOTE = "-";
@@ -89,7 +79,11 @@ const CommitPhase: FC<Props> = ({
     hotAddress
   );
 
-  const [tableValues, setTableValues] = useState<TableValue[]>([]);
+  const { tableValues } = useTableValues(
+    activeRequests,
+    encryptedVotes,
+    revealedVotes
+  );
 
   const { data: roundId } = useCurrentRoundId();
   const { isOpen, open, close, modalRef } = useModal();
@@ -155,6 +149,7 @@ const CommitPhase: FC<Props> = ({
       votingAddress,
     ]
   );
+
   const watchAllFields = watch();
 
   const showModalSummary = useCallback(() => {
@@ -178,84 +173,6 @@ const CommitPhase: FC<Props> = ({
     }
   }, [watchAllFields]);
 
-  // Take activeRequests and encryptedVotes and convert them into tableViews
-  useEffect(() => {
-    // Check if the user has voted in this round.
-    if (activeRequests.length && !encryptedVotes.length) {
-      const tv: TableValue[] = activeRequests.map((el) => {
-        return {
-          ancillaryData: el.ancillaryData,
-          vote: "-",
-          identifier: el.identifier,
-          revealed: false,
-          ancHex: el.idenHex,
-          timestamp: DateTime.fromSeconds(Number(el.time)).toLocaleString({
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hourCycle: "h24",
-            timeZoneName: "short",
-          }),
-        };
-      });
-
-      setTableValues(tv);
-    }
-    if (activeRequests.length && encryptedVotes.length) {
-      const tv = [] as TableValue[];
-      // I believe latest events are on bottom. requires testing.
-      const latestVotesFirst = [...encryptedVotes].reverse();
-      activeRequests.forEach((el) => {
-        const datum = {} as TableValue;
-        datum.ancillaryData = el.ancillaryData;
-        datum.identifier = el.identifier;
-        let vote = "-";
-        const findVote = latestVotesFirst.find(
-          (x) =>
-            x.identifier === el.identifier &&
-            x.ancillaryData === el.ancHex &&
-            x.time === el.time
-        );
-
-        if (findVote) {
-          datum.vote = ethers.utils.formatEther(findVote.price);
-          if (el.identifier.includes("Admin")) {
-            if (datum.vote === "1" || datum.vote === "1.0") datum.vote = "Yes";
-            if (datum.vote === "0" || datum.vote === "0.0") datum.vote = "No";
-          }
-        } else {
-          datum.vote = vote;
-        }
-        const findReveal = revealedVotes.find(
-          (x) =>
-            x.identifier === el.identifier &&
-            x.ancillaryData === el.ancHex &&
-            x.time === el.time
-        );
-        if (findReveal) {
-          datum.revealed = true;
-        } else {
-          datum.revealed = false;
-        }
-
-        datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hourCycle: "h24",
-          timeZoneName: "short",
-        });
-
-        tv.push(datum);
-      });
-      setTableValues(tv);
-    }
-  }, [activeRequests, encryptedVotes, revealedVotes]);
-
   return (
     <FormWrapper
       className="CommitPhase"
@@ -268,13 +185,12 @@ const CommitPhase: FC<Props> = ({
             <th>Requested Vote</th>
             <th>Description</th>
             <th>Commit Vote</th>
-            <th>Your Vote</th>
-            <th>Vote Status</th>
+            <th className="center-header">Your Vote</th>
+            <th className="center-header">Vote Status</th>
           </tr>
         </thead>
         <tbody>
           {tableValues.map((el, index) => {
-            console.log("anc el", el.ancHex);
             return (
               <tr key={index}>
                 <td>
@@ -324,8 +240,12 @@ const CommitPhase: FC<Props> = ({
                   </div>
                 </td>
                 <td>
-                  <div>
-                    {el.vote !== UNDEFINED_VOTE ? "Committed" : "Uncommitted"}
+                  <div className="status">
+                    {el.vote !== UNDEFINED_VOTE ? (
+                      <p>Committed</p>
+                    ) : (
+                      <p>Uncommitted</p>
+                    )}
                   </div>
                 </td>
               </tr>
