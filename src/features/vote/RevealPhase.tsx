@@ -96,13 +96,13 @@ const RevealPhase: FC<Props> = ({
     }
     if (activeRequests.length && encryptedVotes.length) {
       const tv = [] as TableValue[];
+      // I believe latest events are on bottom. requires testing.
+      const latestVotesFirst = [...encryptedVotes].reverse();
       activeRequests.forEach((el) => {
         const datum = {} as TableValue;
         datum.ancillaryData = el.ancillaryData;
         datum.identifier = el.identifier;
         let vote = "-";
-        // I believe latest events are on bottom. requires testing.
-        const latestVotesFirst = [...encryptedVotes].reverse();
         const findVote = latestVotesFirst.find(
           (x) =>
             x.identifier === el.identifier &&
@@ -228,12 +228,17 @@ const RevealPhase: FC<Props> = ({
                 // console.log("encryptedVotes", encryptedVotes);
                 if (encryptedVotes.length && activeRequests.length) {
                   const postData = [] as PostRevealData[];
+                  // I believe latest events are on bottom. requires testing.
+                  const latestVotesFirst = [...encryptedVotes].reverse();
+
                   activeRequests.forEach((el, index) => {
                     const datum = {} as PostRevealData;
-                    // I believe latest events are on bottom. requires testing.
-                    const latestVotesFirst = [...encryptedVotes].reverse();
+
                     const findVote = latestVotesFirst.find(
-                      (x) => x.identifier === el.identifier
+                      (x) =>
+                        x.identifier === el.identifier &&
+                        x.ancillaryData === el.ancHex &&
+                        x.time === el.time
                     );
 
                     if (findVote) {
