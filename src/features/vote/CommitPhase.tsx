@@ -16,7 +16,7 @@ import useModal from "common/hooks/useModal";
 import Select from "common/components/select";
 import { useVotingContract } from "hooks";
 import { commitVotes } from "web3/post/commitVotes";
-import SubmitModal from "./SubmitModal";
+import SubmitCommitsModal from "./SubmitCommitsModal";
 
 import { ethers } from "ethers";
 import { useCurrentRoundId } from "hooks";
@@ -349,7 +349,7 @@ const CommitPhase: FC<Props> = ({
           </Button>
         </div>
       </div>
-      <SubmitModal
+      <SubmitCommitsModal
         isOpen={isOpen}
         close={close}
         ref={modalRef}
