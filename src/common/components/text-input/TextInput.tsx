@@ -45,7 +45,7 @@ const StyledInput = styled.div`
   flex-direction: column;
   .label {
     width: 100%;
-    padding-left: 20px;
+    padding-left: 4px;
     margin-bottom: 1rem;
     font-weight: 400;
     font-size: 14px;
@@ -66,7 +66,7 @@ const StyledInput = styled.div`
   .dollar-sign {
     position: absolute;
     margin-left: 8px;
-    margin-bottom: 32px;
+    margin-top: 14px;
     pointer-events: none;
     /* color: #ff4d4c; */
   }

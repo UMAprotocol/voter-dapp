@@ -6,6 +6,29 @@ interface StyledProps {
 }
 export const Wrapper = styled.div<StyledProps>`
   &.RequestPhase {
+    .identifier {
+      align-items: flex-start;
+      flex-direction: column;
+      p:first-of-type {
+        margin-bottom: 0.5rem;
+      }
+      .view-details {
+        color: #ff4a4a;
+        text-decoration: underline;
+        font-weight: 600;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+    .status {
+      p {
+        margin: 0 auto;
+      }
+    }
+    .center-header {
+      text-align: center;
+    }
     .table {
       ${tw`table-auto`};
       width: 100%;
@@ -30,16 +53,13 @@ export const Wrapper = styled.div<StyledProps>`
           text-align: left;
           margin-bottom: 2rem;
         }
-        th:last-child {
-          text-align: center;
-        }
       }
 
       tbody {
         td {
           div {
             display: flex;
-            align-items: center;
+            /* align-items: center; */
           }
           .description {
             max-width: 500px;

@@ -7,7 +7,7 @@ import { formatPastRequestsNoAddress } from "./helpers/formatPastRequestsNoAddre
 import { formatPastRequestsByAddress } from "./helpers/formatPastRequestByAddress";
 import { Wrapper } from "./styled/PastRequests.styled";
 import useModal from "common/hooks/useModal";
-import ViewDetailsModal from "./ViewDetailsModal";
+import PastViewDetailsModal from "./PastViewDetailsModal";
 
 export interface ModalState {
   proposal: string;
@@ -67,9 +67,7 @@ const PastRequests: FC<Props> = ({
 
       if (address && contract) {
         const pr = formatPastRequestsByAddress(filteredByRound, address);
-        Promise.all(pr).then((res) => {
-          setPastRequests(!showAll ? res.slice(0, 10) : res);
-        });
+        setPastRequests(!showAll ? pr.slice(0, 10) : pr);
       } else {
         const pr = formatPastRequestsNoAddress(filteredByRound);
 
@@ -113,7 +111,8 @@ const PastRequests: FC<Props> = ({
                             numberCommitVoters: el.numberCommitVoters,
                             numberRevealVoters: el.numberRevealVoters,
                             timestamp: el.timestamp,
-                            rewardsClaimed: el.rewardsClaimed,
+                            rewardsClaimed:
+                              el.reward !== "N/A" ? el.reward : "0",
                           });
                         }}
                         className="PastRequests-view-details"
@@ -150,7 +149,7 @@ const PastRequests: FC<Props> = ({
           </Button>
         </div>
       ) : null}
-      <ViewDetailsModal
+      <PastViewDetailsModal
         isOpen={isOpen}
         close={close}
         ref={modalRef}

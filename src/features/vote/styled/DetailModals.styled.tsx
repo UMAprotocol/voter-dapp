@@ -49,29 +49,37 @@ export const Description = styled.p`
   margin-bottom: 1.25rem;
 `;
 
-export const DiscordWrapper = styled.div`
+export const IconsWrapper = styled.div`
   padding: 1rem 0 2rem;
   border-bottom: 1px solid #e4e5e4;
   margin-bottom: 2rem;
-  span {
-    a {
-      display: flex;
-      max-width: 200px;
-      color: #ff4a4a;
-      &:hover {
-        text-decoration: underline;
-      }
+  display: flex;
+`;
+
+export const IconsItem = styled.div`
+  flex-grow: 1;
+  a,
+  .copy-wrapper {
+    display: flex;
+    max-width: 200px;
+    color: #ff4a4a;
+    &:hover {
+      text-decoration: underline;
     }
-    div {
-      display: inline-block;
-      margin-right: 12px;
-      border: 1px solid #ff4a4a;
-      border-radius: 20px;
-      padding: 6px;
-      svg {
-        margin-bottom: 2px;
-      }
-    }
+  }
+  .copy-wrapper {
+    cursor: pointer;
+  }
+`;
+
+export const Icon = styled.div`
+  display: inline-block;
+  margin-right: 12px;
+  border: 1px solid #ff4a4a;
+  border-radius: 20px;
+  padding: 6px;
+  svg {
+    margin-bottom: 2px;
   }
 `;
 
@@ -86,6 +94,10 @@ export const StateValueAddress = styled(StateValue)`
   border-bottom: none;
 `;
 
+export const StateValueAncData = styled(StateValue)`
+  max-width: 400px;
+  word-wrap: break-word;
+`;
 export const RevealHeader = styled.div`
   font-size: 0.75rem;
   color: #000;

@@ -82,14 +82,11 @@ const Vote = () => {
         .catch((err) => {
           console.log("Sign failed");
         });
+    } else {
+      setPrivateKey("");
+      setPublicKey("");
     }
   }, [state.signer]);
-
-  useEffect(()=>{
-    // address changed, remove these keys
-    setPrivateKey("");
-    setPublicKey("");
-  },[state.address])
 
   useEffect(() => {
     // address changed, remove these keys

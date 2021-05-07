@@ -4,7 +4,6 @@ import {
   forwardRef,
   Dispatch,
   SetStateAction,
-  useEffect,
   useState,
 } from "react";
 import Modal from "common/components/modal";
@@ -13,58 +12,33 @@ import {
   MiniHeader,
   Proposal,
   Description,
-  DiscordWrapper,
+  IconsWrapper,
   StateValue,
-  StateValueAddress,
-  RevealHeader,
-  RevealPercentage,
-} from "./styled/ViewDetailsModal.styled";
-import { ModalState } from "./PastRequests";
-import { DiscordRed } from "assets/icons";
-import { ethers } from "ethers";
+  StateValueAncData,
+  IconsItem,
+  Icon,
+} from "./styled/DetailModals.styled";
+import { ModalState } from "./ActiveRequests";
+import { DiscordRed, CopyIcon } from "assets/icons";
 
 interface Props {
   isOpen: boolean;
   close: () => void;
   ref: (node: HTMLElement | null) => void;
-  proposal: string;
   setModalState: Dispatch<SetStateAction<ModalState>>;
-  totalSupply: string;
-  correct: string;
-  numberCommitVoters: number;
-  numberRevealVoters: number;
+  proposal: string;
   timestamp: string;
-  rewardsClaimed: string;
+  ancData: string;
 }
 
-const _ViewDetailsModal: ForwardRefRenderFunction<
+const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
 > = (
-  {
-    isOpen,
-    close,
-    proposal,
-    setModalState,
-    totalSupply,
-    correct,
-    numberCommitVoters,
-    numberRevealVoters,
-    timestamp,
-    rewardsClaimed,
-  },
+  { isOpen, close, proposal, setModalState, timestamp, ancData },
   externalRef
 ) => {
-  const [formattedRewardsClaimed, setFormattedRewardsClaimed] = useState("0");
-
-  // Format rewards to 6 decs. It is a Big Num as it the value is in wei.
-  useEffect(() => {
-    const formatRCArr = ethers.utils.formatEther(rewardsClaimed).split(".");
-    formatRCArr[1] = formatRCArr[1].substring(0, 6);
-    const formatRC = formatRCArr.join(".");
-    setFormattedRewardsClaimed(formatRC);
-  }, [rewardsClaimed]);
-
+  const [copySuccess, setCopySuccess] = useState(false);
   return (
     <>
       <Modal
@@ -73,12 +47,8 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
           close();
           setModalState({
             proposal: "",
-            correct: "",
-            totalSupply: "",
-            numberCommitVoters: 0,
-            numberRevealVoters: 0,
             timestamp: "",
-            rewardsClaimed: "0",
+            ancData: "0x",
           });
         }}
         ref={externalRef}
@@ -86,6 +56,8 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
         <ModalWrapper>
           <MiniHeader>Proposal</MiniHeader>
           <Proposal>{proposal}</Proposal>
+          <MiniHeader>Ancillary Data (raw hexstring)</MiniHeader>
+          <StateValueAncData>{ancData}</StateValueAncData>
           <MiniHeader>Description</MiniHeader>
           <Description>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu
@@ -101,39 +73,35 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
             eleifend in metus in, eleifend dapibus ante. Donec nec egestas
             lacus.
           </Description>
-          <DiscordWrapper>
-            <span>
+          <IconsWrapper>
+            <IconsItem>
               <a
                 target="_blank"
                 href="https://discord.umaproject.org"
                 rel="noreferrer"
               >
-                <div>
+                <Icon>
                   <DiscordRed />
-                </div>
+                </Icon>
                 Join the UMA Discord
               </a>
-            </span>
-          </DiscordWrapper>
-          <MiniHeader>Correct Vote</MiniHeader>
-          <StateValue>{correct}</StateValue>
-
-          <MiniHeader>Total Supply</MiniHeader>
-          <StateValue>{totalSupply}</StateValue>
-
-          <MiniHeader>Rewards Claimed</MiniHeader>
-          <StateValue>{formattedRewardsClaimed}</StateValue>
-
-          <MiniHeader>Unique Commit Addresses</MiniHeader>
-          <StateValueAddress>{numberCommitVoters}</StateValueAddress>
-
-          <RevealHeader>
-            {numberRevealVoters} Unique Reveal Addresses
-          </RevealHeader>
-          <RevealPercentage>
-            {((numberRevealVoters / numberCommitVoters) * 100).toFixed(2)}% of
-            Unique Commit Addresses
-          </RevealPercentage>
+            </IconsItem>
+            <IconsItem>
+              <div
+                onClick={() => {
+                  navigator.clipboard.writeText(ancData);
+                  setCopySuccess(true);
+                  setTimeout(() => setCopySuccess(false), 2000);
+                }}
+                className="copy-wrapper"
+              >
+                <Icon>
+                  <CopyIcon />
+                </Icon>
+                {copySuccess ? "Successfully copied" : "Copy Ancillary Data"}
+              </div>
+            </IconsItem>
+          </IconsWrapper>
 
           <MiniHeader>Proposal Timestamp</MiniHeader>
           <StateValue>{timestamp}</StateValue>
@@ -143,7 +111,7 @@ const _ViewDetailsModal: ForwardRefRenderFunction<
   );
 };
 
-const ViewDetailsModal = forwardRef(_ViewDetailsModal);
-ViewDetailsModal.displayName = "ViewDetailsModal";
+const ActiveViewDetailsModal = forwardRef(_ActiveViewDetailsModal);
+ActiveViewDetailsModal.displayName = "ActiveViewDetailsModal";
 
-export default ViewDetailsModal;
+export default ActiveViewDetailsModal;
