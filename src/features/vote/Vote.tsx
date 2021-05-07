@@ -23,6 +23,7 @@ import { recoverPublicKey } from "./helpers/recoverPublicKey";
 import { derivePrivateKey } from "./helpers/derivePrivateKey";
 
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
+// import usePrevious from "common/hooks/usePrevious";
 
 const Vote = () => {
   const [publicKey, setPublicKey] = useState("");
@@ -89,6 +90,12 @@ const Vote = () => {
     setPrivateKey("");
     setPublicKey("");
   },[state.address])
+
+  useEffect(() => {
+    // address changed, remove these keys
+    setPrivateKey("");
+    setPublicKey("");
+  }, [state.address]);
 
   useEffect(() => {
     if (priceRequestsAdded.length) {

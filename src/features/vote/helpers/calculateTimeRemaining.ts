@@ -1,20 +1,13 @@
+import { DateTime, Duration } from "luxon";
+
 // For Timer feature.
-export const calculateTimeRemaining = (start: number, end: number) => {
-  const difference = end - start;
-  let timeLeft = {
-    hours: "00",
-    minutes: "00",
-  };
+export const calculateTimeRemaining = () => {
+  const utc = DateTime.local().toUTC().endOf("day").toMillis();
+  const difference = utc - DateTime.local().toMillis();
 
-  if (difference > 0) {
-    timeLeft = {
-      hours: Math.floor((difference / (60 * 60)) % 24).toString(),
-      minutes: Math.floor((difference / 60) % 60).toString(),
-    };
-    if (Number(timeLeft.hours) < 10) timeLeft.hours = `0${timeLeft.hours}`;
-    if (Number(timeLeft.minutes) < 10)
-      timeLeft.minutes = `0${timeLeft.minutes}`;
-  }
+  let text = "00:00";
+  // format difference
+  if (difference > 0) text = Duration.fromMillis(difference).toFormat("hh:mm");
 
-  return timeLeft;
+  return text;
 };
