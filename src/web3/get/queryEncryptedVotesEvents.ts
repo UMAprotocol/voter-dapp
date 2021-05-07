@@ -49,20 +49,28 @@ export const queryEncryptedVotes = async (
 
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
+    // there may be multiple commit events, if there are collisions, then take newest
+    const eventTable = events.reduce((result:{[key:string]:any},event:any)=>{
+      const {args} = event
+      const key = [args.identifier, args.ancillaryData, args.roundId.toString(), args.time.toString()].join('!')
+      // if multiple commit events, always take the newest one
+      if(result[key]){
+        if( result[key].blockNumber < event.blockNumber) result[key] = event
+      }else{
+        result[key] = event
+      }
+      return result
+    },{})
     const decryptedEvents = await Promise.all(
-      events.map(async (el) => {
+      Object.values(eventTable).map(async (el) => {
         const { args } = el;
         const datum = {} as EncryptedVote;
         if (args) {
           let price = "";
           let salt = "";
-          try {
-            const json = JSON.parse(await decryptMessage(privateKey, args[5]));
-            price = json.price;
-            salt = json.salt;
-          } catch (err) {
-            console.log("err", err);
-          }
+          const json = JSON.parse(await decryptMessage(privateKey, args[5]));
+          price = json.price;
+          salt = json.salt;
           datum.address = args[0];
           datum.roundId = args[1].toString();
           datum.identifier = ethers.utils.toUtf8String(args[2]);
