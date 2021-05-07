@@ -14,6 +14,8 @@ import {
   Proposal,
   Description,
   IconsWrapper,
+  IconsItem,
+  Icon,
   StateValue,
   StateValueAddress,
   RevealHeader,
@@ -59,6 +61,7 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
 
   // Format rewards to 6 decs. It is a Big Num as it the value is in wei.
   useEffect(() => {
+    console.log("REWARDS CLAIMED", rewardsClaimed);
     const formatRCArr = ethers.utils.formatEther(rewardsClaimed).split(".");
     formatRCArr[1] = formatRCArr[1].substring(0, 6);
     const formatRC = formatRCArr.join(".");
@@ -102,18 +105,18 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
             lacus.
           </Description>
           <IconsWrapper>
-            <span>
+            <IconsItem>
               <a
                 target="_blank"
                 href="https://discord.umaproject.org"
                 rel="noreferrer"
               >
-                <div>
+                <Icon>
                   <DiscordRed />
-                </div>
+                </Icon>
                 Join the UMA Discord
               </a>
-            </span>
+            </IconsItem>
           </IconsWrapper>
           <MiniHeader>Correct Vote</MiniHeader>
           <StateValue>{correct}</StateValue>

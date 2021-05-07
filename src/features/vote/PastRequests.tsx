@@ -70,6 +70,7 @@ const PastRequests: FC<Props> = ({
         Promise.all(pr).then((res) => {
           setPastRequests(!showAll ? res.slice(0, 10) : res);
         });
+        console.log("pr", pr);
       } else {
         const pr = formatPastRequestsNoAddress(filteredByRound);
 
@@ -105,6 +106,7 @@ const PastRequests: FC<Props> = ({
                       <p>{el.proposal}</p>
                       <p
                         onClick={() => {
+                          console.log("el", el);
                           open();
                           setModalState({
                             proposal: el.proposal,
@@ -113,7 +115,8 @@ const PastRequests: FC<Props> = ({
                             numberCommitVoters: el.numberCommitVoters,
                             numberRevealVoters: el.numberRevealVoters,
                             timestamp: el.timestamp,
-                            rewardsClaimed: el.rewardsClaimed,
+                            rewardsClaimed:
+                              el.reward !== "N/A" ? el.reward : "0",
                           });
                         }}
                         className="PastRequests-view-details"
