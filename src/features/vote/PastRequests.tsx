@@ -106,7 +106,6 @@ const PastRequests: FC<Props> = ({
                       <p>{el.proposal}</p>
                       <p
                         onClick={() => {
-                          console.log("el", el);
                           open();
                           setModalState({
                             proposal: el.proposal,
