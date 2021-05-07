@@ -113,6 +113,7 @@ const ActiveRequestsForm: FC<Props> = ({
           let vc = votingContract;
           if (designatedVotingContract) vc = designatedVotingContract;
           if (vc) {
+            console.log("FD", fd, publicKey);
             commitVotes(vc, fd).then((tx) => {
               setModalState("pending");
               // Need to confirm if the user submits the vote.
