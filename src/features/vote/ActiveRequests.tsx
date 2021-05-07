@@ -6,7 +6,6 @@ import CommitPhase from "./CommitPhase";
 import { useVotePhase, useRound } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
-import { DateTime } from "luxon";
 import { calculateTimeRemaining } from "./helpers/calculateTimeRemaining";
 import { Wrapper } from "./styled/ActiveRequests.styled";
 import timerSVG from "assets/icons/timer.svg";
@@ -58,47 +57,13 @@ const ActiveRequests: FC<Props> = ({
   // Note: the requests are all slightly differently in there final vote time. I'll use the last
   // Vote added.
   useEffect(() => {
-    const arLength = activeRequests.length;
-    const requestTimestamp = DateTime.fromSeconds(
-      Number(activeRequests[arLength - 1].time)
-    );
+    setTimeRemaining(calculateTimeRemaining());
 
-    if (votePhase === "Commit") {
-      // Add two days, as the price requests are added 24 hours before, and commit ends 48 hours after that.
-      // For some reason need to add 1 hour? Daylights saving times issue?
-      const endOfCommit = requestTimestamp
-        .plus({ days: 2, hours: 1 })
-        .toSeconds();
+    const timer = setInterval(() => {
+      setTimeRemaining(calculateTimeRemaining());
+    }, 30000);
 
-      setTimeRemaining(
-        calculateTimeRemaining(DateTime.local().toSeconds(), endOfCommit)
-      );
-
-      const timer = setInterval(() => {
-        setTimeRemaining(
-          calculateTimeRemaining(DateTime.local().toSeconds(), endOfCommit)
-        );
-      }, 30000);
-
-      return () => clearInterval(timer);
-    }
-
-    if (votePhase === "Reveal") {
-      // Add three days, as the price requests are added 24 hours before, and reveal ends 72 hours after that.
-      const endOfCommit = requestTimestamp.plus({ days: 3 }).toSeconds();
-
-      setTimeRemaining(
-        calculateTimeRemaining(DateTime.local().toSeconds(), endOfCommit)
-      );
-
-      const timer = setInterval(() => {
-        setTimeRemaining(
-          calculateTimeRemaining(DateTime.local().toSeconds(), endOfCommit)
-        );
-      }, 30000);
-
-      return () => clearInterval(timer);
-    }
+    return () => clearInterval(timer);
   }, [activeRequests, votePhase]);
 
   return (
