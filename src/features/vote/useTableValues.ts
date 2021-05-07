@@ -52,6 +52,7 @@ export default function useTableValues(
     if (activeRequests.length && encryptedVotes.length) {
       const tv = [] as TableValue[];
       const postData = [] as PostRevealData[];
+      const latestVotesFirst = [...encryptedVotes].reverse();
 
       activeRequests.forEach((el) => {
         const datum = {} as TableValue;
@@ -59,7 +60,6 @@ export default function useTableValues(
         datum.identifier = el.identifier;
         let vote = "-";
         // I believe latest events are on bottom. requires testing.
-        const latestVotesFirst = [...encryptedVotes].reverse();
         const findVote = latestVotesFirst.find(
           (x) =>
             x.identifier === el.identifier &&
