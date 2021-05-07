@@ -61,7 +61,6 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
 
   // Format rewards to 6 decs. It is a Big Num as it the value is in wei.
   useEffect(() => {
-    console.log("REWARDS CLAIMED", rewardsClaimed);
     const formatRCArr = ethers.utils.formatEther(rewardsClaimed).split(".");
     formatRCArr[1] = formatRCArr[1].substring(0, 6);
     const formatRC = formatRCArr.join(".");
