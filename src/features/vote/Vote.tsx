@@ -88,11 +88,11 @@ const Vote = () => {
     }
   }, [state.signer]);
 
-  useEffect(()=>{
+  useEffect(() => {
     // address changed, remove these keys
     setPrivateKey("");
     setPublicKey("");
-  },[state.address])
+  }, [state.address]);
 
   useEffect(() => {
     if (priceRequestsAdded.length) {

@@ -24,7 +24,6 @@ const Router: FC<Props> = ({ qc }) => {
   const { state } = useContext(OnboardContext);
   useEffect(() => {
     if (!state.isConnected) {
-      console.log("let's clear the cache");
       qc.clear();
     }
   }, [state.isConnected, state.address, qc]);
