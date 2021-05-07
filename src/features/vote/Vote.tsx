@@ -50,7 +50,10 @@ const Vote = () => {
   );
 
   const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
-  const { data: activeRequests } = usePendingRequests();
+  const {
+    data: activeRequests,
+    refetch: refetchActiveRequests,
+  } = usePendingRequests();
   const { data: roundId } = useCurrentRoundId();
 
   const { data: revealedVotes } = useVotesRevealedEvents(
@@ -67,6 +70,13 @@ const Vote = () => {
     privateKey,
     roundId
   );
+
+  // console.log("refetch", refetchActiveRequests);
+  // useEffect(() => {
+  //   if (refetchActiveRequests) {
+  //     refetchActiveRequests();
+  //   }
+  // }, [refetchActiveRequests]);
 
   useEffect(() => {
     if (state.signer) {

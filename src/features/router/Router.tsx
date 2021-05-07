@@ -28,17 +28,17 @@ const Router: FC<Props> = ({ qc }) => {
     }
   }, [state.isConnected, state.address, qc]);
 
-  const previousAddress = usePrevious(state.address);
+  // const previousAddress = usePrevious(state.address);
 
-  useEffect(() => {
-    if (
-      state.isConnected &&
-      previousAddress &&
-      previousAddress !== state.address
-    ) {
-      window.location.reload();
-    }
-  }, [state.isConnected, state.address, previousAddress]);
+  // useEffect(() => {
+  //   if (
+  //     state.isConnected &&
+  //     previousAddress &&
+  //     previousAddress !== state.address
+  //   ) {
+  //     window.location.reload();
+  //   }
+  // }, [state.isConnected, state.address, previousAddress]);
 
   const { error, removeError } = useContext(ErrorContext);
   useEffect(() => {

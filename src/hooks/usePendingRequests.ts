@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import provider from "common/utils/web3/createProvider";
 import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
 
@@ -20,7 +20,7 @@ const contract = createVoidSignerVotingContractInstance(
 // This can be accessed without logging the user in.
 export default function usePendingRequests() {
   const { addError } = useContext(ErrorContext);
-
+  // const [isEnabled, setIsEnabled] = useState(true);
   const { data, error, isFetching, refetch } = useQuery<
     PendingRequest[],
     Error
@@ -37,6 +37,10 @@ export default function usePendingRequests() {
     },
     {
       retry: false,
+      // enabled: isEnabled,
+      // onSuccess: () => {
+      //   setIsEnabled(false);
+      // },
     }
   );
 

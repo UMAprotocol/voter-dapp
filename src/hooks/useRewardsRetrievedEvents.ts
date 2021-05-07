@@ -20,7 +20,7 @@ export default function useRewardsRetrievedEvents(
         }
       });
     },
-    { enabled: contract !== null }
+    { enabled: contract !== null && address !== null }
   );
 
   if (data) {
