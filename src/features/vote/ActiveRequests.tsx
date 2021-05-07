@@ -25,11 +25,6 @@ interface Props {
   hotAddress: string | null;
 }
 
-interface Timer {
-  hours: string;
-  minutes: string;
-}
-
 const ActiveRequests: FC<Props> = ({
   publicKey,
   activeRequests,
@@ -40,10 +35,7 @@ const ActiveRequests: FC<Props> = ({
   refetchEncryptedVotes,
   hotAddress,
 }) => {
-  const [timeRemaining, setTimeRemaining] = useState<Timer>({
-    hours: "00",
-    minutes: "00",
-  });
+  const [timeRemaining, setTimeRemaining] = useState("00:00");
 
   const {
     state: { isConnected },
@@ -79,7 +71,7 @@ const ActiveRequests: FC<Props> = ({
           <div className="title">Time Remaining</div>
           {activeRequests.length ? (
             <div className="time">
-              {timeRemaining.hours}:{timeRemaining.minutes}
+              {timeRemaining}
               <span>
                 <img src={timerSVG} alt="timer_img" />
               </span>
