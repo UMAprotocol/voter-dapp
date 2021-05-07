@@ -23,7 +23,7 @@ import { recoverPublicKey } from "./helpers/recoverPublicKey";
 import { derivePrivateKey } from "./helpers/derivePrivateKey";
 
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
-import usePrevious from "common/hooks/usePrevious";
+// import usePrevious from "common/hooks/usePrevious";
 
 const Vote = () => {
   const [publicKey, setPublicKey] = useState("");
@@ -68,8 +68,6 @@ const Vote = () => {
     roundId
   );
 
-  const previousVotingAddress = usePrevious(votingAddress);
-
   useEffect(() => {
     if (state.signer) {
       const message = "Login to UMA Voter dApp";
@@ -89,17 +87,6 @@ const Vote = () => {
       setPublicKey("");
     }
   }, [state.signer]);
-
-  // useEffect(() => {
-  //   if (
-  //     state.signer &&
-  //     votingAddress &&
-  //     previousVotingAddress !== votingAddress
-  //   ) {
-  //     setPrivateKey("");
-  //     setPublicKey("");
-  //   }
-  // }, [votingAddress, previousVotingAddress, state.signer]);
 
   useEffect(() => {
     if (priceRequestsAdded.length) {
