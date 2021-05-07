@@ -37,8 +37,8 @@ const RevealPhase: FC<Props> = ({
   round,
   revealedVotes,
   refetchEncryptedVotes,
-  setViewDetailsModalState,
   openViewDetailsModal,
+  setViewDetailsModalState,
 }) => {
   const { tableValues, postRevealData, setPostRevealData } = useTableValues(
     activeRequests,
