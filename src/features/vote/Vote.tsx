@@ -85,6 +85,12 @@ const Vote = () => {
     }
   }, [state.signer]);
 
+  useEffect(()=>{
+    // address changed, remove these keys
+    setPrivateKey("");
+    setPublicKey("");
+  },[state.address])
+
   useEffect(() => {
     // address changed, remove these keys
     setPrivateKey("");
