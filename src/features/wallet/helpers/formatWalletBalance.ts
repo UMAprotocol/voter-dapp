@@ -11,6 +11,14 @@ export default function formatWalletBalance(balance: string): string[] {
     // If it is, just show 1 decimal.
     if (MAX_LENGTH_RIGHT_SIDE > 0) {
       rightSide = split[1].substr(0, MAX_LENGTH_RIGHT_SIDE);
+      // Add trailing zeroes if there are not enough integers between both sides of the string.
+      if (rightSide.length + split[0].length < 8) {
+        let trailingZeros = "";
+        for (let i = 0; i < 8 - (rightSide.length + split[0].length); i++) {
+          trailingZeros = trailingZeros.concat("0");
+        }
+        rightSide = rightSide.concat(trailingZeros);
+      }
     } else {
       rightSide = split[1].substr(0, 1);
     }
@@ -23,6 +31,7 @@ export default function formatWalletBalance(balance: string): string[] {
     for (let i = 0; i < MAX_LENGTH_RIGHT_SIDE; i++) {
       trailingZeros = trailingZeros.concat("0");
     }
+    console.log("TZ", trailingZeros, balance);
     return [`${balance}.`, trailingZeros];
   }
 }
