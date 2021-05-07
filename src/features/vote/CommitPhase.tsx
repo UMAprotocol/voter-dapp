@@ -180,13 +180,13 @@ const ActiveRequestsForm: FC<Props> = ({
     }
     if (activeRequests.length && encryptedVotes.length) {
       const tv = [] as TableValue[];
+      // I believe latest events are on bottom. requires testing.
+      const latestVotesFirst = [...encryptedVotes].reverse();
       activeRequests.forEach((el) => {
         const datum = {} as TableValue;
         datum.ancillaryData = el.ancillaryData;
         datum.identifier = el.identifier;
         let vote = "-";
-        // I believe latest events are on bottom. requires testing.
-        const latestVotesFirst = [...encryptedVotes].reverse();
         const findVote = latestVotesFirst.find(
           (x) =>
             x.identifier === el.identifier &&

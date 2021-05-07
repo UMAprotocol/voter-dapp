@@ -23,3 +23,4 @@ export interface PendingRequestAncillary {
   // hexstring
   ancillaryData: string;
 }
+

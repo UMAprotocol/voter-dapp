@@ -12,7 +12,8 @@ export default function useEncryptedVotesEvents(
   roundId: string
 ) {
   const { data, error, isFetching, refetch } = useQuery<EncryptedVote[]>(
-    "encryptedVotesEvents",
+    // key encryped votes by connected address
+    ["encryptedVotesEvents",address],
     () => {
       return queryEncryptedVotes(
         contract,
@@ -28,7 +29,10 @@ export default function useEncryptedVotesEvents(
         }
       });
     },
-    { enabled: contract !== null && privateKey !== "" }
+    { 
+      // do not run query if any of these are null
+      enabled: contract !== null && privateKey !== "" && address != null, 
+    }
   );
 
   if (data) {
