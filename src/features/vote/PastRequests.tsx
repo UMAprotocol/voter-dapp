@@ -67,10 +67,7 @@ const PastRequests: FC<Props> = ({
 
       if (address && contract) {
         const pr = formatPastRequestsByAddress(filteredByRound, address);
-        Promise.all(pr).then((res) => {
-          setPastRequests(!showAll ? res.slice(0, 10) : res);
-        });
-        console.log("pr", pr);
+        setPastRequests(!showAll ? pr.slice(0, 10) : pr);
       } else {
         const pr = formatPastRequestsNoAddress(filteredByRound);
 
