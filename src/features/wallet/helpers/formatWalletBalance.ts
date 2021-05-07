@@ -14,7 +14,7 @@ export default function formatWalletBalance(balance: string): string[] {
       // Add trailing zeroes if there are not enough integers between both sides of the string.
       if (rightSide.length + split[0].length < 8) {
         let trailingZeros = "";
-        for (let i = 0; i < 8 - (rightSide.length + split[0].length); i++) {
+        for (let i = 0; i < 9 - (rightSide.length + split[0].length); i++) {
           trailingZeros = trailingZeros.concat("0");
         }
         rightSide = rightSide.concat(trailingZeros);
@@ -31,7 +31,6 @@ export default function formatWalletBalance(balance: string): string[] {
     for (let i = 0; i < MAX_LENGTH_RIGHT_SIDE; i++) {
       trailingZeros = trailingZeros.concat("0");
     }
-    console.log("TZ", trailingZeros, balance);
     return [`${balance}.`, trailingZeros];
   }
 }

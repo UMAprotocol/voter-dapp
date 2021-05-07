@@ -53,8 +53,6 @@ const Wallet: FC<Props> = () => {
     network,
   } = useOnboard();
 
-  console.log("umaBalance", umaBalance);
-
   const prevTotalCollected = usePrevious(totalUmaCollected);
   const prevAvailableReweards = usePrevious(availableRewards);
 
