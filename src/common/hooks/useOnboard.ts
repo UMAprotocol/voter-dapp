@@ -45,6 +45,7 @@ export default function useOnboard() {
         address: (addr: string | null) => {
           // Track the current reference to the address in order to
           // dispatch different types of actions.
+          dispatch({ type: actions.SET_ADDRESS, payload: addr });
           if (addressRef.current !== null) {
             disconnect(dispatch, onboardRef.current);
             onboardRef.current = null;
