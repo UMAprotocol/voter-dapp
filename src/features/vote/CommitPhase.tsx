@@ -241,7 +241,7 @@ const CommitPhase: FC<Props> = ({
                       control={control}
                       name={`${el.identifier}`}
                       placeholder="0.000"
-                      variant="currency"
+                      variant="text"
                     />
                   )}
                 </td>

@@ -30,9 +30,16 @@ const Navbar: FC = () => {
           >
             Docs
           </a>
-          <Link className="link" to="/" tw="px-5 py-3">
+
+          <a
+            className="link"
+            href="https://docs.umaproject.org/uma-tokenholders/uma-holders"
+            target="_blank"
+            tw="px-5 py-3"
+            rel="noreferrer"
+          >
             About
-          </Link>
+          </a>
           {socialLinks.map(({ logo, url }, index) => {
             return (
               <a
