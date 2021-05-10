@@ -2,6 +2,7 @@ import { PriceRequestRound } from "common/hooks/useVoteData";
 import { PastRequest } from "../PastRequests";
 import { DateTime } from "luxon";
 import { ethers } from "ethers";
+const NULL_CORRECT_STRING = "-";
 
 // Sorts and sets some default values for when the user isn't logged in.
 export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
@@ -14,10 +15,10 @@ export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
   const formattedData = sortedByTime.map((el) => {
     const datum = {} as PastRequest;
     let correct = ethers.utils.formatEther(
-      el.request.price !== null ? el.request.price : "0"
+      el.request.price !== null ? el.request.price : NULL_CORRECT_STRING
     );
 
-    if (el.identifier.id.includes("Admin")) {
+    if (el.identifier.id.includes("Admin") && correct !== NULL_CORRECT_STRING) {
       correct = Number(correct) > 0 ? "YES" : "NO";
     }
 

@@ -20,7 +20,6 @@ const contract = createVoidSignerVotingContractInstance(
 // This can be accessed without logging the user in.
 export default function usePendingRequests() {
   const { addError } = useContext(ErrorContext);
-  // const [isEnabled, setIsEnabled] = useState(true);
   const { data, error, isFetching, refetch } = useQuery<
     PendingRequest[],
     Error
@@ -37,10 +36,6 @@ export default function usePendingRequests() {
     },
     {
       retry: false,
-      // enabled: isEnabled,
-      // onSuccess: () => {
-      //   setIsEnabled(false);
-      // },
     }
   );
 
@@ -51,6 +46,6 @@ export default function usePendingRequests() {
   if (data) {
     return { data, error, isFetching, refetch };
   } else {
-    return { data: [] as PendingRequest[], error, isFetching };
+    return { data: [] as PendingRequest[], error, isFetching, refetch };
   }
 }

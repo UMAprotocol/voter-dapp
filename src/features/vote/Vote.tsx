@@ -23,7 +23,7 @@ import { recoverPublicKey } from "./helpers/recoverPublicKey";
 import { derivePrivateKey } from "./helpers/derivePrivateKey";
 
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
-// import usePrevious from "common/hooks/usePrevious";
+import usePrevious from "common/hooks/usePrevious";
 
 const Vote = () => {
   const [publicKey, setPublicKey] = useState("");
@@ -50,10 +50,7 @@ const Vote = () => {
   );
 
   const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
-  const {
-    data: activeRequests,
-    refetch: refetchActiveRequests,
-  } = usePendingRequests();
+  const { data: activeRequests } = usePendingRequests();
   const { data: roundId } = useCurrentRoundId();
 
   const { data: revealedVotes } = useVotesRevealedEvents(
@@ -71,15 +68,8 @@ const Vote = () => {
     roundId
   );
 
-  // console.log("refetch", refetchActiveRequests);
-  // useEffect(() => {
-  //   if (refetchActiveRequests) {
-  //     refetchActiveRequests();
-  //   }
-  // }, [refetchActiveRequests]);
-
   useEffect(() => {
-    if (state.signer) {
+    if (state.signer && state.address) {
       const message = "Login to UMA Voter dApp";
       state.signer
         .signMessage(message)
@@ -92,16 +82,21 @@ const Vote = () => {
         .catch((err) => {
           console.log("Sign failed");
         });
-    } else {
+    }
+  }, [state.signer, state.address]);
+
+  const previousStateAddress = usePrevious(state.address);
+  useEffect(() => {
+    // address changed, remove these keys
+    if (previousStateAddress && state.address !== previousStateAddress) {
       setPrivateKey("");
       setPublicKey("");
     }
-  }, [state.signer]);
 
-  useEffect(() => {
-    // address changed, remove these keys
-    setPrivateKey("");
-    setPublicKey("");
+    if (!state.address) {
+      setPrivateKey("");
+      setPublicKey("");
+    }
   }, [state.address]);
 
   useEffect(() => {
