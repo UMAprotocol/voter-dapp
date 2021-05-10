@@ -47,6 +47,7 @@ export default function useOnboard() {
           // dispatch different types of actions.
           if (addressRef.current !== null) {
             disconnect(dispatch, onboardRef.current);
+            onboardRef.current = null;
             addressRef.current = null;
           } else {
             addressRef.current = addr;
@@ -58,7 +59,6 @@ export default function useOnboard() {
               "This dApp will work only with the Mainnet or Kovan network"
             );
           }
-          console.log("onboard???", onboard);
           onboardRef.current?.config({ networkId });
           dispatch({
             type: actions.SET_NETWORK,
