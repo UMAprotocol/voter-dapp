@@ -42,7 +42,7 @@ export const Proposal = styled.div`
   margin-bottom: 2rem;
 `;
 
-export const Description = styled.p`
+export const Description = styled.div`
   line-height: 1.71rem;
   color: grey;
   max-width: 500px;

@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import ReactMarkdown from "react-markdown";
 import Modal from "common/components/modal";
 import {
   ModalWrapper,
@@ -24,6 +25,7 @@ import {
 import { ModalState } from "./PastRequests";
 import { DiscordRed } from "assets/icons";
 import { ethers } from "ethers";
+import { useUMIP } from "hooks";
 
 interface Props {
   isOpen: boolean;
@@ -67,6 +69,10 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
     setFormattedRewardsClaimed(formatRC);
   }, [rewardsClaimed]);
 
+  const isUmip = proposal.includes("Admin");
+  const umipNumber = isUmip ? parseInt(proposal.split(" ")[1]) : undefined;
+  const { umip } = useUMIP(umipNumber);
+
   return (
     <>
       <Modal
@@ -87,21 +93,16 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
       >
         <ModalWrapper>
           <MiniHeader>Proposal</MiniHeader>
-          <Proposal>{proposal}</Proposal>
-          <MiniHeader>Description</MiniHeader>
+          <Proposal>{isUmip ? umip?.title : proposal}</Proposal>
+
           <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu
-            fringilla nunc. Sed mi arcu, consequat sed magna sed, auctor blandit
-            velit. Aliquam tincidunt, tortor vestibulum tempor tincidunt, lorem
-            velit dapibus purus, in lacinia velit lectus eget libero. Phasellus
-            sit amet lacinia ipsum, sed sollicitudin sapien. Integer et lacinia
-            nulla. Suspendisse ultrices, nisl vel egestas aliquam, nisi mi
-            imperdiet quam, ut faucibus diam ante ut elit. Vivamus venenatis a
-            purus nec vehicula. Cras mollis vel ligula nec vulputate. Integer
-            vehicula molestie sapien, eu dapibus metus auctor in. Nullam viverra
-            urna odio, sit amet lobortis metus interdum id. Nulla enim justo,
-            eleifend in metus in, eleifend dapibus ante. Donec nec egestas
-            lacus.
+            <ReactMarkdown
+              components={{
+                h1: MiniHeader,
+              }}
+            >
+              {umip?.description}
+            </ReactMarkdown>
           </Description>
           <IconsWrapper>
             <IconsItem>
