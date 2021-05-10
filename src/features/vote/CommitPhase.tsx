@@ -6,6 +6,7 @@ import {
   useState,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from "react";
 import { useForm } from "react-hook-form";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
@@ -101,6 +102,15 @@ const CommitPhase: FC<Props> = ({
     defaultValues: generateDefaultValues(),
   });
 
+  // Make sure to reset form state if the user disconnects *or* changes their address.
+  // As we disconenct them on address, isConnected should cover this state change.
+  useEffect(() => {
+    if (!isConnected) {
+      reset();
+      close();
+    }
+  }, [isConnected, reset, close]);
+
   const onSubmit = useCallback(
     (data: FormData) => {
       const validValues = {} as FormData;
@@ -130,6 +140,7 @@ const CommitPhase: FC<Props> = ({
                   // Temporary, as mining is instant on local ganache.
                   setTimeout(() => setModalState("success"), 5000);
                   refetchEncryptedVotes();
+                  reset();
                 });
               }
             });
@@ -146,6 +157,7 @@ const CommitPhase: FC<Props> = ({
       refetchEncryptedVotes,
       designatedVotingContract,
       votingAddress,
+      reset,
     ]
   );
 
