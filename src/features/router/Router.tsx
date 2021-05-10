@@ -14,7 +14,6 @@ import Footer from "common/components/footer";
 // Context
 import { ErrorContext } from "common/context/ErrorContext";
 import { OnboardContext } from "common/context/OnboardContext";
-import usePrevious from "common/hooks/usePrevious";
 
 interface Props {
   qc: QueryClient;
@@ -27,18 +26,6 @@ const Router: FC<Props> = ({ qc }) => {
       qc.clear();
     }
   }, [state.isConnected, state.address, qc]);
-
-  // const previousAddress = usePrevious(state.address);
-
-  // useEffect(() => {
-  //   if (
-  //     state.isConnected &&
-  //     previousAddress &&
-  //     previousAddress !== state.address
-  //   ) {
-  //     window.location.reload();
-  //   }
-  // }, [state.isConnected, state.address, previousAddress]);
 
   const { error, removeError } = useContext(ErrorContext);
   useEffect(() => {

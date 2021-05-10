@@ -35,6 +35,7 @@ export default function useOnboard() {
   } = context;
 
   const addressRef = useRef(address);
+  const onboardRef = useRef(onboard);
 
   // When network changes, reconnect
   useEffect(() => {
@@ -42,14 +43,14 @@ export default function useOnboard() {
       // These are optional callbacks to be passed into onboard.
       const subscriptions = {
         address: (addr: string | null) => {
-          dispatch({ type: actions.SET_ADDRESS, payload: addr });
           // Track the current reference to the address in order to
           // dispatch different types of actions.
           if (addressRef.current !== null) {
-            disconnect(dispatch, onboard);
+            disconnect(dispatch, onboardRef.current);
             addressRef.current = null;
+          } else {
+            addressRef.current = addr;
           }
-          addressRef.current = addr;
         },
         network: async (networkId: any) => {
           if (!SUPPORTED_NETWORK_IDS.includes(networkId) && networkId != null) {
@@ -57,7 +58,8 @@ export default function useOnboard() {
               "This dApp will work only with the Mainnet or Kovan network"
             );
           }
-          onboard?.config({ networkId });
+          console.log("onboard???", onboard);
+          onboardRef.current?.config({ networkId });
           dispatch({
             type: actions.SET_NETWORK,
             payload: {
@@ -87,7 +89,7 @@ export default function useOnboard() {
         },
       };
 
-      connect(dispatch, network, subscriptions);
+      connect(dispatch, network, subscriptions, onboardRef);
       setInitOnboard(false);
     }
   }, [

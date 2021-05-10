@@ -1,4 +1,10 @@
-import { createContext, useReducer, Dispatch, FC } from "react";
+import {
+  createContext,
+  useReducer,
+  Dispatch,
+  FC,
+  MutableRefObject,
+} from "react";
 import { ethers } from "ethers";
 import { API as OnboardApi } from "bnc-onboard/dist/src/interfaces";
 import createOnboardInstance from "common/utils/web3/createOnboardInstance";
@@ -141,17 +147,20 @@ const INITIAL_STATE = {
 const connect = async (
   dispatch: OnboardDispatch,
   network: Network | null,
-  subscriptions: Subscriptions
+  subscriptions: Subscriptions,
+  // Required for certain subscription calls in hook.
+  onboardRef: MutableRefObject<OnboardApi | null>
 ) => {
   try {
     const onboardInstance = createOnboardInstance(network, subscriptions);
 
     await onboardInstance.walletSelect();
     await onboardInstance.walletCheck();
-
+    onboardRef.current = onboardInstance;
     dispatch({ type: actions.SET_ONBOARD, payload: onboardInstance });
     dispatch({ type: actions.SET_CONNECTION_STATUS, payload: true });
   } catch (error) {
+    onboardRef.current = null;
     dispatch({ type: actions.SET_ERROR, payload: error });
   }
 };

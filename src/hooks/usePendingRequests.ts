@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import provider from "common/utils/web3/createProvider";
 import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
 

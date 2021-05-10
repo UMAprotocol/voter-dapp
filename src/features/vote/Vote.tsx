@@ -97,7 +97,7 @@ const Vote = () => {
       setPrivateKey("");
       setPublicKey("");
     }
-  }, [state.address]);
+  }, [state.address, previousStateAddress]);
 
   useEffect(() => {
     if (priceRequestsAdded.length) {

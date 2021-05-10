@@ -61,6 +61,8 @@ const Wallet: FC<Props> = () => {
     signer,
     network
   );
+  // const previousVotingAddress = usePrevious(votingAddress);
+
   const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
     isConnected,
@@ -111,15 +113,17 @@ const Wallet: FC<Props> = () => {
 
   // Iterate over reward events to determine total UMA collected from voting.
   useEffect(() => {
-    if (rewardsEvents.length) {
+    if (rewardsEvents.length && isConnected) {
       let totalRewards = ethers.BigNumber.from("0");
       rewardsEvents.forEach(({ numTokens }) => {
         totalRewards = totalRewards.add(ethers.BigNumber.from(numTokens));
       });
 
       setTotalUmaCollected(ethers.utils.formatEther(totalRewards.toString()));
+    } else {
+      setTotalUmaCollected(DEFAULT_BALANCE);
     }
-  }, [rewardsEvents]);
+  }, [rewardsEvents, isConnected]);
 
   // recheck balance if total collected or available rewards changes.
   useEffect(() => {
