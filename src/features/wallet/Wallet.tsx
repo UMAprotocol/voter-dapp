@@ -25,8 +25,14 @@ import formatWalletBalance from "./helpers/formatWalletBalance";
 import calculateUMATotalValue from "./helpers/calculateUMATotalValue";
 import checkAvailableRewards from "./helpers/checkAvailableRewards";
 import collectRewards from "./helpers/collectRewards";
+import shortenAddress from "./helpers/shortenAddress";
 
-import { Wrapper, Connected, Disconnected } from "./styled/Wallet.styled";
+import {
+  Wrapper,
+  Connected,
+  Disconnected,
+  VotingAddress,
+} from "./styled/Wallet.styled";
 // import ERC20TransferButton from "./helpers/ERC20TransferButton";
 
 interface Props {
@@ -155,17 +161,13 @@ const Wallet: FC<Props> = () => {
         <div tw="flex items-stretch items-center">
           <div tw="py-8 pl-5 flex-grow">
             <p className="wallet-title">Voting Wallet</p>
-            {isConnected ? (
-              <Connected>
-                Connected with {onboard?.getState().wallet.name}
-                {/* Testing helper */}
-                {/* <ERC20TransferButton
-                  network={network}
-                  signer={signer}
-                  hotAddress={hotAddress}
-                  votingAddress={votingAddress}
-                /> */}
-              </Connected>
+            {isConnected && votingAddress ? (
+              <>
+                <VotingAddress>{shortenAddress(votingAddress)}</VotingAddress>
+                <Connected>
+                  Connected with {onboard?.getState().wallet.name}
+                </Connected>
+              </>
             ) : (
               <Disconnected>Not Connected</Disconnected>
             )}
