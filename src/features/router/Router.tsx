@@ -13,20 +13,12 @@ import Footer from "common/components/footer";
 
 // Context
 import { ErrorContext } from "common/context/ErrorContext";
-import { OnboardContext } from "common/context/OnboardContext";
 
 interface Props {
   qc: QueryClient;
 }
 
 const Router: FC<Props> = ({ qc }) => {
-  const { state } = useContext(OnboardContext);
-  useEffect(() => {
-    if (!state.isConnected) {
-      qc.clear();
-    }
-  }, [state.isConnected, state.address, qc]);
-
   const { error, removeError } = useContext(ErrorContext);
   useEffect(() => {
     if (error)
