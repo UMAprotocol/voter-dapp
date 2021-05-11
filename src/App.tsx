@@ -1,25 +1,14 @@
 import Router from "features/router";
-import { ApolloProvider } from "@apollo/client";
-import { client } from "./common/apollo/client";
-import { QueryClient, QueryClientProvider } from "react-query";
-import OnboardProvider from "common/context/OnboardContext";
+import { QueryClient } from "react-query";
 
-import ErrorProvider from "common/context/ErrorContext";
+interface Props {
+  queryClient: QueryClient;
+}
 
-const queryClient = new QueryClient();
-
-function App() {
+function App(props: Props) {
   return (
     <div className="App">
-      <ApolloProvider client={client}>
-        <QueryClientProvider client={queryClient}>
-          <OnboardProvider>
-            <ErrorProvider>
-              <Router qc={queryClient} />
-            </ErrorProvider>
-          </OnboardProvider>
-        </QueryClientProvider>
-      </ApolloProvider>
+      <Router qc={props.queryClient} />
     </div>
   );
 }

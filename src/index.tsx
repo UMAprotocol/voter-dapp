@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.scss";
-import App from "./App";
+import Providers from "./Providers";
 import reportWebVitals from "./reportWebVitals";
 import "tailwindcss/dist/base.min.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,7 +10,7 @@ import { GlobalStyles } from "twin.macro";
 ReactDOM.render(
   <React.StrictMode>
     <GlobalStyles />
-    <App />
+    <Providers />
   </React.StrictMode>,
   document.getElementById("root")
 );
