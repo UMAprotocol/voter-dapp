@@ -14,9 +14,10 @@ export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
 
   const formattedData = sortedByTime.map((el) => {
     const datum = {} as PastRequest;
-    let correct = ethers.utils.formatEther(
-      el.request.price !== null ? el.request.price : NULL_CORRECT_STRING
-    );
+    let correct =
+      el.request.price !== null
+        ? ethers.utils.formatEther(el.request.price)
+        : NULL_CORRECT_STRING;
 
     if (el.identifier.id.includes("Admin") && correct !== NULL_CORRECT_STRING) {
       correct = Number(correct) > 0 ? "YES" : "NO";
