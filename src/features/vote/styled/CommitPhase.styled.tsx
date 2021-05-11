@@ -7,6 +7,7 @@ interface StyledFormProps {
 
 export const FormWrapper = styled.form<StyledFormProps>`
   &.CommitPhase {
+    padding: 1rem 4rem;
     .identifier {
       align-items: flex-start;
       flex-direction: column;
@@ -56,6 +57,10 @@ export const FormWrapper = styled.form<StyledFormProps>`
         }
         th:last-child {
           text-align: center;
+        }
+        th {
+          padding-bottom: 1rem;
+          border-bottom: 1px solid #e5e5e5;
         }
       }
 
