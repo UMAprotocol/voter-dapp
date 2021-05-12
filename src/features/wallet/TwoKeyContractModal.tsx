@@ -41,12 +41,13 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
   const [showForm, setShowForm] = useState(false);
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
-
+  const [success, setSuccess] = useState(false);
   const closeForm = useCallback(() => {
     if (showForm) {
       setShowForm(false);
       setValue("");
     } else {
+      setSuccess(false);
       setShowForm(true);
     }
   }, [showForm]);
@@ -59,14 +60,21 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
       return createDesignatedVotingContract(value, signer, network).then(
         (res) => {
           console.log("Success dvc?", res);
-          setValue("");
-          setError("");
+          closeForm();
+          setSuccess(true);
         }
       );
     }
-  }, [value, network, signer]);
+  }, [value, network, signer, closeForm]);
   return (
-    <Modal isOpen={isOpen} onClose={close} ref={externalRef}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        close();
+        setSuccess(false);
+      }}
+      ref={externalRef}
+    >
       <ModalWrapper>
         <h3 className="header">Two Key Voting</h3>
         {!isConnected ? (
@@ -103,6 +111,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
             </div>
           </>
         )}
+        {success ? <div>Successfully added two-key contract.</div> : null}
         {showForm ? (
           <FormWrapper>
             <StyledInput>
