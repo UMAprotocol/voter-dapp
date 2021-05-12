@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { OnboardContext, actions } from "common/context/OnboardContext";
 import { ethers } from "ethers";
 import { Wallet } from "bnc-onboard/dist/src/interfaces";
-import { SUPPORTED_NETWORK_IDS } from "common/config";
 
 type ChainId = 1 | 42 | 1337;
 
@@ -39,16 +38,10 @@ export default function useOnboard() {
     if (initOnboard) {
       // These are optional callbacks to be passed into onboard.
       const subscriptions = {
-        address: (address: string | null) => {
-          dispatch({ type: actions.SET_ADDRESS, payload: address });
+        address: (addr: string | null) => {
+          dispatch({ type: actions.SET_ADDRESS, payload: addr });
         },
         network: async (networkId: any) => {
-          if (!SUPPORTED_NETWORK_IDS.includes(networkId) && networkId != null) {
-            throw new Error(
-              "This dApp will work only with the Mainnet or Kovan network"
-            );
-          }
-          onboard?.config({ networkId: networkId });
           dispatch({
             type: actions.SET_NETWORK,
             payload: {
@@ -81,7 +74,15 @@ export default function useOnboard() {
       connect(dispatch, network, subscriptions);
       setInitOnboard(false);
     }
-  }, [network, connect, initOnboard, setInitOnboard, dispatch, onboard]);
+  }, [
+    network,
+    connect,
+    initOnboard,
+    setInitOnboard,
+    dispatch,
+    onboard,
+    disconnect,
+  ]);
 
   return {
     provider,

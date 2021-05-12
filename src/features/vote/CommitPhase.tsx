@@ -6,6 +6,7 @@ import {
   useState,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from "react";
 import { useForm } from "react-hook-form";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
@@ -79,7 +80,7 @@ const CommitPhase: FC<Props> = ({
     hotAddress
   );
 
-  const { tableValues } = useTableValues(
+  const { tableValues, hasVoted } = useTableValues(
     activeRequests,
     encryptedVotes,
     revealedVotes
@@ -100,6 +101,15 @@ const CommitPhase: FC<Props> = ({
   const { handleSubmit, control, watch, reset } = useForm<FormData>({
     defaultValues: generateDefaultValues(),
   });
+
+  // Make sure to reset form state if the user disconnects *or* changes their address.
+  // As we disconenct them on address, isConnected should cover this state change.
+  useEffect(() => {
+    if (!isConnected) {
+      reset();
+      close();
+    }
+  }, [isConnected, reset, close]);
 
   const onSubmit = useCallback(
     (data: FormData) => {
@@ -130,6 +140,7 @@ const CommitPhase: FC<Props> = ({
                   // Temporary, as mining is instant on local ganache.
                   setTimeout(() => setModalState("success"), 5000);
                   refetchEncryptedVotes();
+                  reset();
                 });
               }
             });
@@ -146,6 +157,7 @@ const CommitPhase: FC<Props> = ({
       refetchEncryptedVotes,
       designatedVotingContract,
       votingAddress,
+      reset,
     ]
   );
 
@@ -176,6 +188,7 @@ const CommitPhase: FC<Props> = ({
     <FormWrapper
       className="CommitPhase"
       isConnected={isConnected}
+      publicKey={publicKey}
       onSubmit={handleSubmit(onSubmit)}
     >
       <table className="table">
@@ -184,7 +197,7 @@ const CommitPhase: FC<Props> = ({
             <th>Requested Vote</th>
             <th>Description</th>
             <th>Commit Vote</th>
-            <th className="center-header">Your Vote</th>
+            {hasVoted ? <th className="center-header">Your Vote</th> : null}
             <th className="center-header">Vote Status</th>
           </tr>
         </thead>
@@ -229,15 +242,19 @@ const CommitPhase: FC<Props> = ({
                       control={control}
                       name={`${el.identifier}`}
                       placeholder="0.000"
-                      variant="currency"
+                      variant="text"
                     />
                   )}
                 </td>
-                <td>
-                  <div>
-                    <p className="vote">{el.vote}</p>
-                  </div>
-                </td>
+
+                {hasVoted ? (
+                  <td>
+                    <div>
+                      <p className="vote">{el.vote}</p>
+                    </div>
+                  </td>
+                ) : null}
+
                 <td>
                   <div className="status">
                     {el.vote !== UNDEFINED_VOTE ? (

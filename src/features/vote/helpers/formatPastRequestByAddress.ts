@@ -3,6 +3,8 @@ import { PastRequest } from "../PastRequests";
 import { DateTime } from "luxon";
 import { ethers } from "ethers";
 
+const NULL_CORRECT_STRING = "-";
+
 export function formatPastRequestsByAddress(
   data: PriceRequestRound[],
   address: string
@@ -16,11 +18,12 @@ export function formatPastRequestsByAddress(
   const formattedData = sortedByTime.map((el) => {
     // Determine correct vote
     // Apparently price is null on some of these, so do a null check.
-    let correct = ethers.utils.formatEther(
-      el.request.price !== null ? el.request.price : "0"
-    );
+    let correct =
+      el.request.price !== null
+        ? ethers.utils.formatEther(el.request.price)
+        : NULL_CORRECT_STRING;
 
-    if (el.identifier.id.includes("Admin")) {
+    if (el.identifier.id.includes("Admin") && correct !== NULL_CORRECT_STRING) {
       correct = Number(correct) > 0 ? "YES" : "NO";
     }
 

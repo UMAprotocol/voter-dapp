@@ -32,8 +32,7 @@ export const queryRewardsRetrieved = async (
   // Otherwise this will likely return no values.
   // RewardsRetrieved(address,uint256,bytes32,uint256,bytes,uint256)
   const filter = contract.filters.RewardsRetrieved(
-    // address,
-    null,
+    address,
     null,
     null,
     null,

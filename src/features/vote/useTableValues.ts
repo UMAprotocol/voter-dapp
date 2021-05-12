@@ -23,6 +23,7 @@ export default function useTableValues(
 ) {
   const [tableValues, setTableValues] = useState<TableValue[]>([]);
   const [postRevealData, setPostRevealData] = useState<PostRevealData[]>([]);
+  const [hasVoted, setHasVoted] = useState(false);
 
   // Take activeRequests and encryptedVotes and convert them into tableViews
   useEffect(() => {
@@ -69,6 +70,7 @@ export default function useTableValues(
 
         if (findVote) {
           datum.vote = ethers.utils.formatEther(findVote.price);
+          setHasVoted(true);
           if (el.identifier.includes("Admin")) {
             if (datum.vote === "1" || datum.vote === "1.0") datum.vote = "Yes";
             if (datum.vote === "0" || datum.vote === "0.0") datum.vote = "No";
@@ -131,6 +133,7 @@ export default function useTableValues(
     setTableValues,
     postRevealData,
     setPostRevealData,
+    hasVoted,
   };
 }
 

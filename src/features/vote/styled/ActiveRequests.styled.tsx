@@ -4,8 +4,8 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 export const Wrapper = styled.div`
   &.ActiveRequests {
     font-family: "Halyard Display";
-    ${tw`max-w-full p-12`};
     background-color: #fff;
+    ${tw`max-w-7xl mx-auto py-5 my-10 mb-10`};
     .header-row {
       max-width: 1350px;
       margin: 0 auto;

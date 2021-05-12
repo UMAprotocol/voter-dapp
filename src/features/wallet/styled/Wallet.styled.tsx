@@ -68,3 +68,11 @@ export const Disconnected = styled(Connected)`
     opacity: 0.5;
   }
 `;
+
+export const VotingAddress = styled.div`
+  font-size: 0.8rem;
+  line-height: 2rem;
+  flex-basis: 1;
+  color: #000;
+  margin-left: 8px;
+`;
