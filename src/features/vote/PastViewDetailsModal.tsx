@@ -26,6 +26,7 @@ import { ModalState } from "./PastRequests";
 import { DiscordRed } from "assets/icons";
 import { ethers } from "ethers";
 import { useUMIP } from "hooks";
+import useOnboard from "common/hooks/useOnboard";
 
 interface Props {
   isOpen: boolean;
@@ -69,9 +70,11 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
     setFormattedRewardsClaimed(formatRC);
   }, [rewardsClaimed]);
 
+  const { network } = useOnboard();
+
   const isUmip = proposal.includes("Admin");
   const umipNumber = isUmip ? parseInt(proposal.split(" ")[1]) : undefined;
-  const { umip } = useUMIP(umipNumber);
+  const { umip } = useUMIP(umipNumber, network?.chainId);
 
   const description =
     umip?.description ||
