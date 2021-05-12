@@ -3,6 +3,7 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 
 interface StyledFormProps {
   isConnected: boolean;
+  publicKey: string;
 }
 
 export const FormWrapper = styled.form<StyledFormProps>`
@@ -38,14 +39,16 @@ export const FormWrapper = styled.form<StyledFormProps>`
       margin: 0 auto;
       border-collapse: separate;
       border-spacing: 0 15px;
-      /* pointer-events: ${(props) => (props.isConnected ? "all" : "none")};
-    cursor: ${(props) => (props.isConnected ? "auto" : "not-allowed")}; */
       .input-cell {
-        cursor: ${(props) => (props.isConnected ? "auto" : "not-allowed")};
+        cursor: ${(props) =>
+          props.isConnected && props.publicKey ? "auto" : "not-allowed"};
         input,
         select {
-          pointer-events: ${(props) => (props.isConnected ? "all" : "none")};
-          opacity: ${(props) => (props.isConnected ? "1" : "0.5")};
+          // Double check the user is connected and has signed the message so their public / private signing keys are defined.
+          pointer-events: ${(props) =>
+            props.isConnected && props.publicKey ? "all" : "none"};
+          opacity: ${(props) =>
+            props.isConnected && props.publicKey ? "1" : "0.5"};
         }
       }
       select {

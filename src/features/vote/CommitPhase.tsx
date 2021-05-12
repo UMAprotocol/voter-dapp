@@ -188,6 +188,7 @@ const CommitPhase: FC<Props> = ({
     <FormWrapper
       className="CommitPhase"
       isConnected={isConnected}
+      publicKey={publicKey}
       onSubmit={handleSubmit(onSubmit)}
     >
       <table className="table">
