@@ -7,6 +7,7 @@ import { DateTime } from "luxon";
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
 import UpcomingRequests from "./UpcomingRequests";
+import Dropdown from "common/components/select/Dropdown";
 
 import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
@@ -116,8 +117,28 @@ const Vote = () => {
     }
   }, [priceRequestsAdded]);
 
+  const data = [
+    { value: "One" },
+    { value: "Two" },
+    { value: "Three" },
+    { value: "Four" },
+    { value: "Five" },
+  ];
+
+  function selectedItem(val: any) {
+    console.log(val);
+  }
+
   return (
     <StyledVote>
+      <Dropdown
+        items={[
+          { value: "", label: "---" },
+          { value: "1", label: "yes" },
+          { value: "0", label: "no" },
+        ]}
+        // onChange={selectedItem}
+      />
       {activeRequests.length ? (
         <ActiveRequests
           activeRequests={activeRequests}
