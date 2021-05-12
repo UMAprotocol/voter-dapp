@@ -40,7 +40,7 @@ const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
 const TextInput = forwardRef(_TextInput);
 TextInput.displayName = "Modal";
 
-const StyledInput = styled.div`
+export const StyledInput = styled.div`
   display: flex;
   flex-direction: column;
   .label {

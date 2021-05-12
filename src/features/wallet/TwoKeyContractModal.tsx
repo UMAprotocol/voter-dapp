@@ -1,11 +1,25 @@
 /** @jsxImportSource @emotion/react */
-import { ForwardRefRenderFunction, PropsWithChildren, forwardRef } from "react";
+import {
+  ForwardRefRenderFunction,
+  PropsWithChildren,
+  forwardRef,
+  useState,
+  useCallback,
+} from "react";
 import tw from "twin.macro"; // eslint-disable-line
 import Modal from "common/components/modal";
-import { ModalWrapper } from "./styled/TwoKeyContractModal.styled";
+import {
+  ModalWrapper,
+  ButtonWrapper,
+  FormWrapper,
+  Error,
+} from "./styled/TwoKeyContractModal.styled";
 import { Disconnected, Connected } from "./styled/Wallet.styled";
 import createDesignatedVotingContract from "./helpers/createDesignatedVotingContract";
 import { ethers } from "ethers";
+import Button from "common/components/button";
+import { StyledInput } from "common/components/text-input/TextInput";
+
 interface Props {
   isOpen: boolean;
   close: () => void;
@@ -24,6 +38,33 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
   { isOpen, close, hotAddress, votingAddress, isConnected, network, signer },
   externalRef
 ) => {
+  const [showForm, setShowForm] = useState(false);
+  const [value, setValue] = useState("");
+  const [error, setError] = useState("");
+
+  const closeForm = useCallback(() => {
+    if (showForm) {
+      setShowForm(false);
+      setValue("");
+    } else {
+      setShowForm(true);
+    }
+  }, [showForm]);
+
+  const submitForm = useCallback(() => {
+    if (value.substr(0, 2).toLowerCase() !== "0x")
+      return setError("Address must start with 0x");
+    if (value.length !== 42) return setError("Address must be 42 characters");
+    if (value && network && signer) {
+      return createDesignatedVotingContract(value, signer, network).then(
+        (res) => {
+          console.log("Success dvc?", res);
+          setValue("");
+          setError("");
+        }
+      );
+    }
+  }, [value, network, signer]);
   return (
     <Modal isOpen={isOpen} onClose={close} ref={externalRef}>
       <ModalWrapper>
@@ -48,15 +89,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
                   <Disconnected tw="flex-grow">Not Connected</Disconnected>
                   <div
                     onClick={() => {
-                      if (votingAddress && network && signer) {
-                        createDesignatedVotingContract(
-                          votingAddress,
-                          signer,
-                          network
-                        ).then((res) => {
-                          console.log("Success dvc?", res);
-                        });
-                      }
+                      closeForm();
                     }}
                     className="open-form"
                     tw="flex-grow text-right"
@@ -70,6 +103,34 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
             </div>
           </>
         )}
+        {showForm ? (
+          <FormWrapper>
+            <StyledInput>
+              <label>Cold Wallet Address</label>
+              <div>
+                <input
+                  placeholder="0x123..."
+                  type="text"
+                  value={value}
+                  onChange={(event) => {
+                    setValue(event.target.value);
+                    setError("");
+                  }}
+                />
+                {error ? <Error>{error}</Error> : null}
+              </div>
+            </StyledInput>
+
+            <ButtonWrapper>
+              <Button onClick={() => closeForm()} variant="primary">
+                Cancel
+              </Button>
+              <Button onClick={() => submitForm()} variant="secondary">
+                Save
+              </Button>
+            </ButtonWrapper>
+          </FormWrapper>
+        ) : null}
       </ModalWrapper>
     </Modal>
   );
