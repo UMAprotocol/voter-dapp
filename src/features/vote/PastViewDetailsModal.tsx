@@ -73,6 +73,10 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
   const umipNumber = isUmip ? parseInt(proposal.split(" ")[1]) : undefined;
   const { umip } = useUMIP(umipNumber);
 
+  const description =
+    umip?.description ||
+    `No description was found for this ${isUmip ? "umip" : "request"}.`;
+
   return (
     <>
       <Modal
@@ -101,7 +105,7 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
                 h1: MiniHeader,
               }}
             >
-              {umip?.description}
+              {description}
             </ReactMarkdown>
           </Description>
           <IconsWrapper>
