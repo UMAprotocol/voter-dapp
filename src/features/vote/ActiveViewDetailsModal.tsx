@@ -6,6 +6,7 @@ import {
   SetStateAction,
   useState,
 } from "react";
+import ReactMarkdown from "react-markdown";
 import Modal from "common/components/modal";
 import {
   ModalWrapper,
@@ -20,6 +21,8 @@ import {
 } from "./styled/DetailModals.styled";
 import { ModalState } from "./ActiveRequests";
 import { DiscordRed, CopyIcon } from "assets/icons";
+import { useUMIP } from "hooks";
+import useOnboard from "common/hooks/useOnboard";
 
 interface Props {
   isOpen: boolean;
@@ -39,6 +42,16 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   externalRef
 ) => {
   const [copySuccess, setCopySuccess] = useState(false);
+
+  const { network } = useOnboard();
+
+  const isUmip = proposal.includes("Admin");
+  const umipNumber = isUmip ? parseInt(proposal.split(" ")[1]) : undefined;
+  const { umip } = useUMIP(umipNumber, network?.chainId);
+
+  const description =
+    umip?.description ||
+    `No description was found for this ${isUmip ? "umip" : "request"}.`;
   return (
     <>
       <Modal
@@ -60,18 +73,13 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
           <StateValueAncData>{ancData}</StateValueAncData>
           <MiniHeader>Description</MiniHeader>
           <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu
-            fringilla nunc. Sed mi arcu, consequat sed magna sed, auctor blandit
-            velit. Aliquam tincidunt, tortor vestibulum tempor tincidunt, lorem
-            velit dapibus purus, in lacinia velit lectus eget libero. Phasellus
-            sit amet lacinia ipsum, sed sollicitudin sapien. Integer et lacinia
-            nulla. Suspendisse ultrices, nisl vel egestas aliquam, nisi mi
-            imperdiet quam, ut faucibus diam ante ut elit. Vivamus venenatis a
-            purus nec vehicula. Cras mollis vel ligula nec vulputate. Integer
-            vehicula molestie sapien, eu dapibus metus auctor in. Nullam viverra
-            urna odio, sit amet lobortis metus interdum id. Nulla enim justo,
-            eleifend in metus in, eleifend dapibus ante. Donec nec egestas
-            lacus.
+            <ReactMarkdown
+              components={{
+                h1: MiniHeader,
+              }}
+            >
+              {description}
+            </ReactMarkdown>
           </Description>
           <IconsWrapper>
             <IconsItem>
