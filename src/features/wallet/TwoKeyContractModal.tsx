@@ -104,7 +104,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
                     className="open-form"
                     tw="flex-grow text-right"
                   >
-                    Add Cold Wallet Address
+                    {showForm ? "Remove" : "Add Cold Wallet Address"}
                   </div>
                 </>
               ) : (
