@@ -19,28 +19,36 @@ const DropDownContainer = styled.div`
 const DropDownHeader = styled.button`
   padding: 10px;
   display: flex;
-  /* border-radius: 6px; */
-  border: 1px solid grey;
+  border-radius: 6px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${(props) => (props.isOpen ? "#ff4b4b" : "#919191")};
   min-width: 100%;
-  background-color: #f1f0f0;
+  background-color: ${(props) => (props.isOpen ? "#fff" : "#F1F0F0")};
+  color: ${(props) => (props.isOpen ? "#ff4b4b" : "#919191")};
 `;
+
 const DropDownHeaderItemIcon = styled.div``;
 const DropDownHeaderItem = styled.p``;
 const DropDownList = styled.ul`
   max-height: "200px";
   overflow-y: "auto";
   width: "150px";
-  margin: 0;
-  border-top: 0;
-  background: "white";
+  margin: 12px 0 0 0;
+  /* border-top: 0; */
+  border-width: ${(props) => (props.isOpen ? "1px" : "0")};
+  border-style: solid;
+  border-color: #e5e4e4;
+  background-color: "#fff";
   list-style: none;
   position: absolute;
   width: 200px;
+  border-radius: 8px;
+  color: #ff4b4b;
 `;
 const DropDownListItem = styled.li`
   padding: 5px;
   background: ${(props) => (props.ishighlighted ? "#A0AEC0" : "")};
-  border-radius: 8px;
 `;
 
 const Arrow = styled.span`
@@ -69,7 +77,7 @@ const DropDown = ({ items }) => {
 
   return (
     <DropDownContainer>
-      <DropDownHeader {...getToggleButtonProps()}>
+      <DropDownHeader {...getToggleButtonProps()} isOpen={isOpen}>
         {(selectedItem && selectedItem.label) || "---"}
         {isOpen ? (
           <UpArrow>
@@ -81,7 +89,7 @@ const DropDown = ({ items }) => {
           </DownArrow>
         )}
       </DropDownHeader>
-      <DropDownList {...getMenuProps()}>
+      <DropDownList {...getMenuProps()} isOpen={isOpen}>
         {isOpen &&
           items.map((item, index) => (
             <DropDownListItem
