@@ -133,10 +133,10 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
             </StyledInput>
 
             <ButtonWrapper>
-              <Button onClick={() => toggleForm()} variant="primary">
+              <Button onClick={toggleForm} variant="primary">
                 Cancel
               </Button>
-              <Button onClick={() => submitForm()} variant="secondary">
+              <Button onClick={submitForm} variant="secondary">
                 Save
               </Button>
             </ButtonWrapper>
