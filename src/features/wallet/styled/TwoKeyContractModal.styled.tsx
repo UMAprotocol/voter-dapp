@@ -35,3 +35,26 @@ export const ModalWrapper = styled.div`
     }
   }
 `;
+
+export const FormWrapper = styled.div`
+  margin-top: 1rem;
+`;
+
+export const ButtonWrapper = styled.div`
+  text-align: center;
+  button {
+    &:first-of-type {
+      margin-right: 0.4rem;
+    }
+    &:nth-of-type(2) {
+      margin-left: 0.4rem;
+    }
+    width: 157px;
+  }
+`;
+
+export const Error = styled.span`
+  color: #ff4a4a;
+  margin: 1rem 0;
+  font-size: 0.75rem;
+`;
