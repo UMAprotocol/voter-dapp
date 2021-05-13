@@ -117,18 +117,6 @@ const Vote = () => {
     }
   }, [priceRequestsAdded]);
 
-  const data = [
-    { value: "One" },
-    { value: "Two" },
-    { value: "Three" },
-    { value: "Four" },
-    { value: "Five" },
-  ];
-
-  function selectedItem(val: any) {
-    console.log(val);
-  }
-
   return (
     <StyledVote>
       <Dropdown
