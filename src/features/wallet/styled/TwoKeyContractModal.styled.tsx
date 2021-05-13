@@ -58,3 +58,11 @@ export const Error = styled.span`
   margin: 1rem 0;
   font-size: 0.75rem;
 `;
+
+export const Anchor = styled.a`
+  color: #ff4a4a;
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
