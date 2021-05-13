@@ -53,17 +53,21 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
   }, [showForm]);
 
   const submitForm = useCallback(() => {
+    // console.log(ethers.utils.isAddress(value));
+
     if (value.substr(0, 2).toLowerCase() !== "0x")
       return setError("Address must start with 0x");
     if (value.length !== 42) return setError("Address must be 42 characters");
+
     if (value && network && signer) {
-      return createDesignatedVotingContract(value, signer, network).then(
-        (res) => {
-          console.log("Success dvc?", res);
+      return createDesignatedVotingContract(value, signer, network)
+        .then((res) => {
           closeForm();
           setSuccess(true);
-        }
-      );
+        })
+        .catch((err) => {
+          console.log("err in two key contract creation", err);
+        });
     }
   }, [value, network, signer, closeForm]);
   return (
@@ -111,7 +115,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
             </div>
           </>
         )}
-        {success ? <div>Successfully added two-key contract.</div> : null}
+        {success && <div>Successfully added two-key contract.</div>}
         {showForm ? (
           <FormWrapper>
             <StyledInput>
