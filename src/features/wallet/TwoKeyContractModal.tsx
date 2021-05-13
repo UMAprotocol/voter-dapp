@@ -42,7 +42,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const closeForm = useCallback(() => {
+  const toggleForm = useCallback(() => {
     if (showForm) {
       setShowForm(false);
       setValue("");
@@ -53,8 +53,8 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
   }, [showForm]);
 
   const submitForm = useCallback(() => {
-    // console.log(ethers.utils.isAddress(value));
-
+    // We don't use ethers.utils.isAddress because it allows for a 40 char address
+    // that doesn't include the prefix -- it will return true, which is not desired behaviour.
     if (value.substr(0, 2).toLowerCase() !== "0x")
       return setError("Address must start with 0x");
     if (value.length !== 42) return setError("Address must be 42 characters");
@@ -62,14 +62,14 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
     if (value && network && signer) {
       return createDesignatedVotingContract(value, signer, network)
         .then((res) => {
-          closeForm();
+          toggleForm();
           setSuccess(true);
         })
         .catch((err) => {
           console.log("err in two key contract creation", err);
         });
     }
-  }, [value, network, signer, closeForm]);
+  }, [value, network, signer, toggleForm]);
   return (
     <Modal
       isOpen={isOpen}
@@ -100,9 +100,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
                 <>
                   <Disconnected tw="flex-grow">Not Connected</Disconnected>
                   <div
-                    onClick={() => {
-                      closeForm();
-                    }}
+                    onClick={toggleForm}
                     className="open-form"
                     tw="flex-grow text-right"
                   >
@@ -135,7 +133,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
             </StyledInput>
 
             <ButtonWrapper>
-              <Button onClick={() => closeForm()} variant="primary">
+              <Button onClick={() => toggleForm()} variant="primary">
                 Cancel
               </Button>
               <Button onClick={() => submitForm()} variant="secondary">
