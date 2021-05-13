@@ -1,5 +1,5 @@
-import { ForwardRefRenderFunction, forwardRef, useEffect } from "react";
-import { useController } from "react-hook-form";
+import { ForwardRefRenderFunction, forwardRef } from "react";
+import { useController, Control } from "react-hook-form";
 import { useSelect } from "downshift";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
@@ -20,6 +20,7 @@ interface OptionType {
 interface Props {
   name: string;
   items: OptionType[];
+  control: Control;
 }
 
 // Integration of Dropdown component with React Hook Form.
@@ -28,6 +29,10 @@ const _RHFDropdown: ForwardRefRenderFunction<HTMLDivElement, Props> = (
   props,
   externalRef
 ) => {
+  const handleSelectChange = ({ selectedItem }: any) => {
+    field.onChange(selectedItem.value);
+  };
+
   const { items } = props;
   const { field } = useController(props);
   const {
@@ -37,7 +42,7 @@ const _RHFDropdown: ForwardRefRenderFunction<HTMLDivElement, Props> = (
     getMenuProps,
     highlightedIndex,
     getItemProps,
-  } = useSelect({ items });
+  } = useSelect({ items, onSelectedItemChange: handleSelectChange });
 
   return (
     <DropdownContainer>
@@ -54,7 +59,7 @@ const _RHFDropdown: ForwardRefRenderFunction<HTMLDivElement, Props> = (
           </DownArrow>
         )}
       </DropdownHeader>
-      <DropdownList {...getMenuProps()} isOpen={isOpen}>
+      <DropdownList {...getMenuProps()} isOpen={isOpen} isRHF>
         {isOpen &&
           items.map((item, index) => (
             <DropdownListItem
@@ -71,5 +76,7 @@ const _RHFDropdown: ForwardRefRenderFunction<HTMLDivElement, Props> = (
   );
 };
 
-export const RHFDropdown = forwardRef(_RHFDropdown);
+const RHFDropdown = forwardRef(_RHFDropdown);
 RHFDropdown.displayName = "RHFDropdown";
+
+export default RHFDropdown;

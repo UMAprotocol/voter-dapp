@@ -7,7 +7,6 @@ import { DateTime } from "luxon";
 import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
 import UpcomingRequests from "./UpcomingRequests";
-import Dropdown from "common/components/select/Dropdown";
 
 import useVoteData from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
@@ -59,15 +58,8 @@ const Vote = () => {
     votingAddress
   );
 
-  const {
-    data: encryptedVotes,
-    refetch: refetchEncryptedVotes,
-  } = useEncryptedVotesEvents(
-    votingContract,
-    votingAddress,
-    privateKey,
-    roundId
-  );
+  const { data: encryptedVotes, refetch: refetchEncryptedVotes } =
+    useEncryptedVotesEvents(votingContract, votingAddress, privateKey, roundId);
 
   useEffect(() => {
     if (state.signer && state.address) {
@@ -119,14 +111,6 @@ const Vote = () => {
 
   return (
     <StyledVote>
-      <Dropdown
-        items={[
-          { value: "", label: "---" },
-          { value: "1", label: "yes" },
-          { value: "0", label: "no" },
-        ]}
-        // onChange={selectedItem}
-      />
       {activeRequests.length ? (
         <ActiveRequests
           activeRequests={activeRequests}
