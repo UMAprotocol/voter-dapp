@@ -42,6 +42,18 @@ export const DropdownList = styled.ul<IDropdownStyledProps>`
 export const DropdownListItem = styled.li<IDropdownStyledProps>`
   padding: 5px;
   background: ${(props) => (props.isHighlighted ? "#A0AEC0" : "")};
+  &:first-of-type {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  &:last-of-type {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+  &:hover {
+    color: #fff;
+    background-color: #ff4b4b;
+  }
 `;
 
 export const Arrow = styled.span`

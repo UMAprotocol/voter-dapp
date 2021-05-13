@@ -13,8 +13,7 @@ import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
 import useModal from "common/hooks/useModal";
-// import Select from "common/components/select";
-import RHFDropdown from "common/components/select/RHFDropdown";
+import RHFDropdown from "common/components/dropdown/RHFDropdown";
 
 import { useVotingContract, useCurrentRoundId } from "hooks";
 import { commitVotes } from "web3/post/commitVotes";
@@ -237,7 +236,7 @@ const CommitPhase: FC<Props> = ({
                 </td>
                 <td className="input-cell">
                   {el.identifier.includes("Admin") ? (
-                    <div>
+                    <div className="select">
                       <RHFDropdown
                         control={control}
                         name={`${el.identifier}`}
