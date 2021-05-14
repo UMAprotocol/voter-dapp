@@ -13,7 +13,7 @@ export default function useVotingAddress(
   const [hotAddress, setHotAddress] = useState<string | null>(null);
 
   useEffect(() => {
-    if (address && signer && network) {
+    if (address && signer && network && network.chainId) {
       const designatedContract = createDesignatedVotingContractFactoryInstance(
         signer,
         network.chainId.toString()

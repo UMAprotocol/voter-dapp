@@ -103,7 +103,7 @@ const Wallet: FC<Props> = () => {
 
   useEffect(() => {
     // When Address changes in MM, balance will change, as the address in context is changing from Onboard.
-    if (votingAddress && signer && network) {
+    if (votingAddress && signer && network && network.chainId) {
       getUmaBalance(votingAddress, signer, network.chainId.toString()).then(
         (balance) => {
           setUmaBalance(balance);

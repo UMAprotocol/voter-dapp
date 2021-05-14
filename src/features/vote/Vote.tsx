@@ -23,14 +23,22 @@ import { recoverPublicKey } from "./helpers/recoverPublicKey";
 import { derivePrivateKey } from "./helpers/derivePrivateKey";
 
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
-import usePrevious from "common/hooks/usePrevious";
+import { ErrorContext } from "common/context/ErrorContext";
+
+export interface SigningKeys {
+  [key: string]: {
+    publicKey: string;
+    privateKey: string;
+  };
+}
 
 const Vote = () => {
-  const [publicKey, setPublicKey] = useState("");
-  const [privateKey, setPrivateKey] = useState("");
+  const [signingKeys, setSigningKeys] = useState<SigningKeys>({});
+
   const [upcomingRequests, setUpcomingRequests] = useState<PriceRequestAdded[]>(
     []
   );
+  const { addError } = useContext(ErrorContext);
   const { state } = useContext(OnboardContext);
 
   const { data: voteSummaryData } = useVoteData();
@@ -59,38 +67,53 @@ const Vote = () => {
   );
 
   const { data: encryptedVotes, refetch: refetchEncryptedVotes } =
-    useEncryptedVotesEvents(votingContract, votingAddress, privateKey, roundId);
+    useEncryptedVotesEvents(
+      votingContract,
+      votingAddress,
+      votingAddress && signingKeys[votingAddress]
+        ? signingKeys[votingAddress].privateKey
+        : "",
+      roundId
+    );
 
   useEffect(() => {
     if (state.signer && state.address) {
+      const address = state.address;
       const message = "Login to UMA Voter dApp";
-      state.signer
-        .signMessage(message)
-        .then((msg) => {
-          const privateKey = derivePrivateKey(msg);
-          const publicKey = recoverPublicKey(privateKey);
-          setPrivateKey(privateKey.substr(2));
-          setPublicKey(publicKey);
-        })
-        .catch((err) => {
-          console.log("Sign failed");
-        });
+      const keyExists = signingKeys[address];
+      if (!keyExists) {
+        state.signer
+          .signMessage(message)
+          .then((msg) => {
+            const key = {} as { publicKey: string; privateKey: string };
+
+            const privateKey = derivePrivateKey(msg);
+            const publicKey = recoverPublicKey(privateKey);
+            key.privateKey = privateKey;
+            key.publicKey = publicKey;
+            // setDerivedPublicAddress(addressFromPublicKey(publicKey));
+
+            setSigningKeys((prevKeys) => {
+              return { ...prevKeys, [address]: key };
+            });
+          })
+          .catch((err) => {
+            console.log("Sign failed");
+          });
+      }
     }
   }, [state.signer, state.address]);
 
-  const previousStateAddress = usePrevious(state.address);
-  useEffect(() => {
-    // address changed, remove these keys
-    if (previousStateAddress && state.address !== previousStateAddress) {
-      setPrivateKey("");
-      setPublicKey("");
-    }
-
-    if (!state.address) {
-      setPrivateKey("");
-      setPublicKey("");
-    }
-  }, [state.address, previousStateAddress]);
+  // useEffect(() => {
+  //   if (votingAddress && derivedPublicAddress && publicKey) {
+  //     const signAddress = addressFromPublicKey(publicKey);
+  //     if (signAddress !== derivedPublicAddress) {
+  //       addError(
+  //         `Signed message is using the wrong address. Please reconnect app, and ensure the account is connected in MetaMask and try again before voting.`
+  //       );
+  //     }
+  //   }
+  // }, [votingAddress, derivedPublicAddress, publicKey]);
 
   useEffect(() => {
     if (priceRequestsAdded.length) {
@@ -111,11 +134,16 @@ const Vote = () => {
 
   return (
     <StyledVote>
+      <p>
+        Public Signing Key:{" "}
+        {votingAddress && signingKeys[votingAddress]
+          ? signingKeys[votingAddress].publicKey
+          : ""}
+      </p>
       {activeRequests.length ? (
         <ActiveRequests
           activeRequests={activeRequests}
-          publicKey={publicKey}
-          privateKey={privateKey}
+          signingKeys={signingKeys}
           roundId={roundId}
           encryptedVotes={encryptedVotes}
           refetchEncryptedVotes={refetchEncryptedVotes}
