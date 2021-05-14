@@ -13,6 +13,7 @@ import {
   ButtonWrapper,
   FormWrapper,
   Error,
+  Anchor,
 } from "./styled/TwoKeyContractModal.styled";
 import { Disconnected, Connected } from "./styled/Wallet.styled";
 import createDesignatedVotingContract from "./helpers/createDesignatedVotingContract";
@@ -88,11 +89,32 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
         ) : (
           <>
             <p tw="opacity-50 mb-4 text-center">
-              {!hotAddress
-                ? `You are not currently using a two key voting system. To deploy one,
-          provide your cold key address. Click here to learn more about the two
-          key voting system.`
-                : `Your hot wallet address is: ${hotAddress} and your cold wallet address is ${votingAddress}`}
+              {!hotAddress ? (
+                <div>
+                  You are not currently using a two key voting system.
+                  <br />
+                  <br />
+                  If would like to vote with a wallet on behalf of UMA tokens
+                  you hold in another wallet (e.g. a hardware wallet) you have
+                  the option to deploy a 2key contract.
+                  <br />
+                  <br />
+                  Click{" "}
+                  <Anchor
+                    href="https://docs.umaproject.org/uma-tokenholders/voting-2key"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    here
+                  </Anchor>{" "}
+                  to learn more about the two key voting contract.
+                </div>
+              ) : (
+                <div>
+                  Your hot wallet address is: ${hotAddress} and your cold wallet
+                  address is ${votingAddress}
+                </div>
+              )}
             </p>
 
             <div tw="flex items-stretch">

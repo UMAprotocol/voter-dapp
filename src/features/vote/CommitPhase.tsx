@@ -13,12 +13,12 @@ import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
 import useModal from "common/hooks/useModal";
-import Select from "common/components/select";
-import { useVotingContract } from "hooks";
+import RHFDropdown from "common/components/dropdown/RHFDropdown";
+
+import { useVotingContract, useCurrentRoundId } from "hooks";
 import { commitVotes } from "web3/post/commitVotes";
 import SubmitCommitsModal from "./SubmitCommitsModal";
 
-import { useCurrentRoundId } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
@@ -189,7 +189,10 @@ const CommitPhase: FC<Props> = ({
       className="CommitPhase"
       isConnected={isConnected}
       publicKey={publicKey}
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={(event) => {
+        event.preventDefault();
+        handleSubmit(onSubmit);
+      }}
     >
       <table className="table">
         <thead>
@@ -233,8 +236,27 @@ const CommitPhase: FC<Props> = ({
                 </td>
                 <td className="input-cell">
                   {el.identifier.includes("Admin") ? (
-                    <div>
-                      <Select control={control} name={`${el.identifier}`} />
+                    <div className="select">
+                      <RHFDropdown
+                        control={control}
+                        name={`${el.identifier}`}
+                        items={[
+                          {
+                            value: "",
+                            label: "---",
+                          },
+                          {
+                            value: "yes",
+                            label: "Yes",
+                          },
+                          {
+                            value: "no",
+                            label: "No",
+                          },
+                        ]}
+                      />
+
+                      {/* <Select control={control} name={`${el.identifier}`} /> */}
                     </div>
                   ) : (
                     <TextInput

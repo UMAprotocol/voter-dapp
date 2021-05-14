@@ -14,6 +14,7 @@ import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import RevealPhase from "./RevealPhase";
 import ActiveViewDetailsModal from "./ActiveViewDetailsModal";
 import useModal from "common/hooks/useModal";
+import { SigningKeys } from "./Vote";
 
 export interface ModalState {
   proposal: string;
@@ -22,8 +23,6 @@ export interface ModalState {
 }
 
 interface Props {
-  publicKey: string;
-  privateKey: string;
   activeRequests: PendingRequest[];
   roundId: string;
   encryptedVotes: EncryptedVote[];
@@ -31,10 +30,10 @@ interface Props {
   revealedVotes: VoteRevealed[];
   votingAddress: string | null;
   hotAddress: string | null;
+  signingKeys: SigningKeys;
 }
 
 const ActiveRequests: FC<Props> = ({
-  publicKey,
   activeRequests,
   roundId,
   revealedVotes,
@@ -42,6 +41,7 @@ const ActiveRequests: FC<Props> = ({
   votingAddress,
   refetchEncryptedVotes,
   hotAddress,
+  signingKeys,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState("00:00");
 
@@ -99,7 +99,11 @@ const ActiveRequests: FC<Props> = ({
       </div>
       {votePhase === "Commit" ? (
         <CommitPhase
-          publicKey={publicKey}
+          publicKey={
+            votingAddress && signingKeys[votingAddress]
+              ? signingKeys[votingAddress].publicKey
+              : ""
+          }
           isConnected={isConnected}
           activeRequests={activeRequests}
           encryptedVotes={encryptedVotes}

@@ -52,8 +52,8 @@ export const StyledInput = styled.div`
   }
   input {
     min-height: 25px;
-    min-width: 150px;
-    width: 100%;
+    /* width: 100%; */
+    width: 250px;
     background-color: #f4f5f4;
     padding: 1rem 1.25rem;
     margin-bottom: 2rem;

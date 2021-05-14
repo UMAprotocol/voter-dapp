@@ -43,15 +43,13 @@ export const FormWrapper = styled.form<StyledFormProps>`
         cursor: ${(props) =>
           props.isConnected && props.publicKey ? "auto" : "not-allowed"};
         input,
-        select {
+        .select {
           // Double check the user is connected and has signed the message so their public / private signing keys are defined.
           pointer-events: ${(props) =>
             props.isConnected && props.publicKey ? "all" : "none"};
           opacity: ${(props) =>
             props.isConnected && props.publicKey ? "1" : "0.5"};
         }
-      }
-      select {
       }
       thead {
         tr {

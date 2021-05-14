@@ -2,7 +2,7 @@
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 
 export const ModalWrapper = styled.div`
-  max-width: 375px;
+  max-width: 400px;
   padding: 2rem 1.5rem;
   height: auto;
   position: relative;
@@ -57,4 +57,12 @@ export const Error = styled.span`
   color: #ff4a4a;
   margin: 1rem 0;
   font-size: 0.75rem;
+`;
+
+export const Anchor = styled.a`
+  color: #ff4a4a;
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
 `;
