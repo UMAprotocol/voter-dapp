@@ -23,7 +23,6 @@ import { recoverPublicKey } from "./helpers/recoverPublicKey";
 import { derivePrivateKey } from "./helpers/derivePrivateKey";
 
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
-// import { ErrorContext } from "common/context/ErrorContext";
 
 export interface SigningKeys {
   [key: string]: {
@@ -38,7 +37,7 @@ const Vote = () => {
   const [upcomingRequests, setUpcomingRequests] = useState<PriceRequestAdded[]>(
     []
   );
-  // const { addError } = useContext(ErrorContext);
+
   const { state } = useContext(OnboardContext);
 
   const { data: voteSummaryData } = useVoteData();
@@ -91,7 +90,6 @@ const Vote = () => {
             const publicKey = recoverPublicKey(privateKey);
             key.privateKey = privateKey;
             key.publicKey = publicKey;
-            // setDerivedPublicAddress(addressFromPublicKey(publicKey));
 
             setSigningKeys((prevKeys) => {
               return { ...prevKeys, [address]: key };
@@ -103,17 +101,6 @@ const Vote = () => {
       }
     }
   }, [state.signer, state.address, signingKeys]);
-
-  // useEffect(() => {
-  //   if (votingAddress && derivedPublicAddress && publicKey) {
-  //     const signAddress = addressFromPublicKey(publicKey);
-  //     if (signAddress !== derivedPublicAddress) {
-  //       addError(
-  //         `Signed message is using the wrong address. Please reconnect app, and ensure the account is connected in MetaMask and try again before voting.`
-  //       );
-  //     }
-  //   }
-  // }, [votingAddress, derivedPublicAddress, publicKey]);
 
   useEffect(() => {
     if (priceRequestsAdded.length) {
@@ -134,12 +121,6 @@ const Vote = () => {
 
   return (
     <StyledVote>
-      <p>
-        Public Signing Key:{" "}
-        {votingAddress && signingKeys[votingAddress]
-          ? signingKeys[votingAddress].publicKey
-          : ""}
-      </p>
       {activeRequests.length ? (
         <ActiveRequests
           activeRequests={activeRequests}
