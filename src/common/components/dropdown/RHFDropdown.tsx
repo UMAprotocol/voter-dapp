@@ -64,7 +64,7 @@ const _RHFDropdown: ForwardRefRenderFunction<HTMLDivElement, Props> = (
           items.map((item, index) => (
             <DropdownListItem
               isHighlighted={highlightedIndex === index}
-              key={`${item.value}${index}`}
+              key={item.value}
               {...getItemProps({ item, index })}
             >
               {item.label}

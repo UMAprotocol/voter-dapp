@@ -91,8 +91,15 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
             <p tw="opacity-50 mb-4 text-center">
               {!hotAddress ? (
                 <div>
-                  You are not currently using a two key voting system. To deploy
-                  one, provide your cold key address. Click{" "}
+                  You are not currently using a two key voting system.
+                  <br />
+                  <br />
+                  If would like to vote with a wallet on behalf of UMA tokens
+                  you hold in another wallet (e.g. a hardware wallet) you have
+                  the option to deploy a 2key contract.
+                  <br />
+                  <br />
+                  Click{" "}
                   <Anchor
                     href="https://docs.umaproject.org/uma-tokenholders/voting-2key"
                     rel="noreferrer"
@@ -100,7 +107,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
                   >
                     here
                   </Anchor>{" "}
-                  to learn more about the two key voting system.
+                  to learn more about the two key voting contract.
                 </div>
               ) : (
                 <div>
