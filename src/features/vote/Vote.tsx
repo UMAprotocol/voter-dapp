@@ -23,7 +23,7 @@ import { recoverPublicKey } from "./helpers/recoverPublicKey";
 import { derivePrivateKey } from "./helpers/derivePrivateKey";
 
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
-import { ErrorContext } from "common/context/ErrorContext";
+// import { ErrorContext } from "common/context/ErrorContext";
 
 export interface SigningKeys {
   [key: string]: {
@@ -38,7 +38,7 @@ const Vote = () => {
   const [upcomingRequests, setUpcomingRequests] = useState<PriceRequestAdded[]>(
     []
   );
-  const { addError } = useContext(ErrorContext);
+  // const { addError } = useContext(ErrorContext);
   const { state } = useContext(OnboardContext);
 
   const { data: voteSummaryData } = useVoteData();
@@ -102,7 +102,7 @@ const Vote = () => {
           });
       }
     }
-  }, [state.signer, state.address]);
+  }, [state.signer, state.address, signingKeys]);
 
   // useEffect(() => {
   //   if (votingAddress && derivedPublicAddress && publicKey) {
