@@ -74,6 +74,12 @@ const ActiveRequests: FC<Props> = ({
     return () => clearInterval(timer);
   }, [activeRequests, votePhase]);
 
+  const signingPublicKey =
+    hotAddress && signingKeys[hotAddress]
+      ? signingKeys[hotAddress].publicKey
+      : votingAddress && signingKeys[votingAddress]
+      ? signingKeys[votingAddress].publicKey
+      : "";
   return (
     <Wrapper className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">
@@ -99,11 +105,7 @@ const ActiveRequests: FC<Props> = ({
       </div>
       {votePhase === "Commit" ? (
         <CommitPhase
-          publicKey={
-            votingAddress && signingKeys[votingAddress]
-              ? signingKeys[votingAddress].publicKey
-              : ""
-          }
+          publicKey={signingPublicKey}
           isConnected={isConnected}
           activeRequests={activeRequests}
           encryptedVotes={encryptedVotes}

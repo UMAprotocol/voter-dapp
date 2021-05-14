@@ -40,6 +40,7 @@ export const queryEncryptedVotes = async (
   // EncryptedVote: (address,uint256,bytes32,uint256,bytes,bytes)
   const filter = contract.filters.EncryptedVote(
     address,
+    // null,
     roundId ? Number(roundId) : null,
     identifier,
     time,

@@ -81,7 +81,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
       ref={externalRef}
     >
       <ModalWrapper>
-        <h3 className="header">Two Key Voting</h3>
+        <h3 className="header">Two Key Voting (optional)</h3>
         {!isConnected ? (
           <p tw="opacity-50 mb-4 text-center">
             Connect your wallet to start this process.

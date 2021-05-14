@@ -78,12 +78,14 @@ export default function useTableValues(
         } else {
           datum.vote = vote;
         }
+
         const findReveal = revealedVotes.find(
           (x) =>
             x.identifier === el.identifier &&
             x.ancillaryData === el.ancHex &&
             x.time === el.time
         );
+
         if (findReveal) {
           datum.revealed = true;
         } else {
