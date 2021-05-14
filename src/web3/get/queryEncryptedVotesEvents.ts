@@ -35,7 +35,6 @@ export const queryEncryptedVotes = async (
     "User is not connected to provider and cannot query contract."
   );
 
-  console.log("test the values", address, roundId, identifier, time);
   // BIG NOTE. You need to pass in null for events with args.
   // Otherwise this will likely return no values.
   // EncryptedVote: (address,uint256,bytes32,uint256,bytes,bytes)
@@ -52,7 +51,6 @@ export const queryEncryptedVotes = async (
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
     // there may be multiple commit events, if there are collisions, then take newest
-    console.log("events in QVE", events);
     const eventTable = events.reduce(
       (result: { [key: string]: any }, event: any) => {
         const { args } = event;

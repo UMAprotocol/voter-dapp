@@ -71,7 +71,6 @@ const RevealPhase: FC<Props> = ({
         </thead>
         <tbody>
           {tableValues.map((el, index) => {
-            // console.log("TV", tableValues);
             return (
               <tr key={index}>
                 <td>

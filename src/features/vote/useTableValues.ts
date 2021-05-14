@@ -86,7 +86,6 @@ export default function useTableValues(
             x.time === el.time
         );
 
-        console.log("Find Vote", findVote, " find reveal", findReveal);
         if (findReveal) {
           datum.revealed = true;
         } else {
