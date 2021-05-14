@@ -65,15 +65,15 @@ const Vote = () => {
     votingAddress
   );
 
+  const signingPK =
+    hotAddress && signingKeys[hotAddress]
+      ? signingKeys[hotAddress].privateKey
+      : votingAddress && signingKeys[votingAddress]
+      ? signingKeys[votingAddress].privateKey
+      : "";
+
   const { data: encryptedVotes, refetch: refetchEncryptedVotes } =
-    useEncryptedVotesEvents(
-      votingContract,
-      votingAddress,
-      votingAddress && signingKeys[votingAddress]
-        ? signingKeys[votingAddress].privateKey
-        : "",
-      roundId
-    );
+    useEncryptedVotesEvents(votingContract, votingAddress, signingPK, roundId);
 
   useEffect(() => {
     if (state.signer && state.address) {
