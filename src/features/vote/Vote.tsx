@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, FC } from "react";
 import tw, { styled } from "twin.macro";
 import { DateTime } from "luxon";
 
@@ -19,21 +19,16 @@ import {
   useVotesRevealedEvents,
   useEncryptedVotesEvents,
 } from "hooks";
-import { recoverPublicKey } from "./helpers/recoverPublicKey";
-import { derivePrivateKey } from "./helpers/derivePrivateKey";
 
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
 
-export interface SigningKeys {
-  [key: string]: {
-    publicKey: string;
-    privateKey: string;
-  };
+import { SigningKeys } from "App";
+
+interface Props {
+  signingKeys: SigningKeys;
 }
 
-const Vote = () => {
-  const [signingKeys, setSigningKeys] = useState<SigningKeys>({});
-
+const Vote: FC<Props> = ({ signingKeys }) => {
   const [upcomingRequests, setUpcomingRequests] = useState<PriceRequestAdded[]>(
     []
   );
@@ -74,33 +69,6 @@ const Vote = () => {
 
   const { data: encryptedVotes, refetch: refetchEncryptedVotes } =
     useEncryptedVotesEvents(votingContract, votingAddress, signingPK, roundId);
-
-  useEffect(() => {
-    if (state.signer && state.address) {
-      const address = state.address;
-      const message = "Login to UMA Voter dApp";
-      const keyExists = signingKeys[address];
-      if (!keyExists) {
-        state.signer
-          .signMessage(message)
-          .then((msg) => {
-            const key = {} as { publicKey: string; privateKey: string };
-
-            const privateKey = derivePrivateKey(msg);
-            const publicKey = recoverPublicKey(privateKey);
-            key.privateKey = privateKey;
-            key.publicKey = publicKey;
-
-            setSigningKeys((prevKeys) => {
-              return { ...prevKeys, [address]: key };
-            });
-          })
-          .catch((err) => {
-            console.log("Sign failed");
-          });
-      }
-    }
-  }, [state.signer, state.address, signingKeys]);
 
   useEffect(() => {
     if (priceRequestsAdded.length) {

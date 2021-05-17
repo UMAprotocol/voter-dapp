@@ -34,10 +34,10 @@ import {
   VotingAddress,
 } from "./styled/Wallet.styled";
 // import ERC20TransferButton from "./helpers/ERC20TransferButton";
+import { SigningKeys } from "App";
 
 interface Props {
-  // connect: Connect;
-  // disconnect: Disconnect;
+  signingKeys: SigningKeys;
 }
 
 const DEFAULT_BALANCE = "0";

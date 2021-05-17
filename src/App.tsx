@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Router from "features/router";
 import { QueryClient } from "react-query";
 import usePrevious from "common/hooks/usePrevious";
@@ -8,13 +8,52 @@ import { ToastContainer, toast } from "react-toastify";
 import { ErrorContext } from "common/context/ErrorContext";
 import { OnboardContext } from "common/context/OnboardContext";
 
+import { recoverPublicKey } from "./features/vote/helpers/recoverPublicKey";
+import { derivePrivateKey } from "./features/vote/helpers/derivePrivateKey";
+
 interface Props {
   queryClient: QueryClient;
 }
 
+export interface SigningKeys {
+  [key: string]: {
+    publicKey: string;
+    privateKey: string;
+  };
+}
+
 function App(props: Props) {
+  const [signingKeys, setSigningKeys] = useState<SigningKeys>({});
+
   const { state, disconnect, dispatch } = useContext(OnboardContext);
   const { error, removeError } = useContext(ErrorContext);
+
+  useEffect(() => {
+    if (state.signer && state.address) {
+      const address = state.address;
+      const message = "Login to UMA Voter dApp";
+      const keyExists = signingKeys[address];
+      if (!keyExists) {
+        state.signer
+          .signMessage(message)
+          .then((msg) => {
+            const key = {} as { publicKey: string; privateKey: string };
+
+            const privateKey = derivePrivateKey(msg);
+            const publicKey = recoverPublicKey(privateKey);
+            key.privateKey = privateKey;
+            key.publicKey = publicKey;
+
+            setSigningKeys((prevKeys) => {
+              return { ...prevKeys, [address]: key };
+            });
+          })
+          .catch((err) => {
+            console.log("Sign failed");
+          });
+      }
+    }
+  }, [state.signer, state.address, signingKeys]);
 
   useEffect(() => {
     if (error)
@@ -40,7 +79,7 @@ function App(props: Props) {
 
   return (
     <div className="App">
-      <Router />
+      <Router signingKeys={signingKeys} />
       <ToastContainer
         position="top-right"
         autoClose={false}
