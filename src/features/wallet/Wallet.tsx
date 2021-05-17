@@ -197,42 +197,54 @@ const Wallet: FC<Props> = () => {
 
           <div tw="my-5 mx-3 flex-grow border-r">
             <p className="sm-title">UMA Balance</p>
-            <div className="value-tokens">
-              <span>{formatWalletBalance(umaBalance)[0]}</span>
-              <span>{formatWalletBalance(umaBalance)[1]}</span>
-            </div>
-            <p className="value-dollars">
-              $
-              {umaBalance && umaPrice
-                ? calculateUMATotalValue(
-                    umaPrice.market_data.current_price.usd,
-                    umaBalance
-                  )
-                : "00.00"}
-              USD
-            </p>
+            {isConnected ? (
+              <>
+                <div className="value-tokens">
+                  <span>{formatWalletBalance(umaBalance)[0]}</span>
+                  <span>{formatWalletBalance(umaBalance)[1]}</span>
+                </div>
+                <p className="value-dollars">
+                  $
+                  {umaBalance && umaPrice
+                    ? calculateUMATotalValue(
+                        umaPrice.market_data.current_price.usd,
+                        umaBalance
+                      )
+                    : "00.00"}
+                  USD
+                </p>
+              </>
+            ) : (
+              <div>--</div>
+            )}
           </div>
           <div tw="my-5 mx-3 pl-5 flex-grow border-r">
             <p className="sm-title">Total UMA Collected</p>
-            <div className="value-tokens">
-              <span>{formatWalletBalance(totalUmaCollected)[0]}</span>
-              <span>{formatWalletBalance(totalUmaCollected)[1]}</span>
-            </div>
-            <p className="value-dollars">
-              $
-              {totalUmaCollected && umaPrice
-                ? calculateUMATotalValue(
-                    umaPrice.market_data.current_price.usd,
-                    totalUmaCollected
-                  )
-                : "00.00"}
-              USD
-            </p>
+            {isConnected ? (
+              <>
+                <div className="value-tokens">
+                  <span>{formatWalletBalance(totalUmaCollected)[0]}</span>
+                  <span>{formatWalletBalance(totalUmaCollected)[1]}</span>
+                </div>
+                <p className="value-dollars">
+                  $
+                  {totalUmaCollected && umaPrice
+                    ? calculateUMATotalValue(
+                        umaPrice.market_data.current_price.usd,
+                        totalUmaCollected
+                      )
+                    : "00.00"}
+                  USD
+                </p>
+              </>
+            ) : (
+              <div>--</div>
+            )}
           </div>
           <div tw="my-5 mx-3 pl-5 flex-grow">
             <p className="sm-title">
               Available Rewards{" "}
-              {availableRewards !== DEFAULT_BALANCE ? (
+              {availableRewards !== DEFAULT_BALANCE && isConnected ? (
                 <span
                   onClick={() => {
                     if (votingContract && votesRevealed && multicallContract) {
@@ -250,20 +262,26 @@ const Wallet: FC<Props> = () => {
                 </span>
               ) : null}
             </p>
-            <div className="value-tokens">
-              <span>{formatWalletBalance(availableRewards)[0]}</span>
-              <span>{formatWalletBalance(availableRewards)[1]}</span>
-            </div>
-            <p className="value-dollars">
-              $
-              {availableRewards && umaPrice
-                ? calculateUMATotalValue(
-                    umaPrice.market_data.current_price.usd,
-                    availableRewards
-                  )
-                : "00.00"}
-              USD
-            </p>
+            {isConnected ? (
+              <>
+                <div className="value-tokens">
+                  <span>{formatWalletBalance(availableRewards)[0]}</span>
+                  <span>{formatWalletBalance(availableRewards)[1]}</span>
+                </div>
+                <p className="value-dollars">
+                  $
+                  {availableRewards && umaPrice
+                    ? calculateUMATotalValue(
+                        umaPrice.market_data.current_price.usd,
+                        availableRewards
+                      )
+                    : "00.00"}
+                  USD
+                </p>
+              </>
+            ) : (
+              <div>--</div>
+            )}
           </div>
           <div tw="py-10 pl-5 ml-auto flex-none">
             <Settings onClick={() => open()} tw="cursor-pointer" />
