@@ -60,14 +60,19 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
   },
   externalRef
 ) => {
+  console.log("rewards claimed", rewardsClaimed);
   const [formattedRewardsClaimed, setFormattedRewardsClaimed] = useState("0");
 
   // Format rewards to 6 decs. It is a Big Num as it the value is in wei.
   useEffect(() => {
-    const formatRCArr = ethers.utils.formatEther(rewardsClaimed).split(".");
-    formatRCArr[1] = formatRCArr[1].substring(0, 6);
-    const formatRC = formatRCArr.join(".");
-    setFormattedRewardsClaimed(formatRC);
+    if (rewardsClaimed !== "-" && rewardsClaimed !== "0") {
+      const formatRCArr = ethers.utils.formatEther(rewardsClaimed).split(".");
+      formatRCArr[1] = formatRCArr[1].substring(0, 6);
+      const formatRC = formatRCArr.join(".");
+      setFormattedRewardsClaimed(formatRC);
+    } else {
+      setFormattedRewardsClaimed(rewardsClaimed);
+    }
   }, [rewardsClaimed]);
 
   const { network } = useOnboard();
