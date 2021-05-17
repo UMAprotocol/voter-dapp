@@ -16,6 +16,7 @@ export const ModalWrapper = styled.div`
   box-sizing: border-box;
   font-family: "Halyard Display";
   border: none;
+  max-width: 700px;
   .header {
     text-align: center;
     margin-bottom: 1rem;
@@ -40,6 +41,7 @@ export const Proposal = styled.div`
   font-weight: 500;
   color: #000;
   margin-bottom: 2rem;
+  max-width: 600px;
 `;
 
 export const Description = styled.div`
