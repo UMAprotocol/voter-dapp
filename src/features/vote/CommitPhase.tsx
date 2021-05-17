@@ -290,7 +290,9 @@ const CommitPhase: FC<Props> = ({
 
                 <td>
                   <div className="status">
-                    {el.vote !== UNDEFINED_VOTE ? (
+                    {!isConnected ? (
+                      <p>-</p>
+                    ) : el.vote !== UNDEFINED_VOTE ? (
                       <p>Committed</p>
                     ) : (
                       <p>Uncommitted</p>
