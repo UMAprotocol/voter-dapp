@@ -111,8 +111,8 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
                 </div>
               ) : (
                 <div>
-                  Your hot wallet address is: ${hotAddress} and your cold wallet
-                  address is ${votingAddress}
+                  Your hot wallet address is: ${hotAddress} and your
+                  DesignatedVoting wallet address is ${votingAddress}
                 </div>
               )}
             </p>
@@ -135,7 +135,12 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
             </div>
           </>
         )}
-        {success && <div>Successfully added two-key contract.</div>}
+        {success && (
+          <div>
+            Successfully added two-key contract. Please reconnect to use voting
+            app.
+          </div>
+        )}
         {showForm ? (
           <FormWrapper>
             <StyledInput>

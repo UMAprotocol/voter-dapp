@@ -34,6 +34,9 @@ export const ModalWrapper = styled.div`
       cursor: pointer;
     }
   }
+  input {
+    width: 350px;
+  }
 `;
 
 export const FormWrapper = styled.div`
