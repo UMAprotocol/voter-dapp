@@ -25,7 +25,7 @@ import {
 import { ModalState } from "./PastRequests";
 import { DiscordRed } from "assets/icons";
 import { ethers } from "ethers";
-import { useUMIP } from "hooks";
+import useUMIP from "./useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 
 interface Props {

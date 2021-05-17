@@ -21,7 +21,7 @@ import {
 } from "./styled/DetailModals.styled";
 import { ModalState } from "./ActiveRequests";
 import { DiscordRed, CopyIcon } from "assets/icons";
-import { useUMIP } from "hooks";
+import useUMIP from "./useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 
 interface Props {
