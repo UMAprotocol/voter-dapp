@@ -6,6 +6,8 @@ interface StyledProps {
 }
 export const Wrapper = styled.div<StyledProps>`
   &.RequestPhase {
+    padding: 1rem 4rem;
+
     .identifier {
       align-items: flex-start;
       flex-direction: column;
