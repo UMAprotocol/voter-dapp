@@ -42,7 +42,7 @@ interface Props {
 
 const DEFAULT_BALANCE = "0";
 
-const Wallet: FC<Props> = () => {
+const Wallet: FC<Props> = ({ signingKeys }) => {
   const [umaBalance, setUmaBalance] = useState(DEFAULT_BALANCE);
   const [totalUmaCollected, setTotalUmaCollected] = useState(DEFAULT_BALANCE);
   const [availableRewards, setAvailableRewards] = useState(DEFAULT_BALANCE);
@@ -67,7 +67,13 @@ const Wallet: FC<Props> = () => {
     signer,
     network
   );
-  // const previousVotingAddress = usePrevious(votingAddress);
+
+  const signingPK =
+    hotAddress && signingKeys[hotAddress]
+      ? signingKeys[hotAddress].privateKey
+      : votingAddress && signingKeys[votingAddress]
+      ? signingKeys[votingAddress].privateKey
+      : "";
 
   const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
@@ -171,9 +177,16 @@ const Wallet: FC<Props> = () => {
                     Voting: {shortenAddress(hotAddress)}
                   </VotingAddress>
                 ) : null}
-                <Connected>
-                  Connected with {onboard?.getState().wallet.name}
-                </Connected>
+                {signingPK ? (
+                  <Connected>
+                    Connected with {onboard?.getState().wallet.name}{" "}
+                  </Connected>
+                ) : (
+                  <Disconnected>
+                    {" "}
+                    Sign in rejected. Reconnect to sign in.
+                  </Disconnected>
+                )}
               </>
             ) : (
               <Disconnected>Not Connected</Disconnected>
