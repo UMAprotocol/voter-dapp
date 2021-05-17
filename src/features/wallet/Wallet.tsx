@@ -217,7 +217,7 @@ const Wallet: FC<Props> = () => {
                         umaPrice.market_data.current_price.usd,
                         umaBalance
                       )
-                    : "00.00"}
+                    : "00.00"}{" "}
                   USD
                 </p>
               </>
@@ -240,7 +240,7 @@ const Wallet: FC<Props> = () => {
                         umaPrice.market_data.current_price.usd,
                         totalUmaCollected
                       )
-                    : "00.00"}
+                    : "00.00"}{" "}
                   USD
                 </p>
               </>
@@ -282,7 +282,7 @@ const Wallet: FC<Props> = () => {
                         umaPrice.market_data.current_price.usd,
                         availableRewards
                       )
-                    : "00.00"}
+                    : "00.00"}{" "}
                   USD
                 </p>
               </>
