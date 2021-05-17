@@ -68,7 +68,7 @@ const CommitPhase: FC<Props> = ({
   openViewDetailsModal,
 }) => {
   const [modalState, setModalState] = useState<SubmitModalState>("init");
-
+  const [submitErrorMessage, setSubmitErrorMessage] = useState("");
   const {
     state: { network, signer },
   } = useContext(OnboardContext);
@@ -132,18 +132,29 @@ const CommitPhase: FC<Props> = ({
           let vc = votingContract;
           if (designatedVotingContract) vc = designatedVotingContract;
           if (vc) {
-            commitVotes(vc, fd).then((tx) => {
-              setModalState("pending");
-              // Need to confirm if the user submits the vote.
-              if (tx) {
-                tx.wait(1).then((conf: any) => {
-                  // Temporary, as mining is instant on local ganache.
-                  setTimeout(() => setModalState("success"), 5000);
-                  refetchEncryptedVotes();
-                  reset();
-                });
-              }
-            });
+            commitVotes(vc, fd)
+              .then((tx) => {
+                setModalState("pending");
+                setSubmitErrorMessage("");
+                // Need to confirm if the user submits the vote.
+                if (tx) {
+                  tx.wait(1)
+                    .then((conf: any) => {
+                      // Temporary, as mining is instant on local ganache.
+                      setTimeout(() => setModalState("success"), 5000);
+                      refetchEncryptedVotes();
+                      reset();
+                    })
+                    .catch(() => {
+                      setModalState("init");
+                    });
+                }
+              })
+              .catch((err) => {
+                console.log("err here", err.message);
+                setSubmitErrorMessage(err.message);
+                setModalState("init");
+              });
           }
         });
       }
@@ -318,6 +329,8 @@ const CommitPhase: FC<Props> = ({
         reset={reset}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
+        submitErrorMessage={submitErrorMessage}
+        setSubmitErrorMessage={setSubmitErrorMessage}
       />
     </FormWrapper>
   );

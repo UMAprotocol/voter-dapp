@@ -88,7 +88,7 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
           </p>
         ) : (
           <>
-            <p tw="opacity-50 mb-4 text-center">
+            <div tw="opacity-50 mb-4 text-center">
               {!hotAddress ? (
                 <div>
                   You are not currently using a two key voting system.
@@ -111,11 +111,11 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
                 </div>
               ) : (
                 <div>
-                  Your hot wallet address is: ${hotAddress} and your
-                  DesignatedVoting wallet address is ${votingAddress}
+                  Your hot wallet address is: {hotAddress} and your
+                  DesignatedVoting wallet address is {votingAddress}
                 </div>
               )}
-            </p>
+            </div>
 
             <div tw="flex items-stretch">
               {!hotAddress ? (

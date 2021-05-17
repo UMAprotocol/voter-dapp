@@ -9,7 +9,10 @@ import {
 
 import Modal from "common/components/modal";
 import Button from "common/components/button";
-import { ModalWrapper } from "./styled/SubmitCommitsModal.styled";
+import {
+  ModalWrapper,
+  SubmitErrorMessage,
+} from "./styled/SubmitCommitsModal.styled";
 import { SubmitModalState, Summary, FormData } from "./CommitPhase";
 import { UnlockedIcon, LockedIconCommitted } from "assets/icons";
 import {
@@ -24,6 +27,8 @@ interface Props {
   ref: (node: HTMLElement | null) => void;
   modalState: SubmitModalState;
   setModalState: Dispatch<SetStateAction<SubmitModalState>>;
+  submitErrorMessage: string;
+  setSubmitErrorMessage: Dispatch<SetStateAction<string>>;
   showModalSummary: () => Summary[];
   // From react-hook-form
   reset: (
@@ -65,6 +70,8 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
     reset,
     handleSubmit,
     onSubmit,
+    submitErrorMessage,
+    setSubmitErrorMessage,
   },
   externalRef
 ) => {
@@ -97,7 +104,12 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
           ) : modalState === "success" ? (
             <h3 className="header">Votes successfully committed</h3>
           ) : (
-            <h3 className="header">Ready to commit these votes?</h3>
+            <>
+              <h3 className="header">Ready to commit these votes?</h3>
+              {submitErrorMessage && (
+                <SubmitErrorMessage>{submitErrorMessage}</SubmitErrorMessage>
+              )}
+            </>
           )}
 
           {showModalSummary().length
@@ -119,7 +131,14 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
             modalState === "pending" ||
             modalState === "error" ? (
               <>
-                <Button onClick={() => close()} variant="primary">
+                <Button
+                  onClick={() => {
+                    close();
+                    setModalState("init");
+                    setSubmitErrorMessage("");
+                  }}
+                  variant="primary"
+                >
                   Not Yet
                 </Button>
                 <Button
@@ -137,6 +156,7 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
                   close();
                   reset();
                   setModalState("init");
+                  setSubmitErrorMessage("");
                 }}
                 variant="secondary"
               >

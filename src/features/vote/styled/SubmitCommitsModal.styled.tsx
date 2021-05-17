@@ -144,3 +144,12 @@ export const ModalWrapper = styled.div`
     }
   }
 `;
+
+export const SubmitErrorMessage = styled.div`
+  color: #ff4a4a;
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+`;
