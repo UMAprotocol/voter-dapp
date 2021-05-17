@@ -163,7 +163,14 @@ const Wallet: FC<Props> = () => {
             <p className="wallet-title">Voting Wallet</p>
             {isConnected && votingAddress ? (
               <>
-                <VotingAddress>{shortenAddress(votingAddress)}</VotingAddress>
+                <VotingAddress>
+                  {hotAddress ? "DVC: " : null} {shortenAddress(votingAddress)}
+                </VotingAddress>
+                {hotAddress ? (
+                  <VotingAddress>
+                    Voting: {shortenAddress(hotAddress)}
+                  </VotingAddress>
+                ) : null}
                 <Connected>
                   Connected with {onboard?.getState().wallet.name}
                 </Connected>

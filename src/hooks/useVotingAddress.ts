@@ -23,6 +23,7 @@ export default function useVotingAddress(
         .then((res: string) => {
           if (res === NULL_ADDRESS) {
             setVotingAddress(address);
+            setHotAddress(null);
           } else {
             setVotingAddress(res);
             setHotAddress(address);
