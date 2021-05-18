@@ -31,6 +31,7 @@ import {
   Wrapper,
   Connected,
   Disconnected,
+  Reconnect,
   VotingAddress,
 } from "./styled/Wallet.styled";
 // import ERC20TransferButton from "./helpers/ERC20TransferButton";
@@ -182,10 +183,10 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                     Connected with {onboard?.getState().wallet.name || "Wallet"}{" "}
                   </Connected>
                 ) : (
-                  <Disconnected>
+                  <Reconnect>
                     {" "}
                     Sign in rejected. Reconnect to sign in.
-                  </Disconnected>
+                  </Reconnect>
                 )}
               </>
             ) : (
