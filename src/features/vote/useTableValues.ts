@@ -51,7 +51,7 @@ export default function useTableValues(
         };
       });
 
-      const descriptionsAdded = Promise.all(
+      const descriptionsAdded = Promise.allSettled(
         tv.map(async (el) => {
           const isUmip = el.identifier.includes("Admin");
           const umipNumber = isUmip
@@ -71,7 +71,11 @@ export default function useTableValues(
         })
       );
 
-      descriptionsAdded.then((values) => {
+      descriptionsAdded.then((results) => {
+        const values = [] as TableValue[];
+        results.forEach((result) => {
+          if (result.status === "fulfilled") values.push(result.value);
+        });
         setTableValues(values);
       });
     }
@@ -151,7 +155,7 @@ export default function useTableValues(
         }
       });
 
-      const descriptionsAdded = Promise.all(
+      const descriptionsAdded = Promise.allSettled(
         tv.map(async (el) => {
           const isUmip = el.identifier.includes("Admin");
           const umipNumber = isUmip
@@ -171,7 +175,11 @@ export default function useTableValues(
         })
       );
 
-      descriptionsAdded.then((values) => {
+      descriptionsAdded.then((results) => {
+        const values = [] as TableValue[];
+        results.forEach((result) => {
+          if (result.status === "fulfilled") values.push(result.value);
+        });
         setTableValues(values);
       });
 
