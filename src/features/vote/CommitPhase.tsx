@@ -8,6 +8,7 @@ import {
   SetStateAction,
   useEffect,
 } from "react";
+import assert from "assert";
 import { useForm } from "react-hook-form";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
@@ -137,21 +138,23 @@ const CommitPhase: FC<Props> = ({
                 setModalState("pending");
                 setSubmitErrorMessage("");
                 // Need to confirm if the user submits the vote.
+                assert(tx, "Transaction did not get submitted, try again");
                 if (tx) {
                   tx.wait(1)
                     .then((conf: any) => {
                       // Temporary, as mining is instant on local ganache.
-                      setTimeout(() => setModalState("success"), 5000);
+                      // setTimeout(() => setModalState("success"), 5000);
+                      setModalState("success");
                       refetchEncryptedVotes();
                       reset();
                     })
-                    .catch(() => {
+                    .catch((err: any) => {
+                      setSubmitErrorMessage("Error with tx.");
                       setModalState("init");
                     });
                 }
               })
               .catch((err) => {
-                console.log("err here", err.message);
                 setSubmitErrorMessage(err.message);
                 setModalState("init");
               });
