@@ -28,6 +28,7 @@ interface Props {
   encryptedVotes: EncryptedVote[];
   refetchEncryptedVotes: Function;
   revealedVotes: VoteRevealed[];
+  refetchVoteRevealedEvents: Function;
   votingAddress: string | null;
   hotAddress: string | null;
   signingKeys: SigningKeys;
@@ -42,6 +43,7 @@ const ActiveRequests: FC<Props> = ({
   refetchEncryptedVotes,
   hotAddress,
   signingKeys,
+  refetchVoteRevealedEvents,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState("00:00");
 
@@ -127,6 +129,7 @@ const ActiveRequests: FC<Props> = ({
           round={round}
           revealedVotes={revealedVotes}
           refetchEncryptedVotes={refetchEncryptedVotes}
+          refetchVoteRevealedEvents={refetchVoteRevealedEvents}
           setViewDetailsModalState={setModalState}
           openViewDetailsModal={open}
         />

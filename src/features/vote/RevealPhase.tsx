@@ -24,6 +24,7 @@ interface Props {
   round: Round;
   revealedVotes: VoteRevealed[];
   refetchEncryptedVotes: Function;
+  refetchVoteRevealedEvents: Function;
   setViewDetailsModalState: Dispatch<SetStateAction<ModalState>>;
   openViewDetailsModal: () => void;
 }
@@ -39,6 +40,7 @@ const RevealPhase: FC<Props> = ({
   refetchEncryptedVotes,
   openViewDetailsModal,
   setViewDetailsModalState,
+  refetchVoteRevealedEvents,
 }) => {
   const { tableValues, postRevealData, setPostRevealData } = useTableValues(
     activeRequests,
@@ -160,6 +162,7 @@ const RevealPhase: FC<Props> = ({
                 if (vc && postRevealData.length) {
                   revealVotes(vc, postRevealData).then((res) => {
                     // refetch votes.
+                    refetchVoteRevealedEvents();
                     refetchEncryptedVotes();
                     setPostRevealData([]);
                   });

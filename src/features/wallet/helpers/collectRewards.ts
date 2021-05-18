@@ -5,6 +5,7 @@ import {
   PostRetrieveReward,
   PendingRequestRetrieveReward,
 } from "web3/post/retrieveRewards";
+import { retrieveRewards } from "web3/post/retrieveRewards";
 
 import VotingArtifact from "@uma/core/build/contracts/Voting.json";
 
@@ -32,46 +33,80 @@ export default function collectRewards(
     .map((item) => item.roundId)
     .filter((value, index, self) => self.indexOf(value) === index);
 
-  uniqueRoundIds.forEach((roundId) => {
-    const mcr = {} as MulticallCollectRewards;
+  // Do a multicall request if the user is collecting from multiple rounds.
+  // Otherwise just call the rewards function directly.
+  if (uniqueRoundIds.length > 1) {
+    uniqueRoundIds.forEach((roundId) => {
+      const mcr = {} as MulticallCollectRewards;
+      const postData = {} as PostRetrieveReward;
+      const pendingRequestData = [] as PendingRequestRetrieveReward[];
+
+      data.forEach((datum) => {
+        if (datum.roundId === roundId) {
+          const pendingRequest = {} as PendingRequestRetrieveReward;
+          postData.roundId = datum.roundId;
+          postData.voterAddress = datum.address;
+          pendingRequest.ancillaryData = datum.ancillaryData
+            ? datum.ancillaryData
+            : "0x";
+          pendingRequest.identifier = ethers.utils.toUtf8Bytes(
+            datum.identifier
+          );
+          pendingRequest.time = datum.time;
+          pendingRequestData.push(pendingRequest);
+        }
+      });
+
+      postData.pendingRequests = pendingRequestData;
+      mcr.target = contract.address;
+      mcr.callData = votingInterface.encodeFunctionData(
+        "retrieveRewards(address,uint256,(bytes32,uint256,bytes)[])",
+        [postData.voterAddress, postData.roundId, postData.pendingRequests]
+      );
+
+      multicallCollectRewards.push(mcr);
+    });
+
+    return (
+      multicallContract.functions["aggregate((address,bytes)[])"](
+        multicallCollectRewards
+      )
+        // wait for at least 1 block conf.
+        .then((tx) => tx.wait(1))
+        .then((conf: any) => {
+          setAvailableRewards(DEFAULT_BALANCE);
+        })
+        .catch((err) => console.log("err in retrieve rewards", err))
+    );
+  } else {
     const postData = {} as PostRetrieveReward;
     const pendingRequestData = [] as PendingRequestRetrieveReward[];
 
-    data.forEach((datum) => {
-      if (datum.roundId === roundId) {
-        const pendingRequest = {} as PendingRequestRetrieveReward;
-        postData.roundId = datum.roundId;
-        postData.voterAddress = datum.address;
-        pendingRequest.ancillaryData = datum.ancillaryData
-          ? datum.ancillaryData
-          : "0x";
-        pendingRequest.identifier = ethers.utils.toUtf8Bytes(datum.identifier);
-        pendingRequest.time = datum.time;
-        pendingRequestData.push(pendingRequest);
-      }
+    uniqueRoundIds.forEach((roundId) => {
+      data.forEach((datum) => {
+        if (datum.roundId === roundId) {
+          const pendingRequest = {} as PendingRequestRetrieveReward;
+          postData.roundId = datum.roundId;
+          postData.voterAddress = datum.address;
+          pendingRequest.ancillaryData = datum.ancillaryData
+            ? datum.ancillaryData
+            : "0x";
+          pendingRequest.identifier = ethers.utils.toUtf8Bytes(
+            datum.identifier
+          );
+          pendingRequest.time = datum.time;
+          pendingRequestData.push(pendingRequest);
+        }
+      });
+
+      postData.pendingRequests = pendingRequestData;
     });
 
-    postData.pendingRequests = pendingRequestData;
-    mcr.target = contract.address;
-    mcr.callData = votingInterface.encodeFunctionData(
-      "retrieveRewards(address,uint256,(bytes32,uint256,bytes)[])",
-      [postData.voterAddress, postData.roundId, postData.pendingRequests]
-    );
-
-    multicallCollectRewards.push(mcr);
-  });
-
-  // console.log("multi calls sorted?", multicallCollectRewards);
-
-  return (
-    multicallContract.functions["aggregate((address,bytes)[])"](
-      multicallCollectRewards
-    )
-      // wait for at least 1 block conf.
+    return retrieveRewards(contract, postData)
       .then((tx) => tx.wait(1))
       .then((conf: any) => {
         setAvailableRewards(DEFAULT_BALANCE);
       })
-      .catch((err) => console.log("err in retrieve rewards", err))
-  );
+      .catch((err) => console.log("err in retrieve rewards", err));
+  }
 }

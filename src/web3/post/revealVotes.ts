@@ -23,7 +23,7 @@ export const revealVotes = async (
     const tx = await contract.functions[
       "batchReveal((bytes32,uint256,int256,bytes,int256)[])"
     ](data);
-    console.log("successfully Revealed", tx);
+
     return tx;
   } catch (err) {
     console.log("err in Reveal votes", err);

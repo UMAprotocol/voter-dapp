@@ -55,10 +55,8 @@ const Vote: FC<Props> = ({ signingKeys }) => {
   const { data: activeRequests } = usePendingRequests();
   const { data: roundId } = useCurrentRoundId();
 
-  const { data: revealedVotes } = useVotesRevealedEvents(
-    votingContract,
-    votingAddress
-  );
+  const { data: revealedVotes, refetch: refetchVoteRevealedEvents } =
+    useVotesRevealedEvents(votingContract, votingAddress);
 
   const signingPK =
     hotAddress && signingKeys[hotAddress]
@@ -97,6 +95,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
           encryptedVotes={encryptedVotes}
           refetchEncryptedVotes={refetchEncryptedVotes}
           revealedVotes={revealedVotes}
+          refetchVoteRevealedEvents={refetchVoteRevealedEvents}
           votingAddress={votingAddress}
           hotAddress={hotAddress}
         />

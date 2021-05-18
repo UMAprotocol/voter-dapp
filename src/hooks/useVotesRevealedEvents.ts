@@ -9,7 +9,7 @@ export default function useVotesRevealedEvents(
   contract: ethers.Contract | null,
   address: string | null
 ) {
-  const { data, error, isFetching } = useQuery<VoteRevealed[]>(
+  const { data, error, isFetching, refetch } = useQuery<VoteRevealed[]>(
     "votesRevealedEvents",
     () => {
       return queryVotesRevealedEvents(contract, address).then((res) => {
@@ -24,8 +24,8 @@ export default function useVotesRevealedEvents(
   );
 
   if (data) {
-    return { data, error, isFetching };
+    return { data, error, isFetching, refetch };
   } else {
-    return { data: [] as VoteRevealed[], error, isFetching };
+    return { data: [] as VoteRevealed[], error, isFetching, refetch };
   }
 }
