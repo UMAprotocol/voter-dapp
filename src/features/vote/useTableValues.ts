@@ -6,6 +6,7 @@ import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ethers } from "ethers";
 import { PostRevealData } from "web3/post/revealVotes";
 import web3 from "web3";
+import { fetchUmip } from "./fetchUMIP";
 
 interface TableValue {
   ancillaryData: string;
@@ -14,6 +15,7 @@ interface TableValue {
   revealed: boolean;
   ancHex: string;
   timestamp: string;
+  description?: string;
 }
 
 export default function useTableValues(
@@ -36,6 +38,7 @@ export default function useTableValues(
           identifier: el.identifier,
           revealed: false,
           ancHex: el.idenHex,
+          description: "",
           timestamp: DateTime.fromSeconds(Number(el.time)).toLocaleString({
             month: "short",
             day: "2-digit",
@@ -48,7 +51,29 @@ export default function useTableValues(
         };
       });
 
-      setTableValues(tv);
+      const descriptionsAdded = Promise.all(
+        tv.map(async (el) => {
+          const isUmip = el.identifier.includes("Admin");
+          const umipNumber = isUmip
+            ? parseInt(el.identifier.split(" ")[1])
+            : undefined;
+
+          let description = "Price request.";
+
+          if (umipNumber) {
+            description = await (await fetchUmip(umipNumber)).description;
+          }
+
+          return {
+            ...el,
+            description,
+          };
+        })
+      );
+
+      descriptionsAdded.then((values) => {
+        setTableValues(values);
+      });
     }
     if (activeRequests.length && encryptedVotes.length) {
       const tv = [] as TableValue[];
@@ -125,7 +150,31 @@ export default function useTableValues(
           postData.push(prd);
         }
       });
-      setTableValues(tv);
+
+      const descriptionsAdded = Promise.all(
+        tv.map(async (el) => {
+          const isUmip = el.identifier.includes("Admin");
+          const umipNumber = isUmip
+            ? parseInt(el.identifier.split(" ")[1])
+            : undefined;
+
+          let description = "Price request.";
+
+          if (umipNumber) {
+            description = await (await fetchUmip(umipNumber)).description;
+          }
+
+          return {
+            ...el,
+            description,
+          };
+        })
+      );
+
+      descriptionsAdded.then((values) => {
+        setTableValues(values);
+      });
+
       setPostRevealData(postData);
     }
   }, [activeRequests, encryptedVotes, revealedVotes]);
