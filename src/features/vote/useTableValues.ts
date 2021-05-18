@@ -180,6 +180,7 @@ export default function useTableValues(
         results.forEach((result) => {
           if (result.status === "fulfilled") values.push(result.value);
         });
+
         setTableValues(values);
       });
 
