@@ -60,7 +60,6 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
   },
   externalRef
 ) => {
-  console.log("rewards claimed", rewardsClaimed);
   const [formattedRewardsClaimed, setFormattedRewardsClaimed] = useState("0");
 
   // Format rewards to 6 decs. It is a Big Num as it the value is in wei.

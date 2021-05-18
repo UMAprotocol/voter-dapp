@@ -26,7 +26,7 @@ function App(props: Props) {
   const [signingKeys, setSigningKeys] = useState<SigningKeys>({});
 
   const { state, disconnect, dispatch } = useContext(OnboardContext);
-  const { error, removeError } = useContext(ErrorContext);
+  const { error, removeError, addError } = useContext(ErrorContext);
 
   useEffect(() => {
     if (state.signer && state.address) {
@@ -49,11 +49,11 @@ function App(props: Props) {
             });
           })
           .catch((err) => {
-            console.log("Sign failed");
+            addError("Sign failed.");
           });
       }
     }
-  }, [state.signer, state.address, signingKeys]);
+  }, [state.signer, state.address, signingKeys, addError]);
 
   useEffect(() => {
     if (error)

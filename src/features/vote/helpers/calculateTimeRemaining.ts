@@ -7,13 +7,8 @@ export const calculateTimeRemaining = () => {
 
   let text = "00:00";
   // format difference
-  if (difference > 0) text = Duration.fromMillis(difference).toFormat("hh:mm");
-  // add h and m to time.
-  const split = text.split(":");
-  const ls = `${split[0]}h`;
-  const rs = `${split[1]}m`;
-
-  text = `${ls}:${rs}`;
+  if (difference > 0)
+    text = Duration.fromMillis(difference).toFormat("hh'h':mm'm'");
 
   return text;
 };
