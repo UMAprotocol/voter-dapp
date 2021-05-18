@@ -179,7 +179,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                 ) : null}
                 {signingPK ? (
                   <Connected>
-                    Connected with {onboard?.getState().wallet.name}{" "}
+                    Connected with {onboard?.getState().wallet.name || "Wallet"}{" "}
                   </Connected>
                 ) : (
                   <Disconnected>

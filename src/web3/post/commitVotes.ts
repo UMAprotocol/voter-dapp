@@ -20,7 +20,7 @@ export const commitVotes = async (
 
     return tx;
   } catch (err) {
-    console.log("Err in attempted commitVote transaction", err);
-    throw new Error(err.message);
+    console.log("err", err.message);
+    throw Error(err.message);
   }
 };
