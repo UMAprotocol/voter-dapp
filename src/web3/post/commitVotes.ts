@@ -20,7 +20,6 @@ export const commitVotes = async (
 
     return tx;
   } catch (err) {
-    console.log("err", err.message);
-    throw Error(err.message);
+    throw err;
   }
 };
