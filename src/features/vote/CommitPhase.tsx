@@ -8,6 +8,7 @@ import {
   SetStateAction,
   useEffect,
 } from "react";
+import assert from "assert";
 import { useForm } from "react-hook-form";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
@@ -68,7 +69,7 @@ const CommitPhase: FC<Props> = ({
   openViewDetailsModal,
 }) => {
   const [modalState, setModalState] = useState<SubmitModalState>("init");
-
+  const [submitErrorMessage, setSubmitErrorMessage] = useState("");
   const {
     state: { network, signer },
   } = useContext(OnboardContext);
@@ -132,18 +133,31 @@ const CommitPhase: FC<Props> = ({
           let vc = votingContract;
           if (designatedVotingContract) vc = designatedVotingContract;
           if (vc) {
-            commitVotes(vc, fd).then((tx) => {
-              setModalState("pending");
-              // Need to confirm if the user submits the vote.
-              if (tx) {
-                tx.wait(1).then((conf: any) => {
-                  // Temporary, as mining is instant on local ganache.
-                  setTimeout(() => setModalState("success"), 5000);
-                  refetchEncryptedVotes();
-                  reset();
-                });
-              }
-            });
+            commitVotes(vc, fd)
+              .then((tx) => {
+                setModalState("pending");
+                setSubmitErrorMessage("");
+                // Need to confirm if the user submits the vote.
+                assert(tx, "Transaction did not get submitted, try again");
+                if (tx) {
+                  tx.wait(1)
+                    .then((conf: any) => {
+                      // Temporary, as mining is instant on local ganache.
+                      // setTimeout(() => setModalState("success"), 5000);
+                      setModalState("success");
+                      refetchEncryptedVotes();
+                      reset();
+                    })
+                    .catch((err: any) => {
+                      setSubmitErrorMessage("Error with tx.");
+                      setModalState("init");
+                    });
+                }
+              })
+              .catch((err) => {
+                setSubmitErrorMessage(err.message);
+                setModalState("init");
+              });
           }
         });
       }
@@ -227,12 +241,7 @@ const CommitPhase: FC<Props> = ({
                   </div>
                 </td>
                 <td>
-                  <div className="description">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Curabitur sed eleifend erat. Duis in ante nisi. Donec ut
-                    nibh id justo faucibus fermentum id id ex. Mauris
-                    sollicitudin consequat neque.
-                  </div>
+                  <div className="description">{el.description}</div>
                 </td>
                 <td className="input-cell">
                   {el.identifier.includes("Admin") ? (
@@ -279,7 +288,9 @@ const CommitPhase: FC<Props> = ({
 
                 <td>
                   <div className="status">
-                    {el.vote !== UNDEFINED_VOTE ? (
+                    {!isConnected ? (
+                      <p>-</p>
+                    ) : el.vote !== UNDEFINED_VOTE ? (
                       <p>Committed</p>
                     ) : (
                       <p>Uncommitted</p>
@@ -318,6 +329,8 @@ const CommitPhase: FC<Props> = ({
         reset={reset}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
+        submitErrorMessage={submitErrorMessage}
+        setSubmitErrorMessage={setSubmitErrorMessage}
       />
     </FormWrapper>
   );

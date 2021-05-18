@@ -14,7 +14,7 @@ import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import RevealPhase from "./RevealPhase";
 import ActiveViewDetailsModal from "./ActiveViewDetailsModal";
 import useModal from "common/hooks/useModal";
-import { SigningKeys } from "./Vote";
+import { SigningKeys } from "App";
 
 export interface ModalState {
   proposal: string;

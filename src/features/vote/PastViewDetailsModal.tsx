@@ -25,7 +25,7 @@ import {
 import { ModalState } from "./PastRequests";
 import { DiscordRed } from "assets/icons";
 import { ethers } from "ethers";
-import { useUMIP } from "hooks";
+import useUMIP from "./useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 
 interface Props {
@@ -64,10 +64,14 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
 
   // Format rewards to 6 decs. It is a Big Num as it the value is in wei.
   useEffect(() => {
-    const formatRCArr = ethers.utils.formatEther(rewardsClaimed).split(".");
-    formatRCArr[1] = formatRCArr[1].substring(0, 6);
-    const formatRC = formatRCArr.join(".");
-    setFormattedRewardsClaimed(formatRC);
+    if (rewardsClaimed !== "-" && rewardsClaimed !== "0") {
+      const formatRCArr = ethers.utils.formatEther(rewardsClaimed).split(".");
+      formatRCArr[1] = formatRCArr[1].substring(0, 6);
+      const formatRC = formatRCArr.join(".");
+      setFormattedRewardsClaimed(formatRC);
+    } else {
+      setFormattedRewardsClaimed(rewardsClaimed);
+    }
   }, [rewardsClaimed]);
 
   const { network } = useOnboard();

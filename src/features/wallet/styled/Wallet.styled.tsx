@@ -69,6 +69,13 @@ export const Disconnected = styled(Connected)`
   }
 `;
 
+export const Reconnect = styled(Connected)`
+  &::before {
+    background-color: #c99200;
+    opacity: 0.5;
+  }
+`;
+
 export const VotingAddress = styled.div`
   font-size: 0.8rem;
   line-height: 2rem;

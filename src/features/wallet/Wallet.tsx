@@ -31,18 +31,19 @@ import {
   Wrapper,
   Connected,
   Disconnected,
+  Reconnect,
   VotingAddress,
 } from "./styled/Wallet.styled";
 // import ERC20TransferButton from "./helpers/ERC20TransferButton";
+import { SigningKeys } from "App";
 
 interface Props {
-  // connect: Connect;
-  // disconnect: Disconnect;
+  signingKeys: SigningKeys;
 }
 
 const DEFAULT_BALANCE = "0";
 
-const Wallet: FC<Props> = () => {
+const Wallet: FC<Props> = ({ signingKeys }) => {
   const [umaBalance, setUmaBalance] = useState(DEFAULT_BALANCE);
   const [totalUmaCollected, setTotalUmaCollected] = useState(DEFAULT_BALANCE);
   const [availableRewards, setAvailableRewards] = useState(DEFAULT_BALANCE);
@@ -67,7 +68,13 @@ const Wallet: FC<Props> = () => {
     signer,
     network
   );
-  // const previousVotingAddress = usePrevious(votingAddress);
+
+  const signingPK =
+    hotAddress && signingKeys[hotAddress]
+      ? signingKeys[hotAddress].privateKey
+      : votingAddress && signingKeys[votingAddress]
+      ? signingKeys[votingAddress].privateKey
+      : "";
 
   const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
@@ -163,10 +170,24 @@ const Wallet: FC<Props> = () => {
             <p className="wallet-title">Voting Wallet</p>
             {isConnected && votingAddress ? (
               <>
-                <VotingAddress>{shortenAddress(votingAddress)}</VotingAddress>
-                <Connected>
-                  Connected with {onboard?.getState().wallet.name}
-                </Connected>
+                <VotingAddress>
+                  {hotAddress ? "DVC: " : null} {shortenAddress(votingAddress)}
+                </VotingAddress>
+                {hotAddress ? (
+                  <VotingAddress>
+                    Voting: {shortenAddress(hotAddress)}
+                  </VotingAddress>
+                ) : null}
+                {signingPK ? (
+                  <Connected>
+                    Connected with {onboard?.getState().wallet?.name}{" "}
+                  </Connected>
+                ) : (
+                  <Reconnect>
+                    {" "}
+                    Sign in rejected. Reconnect to sign in.
+                  </Reconnect>
+                )}
               </>
             ) : (
               <Disconnected>Not Connected</Disconnected>
@@ -197,42 +218,54 @@ const Wallet: FC<Props> = () => {
 
           <div tw="my-5 mx-3 flex-grow border-r">
             <p className="sm-title">UMA Balance</p>
-            <div className="value-tokens">
-              <span>{formatWalletBalance(umaBalance)[0]}</span>
-              <span>{formatWalletBalance(umaBalance)[1]}</span>
-            </div>
-            <p className="value-dollars">
-              $
-              {umaBalance && umaPrice
-                ? calculateUMATotalValue(
-                    umaPrice.market_data.current_price.usd,
-                    umaBalance
-                  )
-                : "00.00"}
-              USD
-            </p>
+            {isConnected ? (
+              <>
+                <div className="value-tokens">
+                  <span>{formatWalletBalance(umaBalance)[0]}</span>
+                  <span>{formatWalletBalance(umaBalance)[1]}</span>
+                </div>
+                <p className="value-dollars">
+                  $
+                  {umaBalance && umaPrice
+                    ? calculateUMATotalValue(
+                        umaPrice.market_data.current_price.usd,
+                        umaBalance
+                      )
+                    : "00.00"}{" "}
+                  USD
+                </p>
+              </>
+            ) : (
+              <div>--</div>
+            )}
           </div>
           <div tw="my-5 mx-3 pl-5 flex-grow border-r">
             <p className="sm-title">Total UMA Collected</p>
-            <div className="value-tokens">
-              <span>{formatWalletBalance(totalUmaCollected)[0]}</span>
-              <span>{formatWalletBalance(totalUmaCollected)[1]}</span>
-            </div>
-            <p className="value-dollars">
-              $
-              {totalUmaCollected && umaPrice
-                ? calculateUMATotalValue(
-                    umaPrice.market_data.current_price.usd,
-                    totalUmaCollected
-                  )
-                : "00.00"}
-              USD
-            </p>
+            {isConnected ? (
+              <>
+                <div className="value-tokens">
+                  <span>{formatWalletBalance(totalUmaCollected)[0]}</span>
+                  <span>{formatWalletBalance(totalUmaCollected)[1]}</span>
+                </div>
+                <p className="value-dollars">
+                  $
+                  {totalUmaCollected && umaPrice
+                    ? calculateUMATotalValue(
+                        umaPrice.market_data.current_price.usd,
+                        totalUmaCollected
+                      )
+                    : "00.00"}{" "}
+                  USD
+                </p>
+              </>
+            ) : (
+              <div>--</div>
+            )}
           </div>
           <div tw="my-5 mx-3 pl-5 flex-grow">
             <p className="sm-title">
               Available Rewards{" "}
-              {availableRewards !== DEFAULT_BALANCE ? (
+              {availableRewards !== DEFAULT_BALANCE && isConnected ? (
                 <span
                   onClick={() => {
                     if (votingContract && votesRevealed && multicallContract) {
@@ -250,20 +283,26 @@ const Wallet: FC<Props> = () => {
                 </span>
               ) : null}
             </p>
-            <div className="value-tokens">
-              <span>{formatWalletBalance(availableRewards)[0]}</span>
-              <span>{formatWalletBalance(availableRewards)[1]}</span>
-            </div>
-            <p className="value-dollars">
-              $
-              {availableRewards && umaPrice
-                ? calculateUMATotalValue(
-                    umaPrice.market_data.current_price.usd,
-                    availableRewards
-                  )
-                : "00.00"}
-              USD
-            </p>
+            {isConnected ? (
+              <>
+                <div className="value-tokens">
+                  <span>{formatWalletBalance(availableRewards)[0]}</span>
+                  <span>{formatWalletBalance(availableRewards)[1]}</span>
+                </div>
+                <p className="value-dollars">
+                  $
+                  {availableRewards && umaPrice
+                    ? calculateUMATotalValue(
+                        umaPrice.market_data.current_price.usd,
+                        availableRewards
+                      )
+                    : "00.00"}{" "}
+                  USD
+                </p>
+              </>
+            ) : (
+              <div>--</div>
+            )}
           </div>
           <div tw="py-10 pl-5 ml-auto flex-none">
             <Settings onClick={() => open()} tw="cursor-pointer" />

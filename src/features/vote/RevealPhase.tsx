@@ -92,12 +92,7 @@ const RevealPhase: FC<Props> = ({
                   </div>
                 </td>
                 <td>
-                  <div className="description">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Curabitur sed eleifend erat. Duis in ante nisi. Donec ut
-                    nibh id justo faucibus fermentum id id ex. Mauris
-                    sollicitudin consequat neque.
-                  </div>
+                  <div className="description">{el.description}</div>
                 </td>
                 <td>
                   <div>

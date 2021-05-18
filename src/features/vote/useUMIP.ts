@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import * as contentful from "contentful";
+import { UMIP, fetchUmip } from "./fetchUMIP";
 
 // only for testing purposes. This UMIP is returned to avoid showing misleading data on anything thats not mainnet.
 const testUmip: UMIP = {
@@ -14,6 +14,8 @@ const testUmip: UMIP = {
   number: 100,
 };
 
+const MAINNET_CHAIN_ID = 1;
+
 export default function useUMIP(number?: number, chainId = 1) {
   const { data, ...others } = useQuery<UMIP>(
     ["umip", number],
@@ -23,30 +25,5 @@ export default function useUMIP(number?: number, chainId = 1) {
     }
   );
 
-  return { umip: chainId === 1 ? data : testUmip, ...others };
+  return { umip: chainId === MAINNET_CHAIN_ID ? data : testUmip, ...others };
 }
-
-const contenfulSpaceId = process.env.REACT_APP_PUBLIC_CONTENTFUL_SPACE_ID;
-const contentfulAccessToken =
-  process.env.REACT_APP_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
-
-const contentfulClient = contentful.createClient({
-  space: contenfulSpaceId || "",
-  accessToken: contentfulAccessToken || "",
-});
-
-type UMIP = {
-  description: any;
-  discourseLink?: string;
-  status?: string;
-  authors?: string;
-  title: string;
-  number: number;
-};
-const fetchUmip = async (number: number) => {
-  const ct = await contentfulClient.getEntries<UMIP>({
-    content_type: "umip",
-    "fields.number": number,
-  });
-  return ct.items[0].fields;
-};
