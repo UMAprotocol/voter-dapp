@@ -185,7 +185,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                 ) : (
                   <Reconnect>
                     {" "}
-                    Sign in rejected. Reconnect to sign in.
+                    Account needs to sign message. Reconnect if sign cancelled.
                   </Reconnect>
                 )}
               </>
