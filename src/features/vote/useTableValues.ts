@@ -165,7 +165,7 @@ export default function useTableValues(
           let description = "Price request.";
 
           if (umipNumber) {
-            description = await (await fetchUmip(umipNumber)).description;
+            description = (await fetchUmip(umipNumber)).description;
           }
 
           return {
