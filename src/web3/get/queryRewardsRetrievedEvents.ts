@@ -22,7 +22,7 @@ export interface RewardsRetrieved extends VoteEvent {
   ancillaryData: string;
 }
 
-export const queryRewardsRetrieved = async (
+export const queryRewardsRetrievedEvents = async (
   contract: ethers.Contract | null,
   address: string | null
 ) => {
