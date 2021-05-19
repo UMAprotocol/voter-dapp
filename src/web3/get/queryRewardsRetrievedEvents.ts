@@ -60,6 +60,9 @@ export const queryRewardsRetrieved = async (
       return datum;
     });
 
+    // On mainnet, look back at old voting contracts to retrieve rewards
+    // for voters who have voted on previous iteration of the contract.
+    // this is largely just for summation of Total UMA Collected.
     if (
       process.env.REACT_APP_CURRENT_ENV === "main" ||
       process.env.REACT_APP_CURRENT_ENV === undefined

@@ -27,12 +27,12 @@ export default function collectRewards(
 ) {
   const multicallCollectRewards = [] as MulticallCollectRewards[];
   const votingInterface = new ethers.utils.Interface(VotingArtifact.abi);
-
+  console.log("data", data);
   // find the unique roundIds
   const uniqueRoundIds = data
     .map((item) => item.roundId)
     .filter((value, index, self) => self.indexOf(value) === index);
-
+  console.log("UNIQUE ROUND IDS", uniqueRoundIds);
   // Do a multicall request if the user is collecting from multiple rounds.
   // Otherwise just call the rewards function directly.
   if (uniqueRoundIds.length > 1) {
@@ -79,6 +79,7 @@ export default function collectRewards(
         .catch((err) => console.log("err in retrieve rewards", err))
     );
   } else {
+    console.log("in this else. no MCR");
     const postData = {} as PostRetrieveReward;
     const pendingRequestData = [] as PendingRequestRetrieveReward[];
 
