@@ -22,23 +22,24 @@ export default function useEncryptedVotesEvents(
         address,
         roundId
         // hotAddress
-      ).then((res) => {
-        if (res) {
-          return res;
-        } else {
-          return [];
-        }
-      });
+      )
+        .then((res) => {
+          if (res) {
+            return res;
+          } else {
+            return [];
+          }
+        })
+        .catch((err) => {
+          addError(`${err.message}`);
+          return [] as EncryptedVote[];
+        });
     },
     {
       // do not run query if any of these are null
       enabled: contract !== null && privateKey !== "" && address != null,
     }
   );
-
-  if (error) {
-    addError(`${error}`);
-  }
 
   if (data) {
     return { data, error, isFetching, refetch };
