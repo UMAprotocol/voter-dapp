@@ -26,6 +26,13 @@ export const COIN_GECKO_UMA_TICKER_DATA = {
   url: "https://api.coingecko.com/api/v3/coins/uma",
 };
 
+// We need these for rewards.
+export const OLD_VOTING_CONTRACT_ADDRESSES = [
+  "0xFe3C4F1ec9f5df918D42Ef7Ed3fBA81CC0086c5F",
+  "0x9921810C710E7c3f7A7C6831e30929f19537a545",
+  "0x1d847fb6e04437151736a53f09b6e49713a52aad",
+];
+
 export default function config(network: Network | null) {
   const infuraRpc = `https://${
     network ? network?.name : "mainnet"
