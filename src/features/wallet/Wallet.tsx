@@ -269,17 +269,15 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                 <span
                   onClick={() => {
                     if (votingContract && votesRevealed && multicallContract) {
-                      const unclaimedRewards = votesRevealed.filter(function (
-                        obj
-                      ) {
-                        return !rewardsEvents.some(function (obj2) {
-                          return (
-                            obj.identifier === obj2.identifier &&
-                            obj.roundId === obj2.roundId &&
-                            obj.ancillaryData === obj2.ancillaryData
-                          );
-                        });
-                      });
+                      const unclaimedRewards = votesRevealed.filter(
+                        (x) =>
+                          !rewardsEvents.some(
+                            (y) =>
+                              x.identifier === y.identifier &&
+                              x.roundId === y.roundId &&
+                              x.ancillaryData === y.ancillaryData
+                          )
+                      );
 
                       collectRewards(
                         votingContract,
