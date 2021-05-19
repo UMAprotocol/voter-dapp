@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import provider from "common/utils/web3/createProvider";
 import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
 
@@ -26,22 +26,23 @@ export default function usePendingRequests() {
   >(
     "pendingRequests",
     () => {
-      return queryGetPendingRequests(contract).then((res) => {
-        if (res) {
-          return res;
-        } else {
-          return [];
-        }
-      });
+      return queryGetPendingRequests(contract)
+        .then((res) => {
+          if (res) {
+            return res;
+          } else {
+            return [];
+          }
+        })
+        .catch((err) => {
+          addError(error!.message);
+          return [] as PendingRequest[];
+        });
     },
     {
       retry: false,
     }
   );
-
-  useEffect(() => {
-    if (error) addError(error!.message);
-  }, [error, addError]);
 
   if (data) {
     return { data, error, isFetching, refetch };

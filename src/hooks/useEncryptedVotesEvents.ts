@@ -1,17 +1,20 @@
+import { useContext } from "react";
 import { useQuery } from "react-query";
 import { ethers } from "ethers";
 import {
   queryEncryptedVotes,
   EncryptedVote,
 } from "web3/get/queryEncryptedVotesEvents";
+import { ErrorContext } from "common/context/ErrorContext";
 
 export default function useEncryptedVotesEvents(
   contract: ethers.Contract | null,
   address: string | null,
   privateKey: string,
-  roundId: string,
-  addError: (message: string) => void
+  roundId: string
 ) {
+  const { addError } = useContext(ErrorContext);
+
   const { data, error, isFetching, refetch } = useQuery<EncryptedVote[]>(
     // key encryped votes by connected address
     ["encryptedVotesEvents", address],
