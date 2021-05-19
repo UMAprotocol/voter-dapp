@@ -95,6 +95,6 @@ export const queryEncryptedVotes = async (
     );
     return decryptedEvents;
   } catch (err) {
-    console.log("err", err);
+    throw err;
   }
 };

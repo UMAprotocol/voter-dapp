@@ -9,7 +9,8 @@ export default function useEncryptedVotesEvents(
   contract: ethers.Contract | null,
   address: string | null,
   privateKey: string,
-  roundId: string
+  roundId: string,
+  addError: (message: string) => void
 ) {
   const { data, error, isFetching, refetch } = useQuery<EncryptedVote[]>(
     // key encryped votes by connected address
@@ -34,6 +35,10 @@ export default function useEncryptedVotesEvents(
       enabled: contract !== null && privateKey !== "" && address != null,
     }
   );
+
+  if (error) {
+    addError(`${error}`);
+  }
 
   if (data) {
     return { data, error, isFetching, refetch };

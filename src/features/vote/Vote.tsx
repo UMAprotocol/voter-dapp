@@ -21,6 +21,7 @@ import {
 } from "hooks";
 
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
+import { ErrorContext } from "common/context/ErrorContext";
 
 import { SigningKeys } from "App";
 
@@ -32,6 +33,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
   const [upcomingRequests, setUpcomingRequests] = useState<PriceRequestAdded[]>(
     []
   );
+  const { addError } = useContext(ErrorContext);
 
   const { state } = useContext(OnboardContext);
 
@@ -66,7 +68,13 @@ const Vote: FC<Props> = ({ signingKeys }) => {
       : "";
 
   const { data: encryptedVotes, refetch: refetchEncryptedVotes } =
-    useEncryptedVotesEvents(votingContract, votingAddress, signingPK, roundId);
+    useEncryptedVotesEvents(
+      votingContract,
+      votingAddress,
+      signingPK,
+      roundId,
+      addError
+    );
 
   useEffect(() => {
     if (priceRequestsAdded.length) {
