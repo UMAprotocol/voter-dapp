@@ -80,7 +80,6 @@ function App(props: Props) {
       state.network &&
       state.network.chainId !== previousNetwork.chainId
     ) {
-      console.log("did we make it");
       window.location.reload();
     }
   }, [state.network, previousNetwork]);
