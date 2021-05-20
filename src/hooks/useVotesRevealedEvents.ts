@@ -13,28 +13,17 @@ export default function useVotesRevealedEvents(
 ) {
   const { addError } = useContext(ErrorContext);
 
-  const { data, error, isFetching, refetch } = useQuery<VoteRevealed[]>(
+  const { data, error, isFetching, refetch } = useQuery<
+    VoteRevealed[] | undefined | void
+  >(
     "votesRevealedEvents",
     () => {
       return queryVotesRevealedEvents(contract, address)
-        .then((res) => {
-          if (res) {
-            return res;
-          } else {
-            return [];
-          }
-        })
-        .catch((err) => {
-          addError(err);
-          return [] as VoteRevealed[];
-        });
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     { enabled: contract !== null }
   );
 
-  if (data) {
-    return { data, error, isFetching, refetch };
-  } else {
-    return { data: [] as VoteRevealed[], error, isFetching, refetch };
-  }
+  return { data, error, isFetching, refetch };
 }

@@ -21,7 +21,8 @@ import {
 } from "hooks";
 
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
-
+import { PendingRequest } from "web3/get/queryGetPendingRequests";
+import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { SigningKeys } from "App";
 
 interface Props {
@@ -51,12 +52,16 @@ const Vote: FC<Props> = ({ signingKeys }) => {
     hotAddress
   );
 
-  const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
-  const { data: activeRequests } = usePendingRequests();
+  const { data: priceRequestsAdded = [] as PriceRequestAdded[] } =
+    usePriceRequestAddedEvents();
+  const { data: activeRequests = [] as PendingRequest[] } =
+    usePendingRequests();
   const { data: roundId = "" } = useCurrentRoundId();
 
-  const { data: revealedVotes, refetch: refetchVoteRevealedEvents } =
-    useVotesRevealedEvents(votingContract, votingAddress);
+  const {
+    data: revealedVotes = [] as VoteRevealed[],
+    refetch: refetchVoteRevealedEvents,
+  } = useVotesRevealedEvents(votingContract, votingAddress);
 
   const signingPK =
     hotAddress && signingKeys[hotAddress]

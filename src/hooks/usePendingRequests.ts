@@ -21,32 +21,18 @@ const contract = createVoidSignerVotingContractInstance(
 export default function usePendingRequests() {
   const { addError } = useContext(ErrorContext);
   const { data, error, isFetching, refetch } = useQuery<
-    PendingRequest[],
-    Error
+    PendingRequest[] | undefined | void
   >(
     "pendingRequests",
     () => {
       return queryGetPendingRequests(contract)
-        .then((res) => {
-          if (res) {
-            return res;
-          } else {
-            return [];
-          }
-        })
-        .catch((err) => {
-          addError(err);
-          return [] as PendingRequest[];
-        });
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     {
       retry: false,
     }
   );
 
-  if (data) {
-    return { data, error, isFetching, refetch };
-  } else {
-    return { data: [] as PendingRequest[], error, isFetching, refetch };
-  }
+  return { data, error, isFetching, refetch };
 }

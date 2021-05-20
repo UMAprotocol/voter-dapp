@@ -27,7 +27,8 @@ import calculateUMATotalValue from "./helpers/calculateUMATotalValue";
 import checkAvailableRewards from "./helpers/checkAvailableRewards";
 import collectRewards from "./helpers/collectRewards";
 import shortenAddress from "./helpers/shortenAddress";
-
+import { RewardsRetrieved } from "web3/get/queryRewardsRetrievedEvents";
+import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import {
   Wrapper,
   Connected,
@@ -87,14 +88,12 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     hotAddress
   );
 
-  const { data: rewardsEvents } = useRewardsRetrievedEvents(
-    votingContract,
-    votingAddress
-  );
+  const { data: rewardsEvents = [] as RewardsRetrieved[] } =
+    useRewardsRetrievedEvents(votingContract, votingAddress);
 
   const { multicallContract } = useMulticall(signer, isConnected, network);
 
-  const { data: votesRevealed } = useVotesRevealedEvents(
+  const { data: votesRevealed = [] as VoteRevealed[] } = useVotesRevealedEvents(
     votingContract,
     votingAddress
   );

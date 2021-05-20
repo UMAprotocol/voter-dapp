@@ -17,28 +17,17 @@ const contract = createVoidSignerVotingContractInstance(
 
 export default function usePriceRequestAddedEvents() {
   const { addError } = useContext(ErrorContext);
-  const { data, error, isFetching } = useQuery<PriceRequestAdded[]>(
+  const { data, error, isFetching } = useQuery<
+    PriceRequestAdded[] | undefined | void
+  >(
     "priceRequestAdded",
     () => {
       return queryPriceRequestAdded(contract)
-        .then((res) => {
-          if (res) {
-            return res;
-          } else {
-            return [];
-          }
-        })
-        .catch((err) => {
-          addError(err);
-          return [] as PriceRequestAdded[];
-        });
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     { enabled: contract !== null }
   );
 
-  if (data) {
-    return { data, error, isFetching };
-  } else {
-    return { data: [] as PriceRequestAdded[], error, isFetching };
-  }
+  return { data, error, isFetching };
 }

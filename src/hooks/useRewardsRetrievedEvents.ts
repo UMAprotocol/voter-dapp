@@ -13,28 +13,17 @@ export default function useRewardsRetrievedEvents(
 ) {
   const { addError } = useContext(ErrorContext);
 
-  const { data, error, isFetching } = useQuery<RewardsRetrieved[]>(
+  const { data, error, isFetching } = useQuery<
+    RewardsRetrieved[] | undefined | void
+  >(
     "rewardsRetrievedEvents",
     () => {
       return queryRewardsRetrievedEvents(contract, address)
-        .then((res) => {
-          if (res) {
-            return res;
-          } else {
-            return [];
-          }
-        })
-        .catch((err) => {
-          addError(err);
-          return [] as RewardsRetrieved[];
-        });
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     { enabled: contract !== null && address !== null }
   );
 
-  if (data) {
-    return { data, error, isFetching };
-  } else {
-    return { data: [] as RewardsRetrieved[], error, isFetching };
-  }
+  return { data, error, isFetching };
 }
