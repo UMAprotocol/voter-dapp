@@ -28,7 +28,8 @@ export default function collectRewards(
   // Do a multicall request if the user is collecting from multiple rounds.
   // Otherwise just call the rewards function directly.
   if (uniqueRoundIds.length === 1) {
-    return collectSingleRoundRewards(data, uniqueRoundIds, contract);
+    const [roundId] = uniqueRoundIds;
+    return collectSingleRoundRewards(data, roundId, contract);
   }
   return collectMultipleRoundRewards(
     data,
@@ -42,29 +43,23 @@ export default function collectRewards(
 function collectSingleRoundRewards(
   data: RewardsRetrieved[],
   // Type returned by useState variable in Wallet.tsx,
-  uniqueRoundIds: string[],
+  roundId: string,
   contract: ethers.Contract
 ) {
-  const postData = {} as PostRetrieveReward;
-  const pendingRequestData = [] as PendingRequestRetrieveReward[];
+  const postData = {
+    voterAddress: data[0].address,
+    roundId,
+  } as PostRetrieveReward;
 
-  uniqueRoundIds.forEach((roundId) => {
-    data.forEach((datum) => {
-      if (datum.roundId === roundId) {
-        const pendingRequest = {} as PendingRequestRetrieveReward;
-        postData.roundId = datum.roundId;
-        postData.voterAddress = datum.address;
-        pendingRequest.ancillaryData = datum.ancillaryData
-          ? datum.ancillaryData
-          : "0x";
-        pendingRequest.identifier = ethers.utils.toUtf8Bytes(datum.identifier);
-        pendingRequest.time = datum.time;
-        pendingRequestData.push(pendingRequest);
-      }
-    });
-
-    postData.pendingRequests = pendingRequestData;
-  });
+  postData.pendingRequests = data
+    .filter((datum) => datum.roundId === roundId)
+    .map(
+      (datum): PendingRequestRetrieveReward => ({
+        ...datum,
+        ancillaryData: datum.ancillaryData ? datum.ancillaryData : "0x",
+        identifier: ethers.utils.toUtf8Bytes(datum.identifier),
+      })
+    );
 
   return retrieveRewards(contract, postData);
 }
