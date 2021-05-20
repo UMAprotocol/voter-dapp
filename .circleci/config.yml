@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run:
           name: Run build
-          command: yarn
+          command: yarn self-update && yarn -v && yarn && yarn build
       - save_cache:
           key: voter-dapp-build-{{ .Environment.CIRCLE_SHA1 }}
           paths:
