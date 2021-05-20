@@ -18,21 +18,14 @@ const contract = createVoidSignerVotingContractInstance(
 export default function useRound(roundId: number) {
   const { addError } = useContext(ErrorContext);
 
-  const { data, error, isFetching, refetch } = useQuery<Round>(
+  const { data, error, isFetching, refetch } = useQuery<
+    Round | undefined | void
+  >(
     "round",
     () => {
       return queryRounds(contract, roundId)
-        .then((res) => {
-          if (res) {
-            return res;
-          } else {
-            return {} as Round;
-          }
-        })
-        .catch((err) => {
-          addError(err);
-          return {} as Round;
-        });
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     {
       // Check if we've queried the right roundId
@@ -40,9 +33,5 @@ export default function useRound(roundId: number) {
     }
   );
 
-  if (data) {
-    return { data, error, isFetching, refetch };
-  } else {
-    return { data: {} as Round, error, isFetching };
-  }
+  return { data, error, isFetching, refetch };
 }

@@ -15,6 +15,7 @@ import RevealPhase from "./RevealPhase";
 import ActiveViewDetailsModal from "./ActiveViewDetailsModal";
 import useModal from "common/hooks/useModal";
 import { SigningKeys } from "App";
+import { Round } from "web3/get/queryRounds";
 
 export interface ModalState {
   proposal: string;
@@ -61,7 +62,7 @@ const ActiveRequests: FC<Props> = ({
 
   const { data: votePhase } = useVotePhase();
 
-  const { data: round } = useRound(Number(roundId));
+  const { data: round = {} as Round } = useRound(Number(roundId));
 
   // Set time remaining depending if it's the Commit or Reveal
   // Note: the requests are all slightly differently in there final vote time. I'll use the last
@@ -82,6 +83,7 @@ const ActiveRequests: FC<Props> = ({
       : votingAddress && signingKeys[votingAddress]
       ? signingKeys[votingAddress].publicKey
       : "";
+
   return (
     <Wrapper className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">
