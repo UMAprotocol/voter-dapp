@@ -34,7 +34,7 @@ export default function useEncryptedVotesEvents(
           }
         })
         .catch((err) => {
-          addError(`${err.message}`);
+          addError(err);
           return [] as EncryptedVote[];
         });
     },

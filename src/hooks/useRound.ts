@@ -30,7 +30,7 @@ export default function useRound(roundId: number) {
           }
         })
         .catch((err) => {
-          addError(err.message);
+          addError(err);
           return {} as Round;
         });
     },

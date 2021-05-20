@@ -30,7 +30,7 @@ export default function useVoteTiming() {
           }
         })
         .catch((err) => {
-          addError(err.message);
+          addError(err);
           return "";
         });
     }

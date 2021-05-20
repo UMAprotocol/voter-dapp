@@ -25,7 +25,7 @@ export default function useRewardsRetrievedEvents(
           }
         })
         .catch((err) => {
-          addError(err.message);
+          addError(err);
           return [] as RewardsRetrieved[];
         });
     },

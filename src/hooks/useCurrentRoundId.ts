@@ -28,7 +28,7 @@ export default function useCurrentRoundId() {
           }
         })
         .catch((err) => {
-          addError(err.message);
+          addError(err);
           return "";
         });
     }

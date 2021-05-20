@@ -29,7 +29,7 @@ export default function usePriceRequestAddedEvents() {
           }
         })
         .catch((err) => {
-          addError(err.message);
+          addError(err);
           return [] as PriceRequestAdded[];
         });
     },

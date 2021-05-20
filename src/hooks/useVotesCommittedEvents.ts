@@ -23,7 +23,7 @@ export default function useVotesCommittedEvents(
           }
         })
         .catch((err) => {
-          addError(err.message);
+          addError(err);
           return [] as VoteEvent[];
         });
     },

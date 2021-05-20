@@ -25,7 +25,7 @@ export default function useVotesRevealedEvents(
           }
         })
         .catch((err) => {
-          addError(err.message);
+          addError(err);
           return [] as VoteRevealed[];
         });
     },

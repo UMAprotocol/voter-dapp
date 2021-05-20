@@ -33,7 +33,7 @@ export default function usePriceRoundEvents() {
           }
         })
         .catch((err) => {
-          addError(err.message);
+          addError(err);
           return [] as PriceRound[];
         });
     }

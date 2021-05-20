@@ -287,9 +287,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                         unclaimedRewards,
                         setAvailableRewards,
                         multicallContract
-                      ).catch((err) => {
-                        addError(err.message);
-                      });
+                      ).catch((err) => addError(err));
                     }
                   }}
                   className="Wallet-collect"

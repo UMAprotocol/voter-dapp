@@ -49,7 +49,8 @@ function App(props: Props) {
             });
           })
           .catch((err) => {
-            addError("Sign failed.");
+            const error = new Error("Sign failed.");
+            addError(error);
           });
       }
     }

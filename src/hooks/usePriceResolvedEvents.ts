@@ -25,7 +25,7 @@ export default function usePriceResolvedEvents(
           }
         })
         .catch((err) => {
-          addError(err.message);
+          addError(err);
           return [] as PriceResolved[];
         });
     },

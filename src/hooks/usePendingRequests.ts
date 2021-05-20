@@ -35,7 +35,7 @@ export default function usePendingRequests() {
           }
         })
         .catch((err) => {
-          addError(error!.message);
+          addError(err);
           return [] as PendingRequest[];
         });
     },

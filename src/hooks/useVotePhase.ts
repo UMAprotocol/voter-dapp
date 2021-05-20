@@ -29,7 +29,7 @@ export default function useVotePhase() {
           }
         })
         .catch((err) => {
-          addError(err.message);
+          addError(err);
           return "";
         });
     }

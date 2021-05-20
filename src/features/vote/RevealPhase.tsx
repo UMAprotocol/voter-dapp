@@ -169,9 +169,7 @@ const RevealPhase: FC<Props> = ({
                       refetchEncryptedVotes();
                       setPostRevealData([]);
                     })
-                    .catch((err) => {
-                      addError(err.message);
-                    });
+                    .catch((err) => addError(err));
                 }
               }}
               variant="secondary"
