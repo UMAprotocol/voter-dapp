@@ -9,7 +9,10 @@ jobs:
       - checkout
       - run:
           name: Run build
-          command: yarn
+          command: |
+            npm install --global --force yarn && \
+            yarn && \
+            yarn build
       - save_cache:
           key: voter-dapp-build-{{ .Environment.CIRCLE_SHA1 }}
           paths:
