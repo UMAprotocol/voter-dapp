@@ -75,7 +75,7 @@ const ActiveRequests: FC<Props> = ({
     }, 30000);
 
     return () => clearInterval(timer);
-  }, [activeRequests, votePhase]);
+  }, []);
 
   const signingPublicKey =
     hotAddress && signingKeys[hotAddress]

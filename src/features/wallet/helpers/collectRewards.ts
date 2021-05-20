@@ -76,24 +76,21 @@ function collectMultipleRoundRewards(
 
   uniqueRoundIds.forEach((roundId) => {
     const mcr = {} as MulticallCollectRewards;
-    const postData = {} as PostRetrieveReward;
-    const pendingRequestData = [] as PendingRequestRetrieveReward[];
+    const postData = {
+      voterAddress: data[0].address,
+      roundId,
+    } as PostRetrieveReward;
 
-    data.forEach((datum) => {
-      if (datum.roundId === roundId) {
-        const pendingRequest = {} as PendingRequestRetrieveReward;
-        postData.roundId = datum.roundId;
-        postData.voterAddress = datum.address;
-        pendingRequest.ancillaryData = datum.ancillaryData
-          ? datum.ancillaryData
-          : "0x";
-        pendingRequest.identifier = ethers.utils.toUtf8Bytes(datum.identifier);
-        pendingRequest.time = datum.time;
-        pendingRequestData.push(pendingRequest);
-      }
-    });
+    postData.pendingRequests = data
+      .filter((datum) => datum.roundId === roundId)
+      .map(
+        (datum): PendingRequestRetrieveReward => ({
+          ...datum,
+          ancillaryData: datum.ancillaryData ? datum.ancillaryData : "0x",
+          identifier: ethers.utils.toUtf8Bytes(datum.identifier),
+        })
+      );
 
-    postData.pendingRequests = pendingRequestData;
     mcr.target = contract.address;
     mcr.callData = votingInterface.encodeFunctionData(
       "retrieveRewards(address,uint256,(bytes32,uint256,bytes)[])",
