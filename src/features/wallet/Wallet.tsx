@@ -284,9 +284,13 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                       return collectRewards(
                         votingContract,
                         unclaimedRewards,
-                        setAvailableRewards,
                         multicallContract
-                      ).catch((err) => addError(err));
+                      ) // wait for at least 1 block conf.
+                        .then((tx) => tx.wait(1))
+                        .then((conf: any) => {
+                          setAvailableRewards(DEFAULT_BALANCE);
+                        })
+                        .catch((err) => addError(err));
                     }
                   }}
                   className="Wallet-collect"
