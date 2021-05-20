@@ -23,6 +23,7 @@ import {
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { SigningKeys } from "App";
 
 interface Props {
@@ -70,8 +71,15 @@ const Vote: FC<Props> = ({ signingKeys }) => {
       ? signingKeys[votingAddress].privateKey
       : "";
 
-  const { data: encryptedVotes, refetch: refetchEncryptedVotes } =
-    useEncryptedVotesEvents(votingContract, votingAddress, signingPK, roundId);
+  const {
+    data: encryptedVotes = [] as EncryptedVote[],
+    refetch: refetchEncryptedVotes,
+  } = useEncryptedVotesEvents(
+    votingContract,
+    votingAddress,
+    signingPK,
+    roundId
+  );
 
   useEffect(() => {
     if (priceRequestsAdded.length) {

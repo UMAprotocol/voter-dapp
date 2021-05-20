@@ -15,7 +15,9 @@ export default function useEncryptedVotesEvents(
 ) {
   const { addError } = useContext(ErrorContext);
 
-  const { data, error, isFetching, refetch } = useQuery<EncryptedVote[]>(
+  const { data, error, isFetching, refetch } = useQuery<
+    EncryptedVote[] | undefined | void
+  >(
     // key encryped votes by connected address
     ["encryptedVotesEvents", address],
     () => {
@@ -26,17 +28,8 @@ export default function useEncryptedVotesEvents(
         roundId
         // hotAddress
       )
-        .then((res) => {
-          if (res) {
-            return res;
-          } else {
-            return [];
-          }
-        })
-        .catch((err) => {
-          addError(err);
-          return [] as EncryptedVote[];
-        });
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     {
       // do not run query if any of these are null
@@ -44,9 +37,5 @@ export default function useEncryptedVotesEvents(
     }
   );
 
-  if (data) {
-    return { data, error, isFetching, refetch };
-  } else {
-    return { data: [] as EncryptedVote[], error, isFetching, refetch };
-  }
+  return { data, error, isFetching, refetch };
 }

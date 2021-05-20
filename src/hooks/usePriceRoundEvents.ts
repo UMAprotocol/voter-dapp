@@ -21,27 +21,14 @@ const contract = createVotingContractInstance(
 export default function usePriceRoundEvents() {
   const { addError } = useContext(ErrorContext);
 
-  const { data, error, isFetching } = useQuery<PriceRound[]>(
+  const { data, error, isFetching } = useQuery<PriceRound[] | undefined | void>(
     "priceRoundEvents",
     () => {
       return queryPriceRoundEvents(contract)
-        .then((res) => {
-          if (res) {
-            return res;
-          } else {
-            return [];
-          }
-        })
-        .catch((err) => {
-          addError(err);
-          return [] as PriceRound[];
-        });
+        .then((res) => res)
+        .catch((err) => addError(err));
     }
   );
 
-  if (data) {
-    return { data, error, isFetching };
-  } else {
-    return { data: [] as PriceRound[], error, isFetching };
-  }
+  return { data, error, isFetching };
 }

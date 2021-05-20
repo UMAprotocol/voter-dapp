@@ -18,27 +18,12 @@ const contract = createVoidSignerVotingContractInstance(
 export default function useVoteTiming() {
   const { addError } = useContext(ErrorContext);
 
-  const { data, error, isFetching, refetch } = useQuery<string>(
-    "voteTiming",
-    () => {
-      return queryVoteTiming(contract)
-        .then((res) => {
-          if (res) {
-            return res;
-          } else {
-            return "";
-          }
-        })
-        .catch((err) => {
-          addError(err);
-          return "";
-        });
-    }
-  );
-
-  if (data) {
-    return { data, error, isFetching, refetch };
-  } else {
-    return { data: "", error, isFetching };
-  }
+  const { data, error, isFetching, refetch } = useQuery<
+    string | undefined | void
+  >("voteTiming", () => {
+    return queryVoteTiming(contract)
+      .then((res) => res)
+      .catch((err) => addError(err));
+  });
+  return { data, error, isFetching, refetch };
 }

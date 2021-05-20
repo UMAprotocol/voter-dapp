@@ -13,28 +13,17 @@ export default function usePriceResolvedEvents(
 ) {
   const { addError } = useContext(ErrorContext);
 
-  const { data, error, isFetching } = useQuery<PriceResolved[]>(
+  const { data, error, isFetching } = useQuery<
+    PriceResolved[] | undefined | void
+  >(
     "priceResolvedEvents",
     () => {
       return queryPriceResolved(contract)
-        .then((res) => {
-          if (res) {
-            return res;
-          } else {
-            return [];
-          }
-        })
-        .catch((err) => {
-          addError(err);
-          return [] as PriceResolved[];
-        });
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     { enabled: contract !== null }
   );
 
-  if (data) {
-    return { data, error, isFetching };
-  } else {
-    return { data: [] as PriceResolved[], error, isFetching };
-  }
+  return { data, error, isFetching };
 }

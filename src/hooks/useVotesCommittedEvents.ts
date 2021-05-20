@@ -11,28 +11,15 @@ export default function useVotesCommittedEvents(
 ) {
   const { addError } = useContext(ErrorContext);
 
-  const { data, error, isFetching } = useQuery<VoteEvent[]>(
+  const { data, error, isFetching } = useQuery<VoteEvent[] | undefined | void>(
     "votesCommittedEvents",
     () => {
       return queryVotesCommittedEvents(contract, address)
-        .then((res) => {
-          if (res) {
-            return res;
-          } else {
-            return [];
-          }
-        })
-        .catch((err) => {
-          addError(err);
-          return [] as VoteEvent[];
-        });
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     { enabled: contract !== null }
   );
 
-  if (data) {
-    return { data, error, isFetching };
-  } else {
-    return { data: [] as VoteEvent[], error, isFetching };
-  }
+  return { data, error, isFetching };
 }
