@@ -30,7 +30,7 @@ workflows:
   version: 2.1
   voter-test:
     jobs:
-      - build:
+      - build
       - test:
           requires:
-              - build
+            - build
