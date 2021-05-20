@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useContext } from "react";
 import tw from "twin.macro"; // eslint-disable-line
 import { ethers } from "ethers";
 import useModal from "common/hooks/useModal";
@@ -19,6 +19,7 @@ import {
 } from "hooks";
 
 import TwoKeyContractModal from "./TwoKeyContractModal";
+import { ErrorContext } from "common/context/ErrorContext";
 
 // Helpers
 import formatWalletBalance from "./helpers/formatWalletBalance";
@@ -59,6 +60,8 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     address,
     network,
   } = useOnboard();
+
+  const { addError } = useContext(ErrorContext);
 
   const prevTotalCollected = usePrevious(totalUmaCollected);
   const prevAvailableReweards = usePrevious(availableRewards);
@@ -279,12 +282,14 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                           )
                       );
 
-                      collectRewards(
+                      return collectRewards(
                         votingContract,
                         unclaimedRewards,
                         setAvailableRewards,
                         multicallContract
-                      );
+                      ).catch((err) => {
+                        addError(err.message);
+                      });
                     }
                   }}
                   className="Wallet-collect"

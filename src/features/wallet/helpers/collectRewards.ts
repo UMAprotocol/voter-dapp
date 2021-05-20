@@ -76,7 +76,9 @@ export default function collectRewards(
         .then((conf: any) => {
           setAvailableRewards(DEFAULT_BALANCE);
         })
-        .catch((err) => console.log("err in retrieve rewards", err))
+        .catch((err) => {
+          throw err;
+        })
     );
   } else {
     const postData = {} as PostRetrieveReward;
@@ -107,6 +109,8 @@ export default function collectRewards(
       .then((conf: any) => {
         setAvailableRewards(DEFAULT_BALANCE);
       })
-      .catch((err) => console.log("err in retrieve rewards", err));
+      .catch((err) => {
+        throw err;
+      });
   }
 }
