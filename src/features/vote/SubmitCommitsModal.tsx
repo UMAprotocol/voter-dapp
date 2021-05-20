@@ -77,7 +77,15 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
 ) => {
   return (
     <>
-      <Modal isOpen={isOpen} onClose={() => close()} ref={externalRef}>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          close();
+          setModalState("init");
+          setSubmitErrorMessage("");
+        }}
+        ref={externalRef}
+      >
         <ModalWrapper>
           <div className="icon-wrapper">
             {modalState === "pending" ? (
