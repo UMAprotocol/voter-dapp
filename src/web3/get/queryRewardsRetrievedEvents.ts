@@ -107,6 +107,6 @@ export const queryRewardsRetrievedEvents = async (
     }
     return rewards;
   } catch (err) {
-    console.log("err", err);
+    throw err;
   }
 };

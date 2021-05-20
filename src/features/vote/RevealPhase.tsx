@@ -14,6 +14,7 @@ import { snapshotCurrentRound } from "web3/post/snapshotCurrentRound";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 import useTableValues from "./useTableValues";
+import { ErrorContext } from "common/context/ErrorContext";
 
 interface Props {
   isConnected: boolean;
@@ -51,6 +52,7 @@ const RevealPhase: FC<Props> = ({
   const {
     state: { network, signer, provider },
   } = useContext(OnboardContext);
+  const { addError } = useContext(ErrorContext);
 
   const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
@@ -160,12 +162,16 @@ const RevealPhase: FC<Props> = ({
                 let vc = votingContract;
                 if (designatedVotingContract) vc = designatedVotingContract;
                 if (vc && postRevealData.length) {
-                  revealVotes(vc, postRevealData).then((res) => {
-                    // refetch votes.
-                    refetchVoteRevealedEvents();
-                    refetchEncryptedVotes();
-                    setPostRevealData([]);
-                  });
+                  return revealVotes(vc, postRevealData)
+                    .then((res) => {
+                      // refetch votes.
+                      refetchVoteRevealedEvents();
+                      refetchEncryptedVotes();
+                      setPostRevealData([]);
+                    })
+                    .catch((err) => {
+                      addError(err.message);
+                    });
                 }
               }}
               variant="secondary"

@@ -26,6 +26,6 @@ export const revealVotes = async (
 
     return tx;
   } catch (err) {
-    console.log("err in Reveal votes", err);
+    throw err;
   }
 };
