@@ -60,7 +60,7 @@ const ActiveRequests: FC<Props> = ({
     state: { isConnected },
   } = useContext(OnboardContext);
 
-  const { data: votePhase } = useVotePhase();
+  const { data: votePhase = "" } = useVotePhase();
 
   const { data: round = {} as Round } = useRound(Number(roundId));
 

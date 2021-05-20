@@ -87,7 +87,7 @@ const CommitPhase: FC<Props> = ({
     revealedVotes
   );
 
-  const { data: roundId } = useCurrentRoundId();
+  const { data: roundId = "" } = useCurrentRoundId();
   const { isOpen, open, close, modalRef } = useModal();
 
   const generateDefaultValues = useCallback(() => {

@@ -8,7 +8,7 @@ import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
 import UpcomingRequests from "./UpcomingRequests";
 
-import useVoteData from "common/hooks/useVoteData";
+import useVoteData, { PriceRequestRound } from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
 import {
   usePriceRequestAddedEvents,
@@ -35,7 +35,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
 
   const { state } = useContext(OnboardContext);
 
-  const { data: voteSummaryData } = useVoteData();
+  const { data: voteSummaryData = [] as PriceRequestRound[] } = useVoteData();
 
   const { votingAddress, hotAddress } = useVotingAddress(
     state.address,
@@ -53,7 +53,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
 
   const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
   const { data: activeRequests } = usePendingRequests();
-  const { data: roundId } = useCurrentRoundId();
+  const { data: roundId = "" } = useCurrentRoundId();
 
   const { data: revealedVotes, refetch: refetchVoteRevealedEvents } =
     useVotesRevealedEvents(votingContract, votingAddress);

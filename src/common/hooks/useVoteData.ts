@@ -50,10 +50,8 @@ const POLLING_INTERVAL = 60000;
 // Retrieve vote data per price request from graphQL API.
 // Taken from previous voter-dapp, with heavy refactoring.
 function useVoteData() {
-  const [
-    votingSummaryData,
-    setVotingSummaryData,
-  ] = useState<FormattedPriceRequestRounds>({});
+  const [votingSummaryData, setVotingSummaryData] =
+    useState<FormattedPriceRequestRounds>({});
 
   // Because apollo caches results of queries, we will poll/refresh this query periodically.
   // We set the poll interval to a very slow 60 seconds for now since the vote states
@@ -81,9 +79,7 @@ function useVoteData() {
 
   return {
     votingSummaryData,
-    data: data?.priceRequestRounds
-      ? data.priceRequestRounds
-      : ([] as PriceRequestRound[]),
+    data: data?.priceRequestRounds,
     refetch,
   };
 }
