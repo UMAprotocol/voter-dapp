@@ -53,6 +53,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
 
   const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
   const { data: activeRequests } = usePendingRequests();
+
   const { data: roundId } = useCurrentRoundId();
 
   const { data: revealedVotes } = useVotesRevealedEvents(

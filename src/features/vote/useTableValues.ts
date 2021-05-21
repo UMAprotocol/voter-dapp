@@ -15,6 +15,7 @@ interface TableValue {
   revealed: boolean;
   ancHex: string;
   timestamp: string;
+  unix: string;
   description?: string;
 }
 
@@ -45,9 +46,11 @@ export default function useTableValues(
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
+            second: "2-digit",
             hourCycle: "h24",
             timeZoneName: "short",
           }),
+          unix: el.time,
         };
       });
 
@@ -61,7 +64,11 @@ export default function useTableValues(
           let description = "Price request.";
 
           if (umipNumber) {
-            description = await (await fetchUmip(umipNumber)).description;
+            try {
+              description = (await fetchUmip(umipNumber)).description;
+            } catch (err) {
+              description = "No data available for this UMIP.";
+            }
           }
 
           return {
@@ -74,7 +81,9 @@ export default function useTableValues(
       descriptionsAdded.then((results) => {
         const values = [] as TableValue[];
         results.forEach((result) => {
-          if (result.status === "fulfilled") values.push(result.value);
+          if (result.status === "fulfilled") {
+            values.push(result.value);
+          }
         });
         setTableValues(values);
       });
@@ -130,6 +139,7 @@ export default function useTableValues(
           hourCycle: "h24",
           timeZoneName: "short",
         });
+        datum.unix = el.time;
 
         tv.push(datum);
         // Gather up PostRevealData here to save complexity
@@ -165,7 +175,11 @@ export default function useTableValues(
           let description = "Price request.";
 
           if (umipNumber) {
-            description = (await fetchUmip(umipNumber)).description;
+            try {
+              description = (await fetchUmip(umipNumber)).description;
+            } catch (err) {
+              description = "No data available for this UMIP.";
+            }
           }
 
           return {
@@ -178,7 +192,9 @@ export default function useTableValues(
       descriptionsAdded.then((results) => {
         const values = [] as TableValue[];
         results.forEach((result) => {
-          if (result.status === "fulfilled") values.push(result.value);
+          if (result.status === "fulfilled") {
+            values.push(result.value);
+          }
         });
         setTableValues(values);
       });

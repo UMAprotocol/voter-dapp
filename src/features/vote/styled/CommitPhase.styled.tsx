@@ -49,6 +49,9 @@ export const FormWrapper = styled.form<StyledFormProps>`
             props.isConnected && props.publicKey ? "all" : "none"};
           opacity: ${(props) =>
             props.isConnected && props.publicKey ? "1" : "0.5"};
+          label {
+            display: block;
+          }
         }
       }
       thead {
@@ -83,6 +86,9 @@ export const FormWrapper = styled.form<StyledFormProps>`
       }
       .vote {
         margin: 0 auto;
+      }
+      .empty-vote {
+        text-align: center;
       }
     }
     .end-row {
