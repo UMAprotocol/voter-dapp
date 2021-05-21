@@ -114,7 +114,6 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
 
           {showModalSummary().length
             ? showModalSummary().map((el, index) => {
-                console.log("el", el);
                 return (
                   <div className="vote-wrapper" key={index}>
                     <div>{el.identifier}</div>

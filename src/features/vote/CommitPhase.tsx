@@ -184,11 +184,11 @@ const CommitPhase: FC<Props> = ({
       const identifiers = Object.keys(watchAllFields);
       const values = Object.values(watchAllFields);
       for (let i = 0; i < identifiers.length; i++) {
-        if (values[i] !== "") {
-          const idenSplit = identifiers[i].split(":");
+        if (values[i] !== "" && values[i] !== undefined) {
+          const idenSplit = identifiers[i].split("~");
 
           const val = {
-            identifier: idenSplit[0],
+            identifier: `${idenSplit[0]} -- ${idenSplit[1]}`,
             value: values[i],
           };
           summary.push(val);
@@ -223,6 +223,7 @@ const CommitPhase: FC<Props> = ({
         </thead>
         <tbody>
           {tableValues.map((el, index) => {
+            console.log("el timestamp", el.timestamp);
             return (
               <tr key={index}>
                 <td>
@@ -275,7 +276,7 @@ const CommitPhase: FC<Props> = ({
                     <TextInput
                       label="Input your vote."
                       control={control}
-                      name={`${el.identifier}:${el.timestamp}:${el.ancHex}`}
+                      name={`${el.identifier}~${el.timestamp}~${el.ancHex}`}
                       placeholder="0.000"
                       variant="text"
                     />
