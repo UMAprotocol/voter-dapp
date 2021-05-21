@@ -15,6 +15,7 @@ interface TableValue {
   revealed: boolean;
   ancHex: string;
   timestamp: string;
+  unix: string;
   description?: string;
 }
 
@@ -49,6 +50,7 @@ export default function useTableValues(
             hourCycle: "h24",
             timeZoneName: "short",
           }),
+          unix: el.time,
         };
       });
 
@@ -138,6 +140,7 @@ export default function useTableValues(
           hourCycle: "h24",
           timeZoneName: "short",
         });
+        datum.unix = el.time;
 
         tv.push(datum);
         // Gather up PostRevealData here to save complexity
