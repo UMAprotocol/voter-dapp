@@ -27,6 +27,7 @@
     "@uma/core-1-2-2": "npm:@uma/core@1.2.2",
     "axios": "^0.21.1",
     "babel-plugin-macros": "^3.0.1",
+    "bnc-notify": "^1.6.1",
     "bnc-onboard": "^1.20.0",
     "contentful": "^8.3.5",
     "downshift": "^6.1.3",

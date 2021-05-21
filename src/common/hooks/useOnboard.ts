@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { OnboardContext, actions } from "common/context/OnboardContext";
 import { ethers } from "ethers";
 import { Wallet } from "bnc-onboard/dist/src/interfaces";
+import Notify from "bnc-notify";
 
 type ChainId = 1 | 42 | 1337;
 
@@ -27,7 +28,16 @@ export default function useOnboard() {
   }
 
   const {
-    state: { provider, onboard, signer, network, address, error, isConnected },
+    state: {
+      provider,
+      onboard,
+      signer,
+      network,
+      address,
+      error,
+      isConnected,
+      notify,
+    },
     dispatch,
     connect,
     disconnect,
@@ -48,6 +58,14 @@ export default function useOnboard() {
               chainId: networkId,
               name: getNetworkName(networkId as ChainId),
             },
+          });
+
+          dispatch({
+            type: actions.SET_NOTIFY,
+            payload: Notify({
+              dappId: process.env.REACT_APP_PUBLIC_ONBOARD_API_KEY, // [String] The API key created by step one above
+              networkId, // [Integer] The Ethereum network ID your Dapp uses.
+            }),
           });
         },
         wallet: async (wallet: Wallet) => {
@@ -96,5 +114,6 @@ export default function useOnboard() {
     disconnect: () => disconnect(dispatch, onboard),
     initOnboard,
     setInitOnboard,
+    notify,
   };
 }
