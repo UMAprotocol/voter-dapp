@@ -281,7 +281,6 @@ const CommitPhase: FC<Props> = ({
                       label="Input your vote."
                       control={control}
                       name={`${el.identifier}~${el.unix}~${el.ancHex}`}
-
                       placeholder="0.000"
                       variant="text"
                     />
