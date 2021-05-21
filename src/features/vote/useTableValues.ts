@@ -81,7 +81,6 @@ export default function useTableValues(
       descriptionsAdded.then((results) => {
         const values = [] as TableValue[];
         results.forEach((result) => {
-          console.log("result", result);
           if (result.status === "fulfilled") {
             values.push(result.value);
           }
@@ -204,7 +203,6 @@ export default function useTableValues(
     }
   }, [activeRequests, encryptedVotes, revealedVotes]);
 
-  // console.log("TV", tableValues);
   return {
     tableValues,
     setTableValues,
