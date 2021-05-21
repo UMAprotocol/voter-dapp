@@ -50,7 +50,7 @@ const RevealPhase: FC<Props> = ({
   );
 
   const {
-    state: { network, signer, provider },
+    state: { network, signer, provider, notify },
   } = useContext(OnboardContext);
   const { addError } = useContext(ErrorContext);
 
@@ -150,6 +150,9 @@ const RevealPhase: FC<Props> = ({
                             snapshotCurrentRound(votingContract, msg).then(
                               (tx) => {
                                 // TODO: Refetch state after snapshot.
+                                if (tx) {
+                                  if (notify) notify.hash(tx.hash);
+                                }
                               }
                             );
                           }
@@ -172,11 +175,16 @@ const RevealPhase: FC<Props> = ({
                 if (designatedVotingContract) vc = designatedVotingContract;
                 if (vc && postRevealData.length) {
                   return revealVotes(vc, postRevealData)
-                    .then((res) => {
-                      // refetch votes.
-                      refetchVoteRevealedEvents();
-                      refetchEncryptedVotes();
-                      setPostRevealData([]);
+                    .then((tx) => {
+                      if (tx) {
+                        if (notify) notify.hash(tx.hash);
+                        tx.wait(1).then((conf: any) => {
+                          // refetch votes.
+                          refetchVoteRevealedEvents();
+                          refetchEncryptedVotes();
+                          setPostRevealData([]);
+                        });
+                      }
                     })
                     .catch((err) => addError(err));
                 }

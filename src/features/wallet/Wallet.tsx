@@ -60,6 +60,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     signer,
     address,
     network,
+    notify,
   } = useOnboard();
 
   const { addError } = useContext(ErrorContext);
@@ -281,16 +282,25 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                           )
                       );
 
-                      return collectRewards(
-                        votingContract,
-                        unclaimedRewards,
-                        multicallContract
-                      ) // wait for at least 1 block conf.
-                        .then((tx) => tx.wait(1))
-                        .then((conf: any) => {
-                          setAvailableRewards(DEFAULT_BALANCE);
-                        })
-                        .catch((err) => addError(err));
+                      return (
+                        collectRewards(
+                          votingContract,
+                          unclaimedRewards,
+                          multicallContract
+                        )
+                          // wait for at least 1 block conf.
+                          .then((tx) => {
+                            if (tx) {
+                              if (notify) notify.hash(tx.hash);
+
+                              tx.wait(1)
+                                .then((conf: any) => {
+                                  setAvailableRewards(DEFAULT_BALANCE);
+                                })
+                                .catch((err: any) => addError(err));
+                            }
+                          })
+                      );
                     }
                   }}
                   className="Wallet-collect"
