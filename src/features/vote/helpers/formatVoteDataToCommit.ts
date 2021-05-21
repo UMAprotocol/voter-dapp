@@ -82,7 +82,5 @@ export async function formatVoteDataToCommit(
     })
   );
 
-  console.log("post values", postValues);
-
   return postValues;
 }

@@ -51,7 +51,6 @@ export const queryEncryptedVotes = async (
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
     // there may be multiple commit events, if there are collisions, then take newest
-    console.log("events", events);
     const eventTable = events.reduce(
       (result: { [key: string]: any }, event: any) => {
         const { args } = event;
