@@ -215,8 +215,8 @@ const CommitPhase: FC<Props> = ({
           <tr>
             <th>Requested Vote</th>
             <th>Description</th>
-            <th>Commit Vote</th>
             <th>Timestamp</th>
+            <th>Commit Vote</th>
             <th className="center-header">Your Vote</th>
             <th className="center-header">Vote Status</th>
           </tr>
