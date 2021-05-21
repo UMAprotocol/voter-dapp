@@ -24,9 +24,8 @@ export async function formatVoteDataToCommit(
   await Promise.all(
     activeRequests.map(async (el) => {
       // Compute hash and encrypted vote
-
       if (
-        Object.keys(data).includes(`${el.identifier}~${el.time}~${el.idenHex}`)
+        Object.keys(data).includes(`${el.identifier}~${el.time}~${el.ancHex}`)
       ) {
         const datum = {} as PostCommitVote;
         // datum.identifier = stringToBytes32(el.identifier);
@@ -43,7 +42,7 @@ export async function formatVoteDataToCommit(
         }
 
         datum.ancillaryData = ancData;
-        let price = data[`${el.identifier}~${el.time}~${el.idenHex}`];
+        let price = data[`${el.identifier}~${el.time}~${el.ancHex}`];
         // change yes/no to numbers.
         // When converting price to wei here, we need precision
         // Default to 18 decimals -- could be different.

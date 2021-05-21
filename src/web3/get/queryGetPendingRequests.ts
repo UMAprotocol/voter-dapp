@@ -15,9 +15,8 @@ export interface PendingRequest {
 export const queryGetPendingRequests = async (contract: ethers.Contract) => {
   // console.log("contract", contract);
   try {
-    const requests: Array<
-      Array<[string, ethers.BigNumber, string]>
-    > = await contract.functions.getPendingRequests();
+    const requests: Array<Array<[string, ethers.BigNumber, string]>> =
+      await contract.functions.getPendingRequests();
     if (requests.length) {
       const values = [] as PendingRequest[];
       requests.forEach((el) => {

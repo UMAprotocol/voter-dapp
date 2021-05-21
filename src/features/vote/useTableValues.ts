@@ -38,7 +38,7 @@ export default function useTableValues(
           vote: "-",
           identifier: el.identifier,
           revealed: false,
-          ancHex: el.idenHex,
+          ancHex: el.ancHex,
           description: "",
           timestamp: DateTime.fromSeconds(Number(el.time)).toLocaleString({
             month: "short",
@@ -97,6 +97,7 @@ export default function useTableValues(
         const datum = {} as TableValue;
         datum.ancillaryData = el.ancillaryData;
         datum.identifier = el.identifier;
+        datum.ancHex = el.ancHex;
         let vote = "-";
         // I believe latest events are on bottom. requires testing.
         const findVote = latestVotesFirst.find(
