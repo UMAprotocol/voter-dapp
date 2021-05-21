@@ -223,7 +223,6 @@ const CommitPhase: FC<Props> = ({
         </thead>
         <tbody>
           {tableValues.map((el, index) => {
-            console.log("el timestamp", el.timestamp);
             return (
               <tr key={index}>
                 <td>
