@@ -59,6 +59,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
     usePendingRequests();
   const { data: roundId = "" } = useCurrentRoundId();
 
+
   const {
     data: revealedVotes = [] as VoteRevealed[],
     refetch: refetchVoteRevealedEvents,
