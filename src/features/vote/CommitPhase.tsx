@@ -184,11 +184,9 @@ const CommitPhase: FC<Props> = ({
       const identifiers = Object.keys(watchAllFields);
       const values = Object.values(watchAllFields);
       for (let i = 0; i < identifiers.length; i++) {
-        if (values[i] !== "" && values[i] !== undefined) {
-          const idenSplit = identifiers[i].split("~");
-
+        if (values[i] !== "") {
           const val = {
-            identifier: `${idenSplit[0]} -- ${idenSplit[1]}`,
+            identifier: identifiers[i],
             value: values[i],
           };
           summary.push(val);
@@ -215,9 +213,8 @@ const CommitPhase: FC<Props> = ({
           <tr>
             <th>Requested Vote</th>
             <th>Description</th>
-            <th>Timestamp</th>
             <th>Commit Vote</th>
-            <th className="center-header">Your Vote</th>
+            {hasVoted ? <th className="center-header">Your Vote</th> : null}
             <th className="center-header">Vote Status</th>
           </tr>
         </thead>
@@ -246,11 +243,6 @@ const CommitPhase: FC<Props> = ({
                 <td>
                   <div className="description">{el.description}</div>
                 </td>
-                <td>
-                  <div>
-                    {el.timestamp} ({el.unix}){" "}
-                  </div>
-                </td>
                 <td className="input-cell">
                   {el.identifier.includes("Admin") ? (
                     <div className="select">
@@ -272,12 +264,14 @@ const CommitPhase: FC<Props> = ({
                           },
                         ]}
                       />
+
+                      {/* <Select control={control} name={`${el.identifier}`} /> */}
                     </div>
                   ) : (
                     <TextInput
                       label="Input your vote."
                       control={control}
-                      name={`${el.identifier}~${el.timestamp}~${el.ancHex}`}
+                      name={`${el.identifier}`}
                       placeholder="0.000"
                       variant="text"
                     />
@@ -290,11 +284,7 @@ const CommitPhase: FC<Props> = ({
                       <p className="vote">{el.vote}</p>
                     </div>
                   </td>
-                ) : (
-                  <td>
-                    <p className="empty-vote">-</p>
-                  </td>
-                )}
+                ) : null}
 
                 <td>
                   <div className="status">

@@ -65,7 +65,6 @@ const RevealPhase: FC<Props> = ({
           <tr>
             <th>Requested Vote</th>
             <th>Description</th>
-            <th>Timestamp</th>
             <th className="center-header">Your Vote</th>
             <th className="center-header">Vote Status</th>
           </tr>
@@ -94,9 +93,6 @@ const RevealPhase: FC<Props> = ({
                 </td>
                 <td>
                   <div className="description">{el.description}</div>
-                </td>
-                <td>
-                  <div>{el.timestamp}</div>
                 </td>
                 <td>
                   <div>
