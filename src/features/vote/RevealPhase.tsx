@@ -96,6 +96,9 @@ const RevealPhase: FC<Props> = ({
                   <div className="description">{el.description}</div>
                 </td>
                 <td>
+                  <div>{el.timestamp}</div>
+                </td>
+                <td>
                   <div>
                     {el.timestamp} ({el.unix})
                   </div>
