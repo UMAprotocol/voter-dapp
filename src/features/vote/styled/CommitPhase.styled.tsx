@@ -44,6 +44,12 @@ export const FormWrapper = styled.form<StyledFormProps>`
           props.isConnected && props.publicKey ? "auto" : "not-allowed"};
         input,
         .select {
+          div {
+            margin: 1rem 0;
+          }
+          ul {
+            background-color: #fff;
+          }
           // Double check the user is connected and has signed the message so their public / private signing keys are defined.
           pointer-events: ${(props) =>
             props.isConnected && props.publicKey ? "all" : "none"};
@@ -76,6 +82,7 @@ export const FormWrapper = styled.form<StyledFormProps>`
           .description {
             max-width: 500px;
           }
+          /* padding-bottom: 0.5rem; */
         }
 
         td:last-child {

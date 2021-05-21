@@ -100,6 +100,11 @@ const RevealPhase: FC<Props> = ({
                 </td>
                 <td>
                   <div>
+                    {el.timestamp} ({el.unix})
+                  </div>
+                </td>
+                <td>
+                  <div>
                     <p className="vote">{el.vote}</p>
                   </div>
                 </td>

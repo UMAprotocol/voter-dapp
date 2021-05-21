@@ -116,7 +116,10 @@ const CommitPhase: FC<Props> = ({
     (data: FormData) => {
       const validValues = {} as FormData;
       for (let i = 0; i < Object.keys(data).length; i++) {
-        if (Object.values(data)[i] !== "")
+        if (
+          Object.values(data)[i] !== "" &&
+          Object.values(data)[i] !== undefined
+        )
           validValues[Object.keys(data)[i]] = Object.values(data)[i];
       }
 
@@ -256,7 +259,7 @@ const CommitPhase: FC<Props> = ({
                     <div className="select">
                       <RHFDropdown
                         control={control}
-                        name={`${el.identifier}`}
+                        name={`${el.identifier}~${el.unix}~${el.ancHex}`}
                         items={[
                           {
                             value: "",
@@ -277,7 +280,8 @@ const CommitPhase: FC<Props> = ({
                     <TextInput
                       label="Input your vote."
                       control={control}
-                      name={`${el.identifier}~${el.timestamp}~${el.ancHex}`}
+                      name={`${el.identifier}~${el.unix}~${el.ancHex}`}
+
                       placeholder="0.000"
                       variant="text"
                     />
