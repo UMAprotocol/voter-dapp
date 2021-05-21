@@ -10,7 +10,6 @@ jobs:
       - run:
           name: Run build
           command: |
-            sudo npm install --global --force yarn
             yarn
             yarn build
       - save_cache:
