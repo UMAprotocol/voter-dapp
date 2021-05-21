@@ -62,7 +62,11 @@ export default function useTableValues(
           let description = "Price request.";
 
           if (umipNumber) {
-            description = await (await fetchUmip(umipNumber)).description;
+            try {
+              description = (await fetchUmip(umipNumber)).description;
+            } catch (err) {
+              description = "No data available for this UMIP.";
+            }
           }
 
           return {
@@ -75,7 +79,10 @@ export default function useTableValues(
       descriptionsAdded.then((results) => {
         const values = [] as TableValue[];
         results.forEach((result) => {
-          if (result.status === "fulfilled") values.push(result.value);
+          console.log("result", result);
+          if (result.status === "fulfilled") {
+            values.push(result.value);
+          }
         });
         setTableValues(values);
       });
@@ -166,7 +173,11 @@ export default function useTableValues(
           let description = "Price request.";
 
           if (umipNumber) {
-            description = (await fetchUmip(umipNumber)).description;
+            try {
+              description = (await fetchUmip(umipNumber)).description;
+            } catch (err) {
+              description = "No data available for this UMIP.";
+            }
           }
 
           return {
@@ -179,7 +190,9 @@ export default function useTableValues(
       descriptionsAdded.then((results) => {
         const values = [] as TableValue[];
         results.forEach((result) => {
-          if (result.status === "fulfilled") values.push(result.value);
+          if (result.status === "fulfilled") {
+            values.push(result.value);
+          }
         });
         setTableValues(values);
       });
@@ -188,6 +201,7 @@ export default function useTableValues(
     }
   }, [activeRequests, encryptedVotes, revealedVotes]);
 
+  // console.log("TV", tableValues);
   return {
     tableValues,
     setTableValues,

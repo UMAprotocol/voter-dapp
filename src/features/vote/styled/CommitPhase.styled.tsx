@@ -49,6 +49,9 @@ export const FormWrapper = styled.form<StyledFormProps>`
             props.isConnected && props.publicKey ? "all" : "none"};
           opacity: ${(props) =>
             props.isConnected && props.publicKey ? "1" : "0.5"};
+          label {
+            display: block;
+          }
         }
       }
       thead {
