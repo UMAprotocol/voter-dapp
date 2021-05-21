@@ -185,8 +185,10 @@ const CommitPhase: FC<Props> = ({
       const values = Object.values(watchAllFields);
       for (let i = 0; i < identifiers.length; i++) {
         if (values[i] !== "") {
+          const idenSplit = identifiers[i].split(":");
+
           const val = {
-            identifier: identifiers[i],
+            identifier: idenSplit[0],
             value: values[i],
           };
           summary.push(val);
@@ -214,7 +216,8 @@ const CommitPhase: FC<Props> = ({
             <th>Requested Vote</th>
             <th>Description</th>
             <th>Commit Vote</th>
-            {hasVoted ? <th className="center-header">Your Vote</th> : null}
+            <th>Timestamp</th>
+            <th className="center-header">Your Vote</th>
             <th className="center-header">Vote Status</th>
           </tr>
         </thead>
@@ -243,6 +246,9 @@ const CommitPhase: FC<Props> = ({
                 <td>
                   <div className="description">{el.description}</div>
                 </td>
+                <td>
+                  <div>{el.timestamp}</div>
+                </td>
                 <td className="input-cell">
                   {el.identifier.includes("Admin") ? (
                     <div className="select">
@@ -264,14 +270,12 @@ const CommitPhase: FC<Props> = ({
                           },
                         ]}
                       />
-
-                      {/* <Select control={control} name={`${el.identifier}`} /> */}
                     </div>
                   ) : (
                     <TextInput
                       label="Input your vote."
                       control={control}
-                      name={`${el.identifier}`}
+                      name={`${el.identifier}:${el.timestamp}:${el.ancHex}`}
                       placeholder="0.000"
                       variant="text"
                     />
@@ -284,7 +288,11 @@ const CommitPhase: FC<Props> = ({
                       <p className="vote">{el.vote}</p>
                     </div>
                   </td>
-                ) : null}
+                ) : (
+                  <td>
+                    <p className="empty-vote">-</p>
+                  </td>
+                )}
 
                 <td>
                   <div className="status">

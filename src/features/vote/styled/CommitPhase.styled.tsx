@@ -84,6 +84,9 @@ export const FormWrapper = styled.form<StyledFormProps>`
       .vote {
         margin: 0 auto;
       }
+      .empty-vote {
+        text-align: center;
+      }
     }
     .end-row {
       margin-top: 1rem;
