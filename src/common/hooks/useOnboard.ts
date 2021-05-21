@@ -60,24 +60,25 @@ export default function useOnboard() {
             },
           });
 
-          // if (process.env.REACT_APP_CURRENT_ENV !== "test") {
-          if (networkId) {
-            dispatch({
-              type: actions.SET_NOTIFY,
-              payload: Notify({
-                dappId: process.env.REACT_APP_PUBLIC_ONBOARD_API_KEY, // [String] The API key created by step one above
-                networkId, // [Integer] The Ethereum network ID your Dapp uses.
-                desktopPosition: "topRight",
-              }),
-            });
-          } else {
-            dispatch({
-              type: actions.SET_NOTIFY,
-              payload: null,
-            });
+          // Notify.js doesn't work on ganache anyway (see: docs).
+          // So don't bother initializing it on test.
+          if (process.env.REACT_APP_CURRENT_ENV !== "test") {
+            if (networkId) {
+              dispatch({
+                type: actions.SET_NOTIFY,
+                payload: Notify({
+                  dappId: process.env.REACT_APP_PUBLIC_ONBOARD_API_KEY, // [String] The API key created by step one above
+                  networkId, // [Integer] The Ethereum network ID your Dapp uses.
+                  desktopPosition: "topRight",
+                }),
+              });
+            } else {
+              dispatch({
+                type: actions.SET_NOTIFY,
+                payload: null,
+              });
+            }
           }
-
-          // }
         },
         wallet: async (wallet: Wallet) => {
           if (wallet.provider) {
