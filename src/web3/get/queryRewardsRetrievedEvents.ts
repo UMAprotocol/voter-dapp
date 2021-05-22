@@ -2,6 +2,9 @@ import { ethers } from "ethers";
 import { VoteEvent } from "../types.web3";
 import assert from "assert";
 import { VOTER_CONTRACT_BLOCK } from "common/config";
+import { OLD_VOTING_CONTRACT_ADDRESSES } from "common/config";
+import provider from "common/utils/web3/createProvider";
+import createOldVotingContractInstance from "web3/createOldVotingContractInstance";
 
 /*
   event RewardsRetrieved(
@@ -19,7 +22,7 @@ export interface RewardsRetrieved extends VoteEvent {
   ancillaryData: string;
 }
 
-export const queryRewardsRetrieved = async (
+export const queryRewardsRetrievedEvents = async (
   contract: ethers.Contract | null,
   address: string | null
 ) => {
@@ -42,7 +45,7 @@ export const queryRewardsRetrieved = async (
 
   try {
     const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
-    return events.map((el) => {
+    let rewards = events.map((el) => {
       const { args } = el;
       const datum = {} as RewardsRetrieved;
       if (args) {
@@ -56,7 +59,62 @@ export const queryRewardsRetrieved = async (
 
       return datum;
     });
+
+    // On mainnet, look back at old voting contracts to retrieve rewards
+    // for voters who have voted on previous iteration of the contract.
+    // this is largely just for summation of Total UMA Collected.
+    if (
+      (process.env.REACT_APP_CURRENT_ENV === "main" ||
+        process.env.REACT_APP_CURRENT_ENV === undefined) &&
+      address
+    ) {
+      const promises = OLD_VOTING_CONTRACT_ADDRESSES.map(async (ca) => {
+        return queryOldContractRewards(ca, address);
+      });
+
+      return Promise.all(promises).then((results) => {
+        const flatten = results.flat();
+        return [...rewards, ...flatten];
+      });
+    }
+    return rewards;
   } catch (err) {
-    console.log("err", err);
+    throw err;
   }
 };
+
+async function queryOldContractRewards(
+  contractAddress: string,
+  voterAddress: string
+) {
+  const contract = createOldVotingContractInstance(
+    new ethers.VoidSigner(contractAddress, provider),
+    contractAddress
+  );
+  const filter = contract.filters.RewardsRetrieved(
+    voterAddress,
+    null,
+    null,
+    null,
+    null
+  );
+
+  const events = await contract.queryFilter(filter, 0);
+  const rewards = events.map((el) => {
+    const { args } = el;
+    const datum = {} as RewardsRetrieved;
+    if (args) {
+      datum.address = args[0];
+      datum.roundId = args[1].toString();
+      datum.identifier = ethers.utils.toUtf8String(args[2]);
+      datum.time = args[3].toString();
+      datum.numTokens = args[4].toString();
+      // Anc didn't exist -- normalize to new data and set default.
+      datum.ancillaryData = "0x";
+    }
+
+    return datum;
+  });
+
+  return rewards;
+}

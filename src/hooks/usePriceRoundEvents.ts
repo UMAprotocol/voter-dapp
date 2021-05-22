@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import provider from "common/utils/web3/createProvider";
 import createVotingContractInstance from "web3/createVotingContractInstance";
 import { useQuery } from "react-query";
@@ -8,6 +9,7 @@ import {
   queryPriceRoundEvents,
   PriceRound,
 } from "web3/get/queryPriceRoundEvents";
+import { ErrorContext } from "common/context/ErrorContext";
 
 const signer = provider.getSigner();
 const contract = createVotingContractInstance(
@@ -17,22 +19,16 @@ const contract = createVotingContractInstance(
 
 // This can be accessed without logging the user in.
 export default function usePriceRoundEvents() {
-  const { data, error, isFetching } = useQuery<PriceRound[]>(
+  const { addError } = useContext(ErrorContext);
+
+  const { data, error, isFetching } = useQuery<PriceRound[] | undefined | void>(
     "priceRoundEvents",
     () => {
-      return queryPriceRoundEvents(contract).then((res) => {
-        if (res) {
-          return res;
-        } else {
-          return [];
-        }
-      });
+      return queryPriceRoundEvents(contract)
+        .then((res) => res)
+        .catch((err) => addError(err));
     }
   );
 
-  if (data) {
-    return { data, error, isFetching };
-  } else {
-    return { data: [] as PriceRound[], error, isFetching };
-  }
+  return { data, error, isFetching };
 }

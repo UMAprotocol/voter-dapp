@@ -15,6 +15,7 @@ import RevealPhase from "./RevealPhase";
 import ActiveViewDetailsModal from "./ActiveViewDetailsModal";
 import useModal from "common/hooks/useModal";
 import { SigningKeys } from "App";
+import { Round } from "web3/get/queryRounds";
 
 export interface ModalState {
   proposal: string;
@@ -28,6 +29,7 @@ interface Props {
   encryptedVotes: EncryptedVote[];
   refetchEncryptedVotes: Function;
   revealedVotes: VoteRevealed[];
+  refetchVoteRevealedEvents: Function;
   votingAddress: string | null;
   hotAddress: string | null;
   signingKeys: SigningKeys;
@@ -42,6 +44,7 @@ const ActiveRequests: FC<Props> = ({
   refetchEncryptedVotes,
   hotAddress,
   signingKeys,
+  refetchVoteRevealedEvents,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState("00:00");
 
@@ -57,9 +60,9 @@ const ActiveRequests: FC<Props> = ({
     state: { isConnected },
   } = useContext(OnboardContext);
 
-  const { data: votePhase } = useVotePhase();
+  const { data: votePhase = "" } = useVotePhase();
 
-  const { data: round } = useRound(Number(roundId));
+  const { data: round = {} as Round } = useRound(Number(roundId));
 
   // Set time remaining depending if it's the Commit or Reveal
   // Note: the requests are all slightly differently in there final vote time. I'll use the last
@@ -72,7 +75,7 @@ const ActiveRequests: FC<Props> = ({
     }, 30000);
 
     return () => clearInterval(timer);
-  }, [activeRequests, votePhase]);
+  }, []);
 
   const signingPublicKey =
     hotAddress && signingKeys[hotAddress]
@@ -80,6 +83,7 @@ const ActiveRequests: FC<Props> = ({
       : votingAddress && signingKeys[votingAddress]
       ? signingKeys[votingAddress].publicKey
       : "";
+
   return (
     <Wrapper className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">
@@ -127,6 +131,7 @@ const ActiveRequests: FC<Props> = ({
           round={round}
           revealedVotes={revealedVotes}
           refetchEncryptedVotes={refetchEncryptedVotes}
+          refetchVoteRevealedEvents={refetchVoteRevealedEvents}
           setViewDetailsModalState={setModalState}
           openViewDetailsModal={open}
         />

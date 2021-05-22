@@ -49,7 +49,8 @@ function App(props: Props) {
             });
           })
           .catch((err) => {
-            addError("Sign failed.");
+            const error = new Error("Sign failed.");
+            addError(error);
           });
       }
     }
@@ -68,6 +69,21 @@ function App(props: Props) {
       props.queryClient.clear();
     }
   }, [state.isConnected, state.address, props.queryClient]);
+
+  // Do a hard refresh if the user changes networks (IE: mainnet to kovan).
+  // Cleaner overall, as the app can error out with network changes.
+  // Not a big deal as in production this app is only supported on mainnet anyway.
+  const previousNetwork = usePrevious(state.network);
+
+  useEffect(() => {
+    if (
+      previousNetwork &&
+      state.network &&
+      state.network.chainId !== previousNetwork.chainId
+    ) {
+      window.location.reload();
+    }
+  }, [state.network, previousNetwork]);
 
   // Disconnect user if they are looged in and they switch accounts in MM
   const previousAddress = usePrevious(state.address);

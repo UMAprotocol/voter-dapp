@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useContext } from "react";
 import tw from "twin.macro"; // eslint-disable-line
 import { ethers } from "ethers";
 import useModal from "common/hooks/useModal";
@@ -19,6 +19,7 @@ import {
 } from "hooks";
 
 import TwoKeyContractModal from "./TwoKeyContractModal";
+import { ErrorContext } from "common/context/ErrorContext";
 
 // Helpers
 import formatWalletBalance from "./helpers/formatWalletBalance";
@@ -26,7 +27,8 @@ import calculateUMATotalValue from "./helpers/calculateUMATotalValue";
 import checkAvailableRewards from "./helpers/checkAvailableRewards";
 import collectRewards from "./helpers/collectRewards";
 import shortenAddress from "./helpers/shortenAddress";
-
+import { RewardsRetrieved } from "web3/get/queryRewardsRetrievedEvents";
+import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import {
   Wrapper,
   Connected,
@@ -58,7 +60,10 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     signer,
     address,
     network,
+    notify,
   } = useOnboard();
+
+  const { addError } = useContext(ErrorContext);
 
   const prevTotalCollected = usePrevious(totalUmaCollected);
   const prevAvailableReweards = usePrevious(availableRewards);
@@ -84,14 +89,12 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     hotAddress
   );
 
-  const { data: rewardsEvents } = useRewardsRetrievedEvents(
-    votingContract,
-    votingAddress
-  );
+  const { data: rewardsEvents = [] as RewardsRetrieved[] } =
+    useRewardsRetrievedEvents(votingContract, votingAddress);
 
   const { multicallContract } = useMulticall(signer, isConnected, network);
 
-  const { data: votesRevealed } = useVotesRevealedEvents(
+  const { data: votesRevealed = [] as VoteRevealed[] } = useVotesRevealedEvents(
     votingContract,
     votingAddress
   );
@@ -185,7 +188,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                 ) : (
                   <Reconnect>
                     {" "}
-                    Sign in rejected. Reconnect to sign in.
+                    Account needs to sign message. Reconnect if sign cancelled.
                   </Reconnect>
                 )}
               </>
@@ -269,11 +272,34 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                 <span
                   onClick={() => {
                     if (votingContract && votesRevealed && multicallContract) {
-                      collectRewards(
-                        votingContract,
-                        votesRevealed,
-                        setAvailableRewards,
-                        multicallContract
+                      const unclaimedRewards = votesRevealed.filter(
+                        (x) =>
+                          !rewardsEvents.some(
+                            (y) =>
+                              x.identifier === y.identifier &&
+                              x.roundId === y.roundId &&
+                              x.ancillaryData === y.ancillaryData
+                          )
+                      );
+
+                      return (
+                        collectRewards(
+                          votingContract,
+                          unclaimedRewards,
+                          multicallContract
+                        )
+                          // wait for at least 1 block conf.
+                          .then((tx) => {
+                            if (tx) {
+                              if (notify) notify.hash(tx.hash);
+
+                              tx.wait(1)
+                                .then((conf: any) => {
+                                  setAvailableRewards(DEFAULT_BALANCE);
+                                })
+                                .catch((err: any) => addError(err));
+                            }
+                          })
                       );
                     }
                   }}

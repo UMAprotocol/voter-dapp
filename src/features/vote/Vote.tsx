@@ -8,7 +8,7 @@ import ActiveRequests from "./ActiveRequests";
 import PastRequests from "./PastRequests";
 import UpcomingRequests from "./UpcomingRequests";
 
-import useVoteData from "common/hooks/useVoteData";
+import useVoteData, { PriceRequestRound } from "common/hooks/useVoteData";
 import { OnboardContext } from "common/context/OnboardContext";
 import {
   usePriceRequestAddedEvents,
@@ -21,7 +21,9 @@ import {
 } from "hooks";
 
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
-
+import { PendingRequest } from "web3/get/queryGetPendingRequests";
+import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { SigningKeys } from "App";
 
 interface Props {
@@ -35,7 +37,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
 
   const { state } = useContext(OnboardContext);
 
-  const { data: voteSummaryData } = useVoteData();
+  const { data: voteSummaryData = [] as PriceRequestRound[] } = useVoteData();
 
   const { votingAddress, hotAddress } = useVotingAddress(
     state.address,
@@ -51,15 +53,17 @@ const Vote: FC<Props> = ({ signingKeys }) => {
     hotAddress
   );
 
-  const { data: priceRequestsAdded } = usePriceRequestAddedEvents();
-  const { data: activeRequests } = usePendingRequests();
+  const { data: priceRequestsAdded = [] as PriceRequestAdded[] } =
+    usePriceRequestAddedEvents();
+  const { data: activeRequests = [] as PendingRequest[] } =
+    usePendingRequests();
+  const { data: roundId = "" } = useCurrentRoundId();
 
-  const { data: roundId } = useCurrentRoundId();
 
-  const { data: revealedVotes } = useVotesRevealedEvents(
-    votingContract,
-    votingAddress
-  );
+  const {
+    data: revealedVotes = [] as VoteRevealed[],
+    refetch: refetchVoteRevealedEvents,
+  } = useVotesRevealedEvents(votingContract, votingAddress);
 
   const signingPK =
     hotAddress && signingKeys[hotAddress]
@@ -68,8 +72,15 @@ const Vote: FC<Props> = ({ signingKeys }) => {
       ? signingKeys[votingAddress].privateKey
       : "";
 
-  const { data: encryptedVotes, refetch: refetchEncryptedVotes } =
-    useEncryptedVotesEvents(votingContract, votingAddress, signingPK, roundId);
+  const {
+    data: encryptedVotes = [] as EncryptedVote[],
+    refetch: refetchEncryptedVotes,
+  } = useEncryptedVotesEvents(
+    votingContract,
+    votingAddress,
+    signingPK,
+    roundId
+  );
 
   useEffect(() => {
     if (priceRequestsAdded.length) {
@@ -98,6 +109,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
           encryptedVotes={encryptedVotes}
           refetchEncryptedVotes={refetchEncryptedVotes}
           revealedVotes={revealedVotes}
+          refetchVoteRevealedEvents={refetchVoteRevealedEvents}
           votingAddress={votingAddress}
           hotAddress={hotAddress}
         />

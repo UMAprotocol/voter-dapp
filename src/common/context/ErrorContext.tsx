@@ -2,7 +2,7 @@ import { useState, useCallback, createContext, FC, ReactNode } from "react";
 
 interface ContextProps {
   error: string | undefined;
-  addError: (message: string) => void;
+  addError: (message: Error) => void;
   removeError: () => void;
 }
 
@@ -21,11 +21,11 @@ const ErrorProvider: FC<ProviderProps> = ({ children }) => {
 
   const removeError = () => setError(undefined);
 
-  const addError = (message: string | undefined) => setError(message);
+  const addError = (error: Error | undefined) => setError(error?.message);
 
   const contextValue: ContextProps = {
     error,
-    addError: useCallback((message) => addError(message), []),
+    addError: useCallback((error) => addError(error), []),
     removeError: useCallback(() => removeError(), []),
   };
 

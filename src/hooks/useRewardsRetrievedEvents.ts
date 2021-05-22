@@ -1,31 +1,29 @@
+import { useContext } from "react";
 import { useQuery } from "react-query";
 import { ethers } from "ethers";
 import {
-  queryRewardsRetrieved,
+  queryRewardsRetrievedEvents,
   RewardsRetrieved,
 } from "web3/get/queryRewardsRetrievedEvents";
+import { ErrorContext } from "common/context/ErrorContext";
 
 export default function useRewardsRetrievedEvents(
   contract: ethers.Contract | null,
   address: string | null
 ) {
-  const { data, error, isFetching } = useQuery<RewardsRetrieved[]>(
+  const { addError } = useContext(ErrorContext);
+
+  const { data, error, isFetching } = useQuery<
+    RewardsRetrieved[] | undefined | void
+  >(
     "rewardsRetrievedEvents",
     () => {
-      return queryRewardsRetrieved(contract, address).then((res) => {
-        if (res) {
-          return res;
-        } else {
-          return [];
-        }
-      });
+      return queryRewardsRetrievedEvents(contract, address)
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     { enabled: contract !== null && address !== null }
   );
 
-  if (data) {
-    return { data, error, isFetching };
-  } else {
-    return { data: [] as RewardsRetrieved[], error, isFetching };
-  }
+  return { data, error, isFetching };
 }

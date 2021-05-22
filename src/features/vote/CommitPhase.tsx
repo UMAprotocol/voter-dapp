@@ -71,7 +71,7 @@ const CommitPhase: FC<Props> = ({
   const [modalState, setModalState] = useState<SubmitModalState>("init");
   const [submitErrorMessage, setSubmitErrorMessage] = useState("");
   const {
-    state: { network, signer },
+    state: { network, signer, notify },
   } = useContext(OnboardContext);
   const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
@@ -87,13 +87,13 @@ const CommitPhase: FC<Props> = ({
     revealedVotes
   );
 
-  const { data: roundId } = useCurrentRoundId();
+  const { data: roundId = "" } = useCurrentRoundId();
   const { isOpen, open, close, modalRef } = useModal();
 
   const generateDefaultValues = useCallback(() => {
     const dv = {} as FormData;
     activeRequests.forEach((el) => {
-      dv[el.identifier] = "";
+      dv[`${el.identifier}~${el.time}~${el.ancHex}`] = "";
     });
 
     return dv;
@@ -138,11 +138,15 @@ const CommitPhase: FC<Props> = ({
           if (vc) {
             commitVotes(vc, fd)
               .then((tx) => {
+                // console.log("tx", tx);
                 setModalState("pending");
                 setSubmitErrorMessage("");
+
                 // Need to confirm if the user submits the vote.
                 assert(tx, "Transaction did not get submitted, try again");
                 if (tx) {
+                  if (notify) notify.hash(tx.hash);
+
                   tx.wait(1)
                     .then((conf: any) => {
                       // Temporary, as mining is instant on local ganache.
@@ -175,6 +179,7 @@ const CommitPhase: FC<Props> = ({
       designatedVotingContract,
       votingAddress,
       reset,
+      notify,
     ]
   );
 

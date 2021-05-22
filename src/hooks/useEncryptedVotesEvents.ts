@@ -1,9 +1,11 @@
+import { useContext } from "react";
 import { useQuery } from "react-query";
 import { ethers } from "ethers";
 import {
   queryEncryptedVotes,
   EncryptedVote,
 } from "web3/get/queryEncryptedVotesEvents";
+import { ErrorContext } from "common/context/ErrorContext";
 
 export default function useEncryptedVotesEvents(
   contract: ethers.Contract | null,
@@ -11,7 +13,11 @@ export default function useEncryptedVotesEvents(
   privateKey: string,
   roundId: string
 ) {
-  const { data, error, isFetching, refetch } = useQuery<EncryptedVote[]>(
+  const { addError } = useContext(ErrorContext);
+
+  const { data, error, isFetching, refetch } = useQuery<
+    EncryptedVote[] | undefined | void
+  >(
     // key encryped votes by connected address
     ["encryptedVotesEvents", address],
     () => {
@@ -21,13 +27,9 @@ export default function useEncryptedVotesEvents(
         address,
         roundId
         // hotAddress
-      ).then((res) => {
-        if (res) {
-          return res;
-        } else {
-          return [];
-        }
-      });
+      )
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     {
       // do not run query if any of these are null
@@ -35,9 +37,5 @@ export default function useEncryptedVotesEvents(
     }
   );
 
-  if (data) {
-    return { data, error, isFetching, refetch };
-  } else {
-    return { data: [] as EncryptedVote[], error, isFetching, refetch };
-  }
+  return { data, error, isFetching, refetch };
 }

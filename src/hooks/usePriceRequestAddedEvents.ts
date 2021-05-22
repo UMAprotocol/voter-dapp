@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useQuery } from "react-query";
 import {
   queryPriceRequestAdded,
@@ -7,6 +8,7 @@ import {
 import provider from "common/utils/web3/createProvider";
 import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
 import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork";
+import { ErrorContext } from "common/context/ErrorContext";
 
 const contract = createVoidSignerVotingContractInstance(
   provider,
@@ -14,23 +16,18 @@ const contract = createVoidSignerVotingContractInstance(
 );
 
 export default function usePriceRequestAddedEvents() {
-  const { data, error, isFetching } = useQuery<PriceRequestAdded[]>(
+  const { addError } = useContext(ErrorContext);
+  const { data, error, isFetching } = useQuery<
+    PriceRequestAdded[] | undefined | void
+  >(
     "priceRequestAdded",
     () => {
-      return queryPriceRequestAdded(contract).then((res) => {
-        if (res) {
-          return res;
-        } else {
-          return [];
-        }
-      });
+      return queryPriceRequestAdded(contract)
+        .then((res) => res)
+        .catch((err) => addError(err));
     },
     { enabled: contract !== null }
   );
 
-  if (data) {
-    return { data, error, isFetching };
-  } else {
-    return { data: [] as PriceRequestAdded[], error, isFetching };
-  }
+  return { data, error, isFetching };
 }

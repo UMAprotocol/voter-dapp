@@ -14,6 +14,7 @@ import { snapshotCurrentRound } from "web3/post/snapshotCurrentRound";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 import useTableValues from "./useTableValues";
+import { ErrorContext } from "common/context/ErrorContext";
 
 interface Props {
   isConnected: boolean;
@@ -24,6 +25,7 @@ interface Props {
   round: Round;
   revealedVotes: VoteRevealed[];
   refetchEncryptedVotes: Function;
+  refetchVoteRevealedEvents: Function;
   setViewDetailsModalState: Dispatch<SetStateAction<ModalState>>;
   openViewDetailsModal: () => void;
 }
@@ -39,6 +41,7 @@ const RevealPhase: FC<Props> = ({
   refetchEncryptedVotes,
   openViewDetailsModal,
   setViewDetailsModalState,
+  refetchVoteRevealedEvents,
 }) => {
   const { tableValues, postRevealData, setPostRevealData } = useTableValues(
     activeRequests,
@@ -47,8 +50,9 @@ const RevealPhase: FC<Props> = ({
   );
 
   const {
-    state: { network, signer, provider },
+    state: { network, signer, provider, notify },
   } = useContext(OnboardContext);
+  const { addError } = useContext(ErrorContext);
 
   const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
@@ -146,6 +150,9 @@ const RevealPhase: FC<Props> = ({
                             snapshotCurrentRound(votingContract, msg).then(
                               (tx) => {
                                 // TODO: Refetch state after snapshot.
+                                if (tx) {
+                                  if (notify) notify.hash(tx.hash);
+                                }
                               }
                             );
                           }
@@ -167,11 +174,19 @@ const RevealPhase: FC<Props> = ({
                 let vc = votingContract;
                 if (designatedVotingContract) vc = designatedVotingContract;
                 if (vc && postRevealData.length) {
-                  revealVotes(vc, postRevealData).then((res) => {
-                    // refetch votes.
-                    refetchEncryptedVotes();
-                    setPostRevealData([]);
-                  });
+                  return revealVotes(vc, postRevealData)
+                    .then((tx) => {
+                      if (tx) {
+                        if (notify) notify.hash(tx.hash);
+                        tx.wait(1).then((conf: any) => {
+                          // refetch votes.
+                          refetchVoteRevealedEvents();
+                          refetchEncryptedVotes();
+                          setPostRevealData([]);
+                        });
+                      }
+                    })
+                    .catch((err) => addError(err));
                 }
               }}
               variant="secondary"

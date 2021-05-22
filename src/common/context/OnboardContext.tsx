@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { API as OnboardApi } from "bnc-onboard/dist/src/interfaces";
 import createOnboardInstance from "common/utils/web3/createOnboardInstance";
 import { Subscriptions } from "bnc-onboard/dist/src/interfaces";
+import { API as NotifyAPI } from "bnc-notify";
 
 type Provider = ethers.providers.Web3Provider;
 type Address = string;
@@ -17,6 +18,7 @@ type OnboardState = {
   address: Address | null;
   error: Error | null;
   isConnected: boolean;
+  notify: NotifyAPI | null;
 };
 
 const SET_PROVIDER = "SET_PROVIDER";
@@ -27,6 +29,7 @@ const SET_ADDRESS = "SET_ADDRESS";
 const SET_ERROR = "SET_ERROR";
 const SET_CONNECTION_STATUS = "SET_CONNECTION_STATUS";
 const RESET_STATE = "RESET_STATE";
+const SET_NOTIFY = "SET_NOTIFY";
 
 export const actions = {
   SET_PROVIDER: SET_PROVIDER as typeof SET_PROVIDER,
@@ -37,6 +40,7 @@ export const actions = {
   SET_ERROR: SET_ERROR as typeof SET_ERROR,
   SET_CONNECTION_STATUS: SET_CONNECTION_STATUS as typeof SET_CONNECTION_STATUS,
   RESET_STATE: RESET_STATE as typeof RESET_STATE,
+  SET_NOTIFY: SET_NOTIFY as typeof SET_NOTIFY,
 };
 
 type Action =
@@ -68,7 +72,8 @@ type Action =
       type: typeof SET_CONNECTION_STATUS;
       payload: boolean;
     }
-  | { type: typeof RESET_STATE };
+  | { type: typeof RESET_STATE }
+  | { type: typeof SET_NOTIFY; payload: NotifyAPI | null };
 
 export type OnboardDispatch = Dispatch<Action>;
 
@@ -119,6 +124,12 @@ function connectionReducer(state: OnboardState, action: Action) {
         isConnected: action.payload,
       };
     }
+    case SET_NOTIFY: {
+      return {
+        ...state,
+        notify: action.payload,
+      };
+    }
     case RESET_STATE: {
       return INITIAL_STATE;
     }
@@ -136,6 +147,7 @@ const INITIAL_STATE = {
   address: null,
   error: null,
   isConnected: false,
+  notify: null,
 };
 
 const connect = async (

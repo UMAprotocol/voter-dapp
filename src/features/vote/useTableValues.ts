@@ -197,6 +197,7 @@ export default function useTableValues(
             values.push(result.value);
           }
         });
+
         setTableValues(values);
       });
 
