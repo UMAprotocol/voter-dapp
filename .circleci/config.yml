@@ -5,6 +5,7 @@ jobs:
     docker:
       - image: node:15.11.0
     working_directory: ~/voter-dapp
+    resource_class: medium+
     steps:
       - checkout
       - run:
