@@ -76,6 +76,9 @@ export const FormWrapper = styled.form<StyledFormProps>`
 
       tbody {
         td {
+          border-color: #fff;
+          border-style: solid;
+          border-width: 0 15px;
           div {
             display: flex;
           }

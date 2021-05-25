@@ -59,6 +59,9 @@ export const Wrapper = styled.div<StyledProps>`
 
       tbody {
         td {
+          border-color: #fff;
+          border-style: solid;
+          border-width: 0 15px;
           div {
             display: flex;
             /* align-items: center; */
