@@ -9,25 +9,23 @@ type Props = {
   onClose: () => void;
 };
 
-const _Modal: ForwardRefRenderFunction<
-  HTMLElement,
-  PropsWithChildren<Props>
-> = ({ children, isOpen, onClose }, externalRef) => {
-  if (!isOpen) {
-    return null;
-  }
-  return (
-    <Portal>
-      <Wrapper ref={externalRef} coords={{ y: window.scrollY }}>
-        <ExitButton onClick={onClose}>
-          <Times />
-        </ExitButton>
-        <Content>{children}</Content>
-      </Wrapper>
-      <BgBlur coords={{ y: window.scrollY }} />
-    </Portal>
-  );
-};
+const _Modal: ForwardRefRenderFunction<HTMLElement, PropsWithChildren<Props>> =
+  ({ children, isOpen, onClose }, externalRef) => {
+    if (!isOpen) {
+      return null;
+    }
+    return (
+      <Portal>
+        <Wrapper ref={externalRef} coords={{ y: window.scrollY }}>
+          <ExitButton onClick={onClose}>
+            <Times />
+          </ExitButton>
+          <Content>{children}</Content>
+        </Wrapper>
+        <BgBlur coords={{ y: window.scrollY }} />
+      </Portal>
+    );
+  };
 
 const Modal = forwardRef(_Modal);
 Modal.displayName = "Modal";
@@ -49,7 +47,7 @@ export const Wrapper = styled.aside<StyledProps>`
       : `${DEFAULT_TOP_VALUE}px`;
   }};
   overflow-y: scroll;
-  max-height: 800px;
+  max-height: 80vh;
 `;
 
 const Content = tw.div`pb-7 px-5`;
