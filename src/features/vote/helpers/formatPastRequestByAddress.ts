@@ -9,7 +9,7 @@ export function formatPastRequestsByAddress(
   data: PriceRequestRound[],
   address: string
 ) {
-  const sortedByTime = data.slice().sort((a, b) => {
+  const sortedByTime = data.sort((a, b) => {
     if (Number(b.time) > Number(a.time)) return 1;
     if (Number(b.time) < Number(a.time)) return -1;
     return 0;

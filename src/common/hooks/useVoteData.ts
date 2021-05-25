@@ -73,6 +73,7 @@ function useVoteData() {
       const newVoteSummaryData = formatPriceRequestVoteData(
         data.priceRequestRounds
       );
+      console.log("newVoteSummaryData", newVoteSummaryData);
       setVotingSummaryData(newVoteSummaryData);
     }
   }, [loading, error, data]);
