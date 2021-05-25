@@ -74,11 +74,9 @@ function useVoteData() {
     }
 
     if (!loading && data) {
-      console.log("data", data);
       const newVoteSummaryData = formatPriceRequestVoteData(
         data.priceRequestRounds
       );
-      console.log("newVoteSummaryData", newVoteSummaryData);
       setVotingSummaryData(newVoteSummaryData);
     }
   }, [loading, error, data]);

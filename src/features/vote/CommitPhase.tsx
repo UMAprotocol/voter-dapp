@@ -9,7 +9,7 @@ import {
   useEffect,
 } from "react";
 import assert from "assert";
-import { useForm } from "react-hook-form";
+import { useForm, Controller, ControllerRenderProps } from "react-hook-form";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
@@ -282,13 +282,31 @@ const CommitPhase: FC<Props> = ({
                       />
                     </div>
                   ) : (
-                    <TextInput
-                      label="Input your vote."
-                      control={control}
+                    <Controller
                       name={`${el.identifier}~${el.unix}~${el.ancHex}`}
-                      placeholder="0.000"
-                      variant="text"
+                      control={control}
+                      render={({ onChange }) => {
+                        return (
+                          <TextInput
+                            label="Input your vote."
+                            control={control}
+                            name={`${el.identifier}~${el.unix}~${el.ancHex}`}
+                            placeholder="0.000"
+                            variant="text"
+                            onChange={(e) => {
+                              onChange(e.target.value);
+                            }}
+                          />
+                        );
+                      }}
                     />
+                    // <TextInput
+                    //   label="Input your vote."
+                    //   control={control}
+                    //   name={`${el.identifier}~${el.unix}~${el.ancHex}`}
+                    //   placeholder="0.000"
+                    //   variant="text"
+                    // />
                   )}
                 </td>
 
