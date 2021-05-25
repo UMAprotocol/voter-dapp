@@ -70,6 +70,8 @@ export const FormWrapper = styled.form<StyledFormProps>`
         }
         th {
           padding-bottom: 1rem;
+          padding-left: 15px;
+          padding-right: 15px;
           border-bottom: 1px solid #e5e5e5;
         }
       }
