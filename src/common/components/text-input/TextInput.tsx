@@ -23,7 +23,7 @@ const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
   externalRef
 ) => {
   const { field, fieldState } = useController(props);
-  console.log(fieldState);
+  // console.log(fieldState);
   return (
     <StyledInput className="TextInput">
       <label className="label">{props.label}</label>

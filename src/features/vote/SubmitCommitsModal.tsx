@@ -12,6 +12,7 @@ import Button from "common/components/button";
 import {
   ModalWrapper,
   SubmitErrorMessage,
+  EthTransaction,
 } from "./styled/SubmitCommitsModal.styled";
 import { SubmitModalState, Summary, FormData } from "./CommitPhase";
 import { UnlockedIcon, LockedIconCommitted } from "assets/icons";
@@ -39,6 +40,7 @@ interface Props {
     onInvalid?: SubmitErrorHandler<FormData>
   ) => (e?: BaseSyntheticEvent) => Promise<void>;
   onSubmit: (data: FormData) => void;
+  txHash: string;
 }
 
 const _SubmitCommitsModal: ForwardRefRenderFunction<
@@ -56,6 +58,7 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
     onSubmit,
     submitErrorMessage,
     setSubmitErrorMessage,
+    txHash,
   },
   externalRef
 ) => {
@@ -114,6 +117,23 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
                 );
               })
             : null}
+          {(modalState === "pending" || modalState === "success") &&
+          process.env.REACT_APP_CURRENT_ENV !== "test" ? (
+            <EthTransaction>
+              <a
+                href={
+                  process.env.REACT_APP_CURRENT_ENV === "kovan"
+                    ? `https://kovan.etherscan.io/tx/${txHash}`
+                    : `https://etherscan.io/tx/${txHash}`
+                }
+                target="_blank"
+                rel="noreferrer"
+              >
+                Click here
+              </a>{" "}
+              to view the transaction.
+            </EthTransaction>
+          ) : null}
           <div
             className={`button-wrapper ${
               modalState === "pending" ? "pending" : ""

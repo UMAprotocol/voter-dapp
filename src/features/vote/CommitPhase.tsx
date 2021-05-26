@@ -70,6 +70,7 @@ const CommitPhase: FC<Props> = ({
 }) => {
   const [modalState, setModalState] = useState<SubmitModalState>("init");
   const [submitErrorMessage, setSubmitErrorMessage] = useState("");
+  const [txHash, setTxHash] = useState("");
   const {
     state: { network, signer, notify },
   } = useContext(OnboardContext);
@@ -112,6 +113,11 @@ const CommitPhase: FC<Props> = ({
     }
   }, [isConnected, reset, close]);
 
+  // remove tx hash if modal is closed.
+  useEffect(() => {
+    if (!isOpen && txHash) setTxHash("");
+  }, [isOpen, txHash]);
+
   const onSubmit = useCallback(
     (data: FormData) => {
       const validValues = {} as FormData;
@@ -145,6 +151,8 @@ const CommitPhase: FC<Props> = ({
                 // Need to confirm if the user submits the vote.
                 assert(tx, "Transaction did not get submitted, try again");
                 if (tx) {
+                  console.log("tx", tx);
+                  setTxHash(tx.hash);
                   if (notify) notify.hash(tx.hash);
 
                   tx.wait(1)
@@ -383,6 +391,7 @@ const CommitPhase: FC<Props> = ({
         onSubmit={onSubmit}
         submitErrorMessage={submitErrorMessage}
         setSubmitErrorMessage={setSubmitErrorMessage}
+        txHash={txHash}
       />
     </FormWrapper>
   );

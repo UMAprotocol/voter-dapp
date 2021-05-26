@@ -153,3 +153,17 @@ export const SubmitErrorMessage = styled.div`
   margin: 0 auto;
   text-align: center;
 `;
+
+export const EthTransaction = styled.div`
+  margin: 1rem 0;
+  text-align: center;
+  color: #818180;
+  font-size: 0.8rem;
+
+  a {
+    text-decoration: underline;
+    &:hover {
+      color: #ff4a4a;
+    }
+  }
+`;
