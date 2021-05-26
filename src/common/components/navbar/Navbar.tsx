@@ -15,7 +15,7 @@ const Navbar: FC = () => {
       <div tw="inline-flex items-center">
         <Link to="/" tw=""></Link>
         <div tw="flex place-items-end">
-          <Link className="link" to="/" tw="px-5 py-3">
+          <Link className="link active" to="/" tw="px-5 py-3">
             Vote
           </Link>
           <Link className="link" to="/" tw="px-5 py-3">
@@ -93,9 +93,16 @@ const StyledNavbar = styled.nav`
     }
   }
   .link {
+    &.active {
+      color: #ff4a4a;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
     &:hover {
       transition: color 0.3s;
       color: #ff4a4a;
+      text-decoration: underline;
     }
   }
 `;
