@@ -15,14 +15,15 @@ interface Props {
   label?: string;
   placeholder?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
+  rules?: { pattern: RegExp };
 }
 
 const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
   props,
   externalRef
 ) => {
-  const { field } = useController(props);
-
+  const { field, fieldState } = useController(props);
+  console.log(fieldState);
   return (
     <StyledInput className="TextInput">
       <label className="label">{props.label}</label>

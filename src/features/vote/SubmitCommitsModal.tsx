@@ -19,6 +19,7 @@ import {
   FieldValues,
   SubmitHandler,
   SubmitErrorHandler,
+  UseFormReset,
 } from "react-hook-form";
 
 interface Props {
@@ -31,24 +32,7 @@ interface Props {
   setSubmitErrorMessage: Dispatch<SetStateAction<string>>;
   showModalSummary: () => Summary[];
   // From react-hook-form
-  reset: (
-    values?:
-      | {
-          [x: string]: string | undefined;
-        }
-      | undefined,
-    omitResetState?:
-      | Partial<{
-          errors: boolean;
-          isDirty: boolean;
-          isSubmitted: boolean;
-          touched: boolean;
-          isValid: boolean;
-          submitCount: boolean;
-          dirtyFields: boolean;
-        }>
-      | undefined
-  ) => void;
+  reset: UseFormReset<FormData>;
   // From react hook form.
   handleSubmit: <TSubmitFieldValues extends FieldValues = FormData>(
     onValid: SubmitHandler<TSubmitFieldValues>,

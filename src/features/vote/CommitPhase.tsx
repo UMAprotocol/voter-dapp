@@ -285,7 +285,9 @@ const CommitPhase: FC<Props> = ({
                     <Controller
                       name={`${el.identifier}~${el.unix}~${el.ancHex}`}
                       control={control}
-                      render={({ onChange }) => {
+                      rules={{ pattern: /^[-]?([0-9]*[.])?[0-9]+$/ }}
+                      render={({ field }) => {
+                        // console.log("meta.error", meta);
                         return (
                           <TextInput
                             label="Input your vote."
@@ -293,9 +295,23 @@ const CommitPhase: FC<Props> = ({
                             name={`${el.identifier}~${el.unix}~${el.ancHex}`}
                             placeholder="0.000"
                             variant="text"
-                            onChange={(e) => {
-                              onChange(e.target.value);
+                            rules={{
+                              pattern: /^[-]?([0-9]*[.])?[0-9]+$/,
                             }}
+                            // onChange={(e) => {
+                            //   const regexPattern =
+                            //     /[-]?([0-9]+([.][0-9]*)?|[.][0-9]+)/;
+                            //   // const rep = /^[-]?([0-9]*[.])?[0-9]+$/;
+                            //   // console.log(
+                            //   //   "testing value",
+                            //   //   regexPattern.test(e.target.value)
+                            //   // );
+                            //   // if (regexPattern.test(e.target.value)) {
+                            //   return onChange(e.target.value);
+                            //   // } else {
+                            //   // if
+                            //   // }
+                            // }}
                           />
                         );
                       }}
