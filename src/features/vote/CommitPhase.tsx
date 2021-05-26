@@ -307,6 +307,8 @@ const CommitPhase: FC<Props> = ({
                               pattern: /^[-]?([0-9]*[.])?[0-9]+$/,
                             }}
                             // onChange={(e) => {
+                            /* WIP for another ticket. Ignore for now. */
+
                             //   const regexPattern =
                             //     /[-]?([0-9]+([.][0-9]*)?|[.][0-9]+)/;
                             //   // const rep = /^[-]?([0-9]*[.])?[0-9]+$/;
@@ -324,13 +326,6 @@ const CommitPhase: FC<Props> = ({
                         );
                       }}
                     />
-                    // <TextInput
-                    //   label="Input your vote."
-                    //   control={control}
-                    //   name={`${el.identifier}~${el.unix}~${el.ancHex}`}
-                    //   placeholder="0.000"
-                    //   variant="text"
-                    // />
                   )}
                 </td>
 
