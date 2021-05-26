@@ -27,6 +27,7 @@ import { DiscordRed } from "assets/icons";
 import { ethers } from "ethers";
 import useUMIP from "./useUMIP";
 import useOnboard from "common/hooks/useOnboard";
+import toWeiSafe from "common/utils/web3/convertToWeiSafely";
 
 interface Props {
   isOpen: boolean;
@@ -65,7 +66,8 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
   // Format rewards to 6 decs. It is a Big Num as it the value is in wei.
   useEffect(() => {
     if (rewardsClaimed !== "-" && rewardsClaimed !== "0") {
-      const formatRCArr = ethers.utils.formatEther(rewardsClaimed).split(".");
+      const rcToWei = toWeiSafe(rewardsClaimed).toString();
+      const formatRCArr = ethers.utils.formatEther(rcToWei).split(".");
       formatRCArr[1] = formatRCArr[1].substring(0, 6);
       const formatRC = formatRCArr.join(".");
       setFormattedRewardsClaimed(formatRC);
