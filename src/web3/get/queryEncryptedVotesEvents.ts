@@ -78,9 +78,15 @@ export const queryEncryptedVotes = async (
         if (args) {
           let price = "";
           let salt = "";
-          const json = JSON.parse(await decryptMessage(privateKey, args[5]));
-          price = json.price;
-          salt = json.salt;
+          try {
+            const json = JSON.parse(await decryptMessage(privateKey, args[5]));
+            price = json.price;
+            salt = json.salt;
+          } catch (err) {
+            // console.log("err in decript", err);
+            // return datum;
+          }
+
           datum.address = args[0];
           datum.roundId = args[1].toString();
           datum.identifier = ethers.utils.toUtf8String(args[2]);
