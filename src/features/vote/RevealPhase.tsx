@@ -28,6 +28,7 @@ interface Props {
   refetchVoteRevealedEvents: Function;
   setViewDetailsModalState: Dispatch<SetStateAction<ModalState>>;
   openViewDetailsModal: () => void;
+  refetchRoundId: Function;
 }
 
 const RevealPhase: FC<Props> = ({
@@ -42,6 +43,7 @@ const RevealPhase: FC<Props> = ({
   openViewDetailsModal,
   setViewDetailsModalState,
   refetchVoteRevealedEvents,
+  refetchRoundId,
 }) => {
   const { tableValues, postRevealData, setPostRevealData } = useTableValues(
     activeRequests,
@@ -152,6 +154,10 @@ const RevealPhase: FC<Props> = ({
                                 // TODO: Refetch state after snapshot.
                                 if (tx) {
                                   if (notify) notify.hash(tx.hash);
+                                  // Get roundID immediately to move snapshot on.
+                                  tx.wait(1).then(() => {
+                                    refetchRoundId();
+                                  });
                                 }
                               }
                             );

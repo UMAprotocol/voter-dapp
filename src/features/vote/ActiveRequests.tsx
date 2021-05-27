@@ -26,6 +26,7 @@ export interface ModalState {
 interface Props {
   activeRequests: PendingRequest[];
   roundId: string;
+  refetchRoundId: Function;
   encryptedVotes: EncryptedVote[];
   refetchEncryptedVotes: Function;
   revealedVotes: VoteRevealed[];
@@ -45,6 +46,7 @@ const ActiveRequests: FC<Props> = ({
   hotAddress,
   signingKeys,
   refetchVoteRevealedEvents,
+  refetchRoundId,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState("00:00");
 
@@ -134,6 +136,7 @@ const ActiveRequests: FC<Props> = ({
           refetchVoteRevealedEvents={refetchVoteRevealedEvents}
           setViewDetailsModalState={setModalState}
           openViewDetailsModal={open}
+          refetchRoundId={refetchRoundId}
         />
       ) : null}
       <ActiveViewDetailsModal
