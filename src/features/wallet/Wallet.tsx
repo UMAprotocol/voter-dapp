@@ -9,6 +9,7 @@ import { Settings } from "assets/icons";
 import getUmaBalance from "common/utils/web3/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
 import usePrevious from "common/hooks/usePrevious";
+import ReactTooltip from "react-tooltip";
 
 import {
   useVotingAddress,
@@ -165,19 +166,28 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     signer,
   ]);
 
+  // Note: because there is dynamic content, this will rebuild the tooltip for addressing the conditional
+  // elements on the page. See ReactTooltip docs.
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  });
+
   return (
     <Wrapper>
       <div className="wrapper">
         <div tw="flex items-stretch items-center">
           <div tw="py-8 pl-5 flex-grow">
-            <p className="wallet-title">Voting Wallet</p>
+            <div className="wallet-title">Voting Wallet</div>
             {isConnected && votingAddress ? (
               <>
                 <VotingAddress>
-                  {hotAddress ? "Vote: " : null} {shortenAddress(votingAddress)}
+                  {hotAddress ? "Vote: " : null}{" "}
+                  <span data-for="wallet" data-tip={`${votingAddress}`}>
+                    {shortenAddress(votingAddress)}
+                  </span>
                 </VotingAddress>
                 {hotAddress ? (
-                  <VotingAddress>
+                  <VotingAddress data-for="wallet" data-tip={`${hotAddress}`}>
                     Hot: {shortenAddress(hotAddress)}
                   </VotingAddress>
                 ) : null}
@@ -345,6 +355,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
           signer={signer}
         />
       </div>
+      <ReactTooltip id="wallet" place="top" type="dark" effect="float" />
     </Wrapper>
   );
 };
