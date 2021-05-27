@@ -65,8 +65,6 @@ const PastRequests: FC<Props> = ({
         (el) => Number(el.roundId) < Number(roundId)
       );
 
-      // console.log("FBR", filteredByRound, "raw data", voteSummaryData);
-
       if (address && contract) {
         const pr = formatPastRequestsByAddress(filteredByRound, address);
         setPastRequests(!showAll ? pr.slice(0, 10) : pr);

@@ -150,24 +150,21 @@ const CommitPhase: FC<Props> = ({
 
                 // Need to confirm if the user submits the vote.
                 assert(tx, "Transaction did not get submitted, try again");
-                if (tx) {
-                  console.log("tx", tx);
-                  setTxHash(tx.hash);
-                  if (notify) notify.hash(tx.hash);
+                setTxHash(tx.hash);
+                if (notify) notify.hash(tx.hash);
 
-                  tx.wait(1)
-                    .then((conf: any) => {
-                      // Temporary, as mining is instant on local ganache.
-                      // setTimeout(() => setModalState("success"), 5000);
-                      setModalState("success");
-                      refetchEncryptedVotes();
-                      reset();
-                    })
-                    .catch((err: any) => {
-                      setSubmitErrorMessage("Error with tx.");
-                      setModalState("init");
-                    });
-                }
+                tx.wait(1)
+                  .then((conf: any) => {
+                    // Temporary, as mining is instant on local ganache.
+                    // setTimeout(() => setModalState("success"), 5000);
+                    setModalState("success");
+                    refetchEncryptedVotes();
+                    reset();
+                  })
+                  .catch((err: any) => {
+                    setSubmitErrorMessage("Error with tx.");
+                    setModalState("init");
+                  });
               })
               .catch((err) => {
                 setSubmitErrorMessage(err.message);
