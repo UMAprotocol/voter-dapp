@@ -6,6 +6,7 @@ export const ModalWrapper = styled.div`
   min-width: 400px;
   padding: 2rem 1.5rem;
   height: auto;
+  max-height: 80vh;
   position: relative;
   background-color: #fff;
   z-index: 1;

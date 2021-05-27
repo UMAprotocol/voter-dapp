@@ -17,6 +17,7 @@ export const ModalWrapper = styled.div`
   font-family: "Halyard Display";
   border: none;
   max-width: 700px;
+  max-height: 80vh;
   .header {
     text-align: center;
     margin-bottom: 1rem;
