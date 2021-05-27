@@ -174,11 +174,11 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
             {isConnected && votingAddress ? (
               <>
                 <VotingAddress>
-                  {hotAddress ? "DVC: " : null} {shortenAddress(votingAddress)}
+                  {hotAddress ? "Vote: " : null} {shortenAddress(votingAddress)}
                 </VotingAddress>
                 {hotAddress ? (
                   <VotingAddress>
-                    Voting: {shortenAddress(hotAddress)}
+                    Hot: {shortenAddress(hotAddress)}
                   </VotingAddress>
                 ) : null}
                 {signingPK ? (
