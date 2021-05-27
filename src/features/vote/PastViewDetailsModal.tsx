@@ -106,7 +106,7 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
       >
         <ModalWrapper>
           <MiniHeader>Proposal</MiniHeader>
-          <Proposal>{isUmip ? umip?.title : proposal}</Proposal>
+          <Proposal>{isUmip && umip?.title ? umip.title : proposal}</Proposal>
 
           <Description>
             <ReactMarkdown
