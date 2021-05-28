@@ -15,6 +15,7 @@ import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 import useTableValues from "./useTableValues";
 import { ErrorContext } from "common/context/ErrorContext";
+import { RefetchOptions, QueryObserverResult } from "react-query";
 
 interface Props {
   isConnected: boolean;
@@ -28,7 +29,9 @@ interface Props {
   refetchVoteRevealedEvents: Function;
   setViewDetailsModalState: Dispatch<SetStateAction<ModalState>>;
   openViewDetailsModal: () => void;
-  refetchRoundId: Function;
+  refetchRoundId: (
+    options?: RefetchOptions | undefined
+  ) => Promise<QueryObserverResult<string | void | undefined, unknown>>;
 }
 
 const RevealPhase: FC<Props> = ({

@@ -16,6 +16,7 @@ import ActiveViewDetailsModal from "./ActiveViewDetailsModal";
 import useModal from "common/hooks/useModal";
 import { SigningKeys } from "App";
 import { Round } from "web3/get/queryRounds";
+import { RefetchOptions, QueryObserverResult } from "react-query";
 
 export interface ModalState {
   proposal: string;
@@ -26,7 +27,9 @@ export interface ModalState {
 interface Props {
   activeRequests: PendingRequest[];
   roundId: string;
-  refetchRoundId: Function;
+  refetchRoundId: (
+    options?: RefetchOptions | undefined
+  ) => Promise<QueryObserverResult<string | void | undefined, unknown>>;
   encryptedVotes: EncryptedVote[];
   refetchEncryptedVotes: Function;
   revealedVotes: VoteRevealed[];
