@@ -36,7 +36,7 @@ const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
           placeholder={props.placeholder}
           ref={field.ref}
           value={field.value}
-          onChange={props.onChange ? props.onChange : field.onChange}
+          onChange={props.onChange ?? field.onChange}
         />
         {props.variant === "currency" ? (
           <span className="dollar-sign">$</span>
