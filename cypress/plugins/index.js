@@ -17,6 +17,12 @@
  */
 // eslint-disable-next-line no-unused-vars
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
-}
+  // on("before:browser:launch", (browser, launchOptions) => {
+  //   // supply the absolute path to an unpacked extension's folder
+  //   // NOTE: extensions cannot be loaded in headless Chrome
+  //   launchOptions.extensions.push(
+  //     "/Users/jasonkiraly/Desktop/projects/cypress-cra/cypress/plugins/metamask"
+  //   );
+  //   return launchOptions;
+  // });
+};

@@ -78,6 +78,9 @@
     ]
   },
   "devDependencies": {
+    "@ethersproject/experimental": "^5.2.0",
+    "@ethersproject/providers": "^5.2.0",
+    "@ethersproject/wallet": "^5.2.0",
     "@types/crypto-js": "^4.0.1",
     "@types/luxon": "^1.26.2",
     "@types/react-router-dom": "^5.1.7",

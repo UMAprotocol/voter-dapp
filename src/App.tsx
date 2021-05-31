@@ -93,6 +93,12 @@ function App(props: Props) {
     }
   }, [state.address, previousAddress, dispatch, state.onboard, disconnect]);
 
+  useEffect(() => {
+    if ((window as any).ethereum) {
+      alert("Does this work in Cypress?");
+    }
+  }, []);
+
   return (
     <div className="App">
       <Router signingKeys={signingKeys} />
