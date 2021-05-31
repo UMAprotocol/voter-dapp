@@ -31,177 +31,183 @@ export default function useTableValues(
   // Take activeRequests and encryptedVotes and convert them into tableViews
   useEffect(() => {
     // Check if the user has voted in this round.
-    if (activeRequests.length && !encryptedVotes.length) {
-      const tv: TableValue[] = activeRequests.map((el) => {
-        return {
-          ancillaryData: el.ancillaryData,
-          vote: "-",
-          identifier: el.identifier,
-          revealed: false,
-          ancHex: el.ancHex,
-          description: "",
-          timestamp: DateTime.fromSeconds(Number(el.time)).toLocaleString({
+    if (activeRequests.length) {
+      if (!encryptedVotes.length) {
+        const tv: TableValue[] = activeRequests.map((el) => {
+          return {
+            ancillaryData: el.ancillaryData,
+            vote: "-",
+            identifier: el.identifier,
+            revealed: false,
+            ancHex: el.ancHex,
+            description: "",
+            timestamp: DateTime.fromSeconds(Number(el.time)).toLocaleString({
+              month: "short",
+              day: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hourCycle: "h24",
+              timeZoneName: "short",
+            }),
+            unix: el.time,
+          };
+        });
+
+        const descriptionsAdded = Promise.allSettled(
+          tv.map(async (el) => {
+            const isUmip = el.identifier.includes("Admin");
+            const umipNumber = isUmip
+              ? parseInt(el.identifier.split(" ")[1])
+              : undefined;
+
+            let description = "Price request.";
+
+            if (umipNumber) {
+              try {
+                description = (await fetchUmip(umipNumber)).description;
+              } catch (err) {
+                description = "No data available for this UMIP.";
+              }
+            }
+
+            return {
+              ...el,
+              description,
+            };
+          })
+        );
+
+        descriptionsAdded.then((results) => {
+          const values = [] as TableValue[];
+          results.forEach((result) => {
+            if (result.status === "fulfilled") {
+              values.push(result.value);
+            }
+          });
+          setTableValues(values);
+        });
+      }
+
+      if (encryptedVotes.length) {
+        const tv = [] as TableValue[];
+        const postData = [] as PostRevealData[];
+        const latestVotesFirst = [...encryptedVotes].reverse();
+
+        activeRequests.forEach((el) => {
+          const datum = {} as TableValue;
+          datum.ancillaryData = el.ancillaryData;
+          datum.identifier = el.identifier;
+          datum.ancHex = el.ancHex;
+          let vote = "-";
+          // I believe latest events are on bottom. requires testing.
+          const findVote = latestVotesFirst.find(
+            (x) =>
+              x.identifier === el.identifier &&
+              x.ancillaryData === el.ancHex &&
+              x.time === el.time
+          );
+
+          if (findVote) {
+            datum.vote = ethers.utils.formatEther(findVote.price);
+            setHasVoted(true);
+            if (el.identifier.includes("Admin")) {
+              if (datum.vote === "1" || datum.vote === "1.0")
+                datum.vote = "Yes";
+              if (datum.vote === "0" || datum.vote === "0.0") datum.vote = "No";
+            }
+          } else {
+            datum.vote = vote;
+          }
+
+          const findReveal = revealedVotes.find(
+            (x) =>
+              x.identifier === el.identifier &&
+              x.ancillaryData === el.ancHex &&
+              x.time === el.time
+          );
+
+          if (findReveal) {
+            datum.revealed = true;
+          } else {
+            datum.revealed = false;
+          }
+
+          datum.timestamp = DateTime.fromSeconds(
+            Number(el.time)
+          ).toLocaleString({
             month: "short",
             day: "2-digit",
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-            second: "2-digit",
             hourCycle: "h24",
             timeZoneName: "short",
-          }),
-          unix: el.time,
-        };
-      });
+          });
+          datum.unix = el.time;
 
-      const descriptionsAdded = Promise.allSettled(
-        tv.map(async (el) => {
-          const isUmip = el.identifier.includes("Admin");
-          const umipNumber = isUmip
-            ? parseInt(el.identifier.split(" ")[1])
-            : undefined;
+          tv.push(datum);
+          // Gather up PostRevealData here to save complexity
+          const prd = {} as PostRevealData;
 
-          let description = "Price request.";
-
-          if (umipNumber) {
-            try {
-              description = (await fetchUmip(umipNumber)).description;
-            } catch (err) {
-              description = "No data available for this UMIP.";
+          if (findVote && !findReveal) {
+            prd.ancillaryData = el.ancillaryData;
+            // anc data is set to - or N/A in UI if empty, convert back to 0x.
+            if (
+              el.ancillaryData === UNDEFINED_VOTE ||
+              el.ancillaryData === "N/A"
+            ) {
+              prd.ancillaryData = "0x";
+            } else {
+              prd.ancillaryData = web3.utils.utf8ToHex(el.ancillaryData);
             }
-          }
-
-          return {
-            ...el,
-            description,
-          };
-        })
-      );
-
-      descriptionsAdded.then((results) => {
-        const values = [] as TableValue[];
-        results.forEach((result) => {
-          if (result.status === "fulfilled") {
-            values.push(result.value);
+            prd.time = Number(el.time);
+            prd.identifier = el.idenHex;
+            prd.salt = findVote.salt;
+            // datum.price = toWeiSafe(findVote.price).toString();
+            prd.price = findVote.price.toString();
+            postData.push(prd);
           }
         });
-        setTableValues(values);
-      });
-    }
-    if (activeRequests.length && encryptedVotes.length) {
-      const tv = [] as TableValue[];
-      const postData = [] as PostRevealData[];
-      const latestVotesFirst = [...encryptedVotes].reverse();
 
-      activeRequests.forEach((el) => {
-        const datum = {} as TableValue;
-        datum.ancillaryData = el.ancillaryData;
-        datum.identifier = el.identifier;
-        datum.ancHex = el.ancHex;
-        let vote = "-";
-        // I believe latest events are on bottom. requires testing.
-        const findVote = latestVotesFirst.find(
-          (x) =>
-            x.identifier === el.identifier &&
-            x.ancillaryData === el.ancHex &&
-            x.time === el.time
+        const descriptionsAdded = Promise.allSettled(
+          tv.map(async (el) => {
+            const isUmip = el.identifier.includes("Admin");
+            const umipNumber = isUmip
+              ? parseInt(el.identifier.split(" ")[1])
+              : undefined;
+
+            let description = "Price request.";
+
+            if (umipNumber) {
+              try {
+                description = (await fetchUmip(umipNumber)).description;
+              } catch (err) {
+                description = "No data available for this UMIP.";
+              }
+            }
+
+            return {
+              ...el,
+              description,
+            };
+          })
         );
 
-        if (findVote) {
-          datum.vote = ethers.utils.formatEther(findVote.price);
-          setHasVoted(true);
-          if (el.identifier.includes("Admin")) {
-            if (datum.vote === "1" || datum.vote === "1.0") datum.vote = "Yes";
-            if (datum.vote === "0" || datum.vote === "0.0") datum.vote = "No";
-          }
-        } else {
-          datum.vote = vote;
-        }
-
-        const findReveal = revealedVotes.find(
-          (x) =>
-            x.identifier === el.identifier &&
-            x.ancillaryData === el.ancHex &&
-            x.time === el.time
-        );
-
-        if (findReveal) {
-          datum.revealed = true;
-        } else {
-          datum.revealed = false;
-        }
-
-        datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hourCycle: "h24",
-          timeZoneName: "short",
-        });
-        datum.unix = el.time;
-
-        tv.push(datum);
-        // Gather up PostRevealData here to save complexity
-        const prd = {} as PostRevealData;
-
-        if (findVote && !findReveal) {
-          prd.ancillaryData = el.ancillaryData;
-          // anc data is set to - or N/A in UI if empty, convert back to 0x.
-          if (
-            el.ancillaryData === UNDEFINED_VOTE ||
-            el.ancillaryData === "N/A"
-          ) {
-            prd.ancillaryData = "0x";
-          } else {
-            prd.ancillaryData = web3.utils.utf8ToHex(el.ancillaryData);
-          }
-          prd.time = Number(el.time);
-          prd.identifier = el.idenHex;
-          prd.salt = findVote.salt;
-          // datum.price = toWeiSafe(findVote.price).toString();
-          prd.price = findVote.price.toString();
-          postData.push(prd);
-        }
-      });
-
-      const descriptionsAdded = Promise.allSettled(
-        tv.map(async (el) => {
-          const isUmip = el.identifier.includes("Admin");
-          const umipNumber = isUmip
-            ? parseInt(el.identifier.split(" ")[1])
-            : undefined;
-
-          let description = "Price request.";
-
-          if (umipNumber) {
-            try {
-              description = (await fetchUmip(umipNumber)).description;
-            } catch (err) {
-              description = "No data available for this UMIP.";
+        descriptionsAdded.then((results) => {
+          const values = [] as TableValue[];
+          results.forEach((result) => {
+            if (result.status === "fulfilled") {
+              values.push(result.value);
             }
-          }
+          });
 
-          return {
-            ...el,
-            description,
-          };
-        })
-      );
-
-      descriptionsAdded.then((results) => {
-        const values = [] as TableValue[];
-        results.forEach((result) => {
-          if (result.status === "fulfilled") {
-            values.push(result.value);
-          }
+          setTableValues(values);
         });
 
-        setTableValues(values);
-      });
-
-      setPostRevealData(postData);
+        setPostRevealData(postData);
+      }
     }
   }, [activeRequests, encryptedVotes, revealedVotes]);
 
