@@ -121,7 +121,7 @@ const RevealPhase: FC<Props> = ({
                     ) : el.vote !== UNDEFINED_VOTE && !el.revealed ? (
                       <p>Reveal</p>
                     ) : el.vote === UNDEFINED_VOTE ? (
-                      <p>Uncommitted</p>
+                      <p>-</p>
                     ) : null}
                   </div>
                 </td>
