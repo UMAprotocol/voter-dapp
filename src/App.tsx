@@ -94,7 +94,7 @@ function App(props: Props) {
   }, [state.address, previousAddress, dispatch, state.onboard, disconnect]);
 
   useEffect(() => {
-    if ((window as any).ethereum) {
+    if ((window as any).ethereum && localStorage.getItem("testing")) {
       alert("Does this work in Cypress?");
     }
   }, []);

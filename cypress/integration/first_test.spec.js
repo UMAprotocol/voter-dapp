@@ -4,7 +4,7 @@ describe("My First Test", () => {
 
     cy.contains("Voting Wallet");
 
-    cy.get(".connect-btn").click();
-    cy.get(".svelte-1skxsnk").first().click();
+    // cy.get(".connect-btn").click();
+    // cy.get(".svelte-1skxsnk").first().click();
   });
 });

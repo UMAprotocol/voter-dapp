@@ -106,6 +106,7 @@ Cypress.Commands.overwrite("visit", (original, url, options) => {
       onBeforeLoad(win) {
         options && options.onBeforeLoad && options.onBeforeLoad(win);
         win.localStorage.clear();
+        win.localStorage.setItem("testing", true);
         const provider = new JsonRpcProvider(
           `https://kovan.infura.io/v3/${process.env.REACT_APP_PUBLIC_INFURA_ID}`,
           4
