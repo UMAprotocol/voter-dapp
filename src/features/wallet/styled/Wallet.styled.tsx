@@ -82,4 +82,5 @@ export const VotingAddress = styled.div`
   flex-basis: 1;
   color: #000;
   margin-left: 8px;
+  cursor: pointer;
 `;

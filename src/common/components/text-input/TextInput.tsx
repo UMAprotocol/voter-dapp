@@ -1,5 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { ForwardRefRenderFunction, forwardRef } from "react";
+import {
+  ForwardRefRenderFunction,
+  forwardRef,
+  ChangeEventHandler,
+} from "react";
 
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { useController, Control } from "react-hook-form";
@@ -10,13 +14,18 @@ interface Props {
   variant?: "text" | "search" | "currency";
   label?: string;
   placeholder?: string;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+  rules?: { pattern: RegExp };
 }
 
 const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
   props,
   externalRef
 ) => {
-  const { field } = useController(props);
+  const {
+    field,
+    // fieldState
+  } = useController(props);
 
   return (
     <StyledInput className="TextInput">
@@ -27,7 +36,7 @@ const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
           placeholder={props.placeholder}
           ref={field.ref}
           value={field.value}
-          onChange={field.onChange}
+          onChange={props.onChange ?? field.onChange}
         />
         {props.variant === "currency" ? (
           <span className="dollar-sign">$</span>

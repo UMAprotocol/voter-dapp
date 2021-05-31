@@ -9,7 +9,7 @@ import {
   useEffect,
 } from "react";
 import assert from "assert";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
@@ -70,6 +70,7 @@ const CommitPhase: FC<Props> = ({
 }) => {
   const [modalState, setModalState] = useState<SubmitModalState>("init");
   const [submitErrorMessage, setSubmitErrorMessage] = useState("");
+  const [txHash, setTxHash] = useState("");
   const {
     state: { network, signer, notify },
   } = useContext(OnboardContext);
@@ -112,6 +113,11 @@ const CommitPhase: FC<Props> = ({
     }
   }, [isConnected, reset, close]);
 
+  // remove tx hash if modal is closed.
+  useEffect(() => {
+    if (!isOpen && txHash) setTxHash("");
+  }, [isOpen, txHash]);
+
   const onSubmit = useCallback(
     (data: FormData) => {
       const validValues = {} as FormData;
@@ -144,22 +150,21 @@ const CommitPhase: FC<Props> = ({
 
                 // Need to confirm if the user submits the vote.
                 assert(tx, "Transaction did not get submitted, try again");
-                if (tx) {
-                  if (notify) notify.hash(tx.hash);
+                setTxHash(tx.hash);
+                if (notify) notify.hash(tx.hash);
 
-                  tx.wait(1)
-                    .then((conf: any) => {
-                      // Temporary, as mining is instant on local ganache.
-                      // setTimeout(() => setModalState("success"), 5000);
-                      setModalState("success");
-                      refetchEncryptedVotes();
-                      reset();
-                    })
-                    .catch((err: any) => {
-                      setSubmitErrorMessage("Error with tx.");
-                      setModalState("init");
-                    });
-                }
+                tx.wait(1)
+                  .then((conf: any) => {
+                    // Temporary, as mining is instant on local ganache.
+                    // setTimeout(() => setModalState("success"), 5000);
+                    setModalState("success");
+                    refetchEncryptedVotes();
+                    reset();
+                  })
+                  .catch((err: any) => {
+                    setSubmitErrorMessage("Error with tx.");
+                    setModalState("init");
+                  });
               })
               .catch((err) => {
                 setSubmitErrorMessage(err.message);
@@ -282,12 +287,41 @@ const CommitPhase: FC<Props> = ({
                       />
                     </div>
                   ) : (
-                    <TextInput
-                      label="Input your vote."
-                      control={control}
+                    <Controller
                       name={`${el.identifier}~${el.unix}~${el.ancHex}`}
-                      placeholder="0.000"
-                      variant="text"
+                      control={control}
+                      rules={{ pattern: /^[-]?([0-9]*[.])?[0-9]+$/ }}
+                      render={({ field }) => {
+                        // console.log("meta.error", meta);
+                        return (
+                          <TextInput
+                            label="Input your vote."
+                            control={control}
+                            name={`${el.identifier}~${el.unix}~${el.ancHex}`}
+                            placeholder="0.000"
+                            variant="text"
+                            rules={{
+                              pattern: /^[-]?([0-9]*[.])?[0-9]+$/,
+                            }}
+                            // onChange={(e) => {
+                            /* WIP for another ticket. Ignore for now. */
+
+                            //   const regexPattern =
+                            //     /[-]?([0-9]+([.][0-9]*)?|[.][0-9]+)/;
+                            //   // const rep = /^[-]?([0-9]*[.])?[0-9]+$/;
+                            //   // console.log(
+                            //   //   "testing value",
+                            //   //   regexPattern.test(e.target.value)
+                            //   // );
+                            //   // if (regexPattern.test(e.target.value)) {
+                            //   return onChange(e.target.value);
+                            //   // } else {
+                            //   // if
+                            //   // }
+                            // }}
+                          />
+                        );
+                      }}
                     />
                   )}
                 </td>
@@ -349,6 +383,7 @@ const CommitPhase: FC<Props> = ({
         onSubmit={onSubmit}
         submitErrorMessage={submitErrorMessage}
         setSubmitErrorMessage={setSubmitErrorMessage}
+        txHash={txHash}
       />
     </FormWrapper>
   );

@@ -22,6 +22,7 @@ export default function useUMIP(number?: number, chainId = 1) {
     () => fetchUmip(number!),
     {
       enabled: number != null && chainId === 1,
+      retry: 3,
     }
   );
 

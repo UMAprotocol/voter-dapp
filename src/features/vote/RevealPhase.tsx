@@ -15,6 +15,7 @@ import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 import useTableValues from "./useTableValues";
 import { ErrorContext } from "common/context/ErrorContext";
+import { RefetchOptions, QueryObserverResult } from "react-query";
 
 interface Props {
   isConnected: boolean;
@@ -28,6 +29,9 @@ interface Props {
   refetchVoteRevealedEvents: Function;
   setViewDetailsModalState: Dispatch<SetStateAction<ModalState>>;
   openViewDetailsModal: () => void;
+  refetchRoundId: (
+    options?: RefetchOptions | undefined
+  ) => Promise<QueryObserverResult<string | void | undefined, unknown>>;
 }
 
 const RevealPhase: FC<Props> = ({
@@ -42,6 +46,7 @@ const RevealPhase: FC<Props> = ({
   openViewDetailsModal,
   setViewDetailsModalState,
   refetchVoteRevealedEvents,
+  refetchRoundId,
 }) => {
   const { tableValues, postRevealData, setPostRevealData } = useTableValues(
     activeRequests,
@@ -100,9 +105,6 @@ const RevealPhase: FC<Props> = ({
                   <div className="description">{el.description}</div>
                 </td>
                 <td>
-                  <div>{el.timestamp}</div>
-                </td>
-                <td>
                   <div>
                     {el.timestamp} ({el.unix})
                   </div>
@@ -119,7 +121,7 @@ const RevealPhase: FC<Props> = ({
                     ) : el.vote !== UNDEFINED_VOTE && !el.revealed ? (
                       <p>Reveal</p>
                     ) : el.vote === UNDEFINED_VOTE ? (
-                      <p>Uncommitted</p>
+                      <p>-</p>
                     ) : null}
                   </div>
                 </td>
@@ -152,6 +154,10 @@ const RevealPhase: FC<Props> = ({
                                 // TODO: Refetch state after snapshot.
                                 if (tx) {
                                   if (notify) notify.hash(tx.hash);
+                                  // Get roundID immediately to move snapshot on.
+                                  tx.wait(1).then(() => {
+                                    refetchRoundId();
+                                  });
                                 }
                               }
                             );

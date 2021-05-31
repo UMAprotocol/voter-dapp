@@ -70,12 +70,17 @@ export const FormWrapper = styled.form<StyledFormProps>`
         }
         th {
           padding-bottom: 1rem;
+          padding-left: 15px;
+          padding-right: 15px;
           border-bottom: 1px solid #e5e5e5;
         }
       }
 
       tbody {
         td {
+          border-color: #fff;
+          border-style: solid;
+          border-width: 0 15px;
           div {
             display: flex;
           }

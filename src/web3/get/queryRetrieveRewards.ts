@@ -33,6 +33,7 @@ export const queryRetrieveRewards = async (
 
     return ethers.utils.formatEther(reward.toString());
   } catch (err) {
-    console.log("err", err);
+    // We would expect an error here if the reward is available but not unclaimed.
+    // console.log("err", err);
   }
 };

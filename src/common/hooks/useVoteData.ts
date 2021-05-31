@@ -60,6 +60,10 @@ function useVoteData() {
   const { loading, error, data, refetch } = useQuery<{
     priceRequestRounds: PriceRequestRound[];
   }>(PRICE_REQUEST_VOTING_DATA, {
+    variables: {
+      orderBy: "time",
+      orderDirection: "desc",
+    },
     pollInterval: POLLING_INTERVAL,
   });
 

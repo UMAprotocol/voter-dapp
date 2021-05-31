@@ -38,6 +38,7 @@ export const DropdownList = styled.ul<IDropdownStyledProps>`
   width: 250px;
   border-radius: 8px;
   color: #ff4b4b;
+  z-index: 1000;
 `;
 export const DropdownListItem = styled.li<IDropdownStyledProps>`
   padding: 5px;

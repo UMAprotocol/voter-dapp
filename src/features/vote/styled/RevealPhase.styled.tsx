@@ -48,9 +48,13 @@ export const Wrapper = styled.div<StyledProps>`
           opacity: ${(props) => (props.isConnected ? "1" : "0.5")};
         }
       }
-      select {
-      }
       thead {
+        th {
+          padding-bottom: 1rem;
+          padding-left: 15px;
+          padding-right: 15px;
+          border-bottom: 1px solid #e5e5e5;
+        }
         tr {
           text-align: left;
           margin-bottom: 2rem;
@@ -59,6 +63,9 @@ export const Wrapper = styled.div<StyledProps>`
 
       tbody {
         td {
+          border-color: #fff;
+          border-style: solid;
+          border-width: 0 15px;
           div {
             display: flex;
             /* align-items: center; */

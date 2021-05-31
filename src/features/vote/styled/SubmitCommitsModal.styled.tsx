@@ -6,6 +6,7 @@ export const ModalWrapper = styled.div`
   min-width: 400px;
   padding: 2rem 1.5rem;
   height: auto;
+  max-height: 80vh;
   position: relative;
   background-color: #fff;
   z-index: 1;
@@ -152,4 +153,18 @@ export const SubmitErrorMessage = styled.div`
   display: block;
   margin: 0 auto;
   text-align: center;
+`;
+
+export const EthTransaction = styled.div`
+  margin: 1rem 0;
+  text-align: center;
+  color: #818180;
+  font-size: 0.8rem;
+
+  a {
+    text-decoration: underline;
+    &:hover {
+      color: #ff4a4a;
+    }
+  }
 `;

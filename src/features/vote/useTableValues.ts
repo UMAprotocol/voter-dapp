@@ -17,6 +17,7 @@ interface TableValue {
   timestamp: string;
   unix: string;
   description?: string;
+  idenHex: string;
 }
 
 export default function useTableValues(
@@ -31,8 +32,8 @@ export default function useTableValues(
   // Take activeRequests and encryptedVotes and convert them into tableViews
   useEffect(() => {
     // Check if the user has voted in this round.
-    if (activeRequests.length && !encryptedVotes.length) {
-      const tv: TableValue[] = activeRequests.map((el) => {
+    if (activeRequests.length) {
+      let tv: TableValue[] = activeRequests.map((el) => {
         return {
           ancillaryData: el.ancillaryData,
           vote: "-",
@@ -51,121 +52,78 @@ export default function useTableValues(
             timeZoneName: "short",
           }),
           unix: el.time,
+          idenHex: el.idenHex,
         };
       });
 
-      const descriptionsAdded = Promise.allSettled(
-        tv.map(async (el) => {
-          const isUmip = el.identifier.includes("Admin");
-          const umipNumber = isUmip
-            ? parseInt(el.identifier.split(" ")[1])
-            : undefined;
+      if (encryptedVotes.length) {
+        const postData = [] as PostRevealData[];
+        const latestVotesFirst = [...encryptedVotes].reverse();
 
-          let description = "Price request.";
+        tv = tv.map((el) => {
+          const datum = { ...el };
+          let vote = "-";
+          // I believe latest events are on bottom. requires testing.
+          const findVote = latestVotesFirst.find(
+            (x) =>
+              x.identifier === el.identifier &&
+              x.ancillaryData === el.ancHex &&
+              x.time === el.unix
+          );
 
-          if (umipNumber) {
-            try {
-              description = (await fetchUmip(umipNumber)).description;
-            } catch (err) {
-              description = "No data available for this UMIP.";
+          if (findVote) {
+            datum.vote = ethers.utils.formatEther(findVote.price);
+            setHasVoted(true);
+            if (el.identifier.includes("Admin")) {
+              if (datum.vote === "1" || datum.vote === "1.0")
+                datum.vote = "Yes";
+              if (datum.vote === "0" || datum.vote === "0.0") datum.vote = "No";
             }
-          }
-
-          return {
-            ...el,
-            description,
-          };
-        })
-      );
-
-      descriptionsAdded.then((results) => {
-        const values = [] as TableValue[];
-        results.forEach((result) => {
-          if (result.status === "fulfilled") {
-            values.push(result.value);
-          }
-        });
-        setTableValues(values);
-      });
-    }
-    if (activeRequests.length && encryptedVotes.length) {
-      const tv = [] as TableValue[];
-      const postData = [] as PostRevealData[];
-      const latestVotesFirst = [...encryptedVotes].reverse();
-
-      activeRequests.forEach((el) => {
-        const datum = {} as TableValue;
-        datum.ancillaryData = el.ancillaryData;
-        datum.identifier = el.identifier;
-        datum.ancHex = el.ancHex;
-        let vote = "-";
-        // I believe latest events are on bottom. requires testing.
-        const findVote = latestVotesFirst.find(
-          (x) =>
-            x.identifier === el.identifier &&
-            x.ancillaryData === el.ancHex &&
-            x.time === el.time
-        );
-
-        if (findVote) {
-          datum.vote = ethers.utils.formatEther(findVote.price);
-          setHasVoted(true);
-          if (el.identifier.includes("Admin")) {
-            if (datum.vote === "1" || datum.vote === "1.0") datum.vote = "Yes";
-            if (datum.vote === "0" || datum.vote === "0.0") datum.vote = "No";
-          }
-        } else {
-          datum.vote = vote;
-        }
-
-        const findReveal = revealedVotes.find(
-          (x) =>
-            x.identifier === el.identifier &&
-            x.ancillaryData === el.ancHex &&
-            x.time === el.time
-        );
-
-        if (findReveal) {
-          datum.revealed = true;
-        } else {
-          datum.revealed = false;
-        }
-
-        datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hourCycle: "h24",
-          timeZoneName: "short",
-        });
-        datum.unix = el.time;
-
-        tv.push(datum);
-        // Gather up PostRevealData here to save complexity
-        const prd = {} as PostRevealData;
-
-        if (findVote && !findReveal) {
-          prd.ancillaryData = el.ancillaryData;
-          // anc data is set to - or N/A in UI if empty, convert back to 0x.
-          if (
-            el.ancillaryData === UNDEFINED_VOTE ||
-            el.ancillaryData === "N/A"
-          ) {
-            prd.ancillaryData = "0x";
           } else {
-            prd.ancillaryData = web3.utils.utf8ToHex(el.ancillaryData);
+            datum.vote = vote;
           }
-          prd.time = Number(el.time);
-          prd.identifier = el.idenHex;
-          prd.salt = findVote.salt;
-          // datum.price = toWeiSafe(findVote.price).toString();
-          prd.price = findVote.price.toString();
-          postData.push(prd);
-        }
-      });
 
+          const findReveal = revealedVotes.find(
+            (x) =>
+              x.identifier === el.identifier &&
+              x.ancillaryData === el.ancHex &&
+              x.time === el.unix
+          );
+
+          if (findReveal) {
+            datum.revealed = true;
+          } else {
+            datum.revealed = false;
+          }
+
+          // Gather up PostRevealData here to save complexity
+          const prd = {} as PostRevealData;
+
+          if (findVote && !findReveal) {
+            prd.ancillaryData = el.ancillaryData;
+            // anc data is set to - or N/A in UI if empty, convert back to 0x.
+            if (
+              el.ancillaryData === UNDEFINED_VOTE ||
+              el.ancillaryData === "N/A"
+            ) {
+              prd.ancillaryData = "0x";
+            } else {
+              prd.ancillaryData = web3.utils.utf8ToHex(el.ancillaryData);
+            }
+            prd.time = Number(el.unix);
+            prd.identifier = el.idenHex;
+            prd.salt = findVote.salt;
+            // datum.price = toWeiSafe(findVote.price).toString();
+            prd.price = findVote.price.toString();
+            postData.push(prd);
+          }
+          return datum;
+        });
+
+        setPostRevealData(postData);
+      }
+
+      // Add description
       const descriptionsAdded = Promise.allSettled(
         tv.map(async (el) => {
           const isUmip = el.identifier.includes("Admin");
@@ -197,11 +155,8 @@ export default function useTableValues(
             values.push(result.value);
           }
         });
-
         setTableValues(values);
       });
-
-      setPostRevealData(postData);
     }
   }, [activeRequests, encryptedVotes, revealedVotes]);
 

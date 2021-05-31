@@ -12,6 +12,7 @@ import Button from "common/components/button";
 import {
   ModalWrapper,
   SubmitErrorMessage,
+  EthTransaction,
 } from "./styled/SubmitCommitsModal.styled";
 import { SubmitModalState, Summary, FormData } from "./CommitPhase";
 import { UnlockedIcon, LockedIconCommitted } from "assets/icons";
@@ -19,6 +20,7 @@ import {
   FieldValues,
   SubmitHandler,
   SubmitErrorHandler,
+  UseFormReset,
 } from "react-hook-form";
 
 interface Props {
@@ -31,30 +33,14 @@ interface Props {
   setSubmitErrorMessage: Dispatch<SetStateAction<string>>;
   showModalSummary: () => Summary[];
   // From react-hook-form
-  reset: (
-    values?:
-      | {
-          [x: string]: string | undefined;
-        }
-      | undefined,
-    omitResetState?:
-      | Partial<{
-          errors: boolean;
-          isDirty: boolean;
-          isSubmitted: boolean;
-          touched: boolean;
-          isValid: boolean;
-          submitCount: boolean;
-          dirtyFields: boolean;
-        }>
-      | undefined
-  ) => void;
+  reset: UseFormReset<FormData>;
   // From react hook form.
   handleSubmit: <TSubmitFieldValues extends FieldValues = FormData>(
     onValid: SubmitHandler<TSubmitFieldValues>,
     onInvalid?: SubmitErrorHandler<FormData>
   ) => (e?: BaseSyntheticEvent) => Promise<void>;
   onSubmit: (data: FormData) => void;
+  txHash: string;
 }
 
 const _SubmitCommitsModal: ForwardRefRenderFunction<
@@ -72,6 +58,7 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
     onSubmit,
     submitErrorMessage,
     setSubmitErrorMessage,
+    txHash,
   },
   externalRef
 ) => {
@@ -130,6 +117,23 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
                 );
               })
             : null}
+          {(modalState === "pending" || modalState === "success") &&
+          process.env.REACT_APP_CURRENT_ENV !== "test" ? (
+            <EthTransaction>
+              <a
+                href={
+                  process.env.REACT_APP_CURRENT_ENV === "kovan"
+                    ? `https://kovan.etherscan.io/tx/${txHash}`
+                    : `https://etherscan.io/tx/${txHash}`
+                }
+                target="_blank"
+                rel="noreferrer"
+              >
+                Click here
+              </a>{" "}
+              to view the transaction.
+            </EthTransaction>
+          ) : null}
           <div
             className={`button-wrapper ${
               modalState === "pending" ? "pending" : ""

@@ -57,8 +57,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
     usePriceRequestAddedEvents();
   const { data: activeRequests = [] as PendingRequest[] } =
     usePendingRequests();
-  const { data: roundId = "" } = useCurrentRoundId();
-
+  const { data: roundId = "", refetch: refetchRoundId } = useCurrentRoundId();
 
   const {
     data: revealedVotes = [] as VoteRevealed[],
@@ -106,6 +105,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
           activeRequests={activeRequests}
           signingKeys={signingKeys}
           roundId={roundId}
+          refetchRoundId={refetchRoundId}
           encryptedVotes={encryptedVotes}
           refetchEncryptedVotes={refetchEncryptedVotes}
           revealedVotes={revealedVotes}

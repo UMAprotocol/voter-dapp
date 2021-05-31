@@ -33,7 +33,11 @@ export default function useEncryptedVotesEvents(
     },
     {
       // do not run query if any of these are null
-      enabled: contract !== null && privateKey !== "" && address != null,
+      enabled:
+        contract !== null &&
+        privateKey !== "" &&
+        address != null &&
+        roundId !== "",
     }
   );
 
