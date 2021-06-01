@@ -145,8 +145,9 @@ const CommitPhase: FC<Props> = ({
             commitVotes(vc, fd)
               .then((tx) => {
                 // console.log("tx", tx);
-                setModalState("pending");
+                // setModalState("pending");
                 setSubmitErrorMessage("");
+                close();
 
                 // Need to confirm if the user submits the vote.
                 assert(tx, "Transaction did not get submitted, try again");
@@ -157,7 +158,7 @@ const CommitPhase: FC<Props> = ({
                   .then((conf: any) => {
                     // Temporary, as mining is instant on local ganache.
                     // setTimeout(() => setModalState("success"), 5000);
-                    setModalState("success");
+                    // setModalState("success");
                     refetchEncryptedVotes();
                     reset();
                   })
@@ -185,6 +186,7 @@ const CommitPhase: FC<Props> = ({
       votingAddress,
       reset,
       notify,
+      close,
     ]
   );
 
