@@ -9,7 +9,6 @@ export const ModalWrapper = styled.div`
   position: relative;
   background-color: #fff;
   z-index: 1;
-  overflow-y: auto;
   border-radius: 12px;
   margin: 0;
   outline: 0;
