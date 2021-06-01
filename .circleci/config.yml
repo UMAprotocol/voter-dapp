@@ -36,7 +36,7 @@ jobs:
           name: Run deploy
           command: |
             curl -X POST \
-            https://api.vercel.com/v1/integrations/deploy/{{ VERCEL_HOOK }}
+            https://api.vercel.com/v1/integrations/deploy/{{ .Environment.VERCEL_HOOK }}
 
 workflows:
   version: 2.1
