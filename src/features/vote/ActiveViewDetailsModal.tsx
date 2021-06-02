@@ -5,6 +5,7 @@ import {
   Dispatch,
   SetStateAction,
   useState,
+  useEffect,
 } from "react";
 import ReactMarkdown from "react-markdown";
 import Modal from "common/components/modal";
@@ -25,6 +26,8 @@ import useUMIP from "./useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ReactTooltip from "react-tooltip";
+
 interface Props {
   isOpen: boolean;
   close: () => void;
@@ -33,16 +36,22 @@ interface Props {
   proposal: string;
   timestamp: string;
   ancData: string;
+  unix: string;
 }
 
 const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
 > = (
-  { isOpen, close, proposal, setModalState, timestamp, ancData },
+  { isOpen, close, proposal, setModalState, timestamp, ancData, unix },
   externalRef
 ) => {
   const [copySuccess, setCopySuccess] = useState(false);
+  // Note: because there is dynamic content, this will rebuild the tooltip for addressing the conditional
+  // elements on the page. See ReactTooltip docs.
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  });
 
   const { network } = useOnboard();
 
@@ -53,6 +62,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   const description =
     umip?.description ||
     `No description was found for this ${isUmip ? "umip" : "request"}.`;
+
   return (
     <>
       <Modal
@@ -63,6 +73,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
             proposal: "",
             timestamp: "",
             ancData: "0x",
+            unix: "",
           });
         }}
         ref={externalRef}
@@ -123,8 +134,19 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
           </IconsWrapper>
 
           <MiniHeader>Proposal Timestamp</MiniHeader>
-          <StateValue>{timestamp}</StateValue>
+          <StateValue
+            data-for="active-modal-timestamp"
+            data-tip={`UTC: ${unix}`}
+          >
+            {timestamp}
+          </StateValue>
         </ModalWrapper>
+        <ReactTooltip
+          id="active-modal-timestamp"
+          place="top"
+          type="dark"
+          effect="float"
+        />
       </Modal>
     </>
   );

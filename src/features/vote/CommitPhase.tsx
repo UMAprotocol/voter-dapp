@@ -256,6 +256,7 @@ const CommitPhase: FC<Props> = ({
                           timestamp: el.timestamp,
                           ancData: el.ancHex,
                           proposal: el.identifier,
+                          unix: el.unix,
                         });
                       }}
                       className="view-details"
