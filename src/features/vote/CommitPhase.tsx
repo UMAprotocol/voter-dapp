@@ -56,6 +56,8 @@ const UNDEFINED_VOTE = "-";
 
 export type SubmitModalState = "init" | "pending" | "success" | "error";
 
+const inputRegExp = new RegExp(/^[-]?([0-9]*[.])?[0-9]+$/);
+
 const CommitPhase: FC<Props> = ({
   activeRequests,
   isConnected,
@@ -70,6 +72,9 @@ const CommitPhase: FC<Props> = ({
 }) => {
   const [submitErrorMessage, setSubmitErrorMessage] = useState("");
   const [txHash, setTxHash] = useState("");
+  const [buttonVariant, setButtonVariant] =
+    useState<"secondary" | "disabled">("disabled");
+
   const {
     state: { network, signer, notify },
   } = useContext(OnboardContext);
@@ -186,6 +191,14 @@ const CommitPhase: FC<Props> = ({
 
   const showModalSummary = useCallback(() => {
     const anyFields = Object.values(watchAllFields).filter((x) => x !== "");
+    // Double check the fields pass the input reg exp, otherwise don't show the summary until user fixes it.
+    for (let i = 0; i < anyFields.length; i++) {
+      if (!inputRegExp.test(anyFields[i])) {
+        setButtonVariant("disabled");
+        return [];
+      }
+    }
+
     if (anyFields.length) {
       const summary = [] as Summary[];
       const identifiers = Object.keys(watchAllFields);
@@ -201,11 +214,13 @@ const CommitPhase: FC<Props> = ({
           summary.push(val);
         }
       }
+      setButtonVariant("secondary");
       return summary;
     } else {
+      setButtonVariant("disabled");
       return [];
     }
-  }, [watchAllFields]);
+  }, [watchAllFields, setButtonVariant]);
 
   return (
     <FormWrapper
@@ -333,11 +348,7 @@ const CommitPhase: FC<Props> = ({
         <div className="end-row-item">
           <Button
             type="button"
-            variant={
-              Object.values(watchAllFields).filter((x) => x !== "").length
-                ? "secondary"
-                : "disabled"
-            }
+            variant={buttonVariant}
             onClick={() => {
               if (showModalSummary().length) open();
             }}
