@@ -10,7 +10,6 @@ export default async function createDesignatedVotingContract(
     signer,
     network.chainId.toString()
   );
-  // console.log("DVC factory", dvcFactory);
   try {
     const tx = await dvcFactory.newDesignatedVoting(address);
     return tx;
