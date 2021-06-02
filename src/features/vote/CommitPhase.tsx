@@ -143,7 +143,6 @@ const CommitPhase: FC<Props> = ({
           if (vc) {
             commitVotes(vc, fd)
               .then((tx) => {
-                // console.log("tx", tx);
                 setSubmitErrorMessage("");
                 close();
                 reset();
@@ -158,7 +157,7 @@ const CommitPhase: FC<Props> = ({
                     reset();
                   })
                   .catch((err: any) => {
-                    setSubmitErrorMessage("Error with tx.");
+                    setSubmitErrorMessage(`Error with tx: ${err.message}`);
                   });
               })
               .catch((err) => {
