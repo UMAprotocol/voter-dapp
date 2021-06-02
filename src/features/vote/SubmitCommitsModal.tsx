@@ -12,35 +12,28 @@ import Button from "common/components/button";
 import {
   ModalWrapper,
   SubmitErrorMessage,
-  EthTransaction,
 } from "./styled/SubmitCommitsModal.styled";
-import { SubmitModalState, Summary, FormData } from "./CommitPhase";
-import { UnlockedIcon, LockedIconCommitted } from "assets/icons";
+import { Summary, FormData } from "./CommitPhase";
 import {
   FieldValues,
   SubmitHandler,
   SubmitErrorHandler,
-  UseFormReset,
 } from "react-hook-form";
 
 interface Props {
   isOpen: boolean;
   close: () => void;
   ref: (node: HTMLElement | null) => void;
-  modalState: SubmitModalState;
-  setModalState: Dispatch<SetStateAction<SubmitModalState>>;
   submitErrorMessage: string;
   setSubmitErrorMessage: Dispatch<SetStateAction<string>>;
   showModalSummary: () => Summary[];
   // From react-hook-form
-  reset: UseFormReset<FormData>;
   // From react hook form.
   handleSubmit: <TSubmitFieldValues extends FieldValues = FormData>(
     onValid: SubmitHandler<TSubmitFieldValues>,
     onInvalid?: SubmitErrorHandler<FormData>
   ) => (e?: BaseSyntheticEvent) => Promise<void>;
   onSubmit: (data: FormData) => void;
-  txHash: string;
 }
 
 const _SubmitCommitsModal: ForwardRefRenderFunction<
@@ -50,15 +43,11 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
   {
     isOpen,
     close,
-    modalState,
     showModalSummary,
-    setModalState,
-    reset,
     handleSubmit,
     onSubmit,
     submitErrorMessage,
     setSubmitErrorMessage,
-    txHash,
   },
   externalRef
 ) => {
@@ -68,43 +57,15 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
         isOpen={isOpen}
         onClose={() => {
           close();
-          setModalState("init");
           setSubmitErrorMessage("");
         }}
         ref={externalRef}
       >
         <ModalWrapper>
-          <div className="icon-wrapper">
-            {modalState === "pending" ? (
-              <div className="modal__ico modal__ico-animate">
-                <UnlockedIcon className="unlocked-icon" />
+          <h3 className="header">Ready to commit these votes?</h3>
 
-                <div className="modal__ico-container">
-                  <div className="modal__ico-halfclip">
-                    <div className="modal__ico-halfcircle modal__ico-clipped"></div>
-                  </div>
-
-                  <div className="modal__ico-halfcircle modal__ico-fixed"></div>
-                </div>
-              </div>
-            ) : modalState === "success" ? (
-              <LockedIconCommitted className="unlocked-icon" />
-            ) : (
-              <UnlockedIcon className="unlocked-icon" />
-            )}
-          </div>
-
-          {modalState === "pending" ? (
-            <h3 className="header">Committing Votes...</h3>
-          ) : modalState === "success" ? (
-            <h3 className="header">Votes successfully committed</h3>
-          ) : (
-            <>
-              <h3 className="header">Ready to commit these votes?</h3>
-              {submitErrorMessage && (
-                <SubmitErrorMessage>{submitErrorMessage}</SubmitErrorMessage>
-              )}
-            </>
+          {submitErrorMessage && (
+            <SubmitErrorMessage>{submitErrorMessage}</SubmitErrorMessage>
           )}
 
           {showModalSummary().length
@@ -117,64 +78,23 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
                 );
               })
             : null}
-          {(modalState === "pending" || modalState === "success") &&
-          process.env.REACT_APP_CURRENT_ENV !== "test" ? (
-            <EthTransaction>
-              <a
-                href={
-                  process.env.REACT_APP_CURRENT_ENV === "kovan"
-                    ? `https://kovan.etherscan.io/tx/${txHash}`
-                    : `https://etherscan.io/tx/${txHash}`
-                }
-                target="_blank"
-                rel="noreferrer"
-              >
-                Click here
-              </a>{" "}
-              to view the transaction.
-            </EthTransaction>
-          ) : null}
-          <div
-            className={`button-wrapper ${
-              modalState === "pending" ? "pending" : ""
-            }`}
-          >
-            {modalState === "init" ||
-            modalState === "pending" ||
-            modalState === "error" ? (
-              <>
-                <Button
-                  onClick={() => {
-                    close();
-                    setModalState("init");
-                    setSubmitErrorMessage("");
-                  }}
-                  variant="primary"
-                >
-                  Not Yet
-                </Button>
-                <Button
-                  type="submit"
-                  onClick={handleSubmit(onSubmit)}
-                  variant="secondary"
-                >
-                  I'm Ready
-                </Button>
-              </>
-            ) : (
-              <Button
-                onClick={() => {
-                  // close modal and reset form values.
-                  close();
-                  reset();
-                  setModalState("init");
-                  setSubmitErrorMessage("");
-                }}
-                variant="secondary"
-              >
-                Done
-              </Button>
-            )}
+          <div className={`button-wrapper`}>
+            <Button
+              onClick={() => {
+                close();
+                setSubmitErrorMessage("");
+              }}
+              variant="primary"
+            >
+              Not Yet
+            </Button>
+            <Button
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+              variant="secondary"
+            >
+              I'm Ready
+            </Button>
           </div>
         </ModalWrapper>
       </Modal>

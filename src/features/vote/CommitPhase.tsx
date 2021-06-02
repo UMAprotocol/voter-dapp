@@ -68,7 +68,6 @@ const CommitPhase: FC<Props> = ({
   setViewDetailsModalState,
   openViewDetailsModal,
 }) => {
-  const [modalState, setModalState] = useState<SubmitModalState>("init");
   const [submitErrorMessage, setSubmitErrorMessage] = useState("");
   const [txHash, setTxHash] = useState("");
   const {
@@ -144,10 +143,9 @@ const CommitPhase: FC<Props> = ({
           if (vc) {
             commitVotes(vc, fd)
               .then((tx) => {
-                // console.log("tx", tx);
-                setModalState("pending");
                 setSubmitErrorMessage("");
-
+                close();
+                reset();
                 // Need to confirm if the user submits the vote.
                 assert(tx, "Transaction did not get submitted, try again");
                 setTxHash(tx.hash);
@@ -155,20 +153,15 @@ const CommitPhase: FC<Props> = ({
 
                 tx.wait(1)
                   .then((conf: any) => {
-                    // Temporary, as mining is instant on local ganache.
-                    // setTimeout(() => setModalState("success"), 5000);
-                    setModalState("success");
                     refetchEncryptedVotes();
                     reset();
                   })
                   .catch((err: any) => {
-                    setSubmitErrorMessage("Error with tx.");
-                    setModalState("init");
+                    setSubmitErrorMessage(`Error with tx: ${err.message}`);
                   });
               })
               .catch((err) => {
                 setSubmitErrorMessage(err.message);
-                setModalState("init");
               });
           }
         });
@@ -179,12 +172,12 @@ const CommitPhase: FC<Props> = ({
       publicKey,
       roundId,
       votingContract,
-      setModalState,
       refetchEncryptedVotes,
       designatedVotingContract,
       votingAddress,
       reset,
       notify,
+      close,
     ]
   );
 
@@ -292,7 +285,6 @@ const CommitPhase: FC<Props> = ({
                       control={control}
                       rules={{ pattern: /^[-]?([0-9]*[.])?[0-9]+$/ }}
                       render={({ field }) => {
-                        // console.log("meta.error", meta);
                         return (
                           <TextInput
                             label="Input your vote."
@@ -375,15 +367,11 @@ const CommitPhase: FC<Props> = ({
         isOpen={isOpen}
         close={close}
         ref={modalRef}
-        modalState={modalState}
-        setModalState={setModalState}
         showModalSummary={showModalSummary}
-        reset={reset}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
         submitErrorMessage={submitErrorMessage}
         setSubmitErrorMessage={setSubmitErrorMessage}
-        txHash={txHash}
       />
     </FormWrapper>
   );
