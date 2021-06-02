@@ -34,6 +34,17 @@ export const MiniHeader = styled.div`
   font-size: 0.8rem;
   margin-bottom: 1rem;
   margin-top: 1rem;
+  .copy-wrapper {
+    display: inline;
+    color: #ff4a4a;
+
+    &:hover {
+      color: #000;
+    }
+  }
+  .copy-wrapper {
+    cursor: pointer;
+  }
 `;
 
 export const Proposal = styled.div`

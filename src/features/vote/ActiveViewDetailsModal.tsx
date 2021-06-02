@@ -23,7 +23,8 @@ import { ModalState } from "./ActiveRequests";
 import { DiscordRed, CopyIcon } from "assets/icons";
 import useUMIP from "./useUMIP";
 import useOnboard from "common/hooks/useOnboard";
-
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 interface Props {
   isOpen: boolean;
   close: () => void;
@@ -69,7 +70,22 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
         <ModalWrapper>
           <MiniHeader>Proposal</MiniHeader>
           <Proposal>{proposal}</Proposal>
-          <MiniHeader>Ancillary Data (raw hexstring)</MiniHeader>
+          <MiniHeader>
+            Ancillary Data (raw hexstring)
+            <div
+              className="copy-wrapper"
+              onClick={() => {
+                navigator.clipboard.writeText(ancData);
+                setCopySuccess(true);
+                setTimeout(() => setCopySuccess(false), 2000);
+              }}
+            >
+              <FontAwesomeIcon style={{ marginLeft: "8px" }} icon={faCopy} />
+              {copySuccess && (
+                <span style={{ marginLeft: "16px" }}>Copied.</span>
+              )}
+            </div>
+          </MiniHeader>
           <StateValueAncData>{ancData}</StateValueAncData>
           <MiniHeader>Description</MiniHeader>
           <Description>
@@ -94,21 +110,16 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
                 Join the UMA Discord
               </a>
             </IconsItem>
-            <IconsItem>
-              <div
-                onClick={() => {
-                  navigator.clipboard.writeText(ancData);
-                  setCopySuccess(true);
-                  setTimeout(() => setCopySuccess(false), 2000);
-                }}
-                className="copy-wrapper"
-              >
-                <Icon>
-                  <CopyIcon />
-                </Icon>
-                {copySuccess ? "Successfully copied" : "Copy Ancillary Data"}
-              </div>
-            </IconsItem>
+            {umip?.url ? (
+              <IconsItem>
+                <a target="_blank" href={umip?.url} rel="noreferrer">
+                  <Icon>
+                    <CopyIcon />
+                  </Icon>
+                  Link to UMIP
+                </a>
+              </IconsItem>
+            ) : null}
           </IconsWrapper>
 
           <MiniHeader>Proposal Timestamp</MiniHeader>
