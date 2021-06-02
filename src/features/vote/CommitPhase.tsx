@@ -9,7 +9,7 @@ import {
   useEffect,
 } from "react";
 import assert from "assert";
-import { useForm, UseFormSetError } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
@@ -282,7 +282,8 @@ const CommitPhase: FC<Props> = ({
                     </div>
                   ) : (
                     <TextInput
-                      label="Input your vote."
+                      label={`Current vote: ${el.vote ?? ""}`}
+                      showValueInLabel
                       control={control}
                       name={`${el.identifier}~${el.unix}~${el.ancHex}`}
                       placeholder="0.000"
@@ -293,6 +294,7 @@ const CommitPhase: FC<Props> = ({
                           message: "Please input a valid number.",
                         },
                       }}
+                      // Getting very strange type errors here. Todo: Fix these so any isn't required.
                       setValue={setValue}
                       setError={setError}
                     />

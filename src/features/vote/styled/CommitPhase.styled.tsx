@@ -112,3 +112,11 @@ export const FormWrapper = styled.form<StyledFormProps>`
     }
   }
 `;
+
+export const CommitInputLabel = styled.label`
+  width: 100%;
+  padding-left: 4px;
+  margin-bottom: 1rem;
+  font-weight: 400;
+  font-size: 14px;
+`;

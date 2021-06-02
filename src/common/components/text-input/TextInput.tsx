@@ -6,7 +6,7 @@ import {
 } from "react";
 
 import tw, { styled } from "twin.macro"; // eslint-disable-line
-import { useController, Control, UseFormSetError } from "react-hook-form";
+import { useController, Control } from "react-hook-form";
 
 interface Props {
   control: Control;
@@ -23,6 +23,7 @@ interface Props {
   };
   setError: any;
   setValue: any;
+  showValueInLabel: boolean;
 }
 
 const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
@@ -39,9 +40,6 @@ const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
     defaultValue: "",
   });
 
-  console.log(fieldState);
-  // if (inputProps.value)
-
   return (
     <StyledInput className="TextInput">
       <label className="label">{props.label}</label>
@@ -55,10 +53,15 @@ const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
             if (props.rules) {
               const regExp = new RegExp(props.rules?.pattern.value);
               regExp.test(value);
-              if (!regExp.test(value))
+              if (!regExp.test(value)) {
                 props.setError(props.name, {
                   message: props.rules.pattern.message,
                 });
+              } else {
+                props.setError(props.name, undefined);
+              }
+              if (value === "" || value === undefined)
+                props.setError(props.name, undefined);
             }
           }}
         />
