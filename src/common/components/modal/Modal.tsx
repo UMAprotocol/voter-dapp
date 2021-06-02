@@ -63,6 +63,11 @@ const BgBlur = styled.div<StyledProps>`
   bottom: 0px;
   left: 0px;
 `;
-const ExitButton = tw.button`w-4 h-4 text-gray self-end`;
+const ExitButton = styled.button`
+  ${tw`w-4 h-4 text-gray self-end`};
+  &:focus {
+    outline: none;
+  }
+`;
 
 export default Modal;
