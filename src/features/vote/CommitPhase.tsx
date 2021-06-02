@@ -9,7 +9,7 @@ import {
   useEffect,
 } from "react";
 import assert from "assert";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, UseFormSetError } from "react-hook-form";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
@@ -99,9 +99,10 @@ const CommitPhase: FC<Props> = ({
     return dv;
   }, [activeRequests]);
 
-  const { handleSubmit, control, watch, reset } = useForm<FormData>({
-    defaultValues: generateDefaultValues(),
-  });
+  const { handleSubmit, control, watch, reset, setValue, setError } =
+    useForm<FormData>({
+      defaultValues: generateDefaultValues(),
+    });
 
   // Make sure to reset form state if the user disconnects *or* changes their address.
   // As we disconenct them on address, isConnected should cover this state change.
@@ -280,40 +281,20 @@ const CommitPhase: FC<Props> = ({
                       />
                     </div>
                   ) : (
-                    <Controller
-                      name={`${el.identifier}~${el.unix}~${el.ancHex}`}
+                    <TextInput
+                      label="Input your vote."
                       control={control}
-                      rules={{ pattern: /^[-]?([0-9]*[.])?[0-9]+$/ }}
-                      render={({ field }) => {
-                        return (
-                          <TextInput
-                            label="Input your vote."
-                            control={control}
-                            name={`${el.identifier}~${el.unix}~${el.ancHex}`}
-                            placeholder="0.000"
-                            variant="text"
-                            rules={{
-                              pattern: /^[-]?([0-9]*[.])?[0-9]+$/,
-                            }}
-                            // onChange={(e) => {
-                            /* WIP for another ticket. Ignore for now. */
-
-                            //   const regexPattern =
-                            //     /[-]?([0-9]+([.][0-9]*)?|[.][0-9]+)/;
-                            //   // const rep = /^[-]?([0-9]*[.])?[0-9]+$/;
-                            //   // console.log(
-                            //   //   "testing value",
-                            //   //   regexPattern.test(e.target.value)
-                            //   // );
-                            //   // if (regexPattern.test(e.target.value)) {
-                            //   return onChange(e.target.value);
-                            //   // } else {
-                            //   // if
-                            //   // }
-                            // }}
-                          />
-                        );
+                      name={`${el.identifier}~${el.unix}~${el.ancHex}`}
+                      placeholder="0.000"
+                      variant="text"
+                      rules={{
+                        pattern: {
+                          value: /^[-]?([0-9]*[.])?[0-9]+$/,
+                          message: "Please input a valid number.",
+                        },
                       }}
+                      setValue={setValue}
+                      setError={setError}
                     />
                   )}
                 </td>

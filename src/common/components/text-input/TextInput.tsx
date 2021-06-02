@@ -6,7 +6,7 @@ import {
 } from "react";
 
 import tw, { styled } from "twin.macro"; // eslint-disable-line
-import { useController, Control } from "react-hook-form";
+import { useController, Control, UseFormSetError } from "react-hook-form";
 
 interface Props {
   control: Control;
@@ -15,7 +15,14 @@ interface Props {
   label?: string;
   placeholder?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
-  rules?: { pattern: RegExp };
+  rules?: {
+    pattern: {
+      value: RegExp;
+      message: string;
+    };
+  };
+  setError: any;
+  setValue: any;
 }
 
 const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
@@ -23,25 +30,45 @@ const _TextInput: ForwardRefRenderFunction<HTMLInputElement, Props> = (
   externalRef
 ) => {
   const {
-    field,
-    // fieldState
-  } = useController(props);
+    field: { ref, ...inputProps },
+    fieldState,
+  } = useController({
+    name: props.name,
+    control: props.control,
+    rules: props.rules,
+    defaultValue: "",
+  });
+
+  console.log(fieldState);
+  // if (inputProps.value)
 
   return (
     <StyledInput className="TextInput">
       <label className="label">{props.label}</label>
       <div>
         <input
-          {...field}
+          {...inputProps}
           placeholder={props.placeholder}
-          ref={field.ref}
-          value={field.value}
-          onChange={props.onChange ?? field.onChange}
+          onChange={(e) => {
+            const value = e.target.value;
+            props.setValue(props.name, value);
+            if (props.rules) {
+              const regExp = new RegExp(props.rules?.pattern.value);
+              regExp.test(value);
+              if (!regExp.test(value))
+                props.setError(props.name, {
+                  message: props.rules.pattern.message,
+                });
+            }
+          }}
         />
         {props.variant === "currency" ? (
           <span className="dollar-sign">$</span>
         ) : null}
       </div>
+      {fieldState.error && fieldState.error.message && (
+        <TextInputError>{fieldState.error.message}</TextInputError>
+      )}
     </StyledInput>
   );
 };
@@ -65,7 +92,7 @@ export const StyledInput = styled.div`
     width: 250px;
     background-color: #f4f5f4;
     padding: 1rem 1.25rem;
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
     &:focus {
       background-color: #fff;
       color: #ff4d4c;
@@ -79,6 +106,11 @@ export const StyledInput = styled.div`
     pointer-events: none;
     /* color: #ff4d4c; */
   }
+`;
+
+const TextInputError = styled.div`
+  color: #ff4d4c;
+  margin-bottom: 2rem;
 `;
 
 export default TextInput;
