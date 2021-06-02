@@ -63,6 +63,7 @@ export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
         ? Number(el.totalSupplyAtSnapshot).toFixed(6).toString()
         : "0";
     datum.rewardsClaimed = rewardsClaimed.toString();
+    datum.unix = el.time;
 
     return datum;
   });

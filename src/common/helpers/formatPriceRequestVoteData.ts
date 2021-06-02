@@ -51,9 +51,8 @@ export default function formatPriceRequestVoteData(
     } = {};
 
     rr.committedVotes.forEach((e) => {
-      uniqueVotersCommitted[
-        utils.getAddress(e.voter.address.toLowerCase())
-      ] = true;
+      uniqueVotersCommitted[utils.getAddress(e.voter.address.toLowerCase())] =
+        true;
     });
 
     // Revealed vote data:

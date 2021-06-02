@@ -28,6 +28,7 @@ import { ethers } from "ethers";
 import useUMIP from "./useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 import toWeiSafe from "common/utils/web3/convertToWeiSafely";
+import ReactTooltip from "react-tooltip";
 
 interface Props {
   isOpen: boolean;
@@ -41,6 +42,7 @@ interface Props {
   numberRevealVoters: number;
   timestamp: string;
   rewardsClaimed: string;
+  unix: string;
 }
 
 const _PastViewDetailsModal: ForwardRefRenderFunction<
@@ -58,10 +60,16 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
     numberRevealVoters,
     timestamp,
     rewardsClaimed,
+    unix,
   },
   externalRef
 ) => {
   const [formattedRewardsClaimed, setFormattedRewardsClaimed] = useState("0");
+  // Note: because there is dynamic content, this will rebuild the tooltip for addressing the conditional
+  // elements on the page. See ReactTooltip docs.
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  });
 
   // Format rewards to 6 decs. It is a Big Num as it the value is in wei.
   useEffect(() => {
@@ -100,6 +108,7 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
             numberRevealVoters: 0,
             timestamp: "",
             rewardsClaimed: "0",
+            unix: "",
           });
         }}
         ref={externalRef}
@@ -152,8 +161,16 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
           </RevealPercentage>
 
           <MiniHeader>Proposal Timestamp</MiniHeader>
-          <StateValue>{timestamp}</StateValue>
+          <StateValue data-for="past-modal-timestamp" data-tip={`UTC: ${unix}`}>
+            {timestamp}
+          </StateValue>
         </ModalWrapper>
+        <ReactTooltip
+          id="past-modal-timestamp"
+          place="top"
+          type="dark"
+          effect="float"
+        />
       </Modal>
     </>
   );
