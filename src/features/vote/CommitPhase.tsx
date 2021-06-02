@@ -86,7 +86,7 @@ const CommitPhase: FC<Props> = ({
     hotAddress
   );
 
-  const { tableValues, hasVoted } = useTableValues(
+  const { tableValues } = useTableValues(
     activeRequests,
     encryptedVotes,
     revealedVotes
@@ -239,7 +239,6 @@ const CommitPhase: FC<Props> = ({
             <th>Description</th>
             <th>Timestamp</th>
             <th>Commit Vote</th>
-            <th className="center-header">Your Vote</th>
             <th className="center-header">Vote Status</th>
           </tr>
         </thead>
@@ -315,18 +314,6 @@ const CommitPhase: FC<Props> = ({
                     />
                   )}
                 </td>
-
-                {hasVoted ? (
-                  <td>
-                    <div>
-                      <p className="vote">{el.vote}</p>
-                    </div>
-                  </td>
-                ) : (
-                  <td>
-                    <p className="empty-vote">-</p>
-                  </td>
-                )}
 
                 <td>
                   <div className="status">

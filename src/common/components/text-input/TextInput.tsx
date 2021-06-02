@@ -87,7 +87,7 @@ export const StyledInput = styled.div`
     padding-left: 4px;
     margin-bottom: 1rem;
     font-weight: 400;
-    font-size: 14px;
+    font-size: 16px;
   }
   input {
     min-height: 25px;
