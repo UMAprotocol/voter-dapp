@@ -3,6 +3,7 @@ import Router from "features/router";
 import { QueryClient } from "react-query";
 import usePrevious from "common/hooks/usePrevious";
 import { ToastContainer, toast } from "react-toastify";
+import { ethers } from "ethers";
 
 // Context
 import { ErrorContext } from "common/context/ErrorContext";
@@ -11,29 +12,73 @@ import { OnboardContext } from "common/context/OnboardContext";
 import { recoverPublicKey } from "./features/vote/helpers/recoverPublicKey";
 import { derivePrivateKey } from "./features/vote/helpers/derivePrivateKey";
 
+import currentSigningMessage from "common/currentSigningMessage";
+import { useCurrentRoundId } from "hooks";
+
 interface Props {
   queryClient: QueryClient;
 }
 
-export interface SigningKeys {
+export interface SigningKey {
   [key: string]: {
     publicKey: string;
     privateKey: string;
   };
 }
 
+export interface SigningKeys {
+  [key: string]: SigningKey;
+}
+
+const SIGNING_KEYS_STORAGE_KEY = "signingKeys";
+
 function App(props: Props) {
   const [signingKeys, setSigningKeys] = useState<SigningKeys>({});
 
   const { state, disconnect, dispatch } = useContext(OnboardContext);
   const { error, removeError, addError } = useContext(ErrorContext);
+  const { data: currentRoundId } = useCurrentRoundId();
 
   useEffect(() => {
     if (state.signer && state.address) {
       const address = state.address;
-      const message = "Login to UMA Voter dApp";
-      const keyExists = signingKeys[address];
-      if (!keyExists) {
+      const message = currentSigningMessage(Number(currentRoundId));
+      const hashedMessage = ethers.utils.formatBytes32String(message);
+      const keysString = localStorage.getItem(SIGNING_KEYS_STORAGE_KEY);
+      if (keysString) {
+        const keys = JSON.parse(keysString) as SigningKeys;
+        const keyExists = keys[hashedMessage][address];
+        if (!keyExists) {
+          state.signer
+            .signMessage(message)
+            .then((msg) => {
+              const key = {} as { publicKey: string; privateKey: string };
+
+              const privateKey = derivePrivateKey(msg);
+              const publicKey = recoverPublicKey(privateKey);
+              key.privateKey = privateKey;
+              key.publicKey = publicKey;
+
+              const updatedKeys = {
+                ...keys,
+                [hashedMessage]: { [address]: key },
+              };
+
+              localStorage.setItem(
+                SIGNING_KEYS_STORAGE_KEY,
+                JSON.stringify(updatedKeys)
+              );
+
+              setSigningKeys(updatedKeys);
+            })
+            .catch((err) => {
+              const error = new Error("Sign failed.");
+              addError(error);
+            });
+        } else {
+          setSigningKeys(keys);
+        }
+      } else {
         state.signer
           .signMessage(message)
           .then((msg) => {
@@ -44,8 +89,10 @@ function App(props: Props) {
             key.privateKey = privateKey;
             key.publicKey = publicKey;
 
+            const ks = JSON.stringify({ [hashedMessage]: { [address]: key } });
+            localStorage.setItem(SIGNING_KEYS_STORAGE_KEY, ks);
             setSigningKeys((prevKeys) => {
-              return { ...prevKeys, [address]: key };
+              return { ...prevKeys, [hashedMessage]: { [address]: key } };
             });
           })
           .catch((err) => {
@@ -54,7 +101,7 @@ function App(props: Props) {
           });
       }
     }
-  }, [state.signer, state.address, signingKeys, addError]);
+  }, [state.signer, state.address, addError, currentRoundId]);
 
   useEffect(() => {
     if (error)

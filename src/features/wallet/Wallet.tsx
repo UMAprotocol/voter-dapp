@@ -39,6 +39,8 @@ import {
 } from "./styled/Wallet.styled";
 // import ERC20TransferButton from "./helpers/ERC20TransferButton";
 import { SigningKeys } from "App";
+import currentSigningMessage from "common/currentSigningMessage";
+import { useCurrentRoundId } from "hooks";
 
 interface Props {
   signingKeys: SigningKeys;
@@ -74,12 +76,20 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     signer,
     network
   );
+  const { data: roundId } = useCurrentRoundId();
+
+  const message = currentSigningMessage(Number(roundId));
+  const hashedMessage = ethers.utils.formatBytes32String(message);
 
   const signingPK =
-    hotAddress && signingKeys[hotAddress]
-      ? signingKeys[hotAddress].privateKey
-      : votingAddress && signingKeys[votingAddress]
-      ? signingKeys[votingAddress].privateKey
+    hotAddress &&
+    signingKeys[hashedMessage] &&
+    signingKeys[hashedMessage][hotAddress]
+      ? signingKeys[hashedMessage][hotAddress].privateKey
+      : votingAddress &&
+        signingKeys[hashedMessage] &&
+        signingKeys[hashedMessage][votingAddress]
+      ? signingKeys[hashedMessage][votingAddress].privateKey
       : "";
 
   const { votingContract, designatedVotingContract } = useVotingContract(

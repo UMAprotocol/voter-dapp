@@ -17,6 +17,8 @@ import useModal from "common/hooks/useModal";
 import { SigningKeys } from "App";
 import { Round } from "web3/get/queryRounds";
 import { RefetchOptions, QueryObserverResult } from "react-query";
+import { ethers } from "ethers";
+import currentSigningMessage from "common/currentSigningMessage";
 
 export interface ModalState {
   proposal: string;
@@ -84,11 +86,18 @@ const ActiveRequests: FC<Props> = ({
     return () => clearInterval(timer);
   }, []);
 
+  const message = currentSigningMessage(Number(roundId));
+  const hashedMessage = ethers.utils.formatBytes32String(message);
+
   const signingPublicKey =
-    hotAddress && signingKeys[hotAddress]
-      ? signingKeys[hotAddress].publicKey
-      : votingAddress && signingKeys[votingAddress]
-      ? signingKeys[votingAddress].publicKey
+    hotAddress &&
+    signingKeys[hashedMessage] &&
+    signingKeys[hashedMessage][hotAddress]
+      ? signingKeys[hashedMessage][hotAddress].publicKey
+      : votingAddress &&
+        signingKeys[hashedMessage] &&
+        signingKeys[hashedMessage][votingAddress]
+      ? signingKeys[hashedMessage][votingAddress].publicKey
       : "";
 
   return (
