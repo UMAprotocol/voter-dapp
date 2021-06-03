@@ -61,7 +61,7 @@ function App(props: Props) {
 
               const updatedKeys = {
                 ...keys,
-                [hashedMessage]: { [address]: key },
+                [hashedMessage]: { ...keys[hashedMessage], [address]: key },
               };
 
               localStorage.setItem(
@@ -100,6 +100,8 @@ function App(props: Props) {
             addError(error);
           });
       }
+    } else {
+      setSigningKeys({});
     }
   }, [state.signer, state.address, addError, currentRoundId]);
 
@@ -128,6 +130,7 @@ function App(props: Props) {
       state.network &&
       state.network.chainId !== previousNetwork.chainId
     ) {
+      debugger;
       window.location.reload();
     }
   }, [state.network, previousNetwork]);

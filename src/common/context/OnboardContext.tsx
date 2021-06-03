@@ -171,6 +171,7 @@ const connect = async (
 const disconnect = (dispatch: OnboardDispatch, onboard: OnboardApi | null) => {
   onboard?.walletReset();
   dispatch({ type: actions.RESET_STATE });
+  console.log("do we get to this part of disconnect");
 };
 
 export type Connect = typeof connect;
