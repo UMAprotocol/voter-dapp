@@ -5,6 +5,7 @@ import {
   Dispatch,
   SetStateAction,
   useState,
+  useEffect,
 } from "react";
 import ReactMarkdown from "react-markdown";
 import Modal from "common/components/modal";
@@ -23,6 +24,9 @@ import { ModalState } from "./ActiveRequests";
 import { DiscordRed, CopyIcon } from "assets/icons";
 import useUMIP from "./useUMIP";
 import useOnboard from "common/hooks/useOnboard";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ReactTooltip from "react-tooltip";
 
 interface Props {
   isOpen: boolean;
@@ -32,16 +36,22 @@ interface Props {
   proposal: string;
   timestamp: string;
   ancData: string;
+  unix: string;
 }
 
 const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
 > = (
-  { isOpen, close, proposal, setModalState, timestamp, ancData },
+  { isOpen, close, proposal, setModalState, timestamp, ancData, unix },
   externalRef
 ) => {
   const [copySuccess, setCopySuccess] = useState(false);
+  // Note: because there is dynamic content, this will rebuild the tooltip for addressing the conditional
+  // elements on the page. See ReactTooltip docs.
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  });
 
   const { network } = useOnboard();
 
@@ -52,6 +62,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   const description =
     umip?.description ||
     `No description was found for this ${isUmip ? "umip" : "request"}.`;
+
   return (
     <>
       <Modal
@@ -62,6 +73,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
             proposal: "",
             timestamp: "",
             ancData: "0x",
+            unix: "",
           });
         }}
         ref={externalRef}
@@ -69,7 +81,22 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
         <ModalWrapper>
           <MiniHeader>Proposal</MiniHeader>
           <Proposal>{proposal}</Proposal>
-          <MiniHeader>Ancillary Data (raw hexstring)</MiniHeader>
+          <MiniHeader>
+            Ancillary Data (raw hexstring)
+            <div
+              className="copy-wrapper"
+              onClick={() => {
+                navigator.clipboard.writeText(ancData);
+                setCopySuccess(true);
+                setTimeout(() => setCopySuccess(false), 2000);
+              }}
+            >
+              <FontAwesomeIcon style={{ marginLeft: "8px" }} icon={faCopy} />
+              {copySuccess && (
+                <span style={{ marginLeft: "16px" }}>Copied.</span>
+              )}
+            </div>
+          </MiniHeader>
           <StateValueAncData>{ancData}</StateValueAncData>
           <MiniHeader>Description</MiniHeader>
           <Description>
@@ -94,26 +121,32 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
                 Join the UMA Discord
               </a>
             </IconsItem>
-            <IconsItem>
-              <div
-                onClick={() => {
-                  navigator.clipboard.writeText(ancData);
-                  setCopySuccess(true);
-                  setTimeout(() => setCopySuccess(false), 2000);
-                }}
-                className="copy-wrapper"
-              >
-                <Icon>
-                  <CopyIcon />
-                </Icon>
-                {copySuccess ? "Successfully copied" : "Copy Ancillary Data"}
-              </div>
-            </IconsItem>
+            {umip?.url ? (
+              <IconsItem>
+                <a target="_blank" href={umip?.url} rel="noreferrer">
+                  <Icon>
+                    <CopyIcon />
+                  </Icon>
+                  Link to UMIP
+                </a>
+              </IconsItem>
+            ) : null}
           </IconsWrapper>
 
           <MiniHeader>Proposal Timestamp</MiniHeader>
-          <StateValue>{timestamp}</StateValue>
+          <StateValue
+            data-for="active-modal-timestamp"
+            data-tip={`UTC: ${unix}`}
+          >
+            {timestamp}
+          </StateValue>
         </ModalWrapper>
+        <ReactTooltip
+          id="active-modal-timestamp"
+          place="top"
+          type="dark"
+          effect="float"
+        />
       </Modal>
     </>
   );

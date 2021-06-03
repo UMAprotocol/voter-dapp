@@ -16,6 +16,7 @@ export type UMIP = {
   authors?: string;
   title: string;
   number: number;
+  url: string;
 };
 
 export const fetchUmip = async (number: number) => {

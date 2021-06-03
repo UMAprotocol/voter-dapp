@@ -63,6 +63,7 @@ export function formatPastRequestsByAddress(
       hourCycle: "h24",
       timeZoneName: "short",
     });
+    datum.unix = el.time;
 
     datum.numberCommitVoters = el.committedVotes.length;
     datum.numberRevealVoters = el.revealedVotes.length;

@@ -22,6 +22,7 @@ export interface ModalState {
   proposal: string;
   timestamp: string;
   ancData: string;
+  unix: string;
 }
 
 interface Props {
@@ -57,6 +58,7 @@ const ActiveRequests: FC<Props> = ({
     proposal: "",
     timestamp: "",
     ancData: "",
+    unix: "",
   });
 
   const { isOpen, open, close, modalRef } = useModal();
@@ -150,6 +152,7 @@ const ActiveRequests: FC<Props> = ({
         proposal={modalState.proposal}
         timestamp={modalState.timestamp}
         ancData={modalState.ancData}
+        unix={modalState.unix}
       />
     </Wrapper>
   );

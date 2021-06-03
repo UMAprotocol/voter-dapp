@@ -9,7 +9,7 @@ import {
   useEffect,
 } from "react";
 import assert from "assert";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
@@ -56,6 +56,8 @@ const UNDEFINED_VOTE = "-";
 
 export type SubmitModalState = "init" | "pending" | "success" | "error";
 
+const inputRegExp = new RegExp(/^[-]?([0-9]*[.])?[0-9]+$/);
+
 const CommitPhase: FC<Props> = ({
   activeRequests,
   isConnected,
@@ -70,6 +72,9 @@ const CommitPhase: FC<Props> = ({
 }) => {
   const [submitErrorMessage, setSubmitErrorMessage] = useState("");
   const [txHash, setTxHash] = useState("");
+  const [buttonVariant, setButtonVariant] =
+    useState<"secondary" | "disabled">("disabled");
+
   const {
     state: { network, signer, notify },
   } = useContext(OnboardContext);
@@ -81,7 +86,7 @@ const CommitPhase: FC<Props> = ({
     hotAddress
   );
 
-  const { tableValues, hasVoted } = useTableValues(
+  const { tableValues } = useTableValues(
     activeRequests,
     encryptedVotes,
     revealedVotes
@@ -99,9 +104,10 @@ const CommitPhase: FC<Props> = ({
     return dv;
   }, [activeRequests]);
 
-  const { handleSubmit, control, watch, reset } = useForm<FormData>({
-    defaultValues: generateDefaultValues(),
-  });
+  const { handleSubmit, control, watch, reset, setValue, setError } =
+    useForm<FormData>({
+      defaultValues: generateDefaultValues(),
+    });
 
   // Make sure to reset form state if the user disconnects *or* changes their address.
   // As we disconenct them on address, isConnected should cover this state change.
@@ -185,6 +191,14 @@ const CommitPhase: FC<Props> = ({
 
   const showModalSummary = useCallback(() => {
     const anyFields = Object.values(watchAllFields).filter((x) => x !== "");
+    // Double check the fields pass the input reg exp, otherwise don't show the summary until user fixes it.
+    for (let i = 0; i < anyFields.length; i++) {
+      if (!inputRegExp.test(anyFields[i])) {
+        setButtonVariant("disabled");
+        return [];
+      }
+    }
+
     if (anyFields.length) {
       const summary = [] as Summary[];
       const identifiers = Object.keys(watchAllFields);
@@ -200,11 +214,13 @@ const CommitPhase: FC<Props> = ({
           summary.push(val);
         }
       }
+      setButtonVariant("secondary");
       return summary;
     } else {
+      setButtonVariant("disabled");
       return [];
     }
-  }, [watchAllFields]);
+  }, [watchAllFields, setButtonVariant]);
 
   return (
     <FormWrapper
@@ -223,7 +239,6 @@ const CommitPhase: FC<Props> = ({
             <th>Description</th>
             <th>Timestamp</th>
             <th>Commit Vote</th>
-            <th className="center-header">Your Vote</th>
             <th className="center-header">Vote Status</th>
           </tr>
         </thead>
@@ -241,6 +256,7 @@ const CommitPhase: FC<Props> = ({
                           timestamp: el.timestamp,
                           ancData: el.ancHex,
                           proposal: el.identifier,
+                          unix: el.unix,
                         });
                       }}
                       className="view-details"
@@ -280,55 +296,25 @@ const CommitPhase: FC<Props> = ({
                       />
                     </div>
                   ) : (
-                    <Controller
-                      name={`${el.identifier}~${el.unix}~${el.ancHex}`}
+                    <TextInput
+                      label={`Current vote: ${el.vote ?? ""}`}
+                      showValueInLabel
                       control={control}
-                      rules={{ pattern: /^[-]?([0-9]*[.])?[0-9]+$/ }}
-                      render={({ field }) => {
-                        return (
-                          <TextInput
-                            label="Input your vote."
-                            control={control}
-                            name={`${el.identifier}~${el.unix}~${el.ancHex}`}
-                            placeholder="0.000"
-                            variant="text"
-                            rules={{
-                              pattern: /^[-]?([0-9]*[.])?[0-9]+$/,
-                            }}
-                            // onChange={(e) => {
-                            /* WIP for another ticket. Ignore for now. */
-
-                            //   const regexPattern =
-                            //     /[-]?([0-9]+([.][0-9]*)?|[.][0-9]+)/;
-                            //   // const rep = /^[-]?([0-9]*[.])?[0-9]+$/;
-                            //   // console.log(
-                            //   //   "testing value",
-                            //   //   regexPattern.test(e.target.value)
-                            //   // );
-                            //   // if (regexPattern.test(e.target.value)) {
-                            //   return onChange(e.target.value);
-                            //   // } else {
-                            //   // if
-                            //   // }
-                            // }}
-                          />
-                        );
+                      name={`${el.identifier}~${el.unix}~${el.ancHex}`}
+                      placeholder="0.000"
+                      variant="text"
+                      rules={{
+                        pattern: {
+                          value: /^[-]?([0-9]*[.])?[0-9]+$/,
+                          message: "Please input a valid number.",
+                        },
                       }}
+                      // Getting very strange type errors here. Todo: Fix these so any isn't required.
+                      setValue={setValue}
+                      setError={setError}
                     />
                   )}
                 </td>
-
-                {hasVoted ? (
-                  <td>
-                    <div>
-                      <p className="vote">{el.vote}</p>
-                    </div>
-                  </td>
-                ) : (
-                  <td>
-                    <p className="empty-vote">-</p>
-                  </td>
-                )}
 
                 <td>
                   <div className="status">
@@ -350,11 +336,7 @@ const CommitPhase: FC<Props> = ({
         <div className="end-row-item">
           <Button
             type="button"
-            variant={
-              Object.values(watchAllFields).filter((x) => x !== "").length
-                ? "secondary"
-                : "disabled"
-            }
+            variant={buttonVariant}
             onClick={() => {
               if (showModalSummary().length) open();
             }}

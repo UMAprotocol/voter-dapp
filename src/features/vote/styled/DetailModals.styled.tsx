@@ -4,13 +4,13 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 export const ModalWrapper = styled.div`
   /* max-width: 700; */
   min-width: 400px;
-  padding: 2rem 1.5rem;
+  padding: 1.5rem 1rem;
   height: auto;
   position: relative;
   background-color: #fff;
   z-index: 1;
   border-radius: 12px;
-  margin: 0;
+  margin: 0.5rem 1rem 1rem;
   outline: 0;
   box-sizing: border-box;
   font-family: "Halyard Display";
@@ -34,6 +34,17 @@ export const MiniHeader = styled.div`
   font-size: 0.8rem;
   margin-bottom: 1rem;
   margin-top: 1rem;
+  .copy-wrapper {
+    display: inline;
+    color: #ff4a4a;
+
+    &:hover {
+      color: #000;
+    }
+  }
+  .copy-wrapper {
+    cursor: pointer;
+  }
 `;
 
 export const Proposal = styled.div`

@@ -17,6 +17,7 @@ export interface ModalState {
   numberRevealVoters: number;
   timestamp: string;
   rewardsClaimed: string;
+  unix: string;
 }
 
 export interface PastRequest {
@@ -29,6 +30,7 @@ export interface PastRequest {
   numberCommitVoters: number;
   numberRevealVoters: number;
   rewardsClaimed: string;
+  unix: string;
 }
 
 interface Props {
@@ -56,6 +58,7 @@ const PastRequests: FC<Props> = ({
     numberRevealVoters: 0,
     timestamp: "",
     rewardsClaimed: "0",
+    unix: "",
   });
 
   useEffect(() => {
@@ -113,6 +116,7 @@ const PastRequests: FC<Props> = ({
                             timestamp: el.timestamp,
                             rewardsClaimed:
                               el.reward !== "N/A" ? el.reward : "0",
+                            unix: el.unix,
                           });
                         }}
                         className="PastRequests-view-details"
@@ -166,6 +170,7 @@ const PastRequests: FC<Props> = ({
         numberRevealVoters={modalState.numberRevealVoters}
         timestamp={modalState.timestamp}
         rewardsClaimed={modalState.rewardsClaimed}
+        unix={modalState.unix}
       />
     </Wrapper>
   );
