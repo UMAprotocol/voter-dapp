@@ -3,7 +3,6 @@ import Router from "features/router";
 import { QueryClient } from "react-query";
 import usePrevious from "common/hooks/usePrevious";
 import { ToastContainer, toast } from "react-toastify";
-import web3 from "web3";
 
 // Context
 import { ErrorContext } from "common/context/ErrorContext";
@@ -14,6 +13,7 @@ import { derivePrivateKey } from "./features/vote/helpers/derivePrivateKey";
 
 import currentSigningMessage from "common/currentSigningMessage";
 import { useCurrentRoundId } from "hooks";
+import { ethers } from "ethers";
 
 interface Props {
   queryClient: QueryClient;
@@ -39,98 +39,64 @@ function App(props: Props) {
   const { error, removeError, addError } = useContext(ErrorContext);
   const { data: currentRoundId } = useCurrentRoundId();
 
-  // const signMessage = useCallback(() => {
-  //   state.signer
-  //   .signMessage(message)
-  //   .then((msg) => {
-  //     const key = {} as { publicKey: string; privateKey: string };
-
-  //     const privateKey = derivePrivateKey(msg);
-  //     const publicKey = recoverPublicKey(privateKey);
-  //     key.privateKey = privateKey;
-  //     key.publicKey = publicKey;
-
-  //     const updatedKeys = {
-  //       ...keys,
-  //       [hashedMessage]: { ...keys[hashedMessage], [address]: key },
-  //     };
-
-  //     localStorage.setItem(
-  //       SIGNING_KEYS_STORAGE_KEY,
-  //       JSON.stringify(updatedKeys)
-  //     );
-
-  //     setSigningKeys(updatedKeys);
-  //   })
-  //   .catch((err) => {
-  //     const error = new Error("Sign failed.");
-  //     addError(error);
-  //   });
-  // }, []);
-
-  useEffect(() => {
-    if (state.signer && state.address) {
-      const address = state.address;
+  const signMessage = useCallback(
+    (keys: SigningKeys, address: string, signer: ethers.Signer) => {
       const message = currentSigningMessage(Number(currentRoundId)).message;
       const hashedMessage = currentSigningMessage(
         Number(currentRoundId)
       ).hashedMessage;
 
-      const keysString = localStorage.getItem(SIGNING_KEYS_STORAGE_KEY);
-      if (keysString) {
+      return signer
+        .signMessage(message)
+        .then((msg) => {
+          const key = {} as { publicKey: string; privateKey: string };
+
+          const privateKey = derivePrivateKey(msg);
+          const publicKey = recoverPublicKey(privateKey);
+          key.privateKey = privateKey;
+          key.publicKey = publicKey;
+
+          const updatedKeys = {
+            ...keys,
+            [hashedMessage]: { ...keys[hashedMessage], [address]: key },
+          };
+
+          localStorage.setItem(
+            SIGNING_KEYS_STORAGE_KEY,
+            JSON.stringify(updatedKeys)
+          );
+
+          setSigningKeys(updatedKeys);
+        })
+        .catch((err) => {
+          const error = new Error("Sign failed.");
+          addError(error);
+        });
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (state.signer && state.address && currentRoundId && addError) {
+      const address = state.address;
+      const hashedMessage = currentSigningMessage(
+        Number(currentRoundId)
+      ).hashedMessage;
+
+      try {
+        const keysString =
+          localStorage.getItem(SIGNING_KEYS_STORAGE_KEY) || "{}";
         const keys = JSON.parse(keysString) as SigningKeys;
         const keyExists = keys[hashedMessage][address];
         if (!keyExists) {
-          state.signer
-            .signMessage(message)
-            .then((msg) => {
-              const key = {} as { publicKey: string; privateKey: string };
-
-              const privateKey = derivePrivateKey(msg);
-              const publicKey = recoverPublicKey(privateKey);
-              key.privateKey = privateKey;
-              key.publicKey = publicKey;
-
-              const updatedKeys = {
-                ...keys,
-                [hashedMessage]: { ...keys[hashedMessage], [address]: key },
-              };
-
-              localStorage.setItem(
-                SIGNING_KEYS_STORAGE_KEY,
-                JSON.stringify(updatedKeys)
-              );
-
-              setSigningKeys(updatedKeys);
-            })
-            .catch((err) => {
-              const error = new Error("Sign failed.");
-              addError(error);
-            });
+          signMessage(keys, state.address, state.signer);
         } else {
+          console.log("here thrice");
           setSigningKeys(keys);
         }
-      } else {
-        state.signer
-          .signMessage(message)
-          .then((msg) => {
-            const key = {} as { publicKey: string; privateKey: string };
-
-            const privateKey = derivePrivateKey(msg);
-            const publicKey = recoverPublicKey(privateKey);
-            key.privateKey = privateKey;
-            key.publicKey = publicKey;
-
-            const ks = JSON.stringify({ [hashedMessage]: { [address]: key } });
-            localStorage.setItem(SIGNING_KEYS_STORAGE_KEY, ks);
-            setSigningKeys((prevKeys) => {
-              return { ...prevKeys, [hashedMessage]: { [address]: key } };
-            });
-          })
-          .catch((err) => {
-            const error = new Error("Sign failed.");
-            addError(error);
-          });
+      } catch (err) {
+        const keys = {} as SigningKeys;
+        signMessage(keys, state.address, state.signer);
       }
     } else {
       setSigningKeys({});

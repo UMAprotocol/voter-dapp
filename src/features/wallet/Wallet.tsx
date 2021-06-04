@@ -50,6 +50,7 @@ interface Props {
 const DEFAULT_BALANCE = "0";
 
 const Wallet: FC<Props> = ({ signingKeys }) => {
+  const [signingPK, setSigningPK] = useState("");
   const [umaBalance, setUmaBalance] = useState(DEFAULT_BALANCE);
   const [totalUmaCollected, setTotalUmaCollected] = useState(DEFAULT_BALANCE);
   const [availableRewards, setAvailableRewards] = useState(DEFAULT_BALANCE);
@@ -79,13 +80,22 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
   );
   const { data: roundId } = useCurrentRoundId();
 
-  const hashedMessage = currentSigningMessage(Number(roundId)).hashedMessage;
-  const signingPK = getSigningKeys(
-    signingKeys,
-    hashedMessage,
-    votingAddress,
-    hotAddress
-  ).privateKey;
+  useEffect(() => {
+    if (Object.keys(signingKeys).length && votingAddress && roundId) {
+      const hashedMessage = currentSigningMessage(
+        Number(roundId)
+      ).hashedMessage;
+      const signingPK = getSigningKeys(
+        signingKeys,
+        hashedMessage,
+        votingAddress,
+        hotAddress
+      ).privateKey;
+      setSigningPK(signingPK);
+    } else {
+      setSigningPK("");
+    }
+  }, [signingKeys, roundId, votingAddress, hotAddress]);
 
   const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
