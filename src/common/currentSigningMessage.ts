@@ -1,3 +1,5 @@
+import web3 from "web3";
+
 export default function currentSigningMessage(currentRound: number) {
   /*
     Whenever we change the signing message, we should wait until the next round.
@@ -5,9 +7,18 @@ export default function currentSigningMessage(currentRound: number) {
     it will only apply to the next, to prevent any bugs in revealing.
     There shouldn't be many reasons for us to change this, this is just to prevent any bugs in the commit -> reveal in a given round.
   */
-  if (currentRound > SIGNING_MESSAGE_ONE_ROUND_CREATED)
-    return SIGNING_MESSAGE_ONE;
-  return SIGNING_MESSAGE_ONE;
+  if (currentRound > SIGNING_MESSAGE_ONE_ROUND_CREATED) {
+    return {
+      message: SIGNING_MESSAGE_ONE,
+      hashedMessage: web3.utils.utf8ToHex(SIGNING_MESSAGE_ONE),
+    };
+  }
+
+  // Default return
+  return {
+    message: SIGNING_MESSAGE_ONE,
+    hashedMessage: web3.utils.utf8ToHex(SIGNING_MESSAGE_ONE),
+  };
 }
 
 const SIGNING_MESSAGE_ONE = "Login to UMA Voter dApp - 0";

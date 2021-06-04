@@ -18,7 +18,6 @@ import { SigningKeys } from "App";
 import { Round } from "web3/get/queryRounds";
 import { RefetchOptions, QueryObserverResult } from "react-query";
 import currentSigningMessage from "common/currentSigningMessage";
-import web3 from "web3";
 import getSigningKeys from "common/helpers/getSigningKeys";
 
 export interface ModalState {
@@ -87,8 +86,7 @@ const ActiveRequests: FC<Props> = ({
     return () => clearInterval(timer);
   }, []);
 
-  const message = currentSigningMessage(Number(roundId));
-  const hashedMessage = web3.utils.utf8ToHex(message);
+  const hashedMessage = currentSigningMessage(Number(roundId)).hashedMessage;
 
   const signingPublicKey = getSigningKeys(
     signingKeys,

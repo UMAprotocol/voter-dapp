@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import Router from "features/router";
 import { QueryClient } from "react-query";
 import usePrevious from "common/hooks/usePrevious";
@@ -39,11 +39,43 @@ function App(props: Props) {
   const { error, removeError, addError } = useContext(ErrorContext);
   const { data: currentRoundId } = useCurrentRoundId();
 
+  // const signMessage = useCallback(() => {
+  //   state.signer
+  //   .signMessage(message)
+  //   .then((msg) => {
+  //     const key = {} as { publicKey: string; privateKey: string };
+
+  //     const privateKey = derivePrivateKey(msg);
+  //     const publicKey = recoverPublicKey(privateKey);
+  //     key.privateKey = privateKey;
+  //     key.publicKey = publicKey;
+
+  //     const updatedKeys = {
+  //       ...keys,
+  //       [hashedMessage]: { ...keys[hashedMessage], [address]: key },
+  //     };
+
+  //     localStorage.setItem(
+  //       SIGNING_KEYS_STORAGE_KEY,
+  //       JSON.stringify(updatedKeys)
+  //     );
+
+  //     setSigningKeys(updatedKeys);
+  //   })
+  //   .catch((err) => {
+  //     const error = new Error("Sign failed.");
+  //     addError(error);
+  //   });
+  // }, []);
+
   useEffect(() => {
     if (state.signer && state.address) {
       const address = state.address;
-      const message = currentSigningMessage(Number(currentRoundId));
-      const hashedMessage = web3.utils.utf8ToHex(message);
+      const message = currentSigningMessage(Number(currentRoundId)).message;
+      const hashedMessage = currentSigningMessage(
+        Number(currentRoundId)
+      ).hashedMessage;
+
       const keysString = localStorage.getItem(SIGNING_KEYS_STORAGE_KEY);
       if (keysString) {
         const keys = JSON.parse(keysString) as SigningKeys;

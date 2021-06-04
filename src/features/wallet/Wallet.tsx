@@ -2,7 +2,6 @@
 import { FC, useState, useEffect, useContext } from "react";
 import tw from "twin.macro"; // eslint-disable-line
 import { ethers } from "ethers";
-import web3 from "web3";
 import useModal from "common/hooks/useModal";
 import Button from "common/components/button";
 import useOnboard from "common/hooks/useOnboard";
@@ -80,9 +79,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
   );
   const { data: roundId } = useCurrentRoundId();
 
-  const message = currentSigningMessage(Number(roundId));
-  const hashedMessage = web3.utils.utf8ToHex(message);
-
+  const hashedMessage = currentSigningMessage(Number(roundId)).hashedMessage;
   const signingPK = getSigningKeys(
     signingKeys,
     hashedMessage,

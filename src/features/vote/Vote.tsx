@@ -26,7 +26,6 @@ import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { SigningKeys } from "App";
 import currentSigningMessage from "common/currentSigningMessage";
-import web3 from "web3";
 import getSigningKeys from "common/helpers/getSigningKeys";
 
 interface Props {
@@ -67,8 +66,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
     refetch: refetchVoteRevealedEvents,
   } = useVotesRevealedEvents(votingContract, votingAddress);
 
-  const message = currentSigningMessage(Number(roundId));
-  const hashedMessage = web3.utils.utf8ToHex(message);
+  const hashedMessage = currentSigningMessage(Number(roundId)).hashedMessage;
 
   const signingPK = getSigningKeys(
     signingKeys,
