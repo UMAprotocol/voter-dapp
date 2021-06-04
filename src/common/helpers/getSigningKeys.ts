@@ -16,7 +16,7 @@ export default function getSigningKeys(
       keys.privateKey = signingKeys[hashedMessage][hotAddress]
         ? signingKeys[hashedMessage][hotAddress].privateKey
         : "";
-      keys.publicKey = signingKeys[hashedMessage][hotAddress].publicKey
+      keys.publicKey = signingKeys[hashedMessage][hotAddress]
         ? signingKeys[hashedMessage][hotAddress].publicKey
         : "";
     } else {
