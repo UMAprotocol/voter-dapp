@@ -40,7 +40,12 @@ function App(props: Props) {
   const { data: currentRoundId } = useCurrentRoundId();
 
   const signMessage = useCallback(
-    (keys: SigningKeys, address: string, signer: ethers.Signer) => {
+    (
+      keys: SigningKeys,
+      address: string,
+      signer: ethers.Signer,
+      currentRoundId: string
+    ) => {
       const message = currentSigningMessage(Number(currentRoundId)).message;
       const hashedMessage = currentSigningMessage(
         Number(currentRoundId)
@@ -73,7 +78,7 @@ function App(props: Props) {
           addError(error);
         });
     },
-    []
+    [addError]
   );
 
   useEffect(() => {
@@ -89,19 +94,19 @@ function App(props: Props) {
         const keys = JSON.parse(keysString) as SigningKeys;
         const keyExists = keys[hashedMessage][address];
         if (!keyExists) {
-          signMessage(keys, state.address, state.signer);
+          signMessage(keys, state.address, state.signer, currentRoundId);
         } else {
           console.log("here thrice");
           setSigningKeys(keys);
         }
       } catch (err) {
         const keys = {} as SigningKeys;
-        signMessage(keys, state.address, state.signer);
+        signMessage(keys, state.address, state.signer, currentRoundId);
       }
     } else {
       setSigningKeys({});
     }
-  }, [state.signer, state.address, addError, currentRoundId]);
+  }, [state.signer, state.address, addError, currentRoundId, signMessage]);
 
   useEffect(() => {
     if (error)
