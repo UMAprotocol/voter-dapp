@@ -24,7 +24,7 @@ import { OnboardContext } from "common/context/OnboardContext";
 import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 
-import { FormWrapper } from "./styled/CommitPhase.styled";
+import { FormWrapper, CommitInputLabel } from "./styled/CommitPhase.styled";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 
@@ -191,18 +191,12 @@ const CommitPhase: FC<Props> = ({
 
   const showModalSummary = useCallback(() => {
     const anyFields = Object.values(watchAllFields).filter((x) => x !== "");
-    // Double check the fields pass the input reg exp, otherwise don't show the summary until user fixes it.
-    for (let i = 0; i < anyFields.length; i++) {
-      if (!inputRegExp.test(anyFields[i])) {
-        setButtonVariant("disabled");
-        return [];
-      }
-    }
 
     if (anyFields.length) {
       const summary = [] as Summary[];
       const identifiers = Object.keys(watchAllFields);
       const values = Object.values(watchAllFields);
+      let passesValidation = true;
       for (let i = 0; i < identifiers.length; i++) {
         if (values[i] !== "" && values[i] !== undefined) {
           const idenSplit = identifiers[i].split("~");
@@ -211,10 +205,22 @@ const CommitPhase: FC<Props> = ({
             identifier: `${idenSplit[0]} -- ${idenSplit[1]}`,
             value: values[i],
           };
+
+          // Double check the fields pass the input reg exp, otherwise don't show the summary until user fixes it.
+          if (
+            !identifiers[i].includes("Admin") &&
+            !inputRegExp.test(values[i])
+          ) {
+            passesValidation = false;
+          }
           summary.push(val);
         }
       }
-      setButtonVariant("secondary");
+      if (passesValidation) {
+        setButtonVariant("secondary");
+      } else {
+        setButtonVariant("disabled");
+      }
       return summary;
     } else {
       setButtonVariant("disabled");
@@ -275,26 +281,31 @@ const CommitPhase: FC<Props> = ({
                 </td>
                 <td className="input-cell">
                   {el.identifier.includes("Admin") ? (
-                    <div className="select">
-                      <RHFDropdown
-                        control={control}
-                        name={`${el.identifier}~${el.unix}~${el.ancHex}`}
-                        items={[
-                          {
-                            value: "",
-                            label: "---",
-                          },
-                          {
-                            value: "yes",
-                            label: "Yes",
-                          },
-                          {
-                            value: "no",
-                            label: "No",
-                          },
-                        ]}
-                      />
-                    </div>
+                    <>
+                      <CommitInputLabel>
+                        Current vote: {el.vote}
+                      </CommitInputLabel>
+                      <div className="select">
+                        <RHFDropdown
+                          control={control}
+                          name={`${el.identifier}~${el.unix}~${el.ancHex}`}
+                          items={[
+                            {
+                              value: "",
+                              label: "---",
+                            },
+                            {
+                              value: "yes",
+                              label: "Yes",
+                            },
+                            {
+                              value: "no",
+                              label: "No",
+                            },
+                          ]}
+                        />
+                      </div>
+                    </>
                   ) : (
                     <TextInput
                       label={`Current vote: ${el.vote ?? ""}`}
