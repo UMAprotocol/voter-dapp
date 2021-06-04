@@ -243,7 +243,7 @@ const CommitPhase: FC<Props> = ({
           <tr>
             <th>Requested Vote</th>
             <th>Description</th>
-            <th>Timestamp</th>
+            <th>UNIX Timestamp</th>
             <th>Commit Vote</th>
             <th className="center-header">Vote Status</th>
           </tr>
@@ -275,9 +275,8 @@ const CommitPhase: FC<Props> = ({
                   <div className="description">{el.description}</div>
                 </td>
                 <td>
-                  <div>
-                    {el.timestamp} ({el.unix}){" "}
-                  </div>
+                  <div>{el.unix}</div>
+                  <div>({el.timestamp})</div>
                 </td>
                 <td className="input-cell">
                   {el.identifier.includes("Admin") ? (
