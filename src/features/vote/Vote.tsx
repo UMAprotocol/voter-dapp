@@ -25,8 +25,8 @@ import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { SigningKeys } from "App";
-import { ethers } from "ethers";
 import currentSigningMessage from "common/currentSigningMessage";
+import web3 from "web3";
 
 interface Props {
   signingKeys: SigningKeys;
@@ -67,7 +67,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
   } = useVotesRevealedEvents(votingContract, votingAddress);
 
   const message = currentSigningMessage(Number(roundId));
-  const hashedMessage = ethers.utils.formatBytes32String(message);
+  const hashedMessage = web3.utils.utf8ToHex(message);
 
   const signingPK =
     hotAddress &&

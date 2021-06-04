@@ -3,7 +3,7 @@ import Router from "features/router";
 import { QueryClient } from "react-query";
 import usePrevious from "common/hooks/usePrevious";
 import { ToastContainer, toast } from "react-toastify";
-import { ethers } from "ethers";
+import web3 from "web3";
 
 // Context
 import { ErrorContext } from "common/context/ErrorContext";
@@ -43,7 +43,7 @@ function App(props: Props) {
     if (state.signer && state.address) {
       const address = state.address;
       const message = currentSigningMessage(Number(currentRoundId));
-      const hashedMessage = ethers.utils.formatBytes32String(message);
+      const hashedMessage = web3.utils.utf8ToHex(message);
       const keysString = localStorage.getItem(SIGNING_KEYS_STORAGE_KEY);
       if (keysString) {
         const keys = JSON.parse(keysString) as SigningKeys;
