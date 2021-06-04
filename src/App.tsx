@@ -81,8 +81,14 @@ function App(props: Props) {
     [addError]
   );
 
+  const previousRoundId = usePrevious(currentRoundId);
   useEffect(() => {
-    if (state.signer && state.address && currentRoundId && addError) {
+    if (
+      state.signer &&
+      state.address &&
+      currentRoundId &&
+      currentRoundId !== previousRoundId
+    ) {
       const address = state.address;
       const hashedMessage = currentSigningMessage(
         Number(currentRoundId)
@@ -96,17 +102,24 @@ function App(props: Props) {
         if (!keyExists) {
           signMessage(keys, state.address, state.signer, currentRoundId);
         } else {
-          console.log("here thrice");
           setSigningKeys(keys);
         }
       } catch (err) {
         const keys = {} as SigningKeys;
         signMessage(keys, state.address, state.signer, currentRoundId);
       }
-    } else {
+    }
+    if (!state.address || !state.signer) {
       setSigningKeys({});
     }
-  }, [state.signer, state.address, addError, currentRoundId, signMessage]);
+  }, [
+    state.signer,
+    state.address,
+    addError,
+    currentRoundId,
+    signMessage,
+    previousRoundId,
+  ]);
 
   useEffect(() => {
     if (error)
