@@ -20,14 +20,14 @@ interface Props {
 }
 
 export interface SigningKey {
-  [key: string]: {
+  [address: string]: {
     publicKey: string;
     privateKey: string;
   };
 }
 
 export interface SigningKeys {
-  [key: string]: SigningKey;
+  [signingString: string]: SigningKey;
 }
 
 const SIGNING_KEYS_STORAGE_KEY = "signingKeys";
