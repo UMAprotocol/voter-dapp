@@ -81,6 +81,7 @@ export const FormWrapper = styled.form<StyledFormProps>`
           border-color: #fff;
           border-style: solid;
           border-width: 0 15px;
+          vertical-align: baseline;
           div {
             display: flex;
           }
@@ -118,5 +119,5 @@ export const CommitInputLabel = styled.label`
   padding-left: 4px;
   margin-bottom: 1rem;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
 `;

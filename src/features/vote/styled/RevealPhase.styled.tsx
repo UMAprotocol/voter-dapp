@@ -66,6 +66,7 @@ export const Wrapper = styled.div<StyledProps>`
           border-color: #fff;
           border-style: solid;
           border-width: 0 15px;
+          vertical-align: baseline;
           div {
             display: flex;
             /* align-items: center; */
