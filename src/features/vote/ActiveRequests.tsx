@@ -19,6 +19,7 @@ import { Round } from "web3/get/queryRounds";
 import { RefetchOptions, QueryObserverResult } from "react-query";
 import currentSigningMessage from "common/currentSigningMessage";
 import web3 from "web3";
+import getSigningKeys from "common/helpers/getSigningKeys";
 
 export interface ModalState {
   proposal: string;
@@ -89,16 +90,12 @@ const ActiveRequests: FC<Props> = ({
   const message = currentSigningMessage(Number(roundId));
   const hashedMessage = web3.utils.utf8ToHex(message);
 
-  const signingPublicKey =
-    hotAddress &&
-    signingKeys[hashedMessage] &&
-    signingKeys[hashedMessage][hotAddress]
-      ? signingKeys[hashedMessage][hotAddress].publicKey
-      : votingAddress &&
-        signingKeys[hashedMessage] &&
-        signingKeys[hashedMessage][votingAddress]
-      ? signingKeys[hashedMessage][votingAddress].publicKey
-      : "";
+  const signingPublicKey = getSigningKeys(
+    signingKeys,
+    hashedMessage,
+    votingAddress,
+    hotAddress
+  ).publicKey;
 
   return (
     <Wrapper className="ActiveRequests">

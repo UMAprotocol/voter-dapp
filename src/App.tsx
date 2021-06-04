@@ -130,7 +130,6 @@ function App(props: Props) {
       state.network &&
       state.network.chainId !== previousNetwork.chainId
     ) {
-      debugger;
       window.location.reload();
     }
   }, [state.network, previousNetwork]);

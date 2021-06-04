@@ -27,6 +27,7 @@ import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { SigningKeys } from "App";
 import currentSigningMessage from "common/currentSigningMessage";
 import web3 from "web3";
+import getSigningKeys from "common/helpers/getSigningKeys";
 
 interface Props {
   signingKeys: SigningKeys;
@@ -69,16 +70,12 @@ const Vote: FC<Props> = ({ signingKeys }) => {
   const message = currentSigningMessage(Number(roundId));
   const hashedMessage = web3.utils.utf8ToHex(message);
 
-  const signingPK =
-    hotAddress &&
-    signingKeys[hashedMessage] &&
-    signingKeys[hashedMessage][hotAddress]
-      ? signingKeys[hashedMessage][hotAddress].privateKey
-      : votingAddress &&
-        signingKeys[hashedMessage] &&
-        signingKeys[hashedMessage][votingAddress]
-      ? signingKeys[hashedMessage][votingAddress].privateKey
-      : "";
+  const signingPK = getSigningKeys(
+    signingKeys,
+    hashedMessage,
+    votingAddress,
+    hotAddress
+  ).privateKey;
 
   const {
     data: encryptedVotes = [] as EncryptedVote[],

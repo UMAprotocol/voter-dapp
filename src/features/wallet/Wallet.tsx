@@ -11,6 +11,7 @@ import getUmaBalance from "common/utils/web3/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
 import usePrevious from "common/hooks/usePrevious";
 import ReactTooltip from "react-tooltip";
+import getSigningKeys from "common/helpers/getSigningKeys";
 
 import {
   useVotingAddress,
@@ -82,16 +83,12 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
   const message = currentSigningMessage(Number(roundId));
   const hashedMessage = web3.utils.utf8ToHex(message);
 
-  const signingPK =
-    hotAddress &&
-    signingKeys[hashedMessage] &&
-    signingKeys[hashedMessage][hotAddress]
-      ? signingKeys[hashedMessage][hotAddress].privateKey
-      : votingAddress &&
-        signingKeys[hashedMessage] &&
-        signingKeys[hashedMessage][votingAddress]
-      ? signingKeys[hashedMessage][votingAddress].privateKey
-      : "";
+  const signingPK = getSigningKeys(
+    signingKeys,
+    hashedMessage,
+    votingAddress,
+    hotAddress
+  ).privateKey;
 
   const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
