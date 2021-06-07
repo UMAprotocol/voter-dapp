@@ -272,7 +272,16 @@ const CommitPhase: FC<Props> = ({
                   </div>
                 </td>
                 <td>
-                  <div className="description">{el.description}</div>
+                  <div className="description">
+                    {el.description && el.description.split(" ").length > 16 ? (
+                      <>
+                        {el.description.split(" ").slice(0, 16)}...{" "}
+                        <span>Read More</span>{" "}
+                      </>
+                    ) : (
+                      el.description
+                    )}
+                  </div>
                 </td>
                 <td>
                   <div>{el.unix}</div>

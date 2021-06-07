@@ -103,7 +103,16 @@ const RevealPhase: FC<Props> = ({
                   </div>
                 </td>
                 <td>
-                  <div className="description">{el.description}</div>
+                  <div className="description">
+                    {el.description && el.description.split(" ").length > 16 ? (
+                      <span>
+                        {el.description.split(" ").slice(0, 16).join(" ")}...{" "}
+                        <span>Read More</span>{" "}
+                      </span>
+                    ) : (
+                      el.description
+                    )}
+                  </div>
                 </td>
                 <td>
                   <div>{el.unix}</div>
