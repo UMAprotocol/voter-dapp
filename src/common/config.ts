@@ -119,6 +119,10 @@ export const Config = new Map<number, ConfigObject>([
   ],
 ]);
 
+// Kept for testing. This will throw an error if you try to convert the hexstring to UTF8.
+export const TEST_BAD_UTF8 =
+  "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d526574726965766520666f7220766f7465732073616d6520726f756e64000000";
+
 // const isNetworkSupported = Config.has(networkid)
 
 // // We can get our network config:

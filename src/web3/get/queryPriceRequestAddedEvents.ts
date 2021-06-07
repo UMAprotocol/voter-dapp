@@ -26,6 +26,7 @@ export const queryPriceRequestAdded = async (
     return events.map((el) => {
       const { args } = el;
       const datum = {} as PriceRequestAdded;
+
       if (args) {
         datum.roundId = args[0].toString();
         datum.identifier = ethers.utils.toUtf8String(args[1]);

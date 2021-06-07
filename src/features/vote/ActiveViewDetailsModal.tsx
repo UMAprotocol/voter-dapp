@@ -27,6 +27,7 @@ import useOnboard from "common/hooks/useOnboard";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactTooltip from "react-tooltip";
+import web3 from "web3";
 
 interface Props {
   isOpen: boolean;
@@ -38,6 +39,8 @@ interface Props {
   ancData: string;
   unix: string;
 }
+
+const NULL_ANC_DATA = "0x";
 
 const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   HTMLElement,
@@ -52,6 +55,22 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   useEffect(() => {
     ReactTooltip.rebuild();
   });
+
+  const [convertedHexstring, setConvertedHexstring] = useState("");
+
+  useEffect(() => {
+    if (ancData !== NULL_ANC_DATA) {
+      let ancDataToString = "";
+      try {
+        ancDataToString = web3.utils.hexToString(ancData);
+      } catch (err) {
+        ancDataToString = "";
+      }
+      setConvertedHexstring(ancDataToString);
+    } else {
+      setConvertedHexstring("");
+    }
+  }, [ancData]);
 
   const { network } = useOnboard();
 
@@ -98,6 +117,21 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
             </div>
           </MiniHeader>
           <StateValueAncData>{ancData}</StateValueAncData>
+          {convertedHexstring && ancData !== NULL_ANC_DATA && (
+            <>
+              <MiniHeader>Ancillary Data (converted)</MiniHeader>
+              <StateValueAncData>{convertedHexstring}</StateValueAncData>
+            </>
+          )}
+          {ancData !== NULL_ANC_DATA && convertedHexstring === "" && (
+            <>
+              <MiniHeader>Ancillary Data (converted)</MiniHeader>
+              <StateValueAncData>
+                This data is not in UTF8 format and could not be properly
+                displayed.
+              </StateValueAncData>
+            </>
+          )}
           <MiniHeader>Description</MiniHeader>
           <Description>
             <ReactMarkdown
