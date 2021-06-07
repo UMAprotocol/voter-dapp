@@ -42,3 +42,13 @@ export const Wrapper = styled.div`
     }
   }
 `;
+
+export const Description = styled.span`
+  span {
+    color: #ff4a4a;
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+`;

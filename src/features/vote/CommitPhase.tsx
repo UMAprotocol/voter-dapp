@@ -29,6 +29,7 @@ import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 
 import useTableValues from "./useTableValues";
+import { Description } from "./styled/ActiveRequests.styled";
 
 export type FormData = {
   [key: string]: string;
@@ -274,10 +275,10 @@ const CommitPhase: FC<Props> = ({
                 <td>
                   <div className="description">
                     {el.description && el.description.split(" ").length > 16 ? (
-                      <>
-                        {el.description.split(" ").slice(0, 16)}...{" "}
+                      <Description>
+                        {el.description.split(" ").slice(0, 16).join(" ")}...{" "}
                         <span>Read More</span>{" "}
-                      </>
+                      </Description>
                     ) : (
                       el.description
                     )}

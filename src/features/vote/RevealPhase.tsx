@@ -16,6 +16,7 @@ import { ModalState } from "./ActiveRequests";
 import useTableValues from "./useTableValues";
 import { ErrorContext } from "common/context/ErrorContext";
 import { RefetchOptions, QueryObserverResult } from "react-query";
+import { Description } from "./styled/ActiveRequests.styled";
 
 interface Props {
   isConnected: boolean;
@@ -105,10 +106,10 @@ const RevealPhase: FC<Props> = ({
                 <td>
                   <div className="description">
                     {el.description && el.description.split(" ").length > 16 ? (
-                      <span>
+                      <Description>
                         {el.description.split(" ").slice(0, 16).join(" ")}...{" "}
                         <span>Read More</span>{" "}
-                      </span>
+                      </Description>
                     ) : (
                       el.description
                     )}
