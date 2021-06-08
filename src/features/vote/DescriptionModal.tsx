@@ -43,7 +43,7 @@ const _DescriptionModal: ForwardRefRenderFunction<
         ref={externalRef}
       >
         <ModalWrapper>
-          <Proposal>Description for Proposal: {proposal}</Proposal>
+          <Proposal>{proposal}</Proposal>
           <Description>{description}</Description>
         </ModalWrapper>
       </Modal>
