@@ -16,7 +16,7 @@ import { ModalState } from "./ActiveRequests";
 import useTableValues from "./useTableValues";
 import { ErrorContext } from "common/context/ErrorContext";
 import { RefetchOptions, QueryObserverResult } from "react-query";
-import { Description, Table } from "./styled/ActiveRequests.styled";
+import { Description, Table, FullDate } from "./styled/ActiveRequests.styled";
 
 interface Props {
   isConnected: boolean;
@@ -117,7 +117,7 @@ const RevealPhase: FC<Props> = ({
                 </td>
                 <td>
                   <div>{el.unix}</div>
-                  <div>({el.timestamp})</div>
+                  <FullDate>({el.timestamp})</FullDate>
                 </td>
                 <td>
                   <div>

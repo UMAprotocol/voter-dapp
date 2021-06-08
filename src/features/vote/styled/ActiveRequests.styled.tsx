@@ -122,3 +122,7 @@ export const Table = styled.table<TableProps>`
     margin: 0 auto;
   }
 `;
+
+export const FullDate = styled.div`
+  color: #818180;
+`;

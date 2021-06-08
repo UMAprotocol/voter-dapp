@@ -29,7 +29,7 @@ import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 
 import useTableValues from "./useTableValues";
-import { Description, Table } from "./styled/ActiveRequests.styled";
+import { Description, Table, FullDate } from "./styled/ActiveRequests.styled";
 import DescriptionModal from "./DescriptionModal";
 
 export type FormData = {
@@ -298,7 +298,7 @@ const CommitPhase: FC<Props> = ({
                 </td>
                 <td>
                   <div>{el.unix}</div>
-                  <div>({el.timestamp})</div>
+                  <FullDate>({el.timestamp})</FullDate>
                 </td>
                 <td className="input-cell">
                   {el.identifier.includes("Admin") ? (
