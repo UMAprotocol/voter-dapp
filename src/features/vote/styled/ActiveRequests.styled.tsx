@@ -44,6 +44,7 @@ export const Wrapper = styled.div`
 `;
 
 export const Description = styled.span`
+  color: #818180;
   span {
     color: #ff4a4a;
     &:hover {
@@ -54,7 +55,7 @@ export const Description = styled.span`
 `;
 
 interface TableProps {
-  isConnected: boolean;
+  isConnected?: boolean;
 }
 
 export const Table = styled.table<TableProps>`
@@ -75,9 +76,10 @@ export const Table = styled.table<TableProps>`
   thead {
     th {
       padding-bottom: 1rem;
-      padding-left: 15px;
       padding-right: 15px;
       border-bottom: 1px solid #e5e5e5;
+      color: #818180;
+      font-weight: 400;
     }
     tr {
       text-align: left;
@@ -92,9 +94,9 @@ export const Table = styled.table<TableProps>`
     td {
       border-color: #fff;
       border-style: solid;
-      border-width: 0 15px;
+      /* border-width: 0 15px; */
       vertical-align: middle;
-
+      border-bottom: 1px solid #e5e4e4;
       div {
         display: flex;
         /* align-items: center; */
@@ -104,7 +106,13 @@ export const Table = styled.table<TableProps>`
       }
     }
 
+    .last-cell {
+      div {
+        /* padding-left: 25%; */
+      }
+    }
     td:last-child {
+      text-align: center;
       svg {
         margin: 0 auto;
       }

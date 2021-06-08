@@ -51,7 +51,9 @@ export const Wrapper = styled.aside<StyledProps>`
   padding: 2.25rem;
 `;
 
-const Content = tw.div`pb-7 px-5`;
+const Content = styled.div`
+  ${tw`pb-10 px-5`};
+`;
 
 const BgBlur = styled.div<StyledProps>`
   ${tw`absolute z-10 bg-black bg-opacity-50`};

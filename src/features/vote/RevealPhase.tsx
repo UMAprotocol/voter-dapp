@@ -111,7 +111,7 @@ const RevealPhase: FC<Props> = ({
                         <span>Read More</span>{" "}
                       </Description>
                     ) : (
-                      el.description
+                      <Description>{el.description}</Description>
                     )}
                   </div>
                 </td>
@@ -142,7 +142,7 @@ const RevealPhase: FC<Props> = ({
       </Table>
       <div className="end-row">
         <div className="end-row-item">
-          {round.snapshotId === "0" ? (
+          {round.snapshotId === NO_SNAPSHOT_VALUE ? (
             <Button
               onClick={() => {
                 if (!signer || !votingContract || !provider) return;
@@ -159,8 +159,8 @@ const RevealPhase: FC<Props> = ({
                       if (va) {
                         getMessageSignatureMetamask(Web3, sigHash, va).then(
                           (msg) => {
-                            snapshotCurrentRound(votingContract, msg).then(
-                              (tx) => {
+                            snapshotCurrentRound(votingContract, msg)
+                              .then((tx) => {
                                 // TODO: Refetch state after snapshot.
                                 if (tx) {
                                   if (notify) notify.hash(tx.hash);
@@ -169,8 +169,25 @@ const RevealPhase: FC<Props> = ({
                                     refetchRoundId();
                                   });
                                 }
-                              }
-                            );
+                              })
+                              .catch((err) => {
+                                console.log("err in snapshot", err);
+                                console.log(
+                                  "other params:",
+                                  "hash",
+                                  hash,
+                                  "sigHash",
+                                  sigHash,
+                                  "mm",
+                                  mm,
+                                  "web3",
+                                  Web3,
+                                  "VA",
+                                  votingAddress,
+                                  "msg",
+                                  msg
+                                );
+                              });
                           }
                         );
                       }
@@ -221,5 +238,6 @@ const RevealPhase: FC<Props> = ({
 };
 
 const UNDEFINED_VOTE = "-";
+const NO_SNAPSHOT_VALUE = "0";
 
 export default RevealPhase;
