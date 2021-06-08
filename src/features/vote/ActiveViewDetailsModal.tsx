@@ -15,10 +15,10 @@ import {
   Proposal,
   Description,
   IconsWrapper,
-  StateValue,
   StateValueAncData,
   IconsItem,
   Icon,
+  LastStateValue,
 } from "./styled/DetailModals.styled";
 import { ModalState } from "./ActiveRequests";
 import { DiscordRed, CopyIcon } from "assets/icons";
@@ -168,12 +168,12 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
           </IconsWrapper>
 
           <MiniHeader>Proposal Timestamp</MiniHeader>
-          <StateValue
+          <LastStateValue
             data-for="active-modal-timestamp"
             data-tip={`UTC: ${unix}`}
           >
             {timestamp}
-          </StateValue>
+          </LastStateValue>
         </ModalWrapper>
         <ReactTooltip
           id="active-modal-timestamp"

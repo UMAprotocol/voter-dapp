@@ -68,6 +68,7 @@ const BgBlur = styled.div<StyledProps>`
 `;
 const ExitButton = styled.button`
   ${tw`w-4 h-4 text-gray self-end`};
+  margin-top: 1rem;
   &:focus {
     outline: none;
   }

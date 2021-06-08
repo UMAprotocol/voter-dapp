@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import VotingTokenArtifact from "@uma/core/build/contracts/VotingToken.json";
-console.log("VTA", VotingTokenArtifact);
+
 // Limited ERC-20 ABI
 const abi = [
   "function balanceOf(address owner) view returns (uint)",

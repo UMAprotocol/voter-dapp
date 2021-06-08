@@ -3,8 +3,7 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 
 export const ModalWrapper = styled.div`
   /* max-width: 700; */
-  min-width: 400px;
-  padding: 1.5rem 1rem;
+  min-width: 450px;
   height: auto;
   position: relative;
   background-color: #fff;
@@ -34,6 +33,7 @@ export const MiniHeader = styled.div`
   font-size: 0.8rem;
   margin-bottom: 1rem;
   margin-top: 1rem;
+  padding-top: 1rem;
   .copy-wrapper {
     display: inline;
     color: #ff4a4a;
@@ -53,6 +53,7 @@ export const Proposal = styled.div`
   color: #000;
   margin-bottom: 2rem;
   max-width: 600px;
+  padding-bottom: 1rem;
 `;
 
 export const Description = styled.div`
@@ -60,6 +61,7 @@ export const Description = styled.div`
   color: grey;
   max-width: 500px;
   margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
 `;
 
 export const IconsWrapper = styled.div`
@@ -83,6 +85,7 @@ export const IconsItem = styled.div`
   .copy-wrapper {
     cursor: pointer;
   }
+  padding-bottom: 1rem;
 `;
 
 export const Icon = styled.div`
@@ -94,6 +97,7 @@ export const Icon = styled.div`
   svg {
     margin-bottom: 2px;
   }
+  padding-bottom: 1rem;
 `;
 
 export const StateValue = styled.div`
@@ -101,6 +105,7 @@ export const StateValue = styled.div`
   border-bottom: 1px solid #e4e5e4;
   color: #000;
   font-size: 1.5rem;
+  padding-bottom: 1rem;
 `;
 
 export const StateValueAddress = styled(StateValue)`
@@ -122,4 +127,8 @@ export const RevealPercentage = styled.div`
   color: #000;
   border-bottom: 1px solid #e4e5e4;
   padding-bottom: 1rem;
+`;
+
+export const LastStateValue = styled(StateValue)`
+  padding-bottom: 3rem;
 `;
