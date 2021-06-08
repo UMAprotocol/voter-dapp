@@ -52,3 +52,65 @@ export const Description = styled.span`
     }
   }
 `;
+
+interface TableProps {
+  isConnected: boolean;
+}
+
+export const Table = styled.table<TableProps>`
+  ${tw`table-auto`};
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0 15px;
+  .input-cell {
+    cursor: ${(props) => (props.isConnected ? "auto" : "not-allowed")};
+    input,
+    select {
+      pointer-events: ${(props) => (props.isConnected ? "all" : "none")};
+      opacity: ${(props) => (props.isConnected ? "1" : "0.5")};
+    }
+  }
+  thead {
+    th {
+      padding-bottom: 1rem;
+      padding-left: 15px;
+      padding-right: 15px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    tr {
+      text-align: left;
+      margin-bottom: 2rem;
+    }
+  }
+
+  tbody {
+    tr {
+      height: 120px;
+    }
+    td {
+      border-color: #fff;
+      border-style: solid;
+      border-width: 0 15px;
+      vertical-align: middle;
+
+      div {
+        display: flex;
+        /* align-items: center; */
+      }
+      .description {
+        max-width: 500px;
+      }
+    }
+
+    td:last-child {
+      svg {
+        margin: 0 auto;
+      }
+    }
+  }
+  .vote {
+    margin: 0 auto;
+  }
+`;

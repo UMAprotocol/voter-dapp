@@ -16,7 +16,7 @@ import { ModalState } from "./ActiveRequests";
 import useTableValues from "./useTableValues";
 import { ErrorContext } from "common/context/ErrorContext";
 import { RefetchOptions, QueryObserverResult } from "react-query";
-import { Description } from "./styled/ActiveRequests.styled";
+import { Description, Table } from "./styled/ActiveRequests.styled";
 
 interface Props {
   isConnected: boolean;
@@ -70,7 +70,7 @@ const RevealPhase: FC<Props> = ({
 
   return (
     <Wrapper className="RequestPhase" isConnected={isConnected}>
-      <table className="table">
+      <Table isConnected={isConnected} className="table">
         <thead>
           <tr>
             <th>Requested Vote</th>
@@ -139,7 +139,7 @@ const RevealPhase: FC<Props> = ({
             );
           })}
         </tbody>
-      </table>
+      </Table>
       <div className="end-row">
         <div className="end-row-item">
           {round.snapshotId === "0" ? (

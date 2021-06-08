@@ -91,7 +91,6 @@ const ActiveRequests: FC<Props> = ({
       ? signingKeys[votingAddress].publicKey
       : "";
 
-  console.log("ActiveRequests", activeRequests);
   return (
     <Wrapper className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">

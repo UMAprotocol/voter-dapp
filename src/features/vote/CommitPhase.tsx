@@ -29,7 +29,7 @@ import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 
 import useTableValues from "./useTableValues";
-import { Description } from "./styled/ActiveRequests.styled";
+import { Description, Table } from "./styled/ActiveRequests.styled";
 import DescriptionModal from "./DescriptionModal";
 
 export type FormData = {
@@ -241,7 +241,7 @@ const CommitPhase: FC<Props> = ({
         handleSubmit(onSubmit);
       }}
     >
-      <table className="table">
+      <Table isConnected={isConnected} className="table">
         <thead>
           <tr>
             <th>Requested Vote</th>
@@ -363,7 +363,7 @@ const CommitPhase: FC<Props> = ({
             );
           })}
         </tbody>
-      </table>
+      </Table>
       <div className="end-row">
         <div className="end-row-item">
           <Button
