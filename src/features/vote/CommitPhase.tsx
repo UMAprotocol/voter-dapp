@@ -30,6 +30,7 @@ import { ModalState } from "./ActiveRequests";
 
 import useTableValues from "./useTableValues";
 import { Description } from "./styled/ActiveRequests.styled";
+import DescriptionModal from "./DescriptionModal";
 
 export type FormData = {
   [key: string]: string;
@@ -72,7 +73,6 @@ const CommitPhase: FC<Props> = ({
   openViewDetailsModal,
 }) => {
   const [submitErrorMessage, setSubmitErrorMessage] = useState("");
-  const [txHash, setTxHash] = useState("");
   const [buttonVariant, setButtonVariant] =
     useState<"secondary" | "disabled">("disabled");
 
@@ -95,6 +95,14 @@ const CommitPhase: FC<Props> = ({
 
   const { data: roundId = "" } = useCurrentRoundId();
   const { isOpen, open, close, modalRef } = useModal();
+  const {
+    isOpen: descriptionIsOpen,
+    open: descriptionOpen,
+    close: descriptionClose,
+    modalRef: descriptionModalRef,
+  } = useModal();
+  const [description, setDescription] = useState("");
+  const [proposal, setProposal] = useState("");
 
   const generateDefaultValues = useCallback(() => {
     const dv = {} as FormData;
@@ -118,11 +126,6 @@ const CommitPhase: FC<Props> = ({
       close();
     }
   }, [isConnected, reset, close]);
-
-  // remove tx hash if modal is closed.
-  useEffect(() => {
-    if (!isOpen && txHash) setTxHash("");
-  }, [isOpen, txHash]);
 
   const onSubmit = useCallback(
     (data: FormData) => {
@@ -155,7 +158,6 @@ const CommitPhase: FC<Props> = ({
                 reset();
                 // Need to confirm if the user submits the vote.
                 assert(tx, "Transaction did not get submitted, try again");
-                setTxHash(tx.hash);
                 if (notify) notify.hash(tx.hash);
 
                 tx.wait(1)
@@ -277,7 +279,17 @@ const CommitPhase: FC<Props> = ({
                     {el.description && el.description.split(" ").length > 16 ? (
                       <Description>
                         {el.description.split(" ").slice(0, 16).join(" ")}...{" "}
-                        <span>Read More</span>{" "}
+                        <span
+                          onClick={() => {
+                            setDescription(
+                              el.description || "Missing description"
+                            );
+                            setProposal(el.identifier);
+                            descriptionOpen();
+                          }}
+                        >
+                          Read More
+                        </span>{" "}
                       </Description>
                     ) : (
                       el.description
@@ -374,6 +386,15 @@ const CommitPhase: FC<Props> = ({
         onSubmit={onSubmit}
         submitErrorMessage={submitErrorMessage}
         setSubmitErrorMessage={setSubmitErrorMessage}
+      />
+      <DescriptionModal
+        isOpen={descriptionIsOpen}
+        close={descriptionClose}
+        ref={descriptionModalRef}
+        description={description}
+        setDescription={setDescription}
+        proposal={proposal}
+        setProposal={setProposal}
       />
     </FormWrapper>
   );

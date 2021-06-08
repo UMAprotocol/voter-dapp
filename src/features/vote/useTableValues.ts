@@ -131,7 +131,10 @@ export default function useTableValues(
             ? parseInt(el.identifier.split(" ")[1])
             : undefined;
 
-          let description = "Price request.";
+          // let description = "Price request.";
+          let description = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam tristique mollis odio, id consequat mauris tristique ut. Curabitur tincidunt tincidunt lacus, non iaculis nisl feugiat quis. Maecenas vitae fermentum arcu. Nulla facilisi. Curabitur quis auctor tortor. Curabitur tincidunt vestibulum quam vel rhoncus. Vivamus semper nisi malesuada nisl posuere accumsan. Morbi venenatis urna in dignissim efficitur. Donec et ipsum odio. Etiam vitae risus a nisi blandit suscipit a sit amet turpis. Donec maximus vulputate orci, eu maximus velit sagittis sed. Ut accumsan, ex id posuere laoreet, ex massa malesuada ex, a sollicitudin urna libero eget magna.
+
+          Suspendisse potenti. Nam laoreet nisi pharetra, varius mi ornare, sagittis orci. Morbi suscipit nunc sed sapien venenatis volutpat. Morbi nec ipsum vestibulum, tempus nunc non, tempor lectus. Nam quis ex eu sem auctor fermentum at nec diam. Praesent nibh eros, porta varius enim a, mattis dictum orci. Fusce erat nisl, consequat non velit non, dapibus convallis ipsum. Cras at lectus feugiat, congue mi sed, tincidunt purus. Praesent non tincidunt nulla, nec ornare justo. Curabitur sagittis erat ligula, a tincidunt leo sagittis nec. Ut euismod arcu in elit euismod bibendum. Etiam feugiat augue sapien, quis aliquet augue egestas at.`;
 
           if (umipNumber) {
             try {

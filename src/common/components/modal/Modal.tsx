@@ -48,6 +48,7 @@ export const Wrapper = styled.aside<StyledProps>`
   }};
   overflow-y: scroll;
   max-height: 80vh;
+  padding: 2.25rem;
 `;
 
 const Content = tw.div`pb-7 px-5`;
