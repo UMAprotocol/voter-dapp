@@ -130,7 +130,7 @@ const Vote: FC<Props> = ({ signingKeys }) => {
 
 const StyledVote = styled.div`
   background-color: #f5f5f5;
-  ${tw`max-w-full pt-5 pb-1`};
+  ${tw`max-w-full pb-3`};
   font-family: "Halyard Display";
 `;
 

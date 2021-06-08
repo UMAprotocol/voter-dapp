@@ -9,6 +9,9 @@ interface StyledFormProps {
 export const FormWrapper = styled.form<StyledFormProps>`
   &.CommitPhase {
     padding: 1rem 4rem;
+    background-color: #fff;
+    width: 100%;
+
     .identifier {
       align-items: flex-start;
       flex-direction: column;
@@ -35,7 +38,7 @@ export const FormWrapper = styled.form<StyledFormProps>`
     .table {
       ${tw`table-auto`};
       width: 100%;
-      max-width: 1250px;
+      max-width: 1400px;
       margin: 0 auto;
       border-collapse: separate;
       border-spacing: 0 15px;

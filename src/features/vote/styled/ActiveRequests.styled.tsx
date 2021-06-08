@@ -5,9 +5,9 @@ export const Wrapper = styled.div`
   &.ActiveRequests {
     font-family: "Halyard Display";
     background-color: #fff;
-    ${tw`max-w-7xl mx-auto py-5 my-10 mb-10`};
+    ${tw`mx-auto py-5 my-10 mb-10`};
     .header-row {
-      max-width: 1350px;
+      max-width: 1450px;
       margin: 0 auto;
 
       .title {

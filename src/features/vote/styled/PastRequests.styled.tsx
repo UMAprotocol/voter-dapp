@@ -4,6 +4,7 @@ import RequestsWrapper from "./RequestsWrapper.styled";
 
 export const Wrapper = styled(RequestsWrapper)`
   &.PastRequests {
+    margin-top: 0;
     .identifier {
       align-items: flex-start;
       flex-direction: column;
