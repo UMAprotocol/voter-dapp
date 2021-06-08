@@ -97,7 +97,6 @@ export const Icon = styled.div`
   svg {
     margin-bottom: 2px;
   }
-  padding-bottom: 1rem;
 `;
 
 export const StateValue = styled.div`
