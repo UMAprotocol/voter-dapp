@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useContext, useEffect, useState, FC } from "react";
 import tw, { styled } from "twin.macro";
-import { DateTime } from "luxon";
 
 // Components
 import ActiveRequests from "./ActiveRequests";
@@ -83,20 +82,12 @@ const Vote: FC<Props> = ({ signingKeys }) => {
 
   useEffect(() => {
     if (priceRequestsAdded.length) {
-      const filtered = priceRequestsAdded.filter((el) => {
-        const startOfRequests = DateTime.fromSeconds(Number(el.time));
-        const now = DateTime.local();
-        const diff = startOfRequests.diff(now).toObject().milliseconds;
-        if (diff) {
-          // if time is greater than the current time, request is upcoming.
-          return diff > 0;
-        } else {
-          return false;
-        }
-      });
+      const filtered = priceRequestsAdded.filter(
+        (el) => Number(el.roundId) > Number(roundId)
+      );
       setUpcomingRequests(filtered);
     }
-  }, [priceRequestsAdded]);
+  }, [priceRequestsAdded, roundId]);
 
   return (
     <StyledVote>

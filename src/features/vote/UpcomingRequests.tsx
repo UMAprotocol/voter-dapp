@@ -1,46 +1,29 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
-import { DateTime } from "luxon";
 import { Wrapper } from "./styled/UpcomingRequests.styled";
+import { Description, Table, FullDate } from "./styled/ActiveRequests.styled";
+import useModal from "common/hooks/useModal";
+import useUpcomingRequests from "./useUpcomingRequests";
+import DescriptionModal from "./DescriptionModal";
 
-interface FormattedRequest {
+export interface FormattedRequest {
   proposal: string;
   description: string;
   timestamp: string;
+  unix: string;
 }
 
 interface Props {
   upcomingRequests: PriceRequestAdded[];
 }
 const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
-  const [formattedRequests, setFormattedRequests] = useState<
-    FormattedRequest[]
-  >([]);
+  const [description, setDescription] = useState("");
+  const [proposal, setProposal] = useState("");
 
-  useEffect(() => {
-    if (upcomingRequests.length) {
-      const values = upcomingRequests.map((el) => {
-        const datum = {} as FormattedRequest;
-        datum.proposal = el.identifier;
-        datum.description = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        `;
-        datum.timestamp = DateTime.fromSeconds(Number(el.time)).toLocaleString({
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hourCycle: "h24",
-          timeZoneName: "short",
-        });
+  const { isOpen, open, close, modalRef } = useModal();
 
-        return datum;
-      });
-      setFormattedRequests(values);
-    }
-  }, [upcomingRequests]);
+  const { tableValues } = useUpcomingRequests(upcomingRequests);
 
   return (
     <Wrapper className="UpcomingRequests">
@@ -49,7 +32,7 @@ const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
           <p className="requests-title-lg title">Upcoming Requests</p>
         </div>
       </div>
-      <table className="requests-table">
+      <Table className="requests-table">
         <thead>
           <tr>
             <th>Proposal</th>
@@ -58,25 +41,52 @@ const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
           </tr>
         </thead>
         <tbody>
-          {formattedRequests.map((el, index) => {
+          {tableValues.map((el, index) => {
             return (
               <tr key={index}>
                 <td>
                   <div className="identifier">{el.proposal}</div>
                 </td>
                 <td>
-                  <div className="requests-description">
-                    <p>{el.description}</p>
+                  <div className="description">
+                    {el.description && el.description.split(" ").length > 16 ? (
+                      <Description>
+                        {el.description.split(" ").slice(0, 16).join(" ")}...{" "}
+                        <span
+                          onClick={() => {
+                            setDescription(
+                              el.description || "Missing description"
+                            );
+                            setProposal(el.proposal);
+                            open();
+                          }}
+                        >
+                          Read More
+                        </span>{" "}
+                      </Description>
+                    ) : (
+                      el.description
+                    )}
                   </div>
                 </td>
                 <td>
-                  <div>{el.timestamp}</div>
+                  <div>{el.unix}</div>
+                  <FullDate>({el.timestamp})</FullDate>
                 </td>
               </tr>
             );
           })}
         </tbody>
-      </table>
+      </Table>
+      <DescriptionModal
+        isOpen={isOpen}
+        close={close}
+        ref={modalRef}
+        description={description}
+        setDescription={setDescription}
+        proposal={proposal}
+        setProposal={setProposal}
+      />
     </Wrapper>
   );
 };
