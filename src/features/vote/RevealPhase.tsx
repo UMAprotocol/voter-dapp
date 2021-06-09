@@ -172,21 +172,7 @@ const RevealPhase: FC<Props> = ({
                               })
                               .catch((err) => {
                                 console.log("err in snapshot", err);
-                                // console.log(
-                                //   "other params:",
-                                //   "hash",
-                                //   hash,
-                                //   "sigHash",
-                                //   sigHash,
-                                //   "mm",
-                                //   mm,
-                                //   "web3",
-                                //   Web3,
-                                //   "VA",
-                                //   votingAddress,
-                                //   "msg",
-                                //   msg
-                                // );
+                                addError(err);
                               });
                           }
                         );

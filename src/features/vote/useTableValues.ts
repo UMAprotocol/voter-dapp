@@ -155,11 +155,11 @@ export default function useTableValues(
             values.push(result.value);
           }
         });
-        const sortByLatestUnix = values.sort((a, b) => {
-          if (Number(b.unix) > Number(a.unix)) return 1;
-          if (Number(b.unix) < Number(a.unix)) return -1;
-          return 0;
-        });
+
+        const sortByLatestUnix = values.sort(
+          (a, b) => Number(b.unix) - Number(a.unix)
+        );
+
         setTableValues(sortByLatestUnix);
       });
     }
