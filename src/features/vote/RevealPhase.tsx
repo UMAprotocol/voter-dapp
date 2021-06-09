@@ -16,6 +16,7 @@ import { ModalState } from "./ActiveRequests";
 import useTableValues from "./useTableValues";
 import { ErrorContext } from "common/context/ErrorContext";
 import { RefetchOptions, QueryObserverResult } from "react-query";
+import { Description, Table, FullDate } from "./styled/ActiveRequests.styled";
 
 interface Props {
   isConnected: boolean;
@@ -69,7 +70,7 @@ const RevealPhase: FC<Props> = ({
 
   return (
     <Wrapper className="RequestPhase" isConnected={isConnected}>
-      <table className="table">
+      <Table isConnected={isConnected} className="table">
         <thead>
           <tr>
             <th>Requested Vote</th>
@@ -103,11 +104,20 @@ const RevealPhase: FC<Props> = ({
                   </div>
                 </td>
                 <td>
-                  <div className="description">{el.description}</div>
+                  <div className="description">
+                    {el.description && el.description.split(" ").length > 16 ? (
+                      <Description>
+                        {el.description.split(" ").slice(0, 16).join(" ")}...{" "}
+                        <span>Read More</span>{" "}
+                      </Description>
+                    ) : (
+                      <Description>{el.description}</Description>
+                    )}
+                  </div>
                 </td>
                 <td>
                   <div>{el.unix}</div>
-                  <div>({el.timestamp})</div>
+                  <FullDate>({el.timestamp})</FullDate>
                 </td>
                 <td>
                   <div>
@@ -129,10 +139,10 @@ const RevealPhase: FC<Props> = ({
             );
           })}
         </tbody>
-      </table>
+      </Table>
       <div className="end-row">
         <div className="end-row-item">
-          {round.snapshotId === "0" ? (
+          {round.snapshotId === NO_SNAPSHOT_VALUE ? (
             <Button
               onClick={() => {
                 if (!signer || !votingContract || !provider) return;
@@ -149,8 +159,8 @@ const RevealPhase: FC<Props> = ({
                       if (va) {
                         getMessageSignatureMetamask(Web3, sigHash, va).then(
                           (msg) => {
-                            snapshotCurrentRound(votingContract, msg).then(
-                              (tx) => {
+                            snapshotCurrentRound(votingContract, msg)
+                              .then((tx) => {
                                 // TODO: Refetch state after snapshot.
                                 if (tx) {
                                   if (notify) notify.hash(tx.hash);
@@ -159,8 +169,11 @@ const RevealPhase: FC<Props> = ({
                                     refetchRoundId();
                                   });
                                 }
-                              }
-                            );
+                              })
+                              .catch((err) => {
+                                console.log("err in snapshot", err);
+                                addError(err);
+                              });
                           }
                         );
                       }
@@ -211,5 +224,6 @@ const RevealPhase: FC<Props> = ({
 };
 
 const UNDEFINED_VOTE = "-";
+const NO_SNAPSHOT_VALUE = "0";
 
 export default RevealPhase;

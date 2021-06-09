@@ -48,9 +48,12 @@ export const Wrapper = styled.aside<StyledProps>`
   }};
   overflow-y: scroll;
   max-height: 80vh;
+  padding: 2.25rem;
 `;
 
-const Content = tw.div`pb-7 px-5`;
+const Content = styled.div`
+  ${tw`pb-10 px-5`};
+`;
 
 const BgBlur = styled.div<StyledProps>`
   ${tw`absolute z-10 bg-black bg-opacity-50`};
@@ -65,6 +68,7 @@ const BgBlur = styled.div<StyledProps>`
 `;
 const ExitButton = styled.button`
   ${tw`w-4 h-4 text-gray self-end`};
+  margin-top: 1rem;
   &:focus {
     outline: none;
   }

@@ -5,9 +5,9 @@ export const Wrapper = styled.div`
   &.ActiveRequests {
     font-family: "Halyard Display";
     background-color: #fff;
-    ${tw`max-w-7xl mx-auto py-5 my-10 mb-10`};
+    ${tw`mx-auto py-5 my-10 mb-10`};
     .header-row {
-      max-width: 1350px;
+      max-width: 1450px;
       margin: 0 auto;
 
       .title {
@@ -41,4 +41,88 @@ export const Wrapper = styled.div`
       }
     }
   }
+`;
+
+export const Description = styled.span`
+  color: #818180;
+  span {
+    color: #ff4a4a;
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+`;
+
+interface TableProps {
+  isConnected?: boolean;
+}
+
+export const Table = styled.table<TableProps>`
+  ${tw`table-auto`};
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0 15px;
+  .input-cell {
+    cursor: ${(props) => (props.isConnected ? "auto" : "not-allowed")};
+    input,
+    select {
+      pointer-events: ${(props) => (props.isConnected ? "all" : "none")};
+      opacity: ${(props) => (props.isConnected ? "1" : "0.5")};
+    }
+  }
+  thead {
+    th {
+      padding-bottom: 1rem;
+      padding-right: 15px;
+      border-bottom: 1px solid #e5e5e5;
+      color: #818180;
+      font-weight: 400;
+    }
+    tr {
+      text-align: left;
+      margin-bottom: 2rem;
+    }
+  }
+
+  tbody {
+    tr {
+      height: 120px;
+    }
+    td {
+      border-color: #fff;
+      border-style: solid;
+      /* border-width: 0 15px; */
+      vertical-align: middle;
+      border-bottom: 1px solid #e5e4e4;
+      div {
+        display: flex;
+        /* align-items: center; */
+      }
+      .description {
+        max-width: 500px;
+      }
+    }
+
+    .last-cell {
+      div {
+        /* padding-left: 25%; */
+      }
+    }
+    td:last-child {
+      text-align: center;
+      svg {
+        margin: 0 auto;
+      }
+    }
+  }
+  .vote {
+    margin: 0 auto;
+  }
+`;
+
+export const FullDate = styled.div`
+  color: #818180;
 `;

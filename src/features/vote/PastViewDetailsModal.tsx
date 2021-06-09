@@ -21,6 +21,7 @@ import {
   StateValueAddress,
   RevealHeader,
   RevealPercentage,
+  LastStateValue,
 } from "./styled/DetailModals.styled";
 import { ModalState } from "./PastRequests";
 import { DiscordRed } from "assets/icons";
@@ -161,9 +162,12 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
           </RevealPercentage>
 
           <MiniHeader>Proposal Timestamp</MiniHeader>
-          <StateValue data-for="past-modal-timestamp" data-tip={`UTC: ${unix}`}>
+          <LastStateValue
+            data-for="past-modal-timestamp"
+            data-tip={`UTC: ${unix}`}
+          >
             {timestamp}
-          </StateValue>
+          </LastStateValue>
         </ModalWrapper>
         <ReactTooltip
           id="past-modal-timestamp"

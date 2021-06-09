@@ -134,7 +134,7 @@ const PastRequests: FC<Props> = ({
                   <td>
                     <div>{el.reward}</div>
                   </td>
-                  <td>
+                  <td className="last-cell">
                     <div>{el.timestamp}</div>
                   </td>
                 </tr>

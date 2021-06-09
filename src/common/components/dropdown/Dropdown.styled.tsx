@@ -32,7 +32,7 @@ export const DropdownList = styled.ul<IDropdownStyledProps>`
   border-width: ${(props) => (props.isOpen ? "1px" : "0")};
   border-style: solid;
   border-color: #e5e4e4;
-  background-color: "#fff";
+  background-color: #fff;
   list-style: none;
   position: absolute;
   width: 250px;

@@ -155,7 +155,12 @@ export default function useTableValues(
             values.push(result.value);
           }
         });
-        setTableValues(values);
+
+        const sortByLatestUnix = values.sort(
+          (a, b) => Number(b.unix) - Number(a.unix)
+        );
+
+        setTableValues(sortByLatestUnix);
       });
     }
   }, [activeRequests, encryptedVotes, revealedVotes]);
