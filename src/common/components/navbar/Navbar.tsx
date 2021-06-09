@@ -18,9 +18,9 @@ const Navbar: FC = () => {
           <Link className="link active" to="/" tw="px-5 py-3">
             Vote
           </Link>
-          <Link className="link" to="/" tw="px-5 py-3">
+          {/* <Link className="link" to="/" tw="px-5 py-3">
             FAQs
-          </Link>
+          </Link> */}
           <a
             className="link"
             href="https://docs.umaproject.org/"
