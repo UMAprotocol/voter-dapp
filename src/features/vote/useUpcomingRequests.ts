@@ -61,7 +61,6 @@ export default function useUpcomingRequests(
       descriptionsAdded.then((results) => {
         const vals = [] as FormattedRequest[];
         results.forEach((result) => {
-          console.log("results", results);
           if (result.status === "fulfilled") {
             vals.push(result.value);
           }
