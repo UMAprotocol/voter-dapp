@@ -34,9 +34,9 @@ export const OLD_VOTING_CONTRACT_ADDRESSES = [
 ];
 
 export default function config(network: Network | null) {
-  const infuraRpc = `https://${
-    network ? network?.name : "mainnet"
-  }.infura.io/v3/${infuraId}`;
+  // const infuraRpc = `https://${
+  //   network ? network?.name : "mainnet"
+  // }.infura.io/v3/${infuraId}`;
 
   return {
     onboardConfig: {
@@ -69,10 +69,10 @@ export default function config(network: Network | null) {
           // { walletName: "torus" },
           // { walletName: "status" },
           // { walletName: "unilogin" },
-          {
-            walletName: "ledger",
-            rpcUrl: infuraRpc,
-          },
+          // {
+          //   walletName: "ledger",
+          //   rpcUrl: infuraRpc,
+          // },
         ],
       },
       walletCheck: [
