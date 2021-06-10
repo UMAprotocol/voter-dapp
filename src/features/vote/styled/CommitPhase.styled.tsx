@@ -51,8 +51,12 @@ export const FormWrapper = styled.form<StyledFormProps>`
 export const CommitInputLabel = styled.label`
   width: 100%;
   padding-left: 4px;
-  margin-bottom: 1rem;
+  margin-bottom: 11px;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 2.5rem;
+  line-height: 1.71;
+  display: block;
+  color: #000;
+  font-family: "Halyard Display";
 `;

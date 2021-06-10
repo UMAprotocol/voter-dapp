@@ -37,7 +37,7 @@ const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
           <tr>
             <th>Proposal</th>
             <th>Description</th>
-            <th>Timestamp</th>
+            <th>UNIX Timestamp</th>
           </tr>
         </thead>
         <tbody>
