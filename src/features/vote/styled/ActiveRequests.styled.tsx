@@ -89,7 +89,7 @@ export const Table = styled.table<TableProps>`
 
   tbody {
     tr {
-      height: 120px;
+      height: 190px;
     }
     td {
       border-color: #fff;
