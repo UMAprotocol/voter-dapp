@@ -292,7 +292,7 @@ const CommitPhase: FC<Props> = ({
                         </span>{" "}
                       </Description>
                     ) : (
-                      el.description
+                      <Description>{el.description}</Description>
                     )}
                   </div>
                 </td>

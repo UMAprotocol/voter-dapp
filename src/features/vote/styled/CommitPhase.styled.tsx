@@ -54,4 +54,5 @@ export const CommitInputLabel = styled.label`
   margin-bottom: 1rem;
   font-weight: 400;
   font-size: 16px;
+  line-height: 2.5rem;
 `;

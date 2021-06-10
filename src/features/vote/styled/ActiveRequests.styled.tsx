@@ -14,7 +14,6 @@ export const Wrapper = styled.div`
         font-size: 1.75rem;
         font-weight: 600;
         margin-bottom: 9px;
-        letter-spacing: -0.02em;
         span {
           color: #ff4a4a;
         }
@@ -45,6 +44,8 @@ export const Wrapper = styled.div`
 
 export const Description = styled.span`
   color: #818180;
+  line-height: 1.57;
+  font-size: 14px;
   span {
     color: #ff4a4a;
     &:hover {

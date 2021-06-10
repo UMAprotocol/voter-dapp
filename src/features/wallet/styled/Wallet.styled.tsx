@@ -8,16 +8,7 @@ export const Wrapper = styled.div`
     ${tw`max-w-7xl mx-auto py-5 px-8 my-10`}
     background-color: #fff;
   }
-  .wallet-title {
-    font-weight: 600;
-    font-size: 1.5rem;
-  }
-  .sm-title {
-    color: #000;
-    margin: 0 0 12px;
-    font-weight: 400;
-    opacity: 0.5;
-  }
+
   .value-tokens {
     font-size: 1.5rem;
     margin: 0 0 11px;
@@ -26,24 +17,11 @@ export const Wrapper = styled.div`
     }
     span:last-child {
       font-weight: 500;
-      opacity: 0.3;
+      color: #b3b2b2;
     }
   }
   .value-dollars {
     font-size: 0.8rem;
-  }
-  .connect-btn {
-    /* margin-left: 12px; */
-    width: 150px;
-  }
-  .Wallet-collect {
-    text-decoration: underline;
-    cursor: pointer;
-    color: #ff4a4a;
-    /* font-size: 0.875rem; */
-    margin-left: 4px;
-    margin-bottom: 1px;
-    line-height: 1rem;
   }
 `;
 
@@ -83,4 +61,60 @@ export const VotingAddress = styled.div`
   color: #000;
   margin-left: 8px;
   cursor: pointer;
+`;
+
+export const WalletColumn = styled.div`
+  ${tw`py-8 pl-5 flex-grow`};
+  .wallet-title {
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+  .connect-btn {
+    width: 150px;
+  }
+`;
+
+export const UMABalance = styled.div`
+  ${tw`my-5 mx-3 flex-grow border-r`};
+`;
+
+export const UMACollected = styled.div`
+  ${tw`my-5 mx-3 pl-5 flex-grow border-r`};
+`;
+
+export const AvailableRewards = styled.div`
+  ${tw`my-5 mx-3 pl-5 flex-grow`}
+`;
+
+export const SmallTitle = styled.p`
+  margin: 0 0 12px;
+  opacity: 0.5;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
+  .Wallet-collect {
+    text-decoration: underline;
+    cursor: pointer;
+    color: #ff4a4a;
+    /* font-size: 0.875rem; */
+    margin-left: 4px;
+    margin-bottom: 1px;
+    line-height: 1rem;
+  }
+`;
+
+export const ValueTokens = styled.div`
+  font-size: 1.5rem;
+  margin: 0 0 11px;
+  span {
+    font-weight: 500;
+  }
+  span:last-child {
+    font-weight: 500;
+    color: #b3b2b2;
+  }
+`;
+
+export const ValueDollars = styled.p`
+  font-size: 0.8rem;
 `;
