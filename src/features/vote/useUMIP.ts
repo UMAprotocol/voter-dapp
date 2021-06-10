@@ -12,7 +12,7 @@ const testUmip: UMIP = {
   `,
   title: "Make UMA an oracle token",
   number: 100,
-  url: "https://umaproject.org",
+  umipLink: "https://umaproject.org",
 };
 
 const MAINNET_CHAIN_ID = 1;

@@ -155,9 +155,9 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
                 Join the UMA Discord
               </a>
             </IconsItem>
-            {umip?.url ? (
+            {umip?.umipLink ? (
               <IconsItem>
-                <a target="_blank" href={umip?.url} rel="noreferrer">
+                <a target="_blank" href={umip?.umipLink} rel="noreferrer">
                   <Icon>
                     <CopyIcon />
                   </Icon>
