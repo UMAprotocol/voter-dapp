@@ -17,11 +17,14 @@ export const FormWrapper = styled.form<StyledFormProps>`
       flex-direction: column;
       p:first-of-type {
         margin-bottom: 0.5rem;
+        font-size: 28px;
+        font-weight: 500;
       }
       .view-details {
         color: #ff4a4a;
         text-decoration: underline;
-        font-weight: 600;
+        font-weight: 500;
+        font-size: 14px;
         &:hover {
           cursor: pointer;
         }

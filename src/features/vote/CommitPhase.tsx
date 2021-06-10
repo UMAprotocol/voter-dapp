@@ -276,9 +276,9 @@ const CommitPhase: FC<Props> = ({
                 </td>
                 <td>
                   <div className="description">
-                    {el.description && el.description.split(" ").length > 16 ? (
+                    {el.description && el.description.length > 255 ? (
                       <Description>
-                        {el.description.split(" ").slice(0, 16).join(" ")}...{" "}
+                        {el.description.slice(0, 255)}...{" "}
                         <span
                           onClick={() => {
                             setDescription(
