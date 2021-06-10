@@ -76,10 +76,12 @@ export const WalletColumn = styled.div`
 
 export const UMABalance = styled.div`
   ${tw`my-5 mx-3 flex-grow border-r`};
+  border-color: #e5e4e4;
 `;
 
 export const UMACollected = styled.div`
   ${tw`my-5 mx-3 pl-5 flex-grow border-r`};
+  border-color: #e5e4e4;
 `;
 
 export const AvailableRewards = styled.div`
