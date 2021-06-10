@@ -79,8 +79,11 @@ export const Table = styled.table<TableProps>`
       padding-bottom: 1rem;
       padding-right: 15px;
       border-bottom: 1px solid #e5e5e5;
-      color: #818180;
+      color: #000;
       font-weight: 400;
+      font-size: 14px;
+      line-height: 1.57;
+      opacity: 0.5;
     }
     tr {
       text-align: left;
