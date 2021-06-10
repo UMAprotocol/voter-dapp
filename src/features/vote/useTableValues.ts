@@ -113,7 +113,6 @@ export default function useTableValues(
             prd.time = Number(el.unix);
             prd.identifier = el.idenHex;
             prd.salt = findVote.salt;
-            // datum.price = toWeiSafe(findVote.price).toString();
             prd.price = findVote.price.toString();
             postData.push(prd);
           }
@@ -125,7 +124,7 @@ export default function useTableValues(
 
       // Add description
       const descriptionsAdded = Promise.allSettled(
-        tv.map(async (el) => {
+        tv.map(async (el, index) => {
           const isUmip = el.identifier.includes("Admin");
           const umipNumber = isUmip
             ? parseInt(el.identifier.split(" ")[1])

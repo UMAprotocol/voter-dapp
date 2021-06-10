@@ -2,7 +2,12 @@
 import { FC, useState } from "react";
 import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
 import { Wrapper } from "./styled/UpcomingRequests.styled";
-import { Description, Table, FullDate } from "./styled/ActiveRequests.styled";
+import {
+  Description,
+  Table,
+  FullDate,
+  DescriptionWrapper,
+} from "./styled/ActiveRequests.styled";
 import useModal from "common/hooks/useModal";
 import useUpcomingRequests from "./useUpcomingRequests";
 import DescriptionModal from "./DescriptionModal";
@@ -48,7 +53,7 @@ const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
                   <div className="identifier">{el.proposal}</div>
                 </td>
                 <td>
-                  <div className="description">
+                  <DescriptionWrapper className="description">
                     {el.description && el.description.split(" ").length > 16 ? (
                       <Description>
                         {el.description.split(" ").slice(0, 16).join(" ")}...{" "}
@@ -67,7 +72,7 @@ const UpcomingRequests: FC<Props> = ({ upcomingRequests }) => {
                     ) : (
                       el.description
                     )}
-                  </div>
+                  </DescriptionWrapper>
                 </td>
                 <td>
                   <div>{el.unix}</div>

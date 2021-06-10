@@ -29,7 +29,12 @@ import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 
 import useTableValues from "./useTableValues";
-import { Description, Table, FullDate } from "./styled/ActiveRequests.styled";
+import {
+  Description,
+  Table,
+  FullDate,
+  DescriptionWrapper,
+} from "./styled/ActiveRequests.styled";
 import DescriptionModal from "./DescriptionModal";
 
 export type FormData = {
@@ -275,7 +280,7 @@ const CommitPhase: FC<Props> = ({
                   </div>
                 </td>
                 <td>
-                  <div className="description">
+                  <DescriptionWrapper className="description">
                     {el.description && el.description.length > 255 ? (
                       <Description>
                         {el.description.slice(0, 255)}...{" "}
@@ -294,7 +299,7 @@ const CommitPhase: FC<Props> = ({
                     ) : (
                       <Description>{el.description}</Description>
                     )}
-                  </div>
+                  </DescriptionWrapper>
                 </td>
                 <td>
                   <div>{el.unix}</div>

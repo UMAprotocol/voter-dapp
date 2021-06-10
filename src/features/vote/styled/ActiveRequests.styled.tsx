@@ -42,6 +42,9 @@ export const Wrapper = styled.div`
   }
 `;
 
+export const DescriptionWrapper = styled.div`
+  max-width: 550px;
+`;
 export const Description = styled.span`
   color: #818180;
   line-height: 1.57;
@@ -106,7 +109,7 @@ export const Table = styled.table<TableProps>`
         /* align-items: center; */
       }
       .description {
-        max-width: 500px;
+        max-width: 550px;
       }
     }
 
