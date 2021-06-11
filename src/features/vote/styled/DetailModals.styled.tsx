@@ -51,7 +51,7 @@ export const Proposal = styled.div`
   font-size: 1.5rem;
   font-weight: 500;
   color: #000;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   max-width: 600px;
   padding-bottom: 1rem;
 `;

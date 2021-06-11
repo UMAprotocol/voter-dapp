@@ -17,11 +17,14 @@ export const FormWrapper = styled.form<StyledFormProps>`
       flex-direction: column;
       p:first-of-type {
         margin-bottom: 0.5rem;
+        font-size: 28px;
+        font-weight: 500;
       }
       .view-details {
         color: #ff4a4a;
         text-decoration: underline;
-        font-weight: 600;
+        font-weight: 500;
+        font-size: 14px;
         &:hover {
           cursor: pointer;
         }
@@ -48,7 +51,11 @@ export const FormWrapper = styled.form<StyledFormProps>`
 export const CommitInputLabel = styled.label`
   width: 100%;
   padding-left: 4px;
-  margin-bottom: 1rem;
+  margin-bottom: 11px;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
+  line-height: 1.71;
+  display: block;
+  color: #000;
+  font-family: "Halyard Display";
 `;

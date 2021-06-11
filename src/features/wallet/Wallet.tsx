@@ -36,6 +36,13 @@ import {
   Disconnected,
   Reconnect,
   VotingAddress,
+  WalletColumn,
+  UMABalance,
+  UMACollected,
+  AvailableRewards,
+  SmallTitle,
+  ValueTokens,
+  ValueDollars,
 } from "./styled/Wallet.styled";
 // import ERC20TransferButton from "./helpers/ERC20TransferButton";
 import { SigningKeys } from "App";
@@ -176,7 +183,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     <Wrapper>
       <div className="wrapper">
         <div tw="flex items-stretch items-center">
-          <div tw="py-8 pl-5 flex-grow">
+          <WalletColumn>
             <div className="wallet-title">Voting Wallet</div>
             {isConnected && votingAddress ? (
               <>
@@ -227,17 +234,17 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                 Disconnect
               </Button>
             )}
-          </div>
+          </WalletColumn>
 
-          <div tw="my-5 mx-3 flex-grow border-r">
-            <p className="sm-title">UMA Balance</p>
+          <UMABalance>
+            <SmallTitle>UMA Balance</SmallTitle>
             {isConnected ? (
               <>
-                <div className="value-tokens">
+                <ValueTokens>
                   <span>{formatWalletBalance(umaBalance)[0]}</span>
                   <span>{formatWalletBalance(umaBalance)[1]}</span>
-                </div>
-                <p className="value-dollars">
+                </ValueTokens>
+                <ValueDollars>
                   $
                   {umaBalance && umaPrice
                     ? calculateUMATotalValue(
@@ -246,21 +253,22 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                       )
                     : "00.00"}{" "}
                   USD
-                </p>
+                </ValueDollars>
               </>
             ) : (
               <div>--</div>
             )}
-          </div>
-          <div tw="my-5 mx-3 pl-5 flex-grow border-r">
-            <p className="sm-title">Total UMA Collected</p>
+          </UMABalance>
+
+          <UMACollected>
+            <SmallTitle>Total UMA Collected</SmallTitle>
             {isConnected ? (
               <>
-                <div className="value-tokens">
+                <ValueTokens>
                   <span>{formatWalletBalance(totalUmaCollected)[0]}</span>
                   <span>{formatWalletBalance(totalUmaCollected)[1]}</span>
-                </div>
-                <p className="value-dollars">
+                </ValueTokens>
+                <ValueDollars>
                   $
                   {totalUmaCollected && umaPrice
                     ? calculateUMATotalValue(
@@ -269,14 +277,14 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                       )
                     : "00.00"}{" "}
                   USD
-                </p>
+                </ValueDollars>
               </>
             ) : (
               <div>--</div>
             )}
-          </div>
-          <div tw="my-5 mx-3 pl-5 flex-grow">
-            <p className="sm-title">
+          </UMACollected>
+          <AvailableRewards>
+            <SmallTitle>
               Available Rewards{" "}
               {availableRewards !== DEFAULT_BALANCE && isConnected ? (
                 <span
@@ -318,14 +326,14 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                   Collect
                 </span>
               ) : null}
-            </p>
+            </SmallTitle>
             {isConnected ? (
               <>
-                <div className="value-tokens">
+                <ValueTokens>
                   <span>{formatWalletBalance(availableRewards)[0]}</span>
                   <span>{formatWalletBalance(availableRewards)[1]}</span>
-                </div>
-                <p className="value-dollars">
+                </ValueTokens>
+                <ValueDollars>
                   $
                   {availableRewards && umaPrice
                     ? calculateUMATotalValue(
@@ -334,12 +342,12 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                       )
                     : "00.00"}{" "}
                   USD
-                </p>
+                </ValueDollars>
               </>
             ) : (
               <div>--</div>
             )}
-          </div>
+          </AvailableRewards>
           <div tw="py-10 pl-5 ml-auto flex-none">
             <Settings onClick={() => open()} tw="cursor-pointer" />
           </div>

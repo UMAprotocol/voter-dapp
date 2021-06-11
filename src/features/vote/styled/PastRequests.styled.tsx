@@ -50,7 +50,7 @@ export const Wrapper = styled(RequestsWrapper)`
 
       tbody {
         tr {
-          height: 120px;
+          height: 190px;
         }
         td {
           vertical-align: middle;

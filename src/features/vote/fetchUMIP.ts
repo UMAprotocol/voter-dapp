@@ -10,13 +10,13 @@ const contentfulClient = contentful.createClient({
 });
 
 export type UMIP = {
-  description: any;
+  description: string;
   discourseLink?: string;
   status?: string;
   authors?: string;
   title: string;
   number: number;
-  url: string;
+  umipLink?: string;
 };
 
 export const fetchUmip = async (number: number) => {

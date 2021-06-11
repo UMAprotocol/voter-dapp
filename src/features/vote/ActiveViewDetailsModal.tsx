@@ -100,23 +100,31 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
         <ModalWrapper>
           <MiniHeader>Proposal</MiniHeader>
           <Proposal>{proposal}</Proposal>
-          <MiniHeader>
-            Ancillary Data (raw hexstring)
-            <div
-              className="copy-wrapper"
-              onClick={() => {
-                navigator.clipboard.writeText(ancData);
-                setCopySuccess(true);
-                setTimeout(() => setCopySuccess(false), 2000);
-              }}
-            >
-              <FontAwesomeIcon style={{ marginLeft: "8px" }} icon={faCopy} />
-              {copySuccess && (
-                <span style={{ marginLeft: "16px" }}>Copied.</span>
-              )}
-            </div>
-          </MiniHeader>
-          <StateValueAncData>{ancData}</StateValueAncData>
+          {ancData !== NULL_ANC_DATA && (
+            <>
+              <MiniHeader>
+                Ancillary Data (raw hexstring)
+                <div
+                  className="copy-wrapper"
+                  onClick={() => {
+                    navigator.clipboard.writeText(ancData);
+                    setCopySuccess(true);
+                    setTimeout(() => setCopySuccess(false), 2000);
+                  }}
+                >
+                  <FontAwesomeIcon
+                    style={{ marginLeft: "8px" }}
+                    icon={faCopy}
+                  />
+                  {copySuccess && (
+                    <span style={{ marginLeft: "16px" }}>Copied.</span>
+                  )}
+                </div>
+              </MiniHeader>
+              <StateValueAncData>{ancData}</StateValueAncData>
+            </>
+          )}
+
           {convertedHexstring && ancData !== NULL_ANC_DATA && (
             <>
               <MiniHeader>Ancillary Data (converted)</MiniHeader>
@@ -155,9 +163,9 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
                 Join the UMA Discord
               </a>
             </IconsItem>
-            {umip?.url ? (
+            {umip?.umipLink ? (
               <IconsItem>
-                <a target="_blank" href={umip?.url} rel="noreferrer">
+                <a target="_blank" href={umip?.umipLink} rel="noreferrer">
                   <Icon>
                     <CopyIcon />
                   </Icon>

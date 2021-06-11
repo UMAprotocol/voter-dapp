@@ -14,7 +14,6 @@ export const Wrapper = styled.div`
         font-size: 1.75rem;
         font-weight: 600;
         margin-bottom: 9px;
-        letter-spacing: -0.02em;
         span {
           color: #ff4a4a;
         }
@@ -43,8 +42,13 @@ export const Wrapper = styled.div`
   }
 `;
 
+export const DescriptionWrapper = styled.div`
+  max-width: 60ch;
+`;
 export const Description = styled.span`
   color: #818180;
+  line-height: 1.57;
+  font-size: ${14 / 16}rem;
   span {
     color: #ff4a4a;
     &:hover {
@@ -78,8 +82,11 @@ export const Table = styled.table<TableProps>`
       padding-bottom: 1rem;
       padding-right: 15px;
       border-bottom: 1px solid #e5e5e5;
-      color: #818180;
+      color: #000;
       font-weight: 400;
+      font-size: 14px;
+      line-height: 1.57;
+      opacity: 0.5;
     }
     tr {
       text-align: left;
@@ -89,7 +96,7 @@ export const Table = styled.table<TableProps>`
 
   tbody {
     tr {
-      height: 120px;
+      height: 190px;
     }
     td {
       border-color: #fff;
@@ -102,7 +109,7 @@ export const Table = styled.table<TableProps>`
         /* align-items: center; */
       }
       .description {
-        max-width: 500px;
+        max-width: 60ch;
       }
     }
 

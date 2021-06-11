@@ -28,8 +28,9 @@ function App(props: Props) {
   const { state, disconnect, dispatch } = useContext(OnboardContext);
   const { error, removeError, addError } = useContext(ErrorContext);
 
+  const previousAddress = usePrevious(state.address);
   useEffect(() => {
-    if (state.signer && state.address) {
+    if (state.signer && state.address && previousAddress === null) {
       const address = state.address;
       const message = "Login to UMA Voter dApp";
       const keyExists = signingKeys[address];
@@ -54,7 +55,7 @@ function App(props: Props) {
           });
       }
     }
-  }, [state.signer, state.address, signingKeys, addError]);
+  }, [state.signer, state.address, signingKeys, addError, previousAddress]);
 
   useEffect(() => {
     if (error)
@@ -81,12 +82,12 @@ function App(props: Props) {
       state.network &&
       state.network.chainId !== previousNetwork.chainId
     ) {
+      setSigningKeys({});
       window.location.reload();
     }
   }, [state.network, previousNetwork]);
 
   // Disconnect user if they are looged in and they switch accounts in MM
-  const previousAddress = usePrevious(state.address);
   useEffect(() => {
     if (previousAddress && state.address && previousAddress !== state.address) {
       disconnect(dispatch, state.onboard);

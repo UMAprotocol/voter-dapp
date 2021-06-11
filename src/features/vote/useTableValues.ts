@@ -113,7 +113,6 @@ export default function useTableValues(
             prd.time = Number(el.unix);
             prd.identifier = el.idenHex;
             prd.salt = findVote.salt;
-            // datum.price = toWeiSafe(findVote.price).toString();
             prd.price = findVote.price.toString();
             postData.push(prd);
           }
