@@ -75,3 +75,8 @@ export const Anchor = styled.a`
     cursor: pointer;
   }
 `;
+
+export const FormSuccess = styled.div`
+  margin-top: 1rem;
+  text-align: center;
+`;
