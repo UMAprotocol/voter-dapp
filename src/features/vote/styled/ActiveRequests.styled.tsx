@@ -43,12 +43,12 @@ export const Wrapper = styled.div`
 `;
 
 export const DescriptionWrapper = styled.div`
-  max-width: 550px;
+  max-width: 60ch;
 `;
 export const Description = styled.span`
   color: #818180;
   line-height: 1.57;
-  font-size: 14px;
+  font-size: ${14 / 16}rem;
   span {
     color: #ff4a4a;
     &:hover {
@@ -109,7 +109,7 @@ export const Table = styled.table<TableProps>`
         /* align-items: center; */
       }
       .description {
-        max-width: 550px;
+        max-width: 60ch;
       }
     }
 

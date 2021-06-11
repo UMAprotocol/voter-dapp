@@ -52,13 +52,20 @@ export default function useOnboard() {
           dispatch({ type: actions.SET_ADDRESS, payload: addr });
         },
         network: async (networkId: any) => {
-          dispatch({
-            type: actions.SET_NETWORK,
-            payload: {
-              chainId: networkId,
-              name: getNetworkName(networkId as ChainId),
-            },
-          });
+          if (networkId) {
+            dispatch({
+              type: actions.SET_NETWORK,
+              payload: {
+                chainId: networkId,
+                name: getNetworkName(networkId as ChainId),
+              },
+            });
+          } else {
+            dispatch({
+              type: actions.SET_NETWORK,
+              payload: null,
+            });
+          }
 
           // Notify.js doesn't work on ganache anyway (see: docs).
           // So don't bother initializing it on test.

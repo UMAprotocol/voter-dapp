@@ -143,6 +143,10 @@ const CommitPhase: FC<Props> = ({
           validValues[Object.keys(data)[i]] = Object.values(data)[i];
       }
 
+      if (publicKey === "")
+        return setSubmitErrorMessage(
+          "Signing Key undefined. Please refresh, reconnect, and try again."
+        );
       if (votingAddress) {
         // Format data.
         formatVoteDataToCommit(

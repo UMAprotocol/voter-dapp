@@ -124,7 +124,7 @@ export default function useTableValues(
 
       // Add description
       const descriptionsAdded = Promise.allSettled(
-        tv.map(async (el, index) => {
+        tv.map(async (el) => {
           const isUmip = el.identifier.includes("Admin");
           const umipNumber = isUmip
             ? parseInt(el.identifier.split(" ")[1])
