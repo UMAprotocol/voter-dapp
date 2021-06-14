@@ -41,7 +41,7 @@ function App(props: Props) {
       const address = state.address;
       const message = `UMA Protocol one time key for round: ${roundId}`;
       const keyExists = signingKeys[address];
-      if (!keyExists) {
+      if (!keyExists || keyExists.roundMessage !== message) {
         state.signer
           .signMessage(message)
           .then((msg) => {

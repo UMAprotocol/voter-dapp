@@ -12,6 +12,7 @@ import Button from "common/components/button";
 import {
   ModalWrapper,
   SubmitErrorMessage,
+  CommitAddress,
 } from "./styled/SubmitCommitsModal.styled";
 import { Summary, FormData } from "./CommitPhase";
 import {
@@ -69,11 +70,13 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
           <h3 className="header">Ready to commit these votes?</h3>
           {hotAddress ? (
             <>
-              <p>Designated Voting Contract Address: {votingAddress}</p>
-              <p>Hot Wallet Address: {hotAddress}</p>
+              <CommitAddress>
+                Designated Voting Contract Address: {votingAddress}
+              </CommitAddress>
+              <CommitAddress>Hot Wallet Address: {hotAddress}</CommitAddress>
             </>
           ) : (
-            <p>Voting Address: {votingAddress}</p>
+            <CommitAddress>Voting Address: {votingAddress}</CommitAddress>
           )}
           {submitErrorMessage && (
             <SubmitErrorMessage>{submitErrorMessage}</SubmitErrorMessage>

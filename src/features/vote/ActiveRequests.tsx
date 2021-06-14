@@ -69,7 +69,9 @@ const ActiveRequests: FC<Props> = ({
 
   const { data: votePhase = "" } = useVotePhase();
 
-  const { data: round = {} as Round } = useRound(Number(roundId));
+  const { data: round = {} as Round, refetch: refetchRound } = useRound(
+    Number(roundId)
+  );
 
   // Set time remaining depending if it's the Commit or Reveal
   // Note: the requests are all slightly differently in there final vote time. I'll use the last
@@ -149,6 +151,7 @@ const ActiveRequests: FC<Props> = ({
           refetchVoteRevealedEvents={refetchVoteRevealedEvents}
           setViewDetailsModalState={setModalState}
           openViewDetailsModal={open}
+          refetchRound={refetchRound}
           refetchRoundId={refetchRoundId}
         />
       ) : null}
