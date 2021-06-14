@@ -34,6 +34,8 @@ interface Props {
     onInvalid?: SubmitErrorHandler<FormData>
   ) => (e?: BaseSyntheticEvent) => Promise<void>;
   onSubmit: (data: FormData) => void;
+  votingAddress: string | null;
+  hotAddress: string | null;
 }
 
 const _SubmitCommitsModal: ForwardRefRenderFunction<
@@ -48,6 +50,8 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
     onSubmit,
     submitErrorMessage,
     setSubmitErrorMessage,
+    votingAddress,
+    hotAddress,
   },
   externalRef
 ) => {
@@ -63,7 +67,14 @@ const _SubmitCommitsModal: ForwardRefRenderFunction<
       >
         <ModalWrapper>
           <h3 className="header">Ready to commit these votes?</h3>
-
+          {hotAddress ? (
+            <>
+              <p>Designated Voting Contract Address: {votingAddress}</p>
+              <p>Hot Wallet Address: {hotAddress}</p>
+            </>
+          ) : (
+            <p>Voting Address: {votingAddress}</p>
+          )}
           {submitErrorMessage && (
             <SubmitErrorMessage>{submitErrorMessage}</SubmitErrorMessage>
           )}

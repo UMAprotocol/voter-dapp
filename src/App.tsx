@@ -10,7 +10,7 @@ import { OnboardContext } from "common/context/OnboardContext";
 
 import { recoverPublicKey } from "./features/vote/helpers/recoverPublicKey";
 import { derivePrivateKey } from "./features/vote/helpers/derivePrivateKey";
-
+import { useCurrentRoundId } from "hooks";
 interface Props {
   queryClient: QueryClient;
 }
@@ -19,6 +19,7 @@ export interface SigningKeys {
   [key: string]: {
     publicKey: string;
     privateKey: string;
+    roundMessage: string;
   };
 }
 
@@ -27,23 +28,34 @@ function App(props: Props) {
 
   const { state, disconnect, dispatch } = useContext(OnboardContext);
   const { error, removeError, addError } = useContext(ErrorContext);
-
+  const { data: roundId = "" } = useCurrentRoundId();
+  const previousSigner = usePrevious(state.signer);
   const previousAddress = usePrevious(state.address);
   useEffect(() => {
-    if (state.signer && state.address && previousAddress === null) {
+    if (
+      state.signer &&
+      state.address &&
+      roundId &&
+      (previousAddress === null || previousSigner === null)
+    ) {
       const address = state.address;
-      const message = "Login to UMA Voter dApp";
+      const message = `UMA Protocol one time key for round: ${roundId}`;
       const keyExists = signingKeys[address];
       if (!keyExists) {
         state.signer
           .signMessage(message)
           .then((msg) => {
-            const key = {} as { publicKey: string; privateKey: string };
+            const key = {} as {
+              publicKey: string;
+              privateKey: string;
+              roundMessage: string;
+            };
 
             const privateKey = derivePrivateKey(msg);
             const publicKey = recoverPublicKey(privateKey);
             key.privateKey = privateKey;
             key.publicKey = publicKey;
+            key.roundMessage = message;
 
             setSigningKeys((prevKeys) => {
               return { ...prevKeys, [address]: key };
@@ -55,7 +67,15 @@ function App(props: Props) {
           });
       }
     }
-  }, [state.signer, state.address, signingKeys, addError, previousAddress]);
+  }, [
+    state.signer,
+    state.address,
+    signingKeys,
+    addError,
+    previousAddress,
+    previousSigner,
+    roundId,
+  ]);
 
   useEffect(() => {
     if (error)

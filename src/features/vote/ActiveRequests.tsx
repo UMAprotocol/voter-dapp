@@ -91,6 +91,13 @@ const ActiveRequests: FC<Props> = ({
       ? signingKeys[votingAddress].publicKey
       : "";
 
+  const signingMessage =
+    hotAddress && signingKeys[hotAddress]
+      ? signingKeys[hotAddress].roundMessage
+      : votingAddress && signingKeys[votingAddress]
+      ? signingKeys[votingAddress].roundMessage
+      : "";
+
   return (
     <Wrapper className="ActiveRequests">
       <div className="header-row" tw="flex items-stretch p-10">
@@ -126,6 +133,7 @@ const ActiveRequests: FC<Props> = ({
           hotAddress={hotAddress}
           setViewDetailsModalState={setModalState}
           openViewDetailsModal={open}
+          signingMessage={signingMessage}
         />
       ) : null}
       {votePhase === "Reveal" ? (
