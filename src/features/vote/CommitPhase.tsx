@@ -57,6 +57,7 @@ interface Props {
   votingAddress: string | null;
   setViewDetailsModalState: Dispatch<SetStateAction<ModalState>>;
   openViewDetailsModal: () => void;
+  signingMessage: string;
 }
 
 const UNDEFINED_VOTE = "-";
@@ -76,6 +77,7 @@ const CommitPhase: FC<Props> = ({
   hotAddress,
   setViewDetailsModalState,
   openViewDetailsModal,
+  signingMessage,
 }) => {
   const [submitErrorMessage, setSubmitErrorMessage] = useState("");
   const [buttonVariant, setButtonVariant] =
@@ -142,7 +144,12 @@ const CommitPhase: FC<Props> = ({
         )
           validValues[Object.keys(data)[i]] = Object.values(data)[i];
       }
+      const message = `UMA Protocol one time key for round: ${roundId}`;
 
+      if (signingMessage !== message)
+        return setSubmitErrorMessage(
+          "Signing message does not match message for current round. Please disconnect and resign message for current round and try to commit again."
+        );
       if (publicKey === "")
         return setSubmitErrorMessage(
           "Signing Key undefined. Please refresh, reconnect, and try again."
@@ -196,6 +203,7 @@ const CommitPhase: FC<Props> = ({
       reset,
       notify,
       close,
+      signingMessage,
     ]
   );
 
@@ -395,6 +403,8 @@ const CommitPhase: FC<Props> = ({
         onSubmit={onSubmit}
         submitErrorMessage={submitErrorMessage}
         setSubmitErrorMessage={setSubmitErrorMessage}
+        hotAddress={hotAddress}
+        votingAddress={votingAddress}
       />
       <DescriptionModal
         isOpen={descriptionIsOpen}

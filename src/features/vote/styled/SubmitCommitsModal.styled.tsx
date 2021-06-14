@@ -170,3 +170,9 @@ export const EthTransaction = styled.div`
     }
   }
 `;
+
+export const CommitAddress = styled.p`
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+`;
