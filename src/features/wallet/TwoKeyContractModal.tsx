@@ -14,12 +14,15 @@ import {
   FormWrapper,
   Error,
   Anchor,
+  FormSuccess,
 } from "./styled/TwoKeyContractModal.styled";
 import { Disconnected, Connected } from "./styled/Wallet.styled";
 import createDesignatedVotingContract from "./helpers/createDesignatedVotingContract";
 import { ethers } from "ethers";
 import Button from "common/components/button";
 import { StyledInput } from "common/components/text-input/TextInput";
+import assert from "assert";
+import { API } from "bnc-notify";
 
 interface Props {
   isOpen: boolean;
@@ -30,13 +33,23 @@ interface Props {
   isConnected: boolean;
   network: ethers.providers.Network | null;
   signer: ethers.Signer | null;
+  notify: API | null;
 }
 
 const _TwoKeyContractModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
 > = (
-  { isOpen, close, hotAddress, votingAddress, isConnected, network, signer },
+  {
+    isOpen,
+    close,
+    hotAddress,
+    votingAddress,
+    isConnected,
+    network,
+    signer,
+    notify,
+  },
   externalRef
 ) => {
   const [showForm, setShowForm] = useState(false);
@@ -62,15 +75,20 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
 
     if (value && network && signer) {
       return createDesignatedVotingContract(value, signer, network)
-        .then((res) => {
+        .then((tx) => {
           toggleForm();
-          setSuccess(true);
+          assert(tx, "Transaction did not get submitted, try again");
+          if (notify) notify.hash(tx.hash);
+
+          tx.wait(1).then((conf: any) => {
+            setSuccess(true);
+          });
         })
         .catch((err) => {
           console.log("err in two key contract creation", err);
         });
     }
-  }, [value, network, signer, toggleForm]);
+  }, [value, network, signer, toggleForm, notify]);
   return (
     <Modal
       isOpen={isOpen}
@@ -136,10 +154,10 @@ const _TwoKeyContractModal: ForwardRefRenderFunction<
           </>
         )}
         {success && (
-          <div>
-            Successfully added two-key contract. Please reconnect to use voting
-            app.
-          </div>
+          <FormSuccess>
+            Successfully added two-key contract. <br /> Please reconnect to use
+            voting app.
+          </FormSuccess>
         )}
         {showForm ? (
           <FormWrapper>

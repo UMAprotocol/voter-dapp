@@ -372,6 +372,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
           isConnected={isConnected}
           network={network}
           signer={signer}
+          notify={notify}
         />
       </div>
       <ReactTooltip id="wallet" place="top" type="dark" effect="float" />
