@@ -35,6 +35,7 @@ export const ModalWrapper = styled.div`
   }
   input {
     width: 350px;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -46,10 +47,10 @@ export const ButtonWrapper = styled.div`
   text-align: center;
   button {
     &:first-of-type {
-      margin-right: 0.4rem;
+      margin-right: 1rem;
     }
     &:nth-of-type(2) {
-      margin-left: 0.4rem;
+      margin-left: 1rem;
     }
     width: 157px;
   }
