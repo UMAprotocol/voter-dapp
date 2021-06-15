@@ -33,8 +33,14 @@ export const ModalWrapper = styled.div`
       cursor: pointer;
     }
   }
+  label {
+    color: #000;
+    opacity: 0.5;
+    margin-bottom: 4px;
+  }
   input {
     width: 350px;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -46,10 +52,10 @@ export const ButtonWrapper = styled.div`
   text-align: center;
   button {
     &:first-of-type {
-      margin-right: 0.4rem;
+      margin-right: 1rem;
     }
     &:nth-of-type(2) {
-      margin-left: 0.4rem;
+      margin-left: 1rem;
     }
     width: 157px;
   }
@@ -67,4 +73,9 @@ export const Anchor = styled.a`
     text-decoration: underline;
     cursor: pointer;
   }
+`;
+
+export const FormSuccess = styled.div`
+  margin-top: 1rem;
+  text-align: center;
 `;

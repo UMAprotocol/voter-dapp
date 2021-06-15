@@ -17,6 +17,7 @@ import {
   useVotingContract,
   useVotesRevealedEvents,
   useMulticall,
+  useCurrentRoundId,
 } from "hooks";
 
 import TwoKeyContractModal from "./TwoKeyContractModal";
@@ -107,6 +108,8 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     votingAddress
   );
 
+  const { data: roundId = "" } = useCurrentRoundId();
+
   useEffect(() => {
     if (votesRevealed.length && votingContract && votingAddress) {
       checkAvailableRewards(votesRevealed, votingAddress, votingContract).then(
@@ -179,6 +182,14 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     ReactTooltip.rebuild();
   });
 
+  const message = `UMA Protocol one time key for round: ${roundId}`;
+  const signingMessage =
+    hotAddress && signingKeys[hotAddress]
+      ? signingKeys[hotAddress].roundMessage
+      : votingAddress && signingKeys[votingAddress]
+      ? signingKeys[votingAddress].roundMessage
+      : "";
+
   return (
     <Wrapper>
       <div className="wrapper">
@@ -198,14 +209,14 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
                     Hot: {shortenAddress(hotAddress)}
                   </VotingAddress>
                 ) : null}
-                {signingPK ? (
+                {signingPK && signingMessage === message ? (
                   <Connected>
                     Connected with {onboard?.getState().wallet?.name}{" "}
                   </Connected>
                 ) : (
                   <Reconnect>
-                    {" "}
-                    Account needs to sign message. Reconnect if sign cancelled.
+                    Account needs to sign or resign message. Reconnect if sign
+                    cancelled.
                   </Reconnect>
                 )}
               </>
@@ -361,6 +372,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
           isConnected={isConnected}
           network={network}
           signer={signer}
+          notify={notify}
         />
       </div>
       <ReactTooltip id="wallet" place="top" type="dark" effect="float" />

@@ -23,6 +23,15 @@ const Navbar: FC = () => {
           </Link> */}
           <a
             className="link"
+            href="https://v1.vote.umaproject.org/"
+            target="_blank"
+            tw="px-5 py-3"
+            rel="noreferrer"
+          >
+            V1 Vote
+          </a>
+          <a
+            className="link"
             href="https://docs.umaproject.org/"
             target="_blank"
             tw="px-5 py-3"

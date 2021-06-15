@@ -30,6 +30,9 @@ interface Props {
   refetchVoteRevealedEvents: Function;
   setViewDetailsModalState: Dispatch<SetStateAction<ModalState>>;
   openViewDetailsModal: () => void;
+  refetchRound: (
+    options?: RefetchOptions | undefined
+  ) => Promise<QueryObserverResult<void | Round | undefined, unknown>>;
   refetchRoundId: (
     options?: RefetchOptions | undefined
   ) => Promise<QueryObserverResult<string | void | undefined, unknown>>;
@@ -47,6 +50,7 @@ const RevealPhase: FC<Props> = ({
   openViewDetailsModal,
   setViewDetailsModalState,
   refetchVoteRevealedEvents,
+  refetchRound,
   refetchRoundId,
 }) => {
   const { tableValues, postRevealData, setPostRevealData } = useTableValues(
@@ -129,7 +133,7 @@ const RevealPhase: FC<Props> = ({
                     {el.revealed ? (
                       <p>Revealed</p>
                     ) : el.vote !== UNDEFINED_VOTE && !el.revealed ? (
-                      <p>Reveal</p>
+                      <p>Unrevealed</p>
                     ) : el.vote === UNDEFINED_VOTE ? (
                       <p>-</p>
                     ) : null}
@@ -166,6 +170,7 @@ const RevealPhase: FC<Props> = ({
                                   if (notify) notify.hash(tx.hash);
                                   // Get roundID immediately to move snapshot on.
                                   tx.wait(1).then(() => {
+                                    refetchRound();
                                     refetchRoundId();
                                   });
                                 }
