@@ -32,7 +32,10 @@ export const Wrapper = styled.div<StyledProps>`
       text-align: center;
     }
     .end-row {
+      max-width: 1400px;
       margin-top: 1rem;
+      margin-left: auto;
+      margin-right: auto;
       display: flex;
       justify-content: flex-end;
       .end-row-item {
