@@ -6,6 +6,7 @@ import {
   EncryptedVote,
 } from "web3/get/queryEncryptedVotesEvents";
 import { ErrorContext } from "common/context/ErrorContext";
+import usePrevious from "common/hooks/usePrevious";
 
 export default function useEncryptedVotesEvents(
   contract: ethers.Contract | null,
@@ -15,6 +16,12 @@ export default function useEncryptedVotesEvents(
 ) {
   const { addError } = useContext(ErrorContext);
 
+  const previousAddress = usePrevious(address);
+  // To prevent a "bad MAC" error, try not to run the query if the previousAddress is defined but it doesn't equal current address.
+  // This happens because the wallet state is async -- sometimes when disconnecting, address is defined before we change the state.
+  const addressCheck = !(
+    previousAddress !== null && previousAddress !== address
+  );
   const { data, error, isFetching, refetch } = useQuery<
     EncryptedVote[] | undefined | void
   >(
@@ -37,7 +44,8 @@ export default function useEncryptedVotesEvents(
         contract !== null &&
         privateKey !== "" &&
         address != null &&
-        roundId !== "",
+        roundId !== "" &&
+        addressCheck,
     }
   );
 
