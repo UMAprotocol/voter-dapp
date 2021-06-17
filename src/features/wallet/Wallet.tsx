@@ -10,6 +10,7 @@ import getUmaBalance from "common/utils/web3/getUmaBalance";
 import useUmaPriceData from "common/hooks/useUmaPriceData";
 import usePrevious from "common/hooks/usePrevious";
 import ReactTooltip from "react-tooltip";
+import { OperationVariables, ApolloQueryResult } from "@apollo/client";
 
 import {
   useVotingAddress,
@@ -19,6 +20,7 @@ import {
   useMulticall,
   useCurrentRoundId,
 } from "hooks";
+import { PriceRequestRound } from "common/hooks/useVoteData";
 
 import TwoKeyContractModal from "./TwoKeyContractModal";
 import { ErrorContext } from "common/context/ErrorContext";
@@ -50,11 +52,18 @@ import { SigningKeys } from "App";
 
 interface Props {
   signingKeys: SigningKeys;
+  refetchVoteSummaryData: (
+    variables?: Partial<OperationVariables> | undefined
+  ) => Promise<
+    ApolloQueryResult<{
+      priceRequestRounds: PriceRequestRound[];
+    }>
+  >;
 }
 
 const DEFAULT_BALANCE = "0";
 
-const Wallet: FC<Props> = ({ signingKeys }) => {
+const Wallet: FC<Props> = ({ signingKeys, refetchVoteSummaryData }) => {
   const [umaBalance, setUmaBalance] = useState(DEFAULT_BALANCE);
   const [totalUmaCollected, setTotalUmaCollected] = useState(DEFAULT_BALANCE);
   const [availableRewards, setAvailableRewards] = useState(DEFAULT_BALANCE);
@@ -164,6 +173,8 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
             setUmaBalance(balance);
           }
         );
+        // check to see if vote past data has changed.
+        refetchVoteSummaryData();
       }
     }
   }, [
@@ -174,6 +185,7 @@ const Wallet: FC<Props> = ({ signingKeys }) => {
     availableRewards,
     network,
     signer,
+    refetchVoteSummaryData,
   ]);
 
   // Note: because there is dynamic content, this will rebuild the tooltip for addressing the conditional
