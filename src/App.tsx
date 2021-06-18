@@ -111,8 +111,16 @@ function App(props: Props) {
   useEffect(() => {
     if (previousAddress && state.address && previousAddress !== state.address) {
       disconnect(dispatch, state.onboard);
+      props.queryClient.clear();
     }
-  }, [state.address, previousAddress, dispatch, state.onboard, disconnect]);
+  }, [
+    state.address,
+    previousAddress,
+    dispatch,
+    state.onboard,
+    disconnect,
+    props.queryClient,
+  ]);
 
   return (
     <div className="App">
