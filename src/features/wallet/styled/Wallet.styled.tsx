@@ -32,9 +32,9 @@ export const Connected = styled.div`
   &::before {
     content: " ";
     display: inline-flex;
-    width: 6px;
-    height: 6px;
-    background-color: #ff4a4a;
+    width: 8px;
+    height: 8px;
+    background-color: #83cd90;
     border-radius: 50%;
     margin-right: 10px;
   }
@@ -42,8 +42,7 @@ export const Connected = styled.div`
 
 export const Disconnected = styled(Connected)`
   &::before {
-    background-color: #000;
-    opacity: 0.5;
+    background-color: #b3b2b2;
   }
 `;
 

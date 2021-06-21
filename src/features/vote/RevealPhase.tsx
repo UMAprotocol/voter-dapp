@@ -1,4 +1,4 @@
-import { FC, useContext, Dispatch, SetStateAction } from "react";
+import { FC, useContext, useState, Dispatch, SetStateAction } from "react";
 import tw from "twin.macro"; // eslint-disable-line
 import web3 from "web3";
 import { Wrapper } from "./styled/RevealPhase.styled";
@@ -16,7 +16,15 @@ import { ModalState } from "./ActiveRequests";
 import useTableValues from "./useTableValues";
 import { ErrorContext } from "common/context/ErrorContext";
 import { RefetchOptions, QueryObserverResult } from "react-query";
-import { Description, Table, FullDate } from "./styled/ActiveRequests.styled";
+import useModal from "common/hooks/useModal";
+import DescriptionModal from "./DescriptionModal";
+
+import {
+  Description,
+  Table,
+  FullDate,
+  DescriptionWrapper,
+} from "./styled/ActiveRequests.styled";
 
 interface Props {
   isConnected: boolean;
@@ -53,6 +61,9 @@ const RevealPhase: FC<Props> = ({
   refetchRound,
   refetchRoundId,
 }) => {
+  const [description, setDescription] = useState("");
+  const [proposal, setProposal] = useState("");
+
   const { tableValues, postRevealData, setPostRevealData } = useTableValues(
     activeRequests,
     encryptedVotes,
@@ -71,6 +82,13 @@ const RevealPhase: FC<Props> = ({
     votingAddress,
     hotAddress
   );
+
+  const {
+    isOpen: descriptionIsOpen,
+    open: descriptionOpen,
+    close: descriptionClose,
+    modalRef: descriptionModalRef,
+  } = useModal();
 
   return (
     <Wrapper className="RequestPhase" isConnected={isConnected}>
@@ -108,16 +126,26 @@ const RevealPhase: FC<Props> = ({
                   </div>
                 </td>
                 <td>
-                  <div className="description">
-                    {el.description && el.description.split(" ").length > 16 ? (
+                  <DescriptionWrapper>
+                    {el.description && el.description.length > 255 ? (
                       <Description>
-                        {el.description.split(" ").slice(0, 16).join(" ")}...{" "}
-                        <span>Read More</span>{" "}
+                        {el.description.slice(0, 255)}...{" "}
+                        <span
+                          onClick={() => {
+                            setDescription(
+                              el.description || "Missing description"
+                            );
+                            setProposal(el.identifier);
+                            descriptionOpen();
+                          }}
+                        >
+                          Read More
+                        </span>{" "}
                       </Description>
                     ) : (
                       <Description>{el.description}</Description>
                     )}
-                  </div>
+                  </DescriptionWrapper>
                 </td>
                 <td>
                   <div>{el.unix}</div>
@@ -224,6 +252,15 @@ const RevealPhase: FC<Props> = ({
           ) : null}
         </div>
       </div>
+      <DescriptionModal
+        isOpen={descriptionIsOpen}
+        close={descriptionClose}
+        ref={descriptionModalRef}
+        description={description}
+        setDescription={setDescription}
+        proposal={proposal}
+        setProposal={setProposal}
+      />
     </Wrapper>
   );
 };
