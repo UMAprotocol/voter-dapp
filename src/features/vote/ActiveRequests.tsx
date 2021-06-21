@@ -3,7 +3,7 @@ import { FC, useContext, useState, useEffect } from "react";
 import tw from "twin.macro"; // eslint-disable-line
 
 import CommitPhase from "./CommitPhase";
-import { useVotePhase, useRound } from "hooks";
+import { useVotePhase, useRound, useVotesCommittedEvents } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { calculateTimeRemaining } from "./helpers/calculateTimeRemaining";
@@ -17,6 +17,7 @@ import useModal from "common/hooks/useModal";
 import { SigningKeys } from "App";
 import { Round } from "web3/get/queryRounds";
 import { RefetchOptions, QueryObserverResult } from "react-query";
+import { ethers } from "ethers";
 
 export interface ModalState {
   proposal: string;
@@ -38,6 +39,7 @@ interface Props {
   votingAddress: string | null;
   hotAddress: string | null;
   signingKeys: SigningKeys;
+  votingContract: ethers.Contract | null;
 }
 
 const ActiveRequests: FC<Props> = ({
@@ -51,6 +53,7 @@ const ActiveRequests: FC<Props> = ({
   signingKeys,
   refetchVoteRevealedEvents,
   refetchRoundId,
+  votingContract,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState("00:00");
 
@@ -60,6 +63,10 @@ const ActiveRequests: FC<Props> = ({
     ancData: "",
     unix: "",
   });
+
+  const { data: committedVotes } = useVotesCommittedEvents(null);
+
+  console.log("CV", committedVotes);
 
   const { isOpen, open, close, modalRef } = useModal();
 
@@ -164,6 +171,7 @@ const ActiveRequests: FC<Props> = ({
         timestamp={modalState.timestamp}
         ancData={modalState.ancData}
         unix={modalState.unix}
+        committedVotes={committedVotes}
       />
     </Wrapper>
   );

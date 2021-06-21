@@ -1,14 +1,18 @@
 import { useContext } from "react";
 import { useQuery } from "react-query";
-import { ethers } from "ethers";
 import { queryVotesCommittedEvents } from "web3/get/queryVotesCommittedEvents";
 import { VoteEvent } from "web3/types.web3";
 import { ErrorContext } from "common/context/ErrorContext";
+import provider from "common/utils/web3/createProvider";
+import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
+import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork";
 
-export default function useVotesCommittedEvents(
-  contract: ethers.Contract | null,
-  address: string | null
-) {
+const contract = createVoidSignerVotingContractInstance(
+  provider,
+  determineBlockchainNetwork()
+);
+
+export default function useVotesCommittedEvents(address: string | null) {
   const { addError } = useContext(ErrorContext);
 
   const { data, error, isFetching } = useQuery<VoteEvent[] | undefined | void>(

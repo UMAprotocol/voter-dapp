@@ -28,6 +28,7 @@ import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactTooltip from "react-tooltip";
 import web3 from "web3";
+import { VoteEvent } from "web3/types.web3";
 
 interface Props {
   isOpen: boolean;
@@ -38,6 +39,7 @@ interface Props {
   timestamp: string;
   ancData: string;
   unix: string;
+  committedVotes: VoteEvent[] | undefined | void;
 }
 
 const NULL_ANC_DATA = "0x";
@@ -46,7 +48,16 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
 > = (
-  { isOpen, close, proposal, setModalState, timestamp, ancData, unix },
+  {
+    isOpen,
+    close,
+    proposal,
+    setModalState,
+    timestamp,
+    ancData,
+    unix,
+    committedVotes,
+  },
   externalRef
 ) => {
   const [copySuccess, setCopySuccess] = useState(false);
