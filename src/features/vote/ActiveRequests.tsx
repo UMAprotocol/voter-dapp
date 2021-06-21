@@ -7,7 +7,7 @@ import {
   useVotePhase,
   useRound,
   useVotesCommittedEvents,
-  useVotesRevealedEvents,
+  useVotesRevealedEventsSummary,
 } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
@@ -22,13 +22,7 @@ import useModal from "common/hooks/useModal";
 import { SigningKeys } from "App";
 import { Round } from "web3/get/queryRounds";
 import { RefetchOptions, QueryObserverResult } from "react-query";
-import provider from "common/utils/web3/createProvider";
-import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
-import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork";
-const votingContract = createVoidSignerVotingContractInstance(
-  provider,
-  determineBlockchainNetwork()
-);
+
 export interface ModalState {
   proposal: string;
   timestamp: string;
@@ -73,7 +67,7 @@ const ActiveRequests: FC<Props> = ({
   });
 
   const { data: committedVotes } = useVotesCommittedEvents(null);
-  const { data: revealedEvents } = useVotesRevealedEvents(votingContract, null);
+  const { data: revealedEvents } = useVotesRevealedEventsSummary();
 
   const { isOpen, open, close, modalRef } = useModal();
 

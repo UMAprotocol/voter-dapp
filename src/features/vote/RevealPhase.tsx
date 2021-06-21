@@ -214,7 +214,7 @@ const RevealPhase: FC<Props> = ({
                   }
                 );
               }}
-              variant="secondary"
+              variant={signer ? "secondary" : "disabled"}
             >
               {signer ? "Snapshot Round" : "Connect Wallet to Snapshot"}
             </Button>
