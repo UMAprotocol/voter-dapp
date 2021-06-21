@@ -102,7 +102,6 @@ const Vote: FC<Props> = ({ signingKeys, voteSummaryData }) => {
           refetchVoteRevealedEvents={refetchVoteRevealedEvents}
           votingAddress={votingAddress}
           hotAddress={hotAddress}
-          votingContract={votingContract}
         />
       ) : null}
 

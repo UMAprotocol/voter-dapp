@@ -3,7 +3,12 @@ import { FC, useContext, useState, useEffect } from "react";
 import tw from "twin.macro"; // eslint-disable-line
 
 import CommitPhase from "./CommitPhase";
-import { useVotePhase, useRound, useVotesCommittedEvents } from "hooks";
+import {
+  useVotePhase,
+  useRound,
+  useVotesCommittedEvents,
+  useVotesRevealedEvents,
+} from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { calculateTimeRemaining } from "./helpers/calculateTimeRemaining";
@@ -17,8 +22,13 @@ import useModal from "common/hooks/useModal";
 import { SigningKeys } from "App";
 import { Round } from "web3/get/queryRounds";
 import { RefetchOptions, QueryObserverResult } from "react-query";
-import { ethers } from "ethers";
-
+import provider from "common/utils/web3/createProvider";
+import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
+import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork";
+const votingContract = createVoidSignerVotingContractInstance(
+  provider,
+  determineBlockchainNetwork()
+);
 export interface ModalState {
   proposal: string;
   timestamp: string;
@@ -39,7 +49,6 @@ interface Props {
   votingAddress: string | null;
   hotAddress: string | null;
   signingKeys: SigningKeys;
-  votingContract: ethers.Contract | null;
 }
 
 const ActiveRequests: FC<Props> = ({
@@ -53,7 +62,6 @@ const ActiveRequests: FC<Props> = ({
   signingKeys,
   refetchVoteRevealedEvents,
   refetchRoundId,
-  votingContract,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState("00:00");
 
@@ -65,8 +73,7 @@ const ActiveRequests: FC<Props> = ({
   });
 
   const { data: committedVotes } = useVotesCommittedEvents(null);
-
-  console.log("CV", committedVotes);
+  const { data: revealedEvents } = useVotesRevealedEvents(votingContract, null);
 
   const { isOpen, open, close, modalRef } = useModal();
 
@@ -172,6 +179,8 @@ const ActiveRequests: FC<Props> = ({
         ancData={modalState.ancData}
         unix={modalState.unix}
         committedVotes={committedVotes}
+        revealedEvents={revealedEvents}
+        roundId={roundId}
       />
     </Wrapper>
   );
