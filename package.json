@@ -24,7 +24,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@uma/common": "^2.3.0",
-    "@uma/core": "2.3.0",
+    "@uma/core": "^2.3.0",
     "@uma/core-1-2-2": "npm:@uma/core@1.2.2",
     "axios": "^0.21.1",
     "babel-plugin-macros": "^3.0.1",
