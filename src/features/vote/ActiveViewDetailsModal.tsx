@@ -88,10 +88,9 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
         (x) =>
           x.identifier === proposal && x.roundId === roundId && x.time === unix
       );
-      const uniqueCommitsByAddress = findCommitsForProposal.filter(
-        (v, i, a) => a.findIndex((t) => t.address === v.address) === i
-      );
-      setNumberCommittedVotes(uniqueCommitsByAddress.length);
+
+      const uniqueCommitsByAddress = new Set(findCommitsForProposal);
+      setNumberCommittedVotes(uniqueCommitsByAddress.size);
     } else {
       setNumberCommittedVotes(NULL_NUM_COMMITTED_VOTES);
     }
