@@ -14,6 +14,14 @@ import { FormData } from "../CommitPhase";
 
 // For the hashing being done here, we must adhere to the format expected later in the process by revealVote.
 // IE: identifier needs to be a hexstring, "yes" and "no" need to be 1 x 10**18 and 0 respectively, etc.
+interface BackupCommit {
+  [address: string]: {
+    [roundId: string]: {
+      [indentifier: string]: string;
+    };
+  };
+}
+
 export async function formatVoteDataToCommit(
   data: FormData,
   activeRequests: PendingRequest[],
@@ -22,12 +30,17 @@ export async function formatVoteDataToCommit(
   publicKey: string
 ) {
   const postValues = [] as PostCommitVote[];
+  let newCommits = {} as BackupCommit;
+  const backupCommits = localStorage.getItem("backupCommits");
+  if (backupCommits) {
+    newCommits = { ...JSON.parse(backupCommits) };
+  }
+
   await Promise.all(
     activeRequests.map(async (el) => {
       // Compute hash and encrypted vote
-      if (
-        Object.keys(data).includes(`${el.identifier}~${el.time}~${el.ancHex}`)
-      ) {
+      const uniqueIdentifier = `${el.identifier}~${el.time}~${el.ancHex}`;
+      if (Object.keys(data).includes(uniqueIdentifier)) {
         const datum = {} as PostCommitVote;
         // datum.identifier = stringToBytes32(el.identifier);
         datum.identifier = el.idenHex;
@@ -43,7 +56,7 @@ export async function formatVoteDataToCommit(
         }
 
         datum.ancillaryData = ancData;
-        let price = data[`${el.identifier}~${el.time}~${el.ancHex}`];
+        let price = data[uniqueIdentifier];
 
         // change yes/no to numbers.
         // When converting price to wei here, we need precision
@@ -63,6 +76,8 @@ export async function formatVoteDataToCommit(
         }
 
         const salt = getRandomSignedInt().toString();
+        newCommits[address][roundId][uniqueIdentifier] = salt;
+
         const r: Request = {
           price,
           salt,
@@ -87,6 +102,8 @@ export async function formatVoteDataToCommit(
       }
     })
   );
+
+  localStorage.setItem("backupCommits", JSON.stringify(newCommits));
 
   return postValues;
 }
