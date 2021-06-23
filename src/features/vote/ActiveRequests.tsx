@@ -3,7 +3,12 @@ import { FC, useContext, useState, useEffect } from "react";
 import tw from "twin.macro"; // eslint-disable-line
 
 import CommitPhase from "./CommitPhase";
-import { useVotePhase, useRound } from "hooks";
+import {
+  useVotePhase,
+  useRound,
+  useVotesCommittedEvents,
+  useVotesRevealedEventsSummary,
+} from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { calculateTimeRemaining } from "./helpers/calculateTimeRemaining";
@@ -60,6 +65,9 @@ const ActiveRequests: FC<Props> = ({
     ancData: "",
     unix: "",
   });
+
+  const { data: committedVotes } = useVotesCommittedEvents(null);
+  const { data: revealedEvents } = useVotesRevealedEventsSummary();
 
   const { isOpen, open, close, modalRef } = useModal();
 
@@ -164,6 +172,9 @@ const ActiveRequests: FC<Props> = ({
         timestamp={modalState.timestamp}
         ancData={modalState.ancData}
         unix={modalState.unix}
+        committedVotes={committedVotes}
+        revealedEvents={revealedEvents}
+        roundId={roundId}
       />
     </Wrapper>
   );

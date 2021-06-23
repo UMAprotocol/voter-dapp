@@ -13,3 +13,4 @@ export { default as useVoteTiming } from "./useVoteTiming";
 export { default as useCurrentRoundId } from "./useCurrentRoundId";
 export { default as useRound } from "./useRound";
 export { default as useMulticall } from "./useMulticall";
+export { default as useVotesRevealedEventsSummary } from "./useVotesRevealedEventsSummary";

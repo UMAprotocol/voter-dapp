@@ -19,6 +19,9 @@ import {
   IconsItem,
   Icon,
   LastStateValue,
+  StateValueAddress,
+  RevealHeader,
+  RevealPercentage,
 } from "./styled/DetailModals.styled";
 import { ModalState } from "./ActiveRequests";
 import { DiscordRed, CopyIcon } from "assets/icons";
@@ -28,6 +31,8 @@ import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactTooltip from "react-tooltip";
 import web3 from "web3";
+import { VoteEvent } from "web3/types.web3";
+import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 
 interface Props {
   isOpen: boolean;
@@ -38,23 +43,83 @@ interface Props {
   timestamp: string;
   ancData: string;
   unix: string;
+  committedVotes: VoteEvent[] | undefined | void;
+  revealedEvents: VoteRevealed[] | undefined | void;
+  roundId: string;
 }
 
 const NULL_ANC_DATA = "0x";
+const NULL_NUM_COMMITTED_VOTES = 0;
+const NULL_PERCENTAGE = "0.00";
 
 const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   HTMLElement,
   PropsWithChildren<Props>
 > = (
-  { isOpen, close, proposal, setModalState, timestamp, ancData, unix },
+  {
+    isOpen,
+    close,
+    proposal,
+    setModalState,
+    timestamp,
+    ancData,
+    unix,
+    committedVotes,
+    revealedEvents,
+    roundId,
+  },
   externalRef
 ) => {
+  const [numberCommittedVotes, setNumberCommittedVotes] = useState(
+    NULL_NUM_COMMITTED_VOTES
+  );
+  const [numberRevealedAddresses, setNumberRevealedAddresses] = useState(0);
+  const [revealPercentage, setRevealPercentage] = useState(NULL_PERCENTAGE);
   const [copySuccess, setCopySuccess] = useState(false);
   // Note: because there is dynamic content, this will rebuild the tooltip for addressing the conditional
   // elements on the page. See ReactTooltip docs.
   useEffect(() => {
     ReactTooltip.rebuild();
   });
+
+  useEffect(() => {
+    if (committedVotes && committedVotes.length && roundId && proposal) {
+      const findCommitsForProposal = committedVotes.filter(
+        (x) =>
+          x.identifier === proposal && x.roundId === roundId && x.time === unix
+      );
+
+      const uniqueCommitsByAddress = new Set(findCommitsForProposal);
+      setNumberCommittedVotes(uniqueCommitsByAddress.size);
+    } else {
+      setNumberCommittedVotes(NULL_NUM_COMMITTED_VOTES);
+    }
+  }, [committedVotes, roundId, proposal, unix]);
+
+  useEffect(() => {
+    if (revealedEvents && revealedEvents.length && roundId && proposal) {
+      const findRevealsForProposal = revealedEvents.filter(
+        (x) =>
+          x.identifier === proposal && x.roundId === roundId && x.time === unix
+      );
+
+      setNumberRevealedAddresses(findRevealsForProposal.length);
+    } else {
+      setNumberRevealedAddresses(0);
+    }
+  }, [revealedEvents, roundId, proposal, unix]);
+
+  useEffect(() => {
+    if (numberCommittedVotes > 0) {
+      const percentage = (
+        (numberRevealedAddresses / numberCommittedVotes) *
+        100
+      ).toFixed(2);
+      setRevealPercentage(percentage);
+    } else {
+      setRevealPercentage(NULL_PERCENTAGE);
+    }
+  }, [numberCommittedVotes, numberRevealedAddresses]);
 
   const [convertedHexstring, setConvertedHexstring] = useState("");
 
@@ -175,6 +240,15 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
             ) : null}
           </IconsWrapper>
 
+          <MiniHeader>Unique Commit Addresses</MiniHeader>
+          <StateValueAddress>{numberCommittedVotes}</StateValueAddress>
+
+          <RevealHeader>
+            {numberRevealedAddresses} Unique Reveal Addresses
+          </RevealHeader>
+          <RevealPercentage>
+            {revealPercentage}% of Unique Commit Addresses
+          </RevealPercentage>
           <MiniHeader>Proposal Timestamp</MiniHeader>
           <LastStateValue
             data-for="active-modal-timestamp"
