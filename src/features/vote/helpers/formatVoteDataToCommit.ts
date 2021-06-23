@@ -34,14 +34,17 @@ export async function formatVoteDataToCommit(
   const backupCommits = localStorage.getItem("backupCommits");
   if (backupCommits) {
     newCommits = { ...JSON.parse(backupCommits) };
+    // To prevent null errors in nested object, need to create these objects on the fly
+    // Based on if the user has voted before or not in a given round or using a given account
     if (!newCommits[address]) {
       newCommits[address] = {
         [roundId]: {},
       };
     }
+    if (newCommits[address] && !newCommits[address][roundId]) {
+      newCommits[address][roundId] = {};
+    }
   }
-
-  console.log("newCOmmits", newCommits);
 
   await Promise.all(
     activeRequests.map(async (el) => {
