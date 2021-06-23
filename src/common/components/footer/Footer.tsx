@@ -55,7 +55,7 @@ const Footer: FC = () => {
 
 const umaLinks = [
   {
-    url: "https://medium.com/uma-project",
+    url: "https://docs.umaproject.org/getting-started/overview",
     text: "How UMA Works",
   },
   {

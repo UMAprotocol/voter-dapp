@@ -8,6 +8,7 @@ import {
   Request,
 } from "common/tempUmaFunctions";
 import toWei from "common/utils/web3/convertToWeiSafely";
+import { getPrecisionForIdentifier, parseFixed } from "@uma/common";
 
 import { FormData } from "../CommitPhase";
 
@@ -43,6 +44,7 @@ export async function formatVoteDataToCommit(
 
         datum.ancillaryData = ancData;
         let price = data[`${el.identifier}~${el.time}~${el.ancHex}`];
+
         // change yes/no to numbers.
         // When converting price to wei here, we need precision
         // Default to 18 decimals -- could be different.
@@ -53,7 +55,11 @@ export async function formatVoteDataToCommit(
             price = toWei("1").toString();
           }
         } else {
-          price = toWei(price).toString();
+          const identifierPrecision = getPrecisionForIdentifier(
+            web3.utils.hexToUtf8(el.idenHex)
+          );
+
+          price = parseFixed(price, identifierPrecision).toString();
         }
 
         const salt = getRandomSignedInt().toString();

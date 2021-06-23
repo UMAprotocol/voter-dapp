@@ -1,7 +1,9 @@
 import { useContext } from "react";
 import { useQuery } from "react-query";
-import { queryVotesCommittedEvents } from "web3/get/queryVotesCommittedEvents";
-import { VoteEvent } from "web3/types.web3";
+import {
+  queryVotesRevealedEvents,
+  VoteRevealed,
+} from "web3/get/queryVotesRevealedEvents";
 import { ErrorContext } from "common/context/ErrorContext";
 import provider from "common/utils/web3/createProvider";
 import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
@@ -12,18 +14,20 @@ const contract = createVoidSignerVotingContractInstance(
   determineBlockchainNetwork()
 );
 
-export default function useVotesCommittedEvents(address: string | null) {
+export default function useVotesRevealedEventsSummary() {
   const { addError } = useContext(ErrorContext);
 
-  const { data, error, isFetching } = useQuery<VoteEvent[] | undefined | void>(
-    "votesCommittedEvents",
+  const { data, error, isFetching, refetch } = useQuery<
+    VoteRevealed[] | undefined | void
+  >(
+    "votesRevealedEventsSummary",
     () => {
-      return queryVotesCommittedEvents(contract, address)
+      return queryVotesRevealedEvents(contract, null)
         .then((res) => res)
         .catch((err) => addError(err));
     },
     { enabled: contract !== null }
   );
 
-  return { data, error, isFetching };
+  return { data, error, isFetching, refetch };
 }

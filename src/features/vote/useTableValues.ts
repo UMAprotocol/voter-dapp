@@ -3,11 +3,11 @@ import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { DateTime } from "luxon";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
-import { ethers } from "ethers";
 import { PostRevealData } from "web3/post/revealVotes";
 import web3 from "web3";
 import { fetchUmip } from "./fetchUMIP";
-
+import { getPrecisionForIdentifier } from "@uma/common";
+import { ethers } from "ethers";
 interface TableValue {
   ancillaryData: string;
   identifier: string;
@@ -72,7 +72,15 @@ export default function useTableValues(
           );
 
           if (findVote) {
-            datum.vote = ethers.utils.formatEther(findVote.price);
+            const identifierPrecision = getPrecisionForIdentifier(
+              web3.utils.hexToUtf8(el.idenHex)
+            );
+
+            datum.vote = ethers.utils.formatUnits(
+              findVote.price,
+              identifierPrecision
+            );
+
             setHasVoted(true);
             if (el.identifier.includes("Admin")) {
               if (datum.vote === "1" || datum.vote === "1.0")
