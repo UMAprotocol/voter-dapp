@@ -80,6 +80,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   const [revealPercentage, setRevealPercentage] = useState(NULL_PERCENTAGE);
   const [copySuccess, setCopySuccess] = useState(false);
   const [backupSeed, setBackupSeed] = useState("");
+
   // Note: because there is dynamic content, this will rebuild the tooltip for addressing the conditional
   // elements on the page. See ReactTooltip docs.
   useEffect(() => {
@@ -94,7 +95,6 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
       if (
         parsedJSON[votingAddress] &&
         parsedJSON[votingAddress][roundId] &&
-        parsedJSON[votingAddress][roundId] &&
         parsedJSON[votingAddress][roundId][uniqueIdentifier]
       ) {
         setBackupSeed(parsedJSON[votingAddress][roundId][uniqueIdentifier]);
@@ -102,7 +102,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
     } else {
       setBackupSeed("");
     }
-  }, [roundId, proposal, unix, votingAddress, ancData]);
+  }, [roundId, proposal, unix, votingAddress, ancData, committedVotes]);
 
   useEffect(() => {
     if (committedVotes && committedVotes.length && roundId && proposal) {
