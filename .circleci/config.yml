@@ -26,7 +26,7 @@ jobs:
           key: voter-dapp-build-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Run tests
-          command: yarn test --watchAll=false
+          command: yarn test --silent --watchAll=false
 
 workflows:
   version: 2.1
