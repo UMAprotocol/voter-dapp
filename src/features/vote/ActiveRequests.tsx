@@ -175,6 +175,7 @@ const ActiveRequests: FC<Props> = ({
         committedVotes={committedVotes}
         revealedEvents={revealedEvents}
         roundId={roundId}
+        votingAddress={votingAddress}
       />
     </Wrapper>
   );
