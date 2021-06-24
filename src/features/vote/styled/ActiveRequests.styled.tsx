@@ -103,8 +103,9 @@ export const Table = styled.table<TableProps>`
       border-style: solid;
       vertical-align: middle;
       border-bottom: 1px solid #e5e4e4;
-      border-right: 12px solid transparent;
-      border-left: 12px solid transparent;
+      &:first-of-type {
+        border-right: 12px solid transparent;
+      }
       div {
         display: flex;
       }
