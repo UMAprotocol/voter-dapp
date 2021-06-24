@@ -101,12 +101,12 @@ export const Table = styled.table<TableProps>`
     td {
       border-color: #fff;
       border-style: solid;
-      /* border-width: 0 15px; */
       vertical-align: middle;
       border-bottom: 1px solid #e5e4e4;
+      border-right: 12px solid transparent;
+      border-left: 12px solid transparent;
       div {
         display: flex;
-        /* align-items: center; */
       }
       .description {
         max-width: 60ch;
@@ -114,9 +114,6 @@ export const Table = styled.table<TableProps>`
     }
 
     .last-cell {
-      div {
-        /* padding-left: 25%; */
-      }
     }
     td:last-child {
       text-align: center;
