@@ -16,7 +16,7 @@ import setWith from "lodash.setwith";
 export interface BackupCommit {
   [address: string]: {
     [roundId: string]: {
-      [indentifier: string]: string;
+      [identifier: string]: string;
     };
   };
 }
