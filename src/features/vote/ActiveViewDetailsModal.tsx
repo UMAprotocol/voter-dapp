@@ -33,7 +33,6 @@ import ReactTooltip from "react-tooltip";
 import web3 from "web3";
 import { VoteEvent } from "web3/types.web3";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
-// import {BackupCommit} from "./helpers/formatVoteDataToCommit"
 
 interface Props {
   isOpen: boolean;
@@ -90,14 +89,18 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   useEffect(() => {
     const commits = localStorage.getItem("backupCommits");
     if (roundId && proposal && unix && votingAddress && commits && ancData) {
-      const parsedJSON = JSON.parse(commits);
-      const uniqueIdentifier = `${proposal}~${unix}~${ancData}`;
-      if (
-        parsedJSON[votingAddress] &&
-        parsedJSON[votingAddress][roundId] &&
-        parsedJSON[votingAddress][roundId][uniqueIdentifier]
-      ) {
-        setBackupSeed(parsedJSON[votingAddress][roundId][uniqueIdentifier]);
+      try {
+        const parsedJSON = JSON.parse(commits);
+        const uniqueIdentifier = `${proposal}~${unix}~${ancData}`;
+        if (
+          parsedJSON[votingAddress] &&
+          parsedJSON[votingAddress][roundId] &&
+          parsedJSON[votingAddress][roundId][uniqueIdentifier]
+        ) {
+          setBackupSeed(parsedJSON[votingAddress][roundId][uniqueIdentifier]);
+        }
+      } catch (err) {
+        setBackupSeed("");
       }
     } else {
       setBackupSeed("");
