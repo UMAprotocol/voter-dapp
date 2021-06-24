@@ -11,6 +11,7 @@ import toWei from "common/utils/web3/convertToWeiSafely";
 import { getPrecisionForIdentifier, parseFixed } from "@uma/common";
 
 import { FormData } from "../CommitPhase";
+import setWith from "lodash.setwith";
 
 export interface BackupCommit {
   [address: string]: {
@@ -34,16 +35,18 @@ export async function formatVoteDataToCommit(
   const backupCommits = localStorage.getItem("backupCommits");
   if (backupCommits) {
     newCommits = { ...JSON.parse(backupCommits) };
-    // To prevent null errors in nested object, need to create these objects on the fly
-    // Based on if the user has voted before or not in a given round or using a given account
-    if (!newCommits[address]) {
-      newCommits[address] = {
-        [roundId]: {},
-      };
-    }
-    if (newCommits[address] && !newCommits[address][roundId]) {
-      newCommits[address][roundId] = {};
-    }
+    // // To prevent null errors in nested object, need to create these objects on the fly
+    // // Based on if the user has voted before or not in a given round or using a given account
+    // const key = `${address}.${roundId}.`
+    // set(newCommits, [])
+    // if (!newCommits[address]) {
+    //   newCommits[address] = {
+    //     [roundId]: {},
+    //   };
+    // }
+    // if (newCommits[address] && !newCommits[address][roundId]) {
+    //   newCommits[address][roundId] = {};
+    // }
   }
 
   await Promise.all(
@@ -86,7 +89,12 @@ export async function formatVoteDataToCommit(
         }
 
         const salt = getRandomSignedInt().toString();
-        newCommits[address][roundId][uniqueIdentifier] = salt;
+        setWith(
+          newCommits,
+          `${address}.[${roundId}].${uniqueIdentifier}`,
+          salt,
+          Object
+        );
 
         const r: Request = {
           price,
