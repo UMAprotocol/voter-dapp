@@ -47,6 +47,7 @@ export const FormWrapper = styled.form<StyledFormProps>`
       display: flex;
       justify-content: flex-end;
       .end-row-item {
+        text-align: right;
       }
     }
   }
@@ -62,4 +63,15 @@ export const CommitInputLabel = styled.label`
   display: block;
   color: #000;
   font-family: "Halyard Display";
+`;
+
+export const NoPublicKeyErrorWrapper = styled.div`
+  color: #ff4a4a;
+  background-color: #fff4f6;
+  border: 1px solid #ffd6d9;
+  border-radius: 8px;
+  max-width: 400px;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
 `;
