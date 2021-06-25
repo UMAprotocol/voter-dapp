@@ -24,7 +24,11 @@ import { OnboardContext } from "common/context/OnboardContext";
 import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 
-import { FormWrapper, CommitInputLabel } from "./styled/CommitPhase.styled";
+import {
+  FormWrapper,
+  CommitInputLabel,
+  NoPublicKeyErrorWrapper,
+} from "./styled/CommitPhase.styled";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 
@@ -253,6 +257,11 @@ const CommitPhase: FC<Props> = ({
     }
   }, [watchAllFields, setButtonVariant]);
 
+  const [noPublicKeyError, setNoPublicKeyError] = useState(false);
+  useEffect(() => {
+    if (publicKey && noPublicKeyError) setNoPublicKeyError(false);
+  }, [publicKey, noPublicKeyError]);
+
   return (
     <FormWrapper
       className="CommitPhase"
@@ -392,11 +401,18 @@ const CommitPhase: FC<Props> = ({
             type="button"
             variant={buttonVariant}
             onClick={() => {
-              if (showModalSummary().length) open();
+              if (!publicKey) return setNoPublicKeyError(true);
+              if (showModalSummary().length) return open();
             }}
           >
             Commit Vote(s)
           </Button>
+          {noPublicKeyError && (
+            <NoPublicKeyErrorWrapper>
+              Message was not signed. Reconnect to your wallet and sign the
+              message to continue.
+            </NoPublicKeyErrorWrapper>
+          )}
         </div>
       </div>
       <SubmitCommitsModal
