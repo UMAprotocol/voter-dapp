@@ -23,6 +23,8 @@ export interface SigningKeys {
   };
 }
 
+// const SIGNING_KEYS_STORAGE_KEY = "signingKeys";
+
 function App(props: Props) {
   const [signingKeys, setSigningKeys] = useState<SigningKeys>({});
 
