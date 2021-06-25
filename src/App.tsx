@@ -19,7 +19,7 @@ interface Props {
   queryClient: QueryClient;
 }
 
-interface SigningKey {
+export interface SigningKey {
   publicKey: string;
   privateKey: string;
   roundMessage: string;
