@@ -80,8 +80,9 @@ const CommitPhase: FC<Props> = ({
   signingMessage,
 }) => {
   const [submitErrorMessage, setSubmitErrorMessage] = useState("");
-  const [buttonVariant, setButtonVariant] =
-    useState<"secondary" | "disabled">("disabled");
+  const [buttonVariant, setButtonVariant] = useState<"secondary" | "disabled">(
+    "disabled"
+  );
 
   const {
     state: { network, signer, notify },
@@ -167,8 +168,12 @@ const CommitPhase: FC<Props> = ({
           let vc = votingContract;
           if (designatedVotingContract) vc = designatedVotingContract;
           if (vc) {
-            commitVotes(vc, fd)
+            commitVotes(vc, fd.postValues)
               .then((tx) => {
+                localStorage.setItem(
+                  "backupCommits",
+                  JSON.stringify(fd.newCommits)
+                );
                 setSubmitErrorMessage("");
                 close();
                 reset();
