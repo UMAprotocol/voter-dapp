@@ -33,6 +33,7 @@ import ReactTooltip from "react-tooltip";
 import web3 from "web3";
 import { VoteEvent } from "web3/types.web3";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import has from "lodash.has";
 
 interface Props {
   isOpen: boolean;
@@ -46,6 +47,7 @@ interface Props {
   committedVotes: VoteEvent[] | undefined | void;
   revealedEvents: VoteRevealed[] | undefined | void;
   roundId: string;
+  votingAddress: string | null;
 }
 
 const NULL_ANC_DATA = "0x";
@@ -67,6 +69,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
     committedVotes,
     revealedEvents,
     roundId,
+    votingAddress,
   },
   externalRef
 ) => {
@@ -76,11 +79,32 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   const [numberRevealedAddresses, setNumberRevealedAddresses] = useState(0);
   const [revealPercentage, setRevealPercentage] = useState(NULL_PERCENTAGE);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [backupSeed, setBackupSeed] = useState("");
+
   // Note: because there is dynamic content, this will rebuild the tooltip for addressing the conditional
   // elements on the page. See ReactTooltip docs.
   useEffect(() => {
     ReactTooltip.rebuild();
   });
+
+  useEffect(() => {
+    const commits = localStorage.getItem("backupCommits");
+    if (roundId && proposal && unix && votingAddress && commits && ancData) {
+      try {
+        const parsedJSON = JSON.parse(commits);
+        const uniqueIdentifier = `${proposal}~${unix}~${ancData}`;
+        if (
+          has(parsedJSON, `${votingAddress}.[${roundId}].${uniqueIdentifier}`)
+        ) {
+          setBackupSeed(parsedJSON[votingAddress][roundId][uniqueIdentifier]);
+        }
+      } catch (err) {
+        setBackupSeed("");
+      }
+    } else {
+      setBackupSeed("");
+    }
+  }, [roundId, proposal, unix, votingAddress, ancData, committedVotes]);
 
   useEffect(() => {
     if (committedVotes && committedVotes.length && roundId && proposal) {
@@ -250,11 +274,11 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
             {revealPercentage}% of Unique Commit Addresses
           </RevealPercentage>
           <MiniHeader>Proposal Timestamp</MiniHeader>
-          <LastStateValue
-            data-for="active-modal-timestamp"
-            data-tip={`UTC: ${unix}`}
-          >
-            {timestamp}
+          <LastStateValue>
+            <div data-for="active-modal-timestamp" data-tip={`UTC: ${unix}`}>
+              {timestamp}
+            </div>
+            {backupSeed && <div>Backup Commit Salt: {backupSeed}</div>}
           </LastStateValue>
         </ModalWrapper>
         <ReactTooltip

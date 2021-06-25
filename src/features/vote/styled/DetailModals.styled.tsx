@@ -130,4 +130,17 @@ export const RevealPercentage = styled.div`
 
 export const LastStateValue = styled(StateValue)`
   padding-bottom: 3rem;
+  display: flex;
+  max-width: 100%;
+  font-size: 0.75rem;
+  div {
+    justify-content: space-between;
+    color: grey;
+    &:nth-child(2) {
+      padding-left: 1rem;
+      flex-grow: 1;
+      max-width: 300px;
+      word-break: break-word;
+    }
+  }
 `;
