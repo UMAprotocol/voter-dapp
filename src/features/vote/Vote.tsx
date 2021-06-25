@@ -24,6 +24,7 @@ import { PendingRequest } from "web3/get/queryGetPendingRequests";
 import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
 import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
 import { SigningKeys } from "App";
+import getSigningKeys from "common/helpers/getSigningKeys";
 
 interface Props {
   signingKeys: SigningKeys;
@@ -62,12 +63,10 @@ const Vote: FC<Props> = ({ signingKeys, voteSummaryData }) => {
     refetch: refetchVoteRevealedEvents,
   } = useVotesRevealedEvents(votingContract, votingAddress);
 
-  const signingPK =
-    hotAddress && signingKeys[hotAddress]
-      ? signingKeys[hotAddress].privateKey
-      : votingAddress && signingKeys[votingAddress]
-      ? signingKeys[votingAddress].privateKey
-      : "";
+  const signingPK = getSigningKeys(
+    signingKeys,
+    hotAddress ? hotAddress : votingAddress
+  ).privateKey;
 
   const {
     data: encryptedVotes = [] as EncryptedVote[],
