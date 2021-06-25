@@ -50,7 +50,7 @@ function App(props: Props) {
       state.signer &&
       state.address &&
       roundId &&
-      (previousAddress === null || previousSigner === null)
+      (!previousAddress || !previousSigner)
     ) {
       const address = state.address;
       const message = `UMA Protocol one time key for round: ${roundId}`;
@@ -66,7 +66,6 @@ function App(props: Props) {
         keyExistsInStorage = has(keysInStorage, `${hexMessage}.${address}`);
       }
 
-      console.log("key in local storage?", keyExistsInStorage);
       if (keyExistsInStorage) {
         const loggedInKey = keysInStorage[hexMessage][address];
         console.log("logged in key", loggedInKey);
@@ -91,6 +90,8 @@ function App(props: Props) {
               if (typeof keysInStorage === "string") {
                 const parsedJSON = JSON.parse(keysInStorage);
                 keysToBackup = { ...parsedJSON };
+              } else {
+                keysToBackup = { ...keysInStorage };
               }
 
               setWith(keysToBackup, `${hexMessage}.${address}`, key, Object);
