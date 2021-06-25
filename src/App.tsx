@@ -59,7 +59,6 @@ function App(props: Props) {
       let keysInStorage =
         localStorage.getItem(SIGNING_KEYS_STORAGE_KEY) || ({} as StorageKeys);
 
-      console.log("keys in storage", keysInStorage);
       let keyExistsInStorage = false;
       if (typeof keysInStorage === "string") {
         keysInStorage = JSON.parse(keysInStorage) as StorageKeys;
