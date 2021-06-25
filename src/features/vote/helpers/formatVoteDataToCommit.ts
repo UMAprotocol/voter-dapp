@@ -74,6 +74,8 @@ export async function formatVoteDataToCommit(
           );
 
           price = parseFixed(price, identifierPrecision).toString();
+          // Asked to be put here temporarily by @nickpai
+          console.log("price to commit:", price);
         }
 
         const salt = getRandomSignedInt().toString();
