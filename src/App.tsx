@@ -27,8 +27,12 @@ interface SigningKey {
 }
 
 export interface SigningKeys {
+  [address: string]: SigningKey;
+}
+
+interface StorageKeys {
   // Signing message turned to hex.
-  [hexMessage: string]: SigningKey;
+  [hexMessage: string]: SigningKeys;
 }
 
 const SIGNING_KEYS_STORAGE_KEY = "signingKeys";
@@ -52,48 +56,58 @@ function App(props: Props) {
       const message = `UMA Protocol one time key for round: ${roundId}`;
       const hexMessage = web3.utils.toHex(message);
       const keyExists = signingKeys[address];
-      const keysInStorage =
-        localStorage.getItem(SIGNING_KEYS_STORAGE_KEY) || {};
+      let keysInStorage =
+        localStorage.getItem(SIGNING_KEYS_STORAGE_KEY) || ({} as StorageKeys);
+
       console.log("keys in storage", keysInStorage);
       let keyExistsInStorage = false;
-      if (typeof keysInStorage === "string")
-        keyExistsInStorage = has(
-          JSON.parse(keysInStorage),
-          `${address}.${hexMessage}.key`
-        );
+      if (typeof keysInStorage === "string") {
+        keysInStorage = JSON.parse(keysInStorage) as StorageKeys;
+
+        keyExistsInStorage = has(keysInStorage, `${hexMessage}.${address}`);
+      }
+
       console.log("key in local storage?", keyExistsInStorage);
-      if (!keyExists || keyExists.roundMessage !== message) {
-        state.signer
-          .signMessage(message)
-          .then((msg) => {
-            const key = {} as SigningKey;
+      if (keyExistsInStorage) {
+        const loggedInKey = keysInStorage[hexMessage][address];
+        console.log("logged in key", loggedInKey);
+        setSigningKeys((prevKeys) => {
+          return { ...prevKeys, [address]: loggedInKey };
+        });
+      } else {
+        if (!keyExists || keyExists.roundMessage !== message) {
+          state.signer
+            .signMessage(message)
+            .then((msg) => {
+              const key = {} as SigningKey;
 
-            const privateKey = derivePrivateKey(msg);
-            const publicKey = recoverPublicKey(privateKey);
-            key.privateKey = privateKey;
-            key.publicKey = publicKey;
-            key.roundMessage = message;
-            key.roundId = roundId;
+              const privateKey = derivePrivateKey(msg);
+              const publicKey = recoverPublicKey(privateKey);
+              key.privateKey = privateKey;
+              key.publicKey = publicKey;
+              key.roundMessage = message;
+              key.roundId = roundId;
 
-            let keysToBackup = {};
-            if (typeof keysInStorage === "string") {
-              const parsedKeys = JSON.parse(keysInStorage);
-              keysToBackup = { ...parsedKeys };
-            }
+              let keysToBackup = {};
+              if (typeof keysInStorage === "string") {
+                const parsedJSON = JSON.parse(keysInStorage);
+                keysToBackup = { ...parsedJSON };
+              }
 
-            setWith(keysToBackup, `${address}.${hexMessage}.key`, key, Object);
-            localStorage.setItem(
-              SIGNING_KEYS_STORAGE_KEY,
-              JSON.stringify(keysToBackup)
-            );
-            setSigningKeys((prevKeys) => {
-              return { ...prevKeys, [address]: key };
+              setWith(keysToBackup, `${hexMessage}.${address}`, key, Object);
+              localStorage.setItem(
+                SIGNING_KEYS_STORAGE_KEY,
+                JSON.stringify(keysToBackup)
+              );
+              setSigningKeys((prevKeys) => {
+                return { ...prevKeys, [address]: key };
+              });
+            })
+            .catch((err) => {
+              const error = new Error("Sign failed.");
+              addError(error);
             });
-          })
-          .catch((err) => {
-            const error = new Error("Sign failed.");
-            addError(error);
-          });
+        }
       }
     }
   }, [
