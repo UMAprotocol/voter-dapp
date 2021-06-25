@@ -68,7 +68,6 @@ function App(props: Props) {
 
       if (keyExistsInStorage) {
         const loggedInKey = keysInStorage[hexMessage][address];
-        console.log("logged in key", loggedInKey);
         setSigningKeys((prevKeys) => {
           return { ...prevKeys, [address]: loggedInKey };
         });
