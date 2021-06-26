@@ -11,17 +11,31 @@ import { OnboardContext } from "common/context/OnboardContext";
 import { recoverPublicKey } from "./features/vote/helpers/recoverPublicKey";
 import { derivePrivateKey } from "./features/vote/helpers/derivePrivateKey";
 import { useCurrentRoundId } from "hooks";
+import web3 from "web3";
+import has from "lodash.has";
+import setWith from "lodash.setwith";
+
 interface Props {
   queryClient: QueryClient;
 }
 
-export interface SigningKeys {
-  [key: string]: {
-    publicKey: string;
-    privateKey: string;
-    roundMessage: string;
-  };
+export interface SigningKey {
+  publicKey: string;
+  privateKey: string;
+  roundMessage: string;
+  roundId: string;
 }
+
+export interface SigningKeys {
+  [address: string]: SigningKey;
+}
+
+interface StorageKeys {
+  // Signing message turned to hex.
+  [hexMessage: string]: SigningKeys;
+}
+
+const SIGNING_KEYS_STORAGE_KEY = "signingKeys";
 
 function App(props: Props) {
   const [signingKeys, setSigningKeys] = useState<SigningKeys>({});
@@ -36,35 +50,63 @@ function App(props: Props) {
       state.signer &&
       state.address &&
       roundId &&
-      (previousAddress === null || previousSigner === null)
+      (!previousAddress || !previousSigner)
     ) {
       const address = state.address;
       const message = `UMA Protocol one time key for round: ${roundId}`;
+      const hexMessage = web3.utils.toHex(message);
       const keyExists = signingKeys[address];
-      if (!keyExists || keyExists.roundMessage !== message) {
-        state.signer
-          .signMessage(message)
-          .then((msg) => {
-            const key = {} as {
-              publicKey: string;
-              privateKey: string;
-              roundMessage: string;
-            };
+      let keysInStorage =
+        localStorage.getItem(SIGNING_KEYS_STORAGE_KEY) || ({} as StorageKeys);
 
-            const privateKey = derivePrivateKey(msg);
-            const publicKey = recoverPublicKey(privateKey);
-            key.privateKey = privateKey;
-            key.publicKey = publicKey;
-            key.roundMessage = message;
+      let keyExistsInStorage = false;
+      if (typeof keysInStorage === "string") {
+        keysInStorage = JSON.parse(keysInStorage) as StorageKeys;
 
-            setSigningKeys((prevKeys) => {
-              return { ...prevKeys, [address]: key };
+        keyExistsInStorage = has(keysInStorage, `${hexMessage}.${address}`);
+      }
+
+      if (keyExistsInStorage) {
+        const loggedInKey = keysInStorage[hexMessage][address];
+        setSigningKeys((prevKeys) => {
+          return { ...prevKeys, [address]: loggedInKey };
+        });
+      } else {
+        if (!keyExists || keyExists.roundMessage !== message) {
+          state.signer
+            .signMessage(message)
+            .then((msg) => {
+              const key = {} as SigningKey;
+
+              const privateKey = derivePrivateKey(msg);
+              const publicKey = recoverPublicKey(privateKey);
+              key.privateKey = privateKey;
+              key.publicKey = publicKey;
+              key.roundMessage = message;
+              key.roundId = roundId;
+
+              let keysToBackup = {};
+              if (typeof keysInStorage === "string") {
+                const parsedJSON = JSON.parse(keysInStorage);
+                keysToBackup = { ...parsedJSON };
+              } else {
+                keysToBackup = { ...keysInStorage };
+              }
+
+              setWith(keysToBackup, `${hexMessage}.${address}`, key, Object);
+              localStorage.setItem(
+                SIGNING_KEYS_STORAGE_KEY,
+                JSON.stringify(keysToBackup)
+              );
+              setSigningKeys((prevKeys) => {
+                return { ...prevKeys, [address]: key };
+              });
+            })
+            .catch((err) => {
+              const error = new Error("Sign failed.");
+              addError(error);
             });
-          })
-          .catch((err) => {
-            const error = new Error("Sign failed.");
-            addError(error);
-          });
+        }
       }
     }
   }, [

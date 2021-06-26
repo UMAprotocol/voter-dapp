@@ -49,6 +49,7 @@ import {
 } from "./styled/Wallet.styled";
 // import ERC20TransferButton from "./helpers/ERC20TransferButton";
 import { SigningKeys } from "App";
+import getSigningKeys from "common/helpers/getSigningKeys";
 
 interface Props {
   signingKeys: SigningKeys;
@@ -92,12 +93,10 @@ const Wallet: FC<Props> = ({ signingKeys, refetchVoteSummaryData }) => {
     network
   );
 
-  const signingPK =
-    hotAddress && signingKeys[hotAddress]
-      ? signingKeys[hotAddress].privateKey
-      : votingAddress && signingKeys[votingAddress]
-      ? signingKeys[votingAddress].privateKey
-      : "";
+  const signingPK = getSigningKeys(
+    signingKeys,
+    hotAddress ? hotAddress : votingAddress
+  ).privateKey;
 
   const { votingContract, designatedVotingContract } = useVotingContract(
     signer,
