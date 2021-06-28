@@ -54,7 +54,7 @@ function App(props: Props) {
     ) {
       const address = state.address;
       const message = `UMA Protocol one time key for round: ${roundId}`;
-      const hexMessage = web3.utils.toHex(message);
+      const hexMessage = web3.utils.utf8ToHex(message);
       const keyExists = signingKeys[address];
       let keysInStorage =
         localStorage.getItem(SIGNING_KEYS_STORAGE_KEY) || ({} as StorageKeys);
