@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import {
   StyledNavbar,
   DesktopLinks,
+  DesktopLink,
+  DesktopSocialLink,
   MobileLinks,
   MobileButton,
 } from "./Navbar.styled";
@@ -36,48 +38,38 @@ const Navbar: FC = () => {
           <Link className="link active" to="/" tw="px-5 py-3">
             Vote
           </Link>
-          {/* <Link className="link" to="/" tw="px-5 py-3">
-            FAQs
-          </Link> */}
-          <a
-            className="link"
+          <DesktopLink
             href="https://v1.vote.umaproject.org/"
             target="_blank"
-            tw="px-5 py-3"
             rel="noreferrer"
           >
             V1 Vote
-          </a>
-          <a
-            className="link"
+          </DesktopLink>
+          <DesktopLink
             href="https://docs.umaproject.org/"
             target="_blank"
-            tw="px-5 py-3"
             rel="noreferrer"
           >
             Docs
-          </a>
+          </DesktopLink>
 
-          <a
-            className="link"
+          <DesktopLink
             href="https://docs.umaproject.org/uma-tokenholders/uma-holders"
             target="_blank"
-            tw="px-5 py-3"
             rel="noreferrer"
           >
             About
-          </a>
+          </DesktopLink>
           {socialLinks.map(({ logo, url }, index) => {
             return (
-              <a
+              <DesktopSocialLink
                 key={index}
                 href={url}
-                tw="px-5 py-3"
                 target="_blank"
                 rel="noreferrer"
               >
                 {logo}
-              </a>
+              </DesktopSocialLink>
             );
           })}
         </div>

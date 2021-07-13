@@ -21,17 +21,30 @@ export const DesktopLinks = styled.div`
       opacity: 0.7;
     }
   }
-  .link {
-    &.active {
-      color: #ff4a4a;
-      &:hover {
-        text-decoration: underline;
-      }
-    }
+`;
+
+export const DesktopLink = styled.a`
+  ${tw`px-5 py-3`};
+  &.active {
+    color: #ff4a4a;
     &:hover {
-      transition: color 0.3s;
-      color: #ff4a4a;
       text-decoration: underline;
+    }
+  }
+  &:hover {
+    transition: color 0.3s;
+    color: #ff4a4a;
+    text-decoration: underline;
+  }
+`;
+
+export const DesktopSocialLink = styled.a`
+  ${tw`px-5 py-3`};
+  svg {
+    height: 25px;
+    &:hover {
+      transition: opacity 0.2s;
+      opacity: 0.7;
     }
   }
 `;
