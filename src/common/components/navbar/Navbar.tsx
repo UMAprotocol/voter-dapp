@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FC } from "react";
+import { FC, useState } from "react";
 import tw from "twin.macro"; // eslint-disable-line
 
 import { Link } from "react-router-dom";
@@ -13,12 +13,16 @@ import { Discord, Github, Medium, Twitter } from "assets/icons";
 import logo from "assets/icons/logo.png";
 
 const Navbar: FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <StyledNavbar>
       <Link tw="inline-flex items-center p-2 mr-4" to="/">
         <img className="logo" src={logo} alt="uma_logo" />
       </Link>
-      <MobileButton>
+      <MobileButton
+        isOpen={isOpen}
+        onClick={() => setIsOpen((prevValue) => !prevValue)}
+      >
         <span />
         <span />
         <span />

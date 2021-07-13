@@ -45,7 +45,11 @@ export const MobileLinks = styled.div`
 
 export const MobileList = styled.div``;
 export const MobileLink = styled.a``;
-export const MobileButton = styled.div`
+
+interface MobileButtonProps {
+  isOpen?: boolean;
+}
+export const MobileButton = styled.div<MobileButtonProps>`
   cursor: pointer;
   pointer-events: all;
   opacity: 1;
@@ -57,18 +61,23 @@ export const MobileButton = styled.div`
     display: block;
   }
   span {
-    &:first-of-type {
-      top: 0;
-    }
-    &:nth-child(2) {
-      top: 8px;
-    }
-    &:nth-child(3) {
-      top: 16px;
-    }
-    position: absolute;
     transition: top 0.2s 0.25s, opacity 0.2s 0.25s, transform 0.2s 0s,
       -webkit-transform 0.2s 0s;
+    &:first-of-type {
+      top: ${(props) => (props.isOpen ? "9px" : "0px")};
+      transform: ${(props) => (props.isOpen ? "rotate(45deg)" : "")};
+    }
+    &:nth-of-type(2) {
+      top: 8px;
+      opacity: ${(props) => (props.isOpen ? "0" : "1")};
+    }
+    &:nth-of-type(3) {
+      top: ${(props) => (props.isOpen ? "9px" : "16px")};
+      transform: ${(props) => (props.isOpen ? "rotate(-45deg)" : "")};
+    }
+
+    position: absolute;
+
     padding: 0;
     margin: 0;
     outline: 0;
