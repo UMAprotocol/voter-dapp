@@ -13,6 +13,7 @@ import {
   MobileNav,
   MobileContent,
   MobileButton,
+  SocialMobileList,
 } from "./Navbar.styled";
 import { Discord, Github, Medium, Twitter } from "assets/icons";
 import logo from "assets/icons/logo.png";
@@ -70,6 +71,19 @@ const Navbar: FC = () => {
               </MobileListItem>
             </MobileList>
           </MobileNav>
+          <div>
+            <SocialMobileList>
+              {socialLinks.map(({ logo, url }, index) => {
+                return (
+                  <li key={index}>
+                    <a href={url} target="_blank" rel="noreferrer">
+                      {logo}
+                    </a>
+                  </li>
+                );
+              })}
+            </SocialMobileList>
+          </div>
         </MobileContent>
       )}
       <DesktopLinks tw="inline-flex items-center">

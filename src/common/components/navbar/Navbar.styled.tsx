@@ -150,3 +150,16 @@ export const MobileButton = styled.div<MobileButtonProps>`
     border: none;
   }
 `;
+
+export const SocialMobileList = styled.ul`
+  margin: 0 30px 20px;
+  justify-content: flex-start;
+  display: flex;
+  li {
+    list-style: none;
+    width: 25px;
+  }
+  li + li {
+    margin-left: 34px;
+  }
+`;
