@@ -17,6 +17,10 @@ export const ModalWrapper = styled.div`
   box-sizing: border-box;
   font-family: "Halyard Display";
   border: none;
+  @media screen and (max-width: 768px) {
+    min-width: 0;
+    width: 100%;
+  }
   .header {
     text-align: center;
     margin-bottom: 1rem;
@@ -62,8 +66,15 @@ export const ModalWrapper = styled.div`
     width: 400px;
     margin-left: auto;
     margin-right: auto;
+    @media screen and (max-width: 768px) {
+      width: 100%;
+      /* margin: 1rem 0; */
+    }
     button {
       margin: 0 0.5rem;
+      @media screen and (max-width: 768px) {
+        margin: 0.5rem 0.5rem;
+      }
     }
   }
 
@@ -175,4 +186,13 @@ export const CommitAddress = styled.p`
   margin-bottom: 1rem;
   margin-top: 0.5rem;
   font-size: 1.2rem;
+`;
+
+export const CommitAddressValue = styled.div`
+  display: inline-block;
+  word-break: break-all;
+
+  @media screen and (max-width: 768px) {
+    display: block;
+  }
 `;
