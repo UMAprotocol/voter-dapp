@@ -8,7 +8,10 @@ import {
   DesktopLinks,
   DesktopLink,
   DesktopSocialLink,
-  MobileLinks,
+  MobileList,
+  MobileListItem,
+  MobileNav,
+  MobileContent,
   MobileButton,
 } from "./Navbar.styled";
 import { Discord, Github, Medium, Twitter } from "assets/icons";
@@ -29,9 +32,46 @@ const Navbar: FC = () => {
         <span />
         <span />
       </MobileButton>
-      {/* <MobileLinks>
-        <Link to="/" tw="" />
-      </MobileLinks> */}
+      {isOpen && (
+        <MobileContent>
+          <MobileNav>
+            <MobileList>
+              <MobileListItem>
+                <Link className="link active" to="/">
+                  Vote
+                </Link>
+              </MobileListItem>
+              <MobileListItem>
+                <a
+                  href="https://v1.vote.umaproject.org/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  V1 Vote
+                </a>
+              </MobileListItem>
+              <MobileListItem>
+                <a
+                  href="https://docs.umaproject.org/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Docs
+                </a>
+              </MobileListItem>
+              <MobileListItem>
+                <a
+                  href="https://docs.umaproject.org/uma-tokenholders/uma-holders"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  About
+                </a>
+              </MobileListItem>
+            </MobileList>
+          </MobileNav>
+        </MobileContent>
+      )}
       <DesktopLinks tw="inline-flex items-center">
         <Link to="/" tw=""></Link>
         <div tw="flex place-items-end">

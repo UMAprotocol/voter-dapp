@@ -56,8 +56,52 @@ export const MobileLinks = styled.div`
   }
 `;
 
-export const MobileList = styled.div``;
-export const MobileLink = styled.a``;
+interface MobileContentProps {
+  isOpen?: boolean;
+}
+export const MobileContent = styled.div<MobileContentProps>`
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+  position: absolute;
+  top: 6rem;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: block;
+  margin-top: -1px;
+  text-align: left;
+  background: #fff;
+`;
+export const MobileNav = styled.nav`
+  display: block;
+  text-align: left;
+`;
+export const MobileList = styled.ul`
+  margin: -5px 30px 31px;
+  display: block;
+`;
+export const MobileListItem = styled.li`
+  list-style: none;
+  border-bottom: 1px solid #e5e5e5;
+  margin: 1rem 0;
+  a {
+    font-size: 16px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+    color: inherit;
+    display: block;
+    &.active {
+      color: #ff4a4a;
+    }
+    &:hover {
+      transition: color 0.3s;
+      color: #ff4a4a;
+      text-decoration: underline;
+    }
+  }
+`;
 
 interface MobileButtonProps {
   isOpen?: boolean;
@@ -69,6 +113,7 @@ export const MobileButton = styled.div<MobileButtonProps>`
   position: relative;
   height: 20px;
   width: 25px;
+  margin-top: 1rem;
   display: none;
   @media screen and (max-width: 768px) {
     display: block;
