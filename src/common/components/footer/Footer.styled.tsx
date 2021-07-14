@@ -9,6 +9,14 @@ export const StyledFooter = styled.div`
 
 export const LogoWrapper = styled.div`
   flex: 0 0 24%;
+  @media screen and (max-width: 768px) {
+    margin-bottom: 2rem;
+    margin-left: 1rem;
+    text-align: center;
+    svg {
+      margin: 0 auto;
+    }
+  }
 `;
 
 export const LinkWrapper = styled.div`
@@ -16,6 +24,11 @@ export const LinkWrapper = styled.div`
   flex: 1 1;
   border-left: 1px solid rgba(0, 0, 0, 0.1);
   border-right: 1px solid rgba(0, 0, 0, 0.1);
+  @media screen and (max-width: 768px) {
+    width: 95%;
+    margin: 0 auto;
+    text-align: center;
+  }
   .links {
     display: flex;
     flex-wrap: wrap;
@@ -37,7 +50,11 @@ export const SubscribeWrapper = styled.div`
   max-width: 32%;
   padding-left: 30px;
   text-align: right;
-
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    margin: 0 auto;
+    max-width: 100%;
+  }
   .subscribe {
     display: inline-block;
     max-width: 285px;
@@ -45,6 +62,11 @@ export const SubscribeWrapper = styled.div`
     margin-bottom: 33px;
     padding: 5px 0 0;
     text-align: left;
+    @media screen and (max-width: 768px) {
+      width: 95%;
+      margin: 0 auto;
+      max-width: 95%;
+    }
     h3 {
       text-align: left;
       color: #ff4a4a;
@@ -62,6 +84,11 @@ export const SubscribeWrapper = styled.div`
   .sm-links-wrapper {
     display: flex;
     max-width: 50%;
+    @media screen and (max-width: 768px) {
+      width: 95%;
+      margin: 0 auto;
+      max-width: 95%;
+    }
   }
   .sm-logo {
     height: 25px;
@@ -69,9 +96,15 @@ export const SubscribeWrapper = styled.div`
       transition: opacity 0.2s;
       opacity: 0.7;
     }
+    @media screen and (max-width: 768px) {
+      margin: 0 0.5rem;
+    }
   }
 `;
 
 export const Flex = styled.div`
   display: flex;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
