@@ -5,15 +5,17 @@ export const StyledFooter = styled.div`
   margin: 3rem auto 0;
   font-family: "Halyard Display";
   min-height: 20vh;
-  .logo-wrapper {
-    flex: 0 0 24%;
-  }
-  .link-wrapper {
-    padding: 0 100px;
-    flex: 1 1;
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
-  }
+`;
+
+export const LogoWrapper = styled.div`
+  flex: 0 0 24%;
+`;
+
+export const LinkWrapper = styled.div`
+  padding: 0 100px;
+  flex: 1 1;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
   .links {
     display: flex;
     flex-wrap: wrap;
@@ -28,51 +30,48 @@ export const StyledFooter = styled.div`
       }
     }
   }
-  .subscribe-wrapper {
-    flex: 0 0 32%;
-    max-width: 32%;
-    padding-left: 30px;
-    text-align: right;
-    .subscribe {
-      display: inline-block;
-      max-width: 285px;
-      width: 100%;
-      margin-bottom: 33px;
-      padding: 5px 0 0;
+`;
+
+export const SubscribeWrapper = styled.div`
+  flex: 0 0 32%;
+  max-width: 32%;
+  padding-left: 30px;
+  text-align: right;
+
+  .subscribe {
+    display: inline-block;
+    max-width: 285px;
+    width: 100%;
+    margin-bottom: 33px;
+    padding: 5px 0 0;
+    text-align: left;
+    h3 {
       text-align: left;
-      .header {
-        text-align: left;
-        color: #ff4a4a;
-        margin-bottom: 0.8rem;
-      }
-      .sub-text {
-        text-align: left;
-        font-size: 0.8rem;
-        opacity: 0.75;
-        margin: 0 0 15px;
-        color: #000;
-        line-height: 1.57;
-      }
+      color: #ff4a4a;
+      margin-bottom: 0.8rem;
     }
-    .sm-links-wrapper {
-      display: flex;
-      max-width: 50%;
-    }
-    .logo {
-      height: 30px;
-    }
-    .sm-logo {
-      height: 25px;
-      &:hover {
-        transition: opacity 0.2s;
-        opacity: 0.7;
-      }
-    }
-    .link {
-      &:hover {
-        transition: color 0.3s;
-        color: #ff4a4a;
-      }
+    .sub-text {
+      text-align: left;
+      font-size: 0.8rem;
+      opacity: 0.75;
+      margin: 0 0 15px;
+      color: #000;
+      line-height: 1.57;
     }
   }
+  .sm-links-wrapper {
+    display: flex;
+    max-width: 50%;
+  }
+  .sm-logo {
+    height: 25px;
+    &:hover {
+      transition: opacity 0.2s;
+      opacity: 0.7;
+    }
+  }
+`;
+
+export const Flex = styled.div`
+  display: flex;
 `;

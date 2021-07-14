@@ -3,17 +3,23 @@ import { FC } from "react";
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 import { FooterLogo } from "assets/icons";
 import { Discord, Github, Medium, Twitter } from "assets/icons";
-import { StyledFooter } from "./Footer.styled";
+import {
+  StyledFooter,
+  LogoWrapper,
+  LinkWrapper,
+  SubscribeWrapper,
+  Flex,
+} from "./Footer.styled";
 
 const Footer: FC = () => {
   return (
     <StyledFooter>
-      <div tw="flex">
-        <div className="logo-wrapper">
+      <Flex>
+        <LogoWrapper>
           <FooterLogo />
           <div tw="mt-4 opacity-75">Risk Labs &copy; 2021</div>
-        </div>
-        <div className="link-wrapper">
+        </LogoWrapper>
+        <LinkWrapper>
           <ul className="links">
             {umaLinks.map(({ url, text }, index) => {
               return (
@@ -25,10 +31,10 @@ const Footer: FC = () => {
               );
             })}
           </ul>
-        </div>
-        <div className="subscribe-wrapper">
+        </LinkWrapper>
+        <SubscribeWrapper>
           <div className="subscribe">
-            <h3 className="header">Get UMA Updates</h3>
+            <h3>Get UMA Updates</h3>
             <p className="sub-text">
               Sign up for our newsletter to stay updated about the UMA project.
             </p>
@@ -48,8 +54,8 @@ const Footer: FC = () => {
               })}
             </div>
           </div>
-        </div>
-      </div>
+        </SubscribeWrapper>
+      </Flex>
     </StyledFooter>
   );
 };

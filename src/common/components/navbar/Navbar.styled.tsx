@@ -76,6 +76,9 @@ export const MobileContent = styled.div<MobileContentProps>`
 export const MobileNav = styled.nav`
   display: block;
   text-align: left;
+  @media screen and (min-width: 769px) {
+    display: none;
+  }
 `;
 export const MobileList = styled.ul`
   margin: -5px 30px 31px;
@@ -161,5 +164,8 @@ export const SocialMobileList = styled.ul`
   }
   li + li {
     margin-left: 34px;
+  }
+  @media screen and (min-width: 769px) {
+    display: none;
   }
 `;
