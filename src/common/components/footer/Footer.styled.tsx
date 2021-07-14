@@ -5,6 +5,7 @@ export const StyledFooter = styled.div`
   margin: 3rem auto 0;
   font-family: "Halyard Display";
   min-height: 20vh;
+  padding-bottom: 2rem;
 `;
 
 export const LogoWrapper = styled.div`
