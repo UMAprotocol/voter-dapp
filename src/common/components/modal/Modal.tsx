@@ -9,23 +9,25 @@ type Props = {
   onClose: () => void;
 };
 
-const _Modal: ForwardRefRenderFunction<HTMLElement, PropsWithChildren<Props>> =
-  ({ children, isOpen, onClose }, externalRef) => {
-    if (!isOpen) {
-      return null;
-    }
-    return (
-      <Portal>
-        <Wrapper ref={externalRef} coords={{ y: window.scrollY }}>
-          <ExitButton onClick={onClose}>
-            <Times />
-          </ExitButton>
-          <Content>{children}</Content>
-        </Wrapper>
-        <BgBlur coords={{ y: window.scrollY }} />
-      </Portal>
-    );
-  };
+const _Modal: ForwardRefRenderFunction<
+  HTMLElement,
+  PropsWithChildren<Props>
+> = ({ children, isOpen, onClose }, externalRef) => {
+  if (!isOpen) {
+    return null;
+  }
+  return (
+    <Portal>
+      <Wrapper ref={externalRef} coords={{ y: window.scrollY }}>
+        <ExitButton onClick={onClose}>
+          <Times />
+        </ExitButton>
+        <Content>{children}</Content>
+      </Wrapper>
+      <BgBlur coords={{ y: window.scrollY }} />
+    </Portal>
+  );
+};
 
 const Modal = forwardRef(_Modal);
 Modal.displayName = "Modal";
@@ -49,10 +51,17 @@ export const Wrapper = styled.aside<StyledProps>`
   overflow-y: scroll;
   max-height: 80vh;
   padding: 2.25rem;
+  @media screen and (max-width: 768px) {
+    margin: 2rem;
+  }
 `;
 
 const Content = styled.div`
   ${tw`pb-10 px-5`};
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    /* margin: 2rem; */
+  }
 `;
 
 const BgBlur = styled.div<StyledProps>`
