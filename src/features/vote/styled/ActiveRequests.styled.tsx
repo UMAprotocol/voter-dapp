@@ -88,7 +88,6 @@ export const Table = styled.table<TableProps>`
       line-height: 1.57;
       opacity: 0.5;
       @media screen and (max-width: 768px) {
-        /* border-right: 0; */
         padding-left: 1rem;
         padding-right: 1rem;
       }
@@ -109,7 +108,6 @@ export const Table = styled.table<TableProps>`
       vertical-align: middle;
       border-bottom: 1px solid #e5e4e4;
       @media screen and (max-width: 768px) {
-        /* border-right: 0; */
         padding-left: 1rem;
         padding-right: 1rem;
       }
