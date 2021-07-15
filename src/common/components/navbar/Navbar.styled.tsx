@@ -124,8 +124,11 @@ export const MobileButton = styled.div<MobileButtonProps>`
   span {
     transition: top 0.2s 0.25s, opacity 0.2s 0.25s, transform 0.2s 0s,
       -webkit-transform 0.2s 0s;
-    transition: background 0.2s, top 0.2s, opacity 0.2s, transform 0.2s 0.25s,
-      -webkit-transform 0.2s 0.25s;
+
+    transition: ${(props) =>
+      props.isOpen
+        ? "background 0.2s, top 0.2s, opacity 0.2s, transform 0.2s 0.25s,-webkit-transform 0.2s 0.25s"
+        : ""};
     &:first-of-type {
       top: ${(props) => (props.isOpen ? "9px" : "0px")};
       transform: ${(props) => (props.isOpen ? "rotate(45deg)" : "")};
