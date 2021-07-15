@@ -2,6 +2,7 @@ import { PriceRequestRound } from "common/hooks/useVoteData";
 import { PastRequest } from "../PastRequests";
 import { DateTime } from "luxon";
 import { ethers } from "ethers";
+import { getPrecisionForIdentifier } from "@uma/common";
 
 const NULL_CORRECT_STRING = "-";
 
@@ -18,9 +19,11 @@ export function formatPastRequestsByAddress(
   const formattedData = sortedByTime.map((el) => {
     // Determine correct vote
     // Apparently price is null on some of these, so do a null check.
+    const identifierPrecision = getPrecisionForIdentifier(el.identifier.id);
+
     let correct =
       el.request.price !== null
-        ? ethers.utils.formatEther(el.request.price)
+        ? ethers.utils.formatUnits(el.request.price, identifierPrecision)
         : NULL_CORRECT_STRING;
 
     if (el.identifier.id.includes("Admin") && correct !== NULL_CORRECT_STRING) {
@@ -36,7 +39,7 @@ export function formatPastRequestsByAddress(
       if (el.identifier.id.includes("Admin")) {
         vote = Number(findVote.price) > 0 ? "YES" : "NO";
       } else {
-        vote = ethers.utils.formatEther(findVote.price);
+        vote = ethers.utils.formatUnits(findVote.price, identifierPrecision);
       }
     }
 
