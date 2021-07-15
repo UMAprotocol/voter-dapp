@@ -6,6 +6,7 @@ export const Wrapper = styled.div`
   ${tw`max-w-full pt-5 mt-5 pb-1`};
   .wrapper {
     ${tw`max-w-7xl mx-auto py-5 px-8 my-10`}
+    overflow-y: scroll;
     background-color: #fff;
   }
 
@@ -76,11 +77,17 @@ export const WalletColumn = styled.div`
 export const UMABalance = styled.div`
   ${tw`my-5 mx-3 flex-grow border-r`};
   border-color: #e5e4e4;
+  @media screen and (max-width: 768px) {
+    border-right: 0;
+  }
 `;
 
 export const UMACollected = styled.div`
   ${tw`my-5 mx-3 pl-5 flex-grow border-r`};
   border-color: #e5e4e4;
+  @media screen and (max-width: 768px) {
+    border-right: 0;
+  }
 `;
 
 export const AvailableRewards = styled.div`

@@ -7,6 +7,8 @@ interface StyledProps {
 export const Wrapper = styled.div<StyledProps>`
   &.RequestPhase {
     padding: 1rem 4rem;
+    width: 100%;
+    overflow-y: auto;
 
     .identifier {
       align-items: flex-start;
