@@ -45,8 +45,8 @@ export const Wrapper = styled.aside<StyledProps>`
   ${tw`z-20 bg-white rounded border-0 border-opacity-10 absolute inset-x-0 mx-auto p-5 max-w-max flex flex-col items-center`};
   top: ${(props) => {
     return props.coords && props.coords.y
-      ? `${props.coords.y + DEFAULT_TOP_VALUE}px`
-      : `${DEFAULT_TOP_VALUE}px`;
+      ? `${(props.coords.y + DEFAULT_TOP_VALUE) / 16}rem`
+      : `${DEFAULT_TOP_VALUE / 16}rem`;
   }};
   overflow-y: scroll;
   max-height: 80vh;
@@ -69,7 +69,7 @@ const BgBlur = styled.div<StyledProps>`
 
   height: 100%;
   top: ${(props) => {
-    return props.coords && props.coords.y ? `${props.coords.y}px` : `0px`;
+    return props.coords && props.coords.y ? `${props.coords.y / 16}rem` : `0px`;
   }};
   right: 0px;
   bottom: 0px;

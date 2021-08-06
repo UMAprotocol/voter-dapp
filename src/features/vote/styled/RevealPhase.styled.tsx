@@ -8,7 +8,11 @@ export const Wrapper = styled.div<StyledProps>`
   &.RequestPhase {
     padding: 1rem 4rem;
     width: 100%;
+<<<<<<< HEAD
     overflow-y: scroll;
+=======
+    overflow-y: auto;
+>>>>>>> visual-fixes-aug
 
     .identifier {
       align-items: flex-start;

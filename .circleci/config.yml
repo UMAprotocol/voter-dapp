@@ -12,7 +12,7 @@ jobs:
           name: Run build
           command: |
             yarn
-            yarn build
+            CI=false yarn build
       - save_cache:
           key: voter-dapp-build-{{ .Environment.CIRCLE_SHA1 }}
           paths:
