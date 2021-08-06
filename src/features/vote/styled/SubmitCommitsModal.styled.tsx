@@ -2,8 +2,8 @@
 import tw, { styled } from "twin.macro"; // eslint-disable-line
 
 export const ModalWrapper = styled.div`
-  max-width: 1000px;
-  min-width: 400px;
+  max-width: 62.5rem;
+  min-width: 25rem;
   padding: 2rem 1.5rem;
   height: auto;
   max-height: 80vh;
