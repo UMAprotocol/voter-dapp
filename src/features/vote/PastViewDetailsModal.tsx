@@ -24,7 +24,7 @@ import {
   LastStateValue,
 } from "./styled/DetailModals.styled";
 import { ModalState } from "./PastRequests";
-import { DiscordRed } from "assets/icons";
+import { DiscordRed, CopyIcon } from "assets/icons";
 import { ethers } from "ethers";
 import useUMIP from "./useUMIP";
 import useOnboard from "common/hooks/useOnboard";
@@ -140,6 +140,16 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
                 Join the UMA Discord
               </a>
             </IconsItem>
+            {umip?.umipLink && (
+              <IconsItem>
+                <a target="_blank" href={umip?.umipLink} rel="noreferrer">
+                  <Icon>
+                    <CopyIcon />
+                  </Icon>
+                  Link to UMIP
+                </a>
+              </IconsItem>
+            )}
           </IconsWrapper>
           <MiniHeader>Correct Vote</MiniHeader>
           <StateValue>{correct}</StateValue>
