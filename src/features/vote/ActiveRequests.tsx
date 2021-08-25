@@ -22,6 +22,7 @@ import useModal from "common/hooks/useModal";
 import { SigningKeys } from "App";
 import { Round } from "web3/get/queryRounds";
 import { RefetchOptions, QueryObserverResult } from "react-query";
+import getSigningKeys from "common/helpers/getSigningKeys";
 
 export interface ModalState {
   proposal: string;
@@ -94,12 +95,10 @@ const ActiveRequests: FC<Props> = ({
     return () => clearInterval(timer);
   }, []);
 
-  const signingPublicKey =
-    hotAddress && signingKeys[hotAddress]
-      ? signingKeys[hotAddress].publicKey
-      : votingAddress && signingKeys[votingAddress]
-      ? signingKeys[votingAddress].publicKey
-      : "";
+  const signingPublicKey = getSigningKeys(
+    signingKeys,
+    hotAddress ? hotAddress : votingAddress
+  ).publicKey;
 
   const signingMessage =
     hotAddress && signingKeys[hotAddress]
