@@ -31,8 +31,8 @@ export default function useVotingAddress(
         }).catch((err:Error)=>{
           console.error('Error getting designated voting address:',err)
         });
-    }else{
-      setVotingAddress(address);
+    } else {
+      setVotingAddress(null);
     }
   }, [address, signer, network]);
 
