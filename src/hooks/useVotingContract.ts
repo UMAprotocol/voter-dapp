@@ -29,13 +29,14 @@ export default function useVotingContract(
           network.chainId.toString()
         );
         setVotingContract(contract);
-        if (hotAddress && voterAddress) {
-          const dvc = createDesignatedVotingContractInstance(
-            signer,
-            voterAddress
-          );
-          setDesignatedVotingContract(dvc);
-        }
+      }
+      // we want this to be able to change when user switches accounts. previously this was only being able to be set once.
+      if (signer && hotAddress && voterAddress) {
+        const dvc = createDesignatedVotingContractInstance(
+          signer,
+          voterAddress
+        );
+        setDesignatedVotingContract(dvc);
       }
     }
   }, [isConnected, signer, votingContract, network, hotAddress, voterAddress]);
