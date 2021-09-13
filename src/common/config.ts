@@ -81,14 +81,14 @@ const CYPRESS_TESTING_WALLET = {
   desktop: true,
 } as WalletModule;
 
-const wallets = [{ walletName: "metamask", preferred: true }] as (
+let wallets = [{ walletName: "metamask", preferred: true }] as (
   | WalletModule
   | WalletInitOptions
 )[];
 
-if (localStorage.getItem("cypress-testing")) {
-  wallets.push(CYPRESS_TESTING_WALLET);
-}
+// if (localStorage.getItem("testing")) {
+//   wallets = [CYPRESS_TESTING_WALLET] as (WalletModule | WalletInitOptions)[];
+// }
 
 export default function config(network: Network | null) {
   // const infuraRpc = `https://${
