@@ -27,6 +27,7 @@
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
 import { Eip1193Bridge } from "@ethersproject/experimental/lib/eip1193-bridge";
+import "cypress-localstorage-commands";
 
 // const TEST_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY')
 const PRIVATE_KEY_TEST_NEVER_USE =

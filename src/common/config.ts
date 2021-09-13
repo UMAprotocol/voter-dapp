@@ -1,4 +1,8 @@
 import { ethers } from "ethers";
+import {
+  WalletModule,
+  WalletInitOptions,
+} from "bnc-onboard/dist/src/interfaces";
 
 type Network = ethers.providers.Network;
 
@@ -34,6 +38,58 @@ export const OLD_VOTING_CONTRACT_ADDRESSES = [
   "0x1d847fb6e04437151736a53f09b6e49713a52aad",
 ];
 
+const customExtensionWalletLogo = `
+	<svg 
+		height="40" 
+		viewBox="0 0 40 40" 
+		width="40" 
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path 
+			d="m2744.99995 1155h9.99997" 
+			fill="#617bff" 
+		/>
+	</svg>
+`;
+
+const CYPRESS_TESTING_WALLET = {
+  name: "Cypress Testing Wallet",
+  svg: customExtensionWalletLogo,
+  wallet: async (helpers: any) => {
+    const { createModernProviderInterface } = helpers;
+    if ((window as any).ethereum) {
+      const w = window as any;
+      const provider = w.ethereum;
+      const correctWallet = w.ethereum.currentProvider.isExtensionWallet;
+      return {
+        provider,
+        interface: correctWallet
+          ? createModernProviderInterface(provider)
+          : null,
+      };
+    }
+  },
+  // link: 'https://some-extension-wallet.io',
+  // installMessage: wallets => {
+  // 	const { currentWallet, selectedWallet } = wallets
+  // 	if (currentWallet) {
+  // 		return `You have ${currentWallet} installed already but if you would prefer to use ${selectedWallet} instead, then click below to install.`
+  // 	}
+
+  // 	return `You will need to install ${selectedWallet} to continue. Click below to install.`
+  // },
+  desktop: true,
+} as WalletModule;
+
+const wallets = [{ walletName: "metamask", preferred: true }] as (
+  | WalletModule
+  | WalletInitOptions
+)[];
+
+if (localStorage.getItem("cypress-testing")) {
+  wallets.push(CYPRESS_TESTING_WALLET);
+}
+
 export default function config(network: Network | null) {
   // const infuraRpc = `https://${
   //   network ? network?.name : "mainnet"
@@ -43,38 +99,37 @@ export default function config(network: Network | null) {
     onboardConfig: {
       apiKey: process.env.REACT_APP_PUBLIC_ONBOARD_API_KEY || "",
       onboardWalletSelect: {
-        wallets: [
-          { walletName: "metamask", preferred: true },
-          // {
-          //   walletName: "imToken",
-          //   rpcUrl:
-          //     !!network && network.chainId === 1
-          //       ? "https://mainnet-eth.token.im"
-          //       : "https://eth-testnet.tokenlon.im",
-          //   preferred: true,
-          // },
-          // { walletName: "coinbase", preferred: true },
-          // {
-          //   walletName: "portis",
-          //   apiKey: process.env.REACT_APP_PUBLIC_PORTIS_API_KEY,
-          // },
-          // { walletName: "trust", rpcUrl: infuraRpc },
-          // { walletName: "dapper" },
-          // {
-          //   walletName: "walletConnect",
-          //   rpc: { [network?.chainId || 1]: infuraRpc },
-          // },
-          // { walletName: "walletLink", rpcUrl: infuraRpc },
-          // { walletName: "opera" },
-          // { walletName: "operaTouch" },
-          // { walletName: "torus" },
-          // { walletName: "status" },
-          // { walletName: "unilogin" },
-          // {
-          //   walletName: "ledger",
-          //   rpcUrl: infuraRpc,
-          // },
-        ],
+        wallets: wallets,
+        // CYPRESS_TESTING_WALLET,
+        // {
+        //   walletName: "imToken",
+        //   rpcUrl:
+        //     !!network && network.chainId === 1
+        //       ? "https://mainnet-eth.token.im"
+        //       : "https://eth-testnet.tokenlon.im",
+        //   preferred: true,
+        // },
+        // { walletName: "coinbase", preferred: true },
+        // {
+        //   walletName: "portis",
+        //   apiKey: process.env.REACT_APP_PUBLIC_PORTIS_API_KEY,
+        // },
+        // { walletName: "trust", rpcUrl: infuraRpc },
+        // { walletName: "dapper" },
+        // {
+        //   walletName: "walletConnect",
+        //   rpc: { [network?.chainId || 1]: infuraRpc },
+        // },
+        // { walletName: "walletLink", rpcUrl: infuraRpc },
+        // { walletName: "opera" },
+        // { walletName: "operaTouch" },
+        // { walletName: "torus" },
+        // { walletName: "status" },
+        // { walletName: "unilogin" },
+        // {
+        //   walletName: "ledger",
+        //   rpcUrl: infuraRpc,
+        // },
       },
       walletCheck: [
         { checkName: "connect" },
