@@ -59,9 +59,9 @@ export const queryEncryptedVotes = async (
           args.roundId.toString(),
           args.time.toString(),
         ].join("!");
-        // if multiple commit events, always take the newest one
+        // if multiple commit events, always take the newest one, and latest log
         if (result[key]) {
-          if (result[key].blockNumber < event.blockNumber) result[key] = event;
+          if (result[key].blockNumber <= event.blockNumber) result[key] = event;
         } else {
           result[key] = event;
         }
