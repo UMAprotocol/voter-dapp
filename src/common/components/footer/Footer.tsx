@@ -17,7 +17,6 @@ const Footer: FC = () => {
       <Flex>
         <LogoWrapper>
           <FooterLogo />
-          <div tw="mt-4 opacity-75">Risk Labs &copy; 2021</div>
         </LogoWrapper>
         <LinkWrapper>
           <ul className="links">
