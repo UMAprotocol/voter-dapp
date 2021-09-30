@@ -159,7 +159,7 @@ const connect = async (
     const onboardInstance = createOnboardInstance(network, subscriptions);
 
     await onboardInstance.walletSelect();
-    await onboardInstance.walletCheck();
+    // await onboardInstance.walletCheck();
 
     dispatch({ type: actions.SET_ONBOARD, payload: onboardInstance });
     dispatch({ type: actions.SET_CONNECTION_STATUS, payload: true });
