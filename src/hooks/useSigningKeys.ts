@@ -6,8 +6,10 @@ import { recoverPublicKey } from "features/vote/helpers/recoverPublicKey";
 import { derivePrivateKey } from "features/vote/helpers/derivePrivateKey";
 import usePrevious from "common/hooks/usePrevious";
 
+// User has to sign once per round.
+// public and private signing keys is indexed by address, and we ask them to resign if the roundMessage changes.
 export interface SigningKeys {
-  [key: string]: {
+  [address: string]: {
     publicKey: string;
     privateKey: string;
     roundMessage: string;
