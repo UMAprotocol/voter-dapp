@@ -2,6 +2,10 @@ import { ethers } from "ethers";
 import { useState, useEffect, useContext } from "react";
 import { ErrorContext } from "common/context/ErrorContext";
 
+import { recoverPublicKey } from "features/vote/helpers/recoverPublicKey";
+import { derivePrivateKey } from "features/vote/helpers/derivePrivateKey";
+import usePrevious from "common/hooks/usePrevious";
+
 export interface SigningKeys {
   [key: string]: {
     publicKey: string;
@@ -10,13 +14,9 @@ export interface SigningKeys {
   };
 }
 
-import { recoverPublicKey } from "features/vote/helpers/recoverPublicKey";
-import { derivePrivateKey } from "features/vote/helpers/derivePrivateKey";
-import usePrevious from "common/hooks/usePrevious";
-
 export default function useSigningKeys(
   signer: ethers.Signer | null,
-  address: string,
+  address: string | null,
   roundId: string
 ) {
   const [signingKeys, setSigningKeys] = useState<SigningKeys>({});
@@ -52,7 +52,10 @@ export default function useSigningKeys(
             key.roundMessage = message;
 
             setSigningKeys((prevKeys) => {
-              return { ...prevKeys, [address]: key };
+              const updateKeys = { ...prevKeys, [address]: key };
+              localStorage.setItem("signingKeys", JSON.stringify(updateKeys));
+
+              return updateKeys;
             });
           })
           .catch((err) => {
@@ -71,5 +74,8 @@ export default function useSigningKeys(
     roundId,
   ]);
 
-  return signingKeys;
+  return {
+    signingKeys,
+    setSigningKeys,
+  };
 }
