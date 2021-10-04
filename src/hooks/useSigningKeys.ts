@@ -21,11 +21,10 @@ export default function useSigningKeys(
   address: string | null,
   roundId: string
 ) {
-  const storageKeys = localStorage.getItem("signingKeys");
-
-  const [signingKeys, setSigningKeys] = useState<SigningKeys>(
-    storageKeys ? (JSON.parse(storageKeys) as SigningKeys) : {}
-  );
+  const [signingKeys, setSigningKeys] = useState<SigningKeys>(() => {
+    const storageKeys = localStorage.getItem("signingKeys");
+    return storageKeys ? (JSON.parse(storageKeys) as SigningKeys) : {};
+  });
 
   const { addError } = useContext(ErrorContext);
 
