@@ -1,5 +1,3 @@
-// Note: this will be used once we sign more rarely, instead of once per round.
-// ATM, we want to keep the current and old voter dapp aligned.
 export default function currentSigningMessage(currentRound: number) {
   /*
     Whenever we change the signing message, we should wait until the next round.
