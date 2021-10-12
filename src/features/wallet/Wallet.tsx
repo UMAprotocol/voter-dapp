@@ -49,6 +49,7 @@ import {
 } from "./styled/Wallet.styled";
 // import ERC20TransferButton from "./helpers/ERC20TransferButton";
 import { SigningKeys } from "App";
+import currentSigningMessage from "common/helpers/currentSigningMessage";
 
 interface Props {
   signingKeys: SigningKeys;
