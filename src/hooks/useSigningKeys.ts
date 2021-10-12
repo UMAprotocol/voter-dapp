@@ -39,7 +39,6 @@ export default function useSigningKeys(
       roundId &&
       (previousAddress === null || previousSigner === null)
     ) {
-      // const message = `UMA Protocol one time key for round: ${roundId}`;
       const message = currentSigningMessage(Number(roundId));
       const keyExists = signingKeys[address];
       if (!keyExists || keyExists.roundMessage !== message) {
