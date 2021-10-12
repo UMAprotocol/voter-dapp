@@ -194,7 +194,8 @@ const Wallet: FC<Props> = ({ signingKeys, refetchVoteSummaryData }) => {
     ReactTooltip.rebuild();
   });
 
-  const message = `UMA Protocol one time key for round: ${roundId}`;
+  // const message = `UMA Protocol one time key for round: ${roundId}`;
+  const message = currentSigningMessage(Number(roundId));
   const signingMessage =
     hotAddress && signingKeys[hotAddress]
       ? signingKeys[hotAddress].roundMessage
