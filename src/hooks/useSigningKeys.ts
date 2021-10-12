@@ -5,7 +5,7 @@ import { ErrorContext } from "common/context/ErrorContext";
 import { recoverPublicKey } from "features/vote/helpers/recoverPublicKey";
 import { derivePrivateKey } from "features/vote/helpers/derivePrivateKey";
 import usePrevious from "common/hooks/usePrevious";
-import useCurrentSigningMessage from "common/helpers/currentSigningMessage";
+import currentSigningMessage from "common/helpers/currentSigningMessage";
 
 // User has to sign once per round.
 // public and private signing keys is indexed by address, and we ask them to resign if the roundMessage changes.
@@ -40,7 +40,7 @@ export default function useSigningKeys(
       (previousAddress === null || previousSigner === null)
     ) {
       // const message = `UMA Protocol one time key for round: ${roundId}`;
-      const message = useCurrentSigningMessage(Number(roundId));
+      const message = currentSigningMessage(Number(roundId));
       const keyExists = signingKeys[address];
       if (!keyExists || keyExists.roundMessage !== message) {
         signer
