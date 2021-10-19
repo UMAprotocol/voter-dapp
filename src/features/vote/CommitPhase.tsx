@@ -151,6 +151,10 @@ const CommitPhase: FC<Props> = ({
           validValues[Object.keys(data)[i]] = Object.values(data)[i];
       }
       const message = currentSigningMessage(Number(roundId));
+      if (signingMessage !== message)
+        return setSubmitErrorMessage(
+          "Signing message does not match message for current round. Please disconnect and resign message for current round and try to commit again."
+        );
 
       if (publicKey === "")
         return setSubmitErrorMessage(
