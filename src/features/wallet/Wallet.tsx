@@ -49,6 +49,7 @@ import {
 } from "./styled/Wallet.styled";
 // import ERC20TransferButton from "./helpers/ERC20TransferButton";
 import { SigningKeys } from "App";
+import currentSigningMessage from "common/helpers/currentSigningMessage";
 
 interface Props {
   signingKeys: SigningKeys;
@@ -194,7 +195,8 @@ const Wallet: FC<Props> = ({ signingKeys, refetchVoteSummaryData }) => {
     ReactTooltip.rebuild();
   });
 
-  const message = `UMA Protocol one time key for round: ${roundId}`;
+  // const message = `UMA Protocol one time key for round: ${roundId}`;
+  const message = currentSigningMessage(Number(roundId));
   const signingMessage =
     hotAddress && signingKeys[hotAddress]
       ? signingKeys[hotAddress].roundMessage
