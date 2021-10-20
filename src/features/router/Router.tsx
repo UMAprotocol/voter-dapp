@@ -21,6 +21,8 @@ const Router: FC<Props> = ({ signingKeys }) => {
   const {
     data: voteSummaryData = [] as PriceRequestRound[],
     refetch: refetchVoteSummaryData,
+    setNumToQuery,
+    loading: pastVoteDataLoading,
   } = useVoteData();
 
   return (
@@ -35,7 +37,12 @@ const Router: FC<Props> = ({ signingKeys }) => {
         />
         <Switch>
           <Route path="/">
-            <Vote signingKeys={signingKeys} voteSummaryData={voteSummaryData} />
+            <Vote
+              signingKeys={signingKeys}
+              voteSummaryData={voteSummaryData}
+              setNumToQuery={setNumToQuery}
+              pastVoteDataLoading={pastVoteDataLoading}
+            />
           </Route>
         </Switch>
       </div>

@@ -52,6 +52,7 @@ const POLLING_INTERVAL = 60000;
 function useVoteData() {
   const [votingSummaryData, setVotingSummaryData] =
     useState<FormattedPriceRequestRounds>({});
+  const [numToQuery, setNumToQuery] = useState(5);
 
   // Because apollo caches results of queries, we will poll/refresh this query periodically.
   // We set the poll interval to a very slow 60 seconds for now since the vote states
@@ -63,9 +64,15 @@ function useVoteData() {
     variables: {
       orderBy: "time",
       orderDirection: "desc",
+      numToQuery: numToQuery,
     },
     pollInterval: POLLING_INTERVAL,
   });
+
+  // refetch data if numToQuery changes.
+  useEffect(() => {
+    refetch();
+  }, [numToQuery, refetch]);
 
   // Refresh the object every time the graphQL API response changes
   useEffect(() => {
@@ -85,6 +92,8 @@ function useVoteData() {
     votingSummaryData,
     data: data?.priceRequestRounds,
     refetch,
+    setNumToQuery,
+    loading,
   };
 }
 

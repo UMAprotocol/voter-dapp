@@ -1,5 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { useContext, useEffect, useState, FC } from "react";
+import {
+  useContext,
+  useEffect,
+  useState,
+  FC,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import tw, { styled } from "twin.macro";
 
 // Components
@@ -28,9 +35,16 @@ import { SigningKeys } from "App";
 interface Props {
   signingKeys: SigningKeys;
   voteSummaryData: PriceRequestRound[];
+  setNumToQuery: Dispatch<SetStateAction<number>>;
+  pastVoteDataLoading: boolean;
 }
 
-const Vote: FC<Props> = ({ signingKeys, voteSummaryData }) => {
+const Vote: FC<Props> = ({
+  signingKeys,
+  voteSummaryData,
+  setNumToQuery,
+  pastVoteDataLoading,
+}) => {
   const [upcomingRequests, setUpcomingRequests] = useState<PriceRequestAdded[]>(
     []
   );
@@ -110,6 +124,8 @@ const Vote: FC<Props> = ({ signingKeys, voteSummaryData }) => {
         address={votingAddress}
         contract={votingContract}
         roundId={roundId}
+        setNumToQuery={setNumToQuery}
+        pastVoteDataLoading={pastVoteDataLoading}
       />
       {upcomingRequests.length ? (
         <UpcomingRequests upcomingRequests={upcomingRequests} />
