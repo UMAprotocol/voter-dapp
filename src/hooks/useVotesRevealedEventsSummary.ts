@@ -3,11 +3,11 @@ import { useQuery } from "react-query";
 import {
   queryVotesRevealedEvents,
   VoteRevealed,
-} from "web3/get/queryVotesRevealedEvents";
+} from "common/web3/get/queryVotesRevealedEvents";
 import { ErrorContext } from "common/context/ErrorContext";
 import provider from "common/utils/web3/createProvider";
-import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
-import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork";
+import createVoidSignerVotingContractInstance from "common/web3/createVoidSignerVotingContractInstance";
+import determineBlockchainNetwork from "common/web3/helpers/determineBlockchainNetwork";
 
 const contract = createVoidSignerVotingContractInstance(
   provider,

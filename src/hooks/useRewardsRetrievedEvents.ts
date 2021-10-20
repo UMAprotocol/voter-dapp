@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import {
   queryRewardsRetrievedEvents,
   RewardsRetrieved,
-} from "web3/get/queryRewardsRetrievedEvents";
+} from "common/web3/get/queryRewardsRetrievedEvents";
 import { ErrorContext } from "common/context/ErrorContext";
 
 export default function useRewardsRetrievedEvents(

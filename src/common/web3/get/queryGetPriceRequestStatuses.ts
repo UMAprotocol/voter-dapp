@@ -1,7 +1,7 @@
 // getPriceRequestStatuses((bytes32,uint256,bytes)[])
 import { ethers } from "ethers";
 
-import { PendingRequestAncillary } from "web3/types.web3";
+import { PendingRequestAncillary } from "common/web3/types.web3";
 
 export const queryGetPriceRequestStatuses = async (
   contract: ethers.Contract,

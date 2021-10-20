@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import {
   queryEncryptedVotes,
   EncryptedVote,
-} from "web3/get/queryEncryptedVotesEvents";
+} from "common/web3/get/queryEncryptedVotesEvents";
 import { ErrorContext } from "common/context/ErrorContext";
 import usePrevious from "common/hooks/usePrevious";
 

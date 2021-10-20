@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import {
   queryPriceResolved,
   PriceResolved,
-} from "web3/get/queryPriceResolvedEvents";
+} from "common/web3/get/queryPriceResolvedEvents";
 import { ErrorContext } from "common/context/ErrorContext";
 
 export default function usePriceResolvedEvents(
