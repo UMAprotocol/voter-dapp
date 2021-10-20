@@ -19,10 +19,10 @@ import {
   useEncryptedVotesEvents,
 } from "hooks";
 
-import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
-import { PendingRequest } from "web3/get/queryGetPendingRequests";
-import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
-import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
+import { PriceRequestAdded } from "common/web3/get/queryPriceRequestAddedEvents";
+import { PendingRequest } from "common/web3/get/queryGetPendingRequests";
+import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
+import { EncryptedVote } from "common/web3/get/queryEncryptedVotesEvents";
 import { SigningKeys } from "App";
 
 interface Props {

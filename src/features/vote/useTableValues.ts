@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
-import { PendingRequest } from "web3/get/queryGetPendingRequests";
+import { EncryptedVote } from "common/web3/get/queryEncryptedVotesEvents";
+import { PendingRequest } from "common/web3/get/queryGetPendingRequests";
 import { DateTime } from "luxon";
-import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
-import { PostRevealData } from "web3/post/revealVotes";
+import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
+import { PostRevealData } from "common/web3/post/revealVotes";
 import web3 from "web3";
 import { fetchUmip } from "./fetchUMIP";
 import { getPrecisionForIdentifier } from "@uma/common";

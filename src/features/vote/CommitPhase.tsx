@@ -10,26 +10,26 @@ import {
 } from "react";
 import assert from "assert";
 import { useForm } from "react-hook-form";
-import { PendingRequest } from "web3/get/queryGetPendingRequests";
+import { PendingRequest } from "common/web3/get/queryGetPendingRequests";
 import Button from "common/components/button";
 import TextInput from "common/components/text-input";
 import useModal from "common/hooks/useModal";
 import RHFDropdown from "common/components/dropdown/RHFDropdown";
 
 import { useVotingContract, useCurrentRoundId } from "hooks";
-import { commitVotes } from "web3/post/commitVotes";
+import { commitVotes } from "common/web3/post/commitVotes";
 import SubmitCommitsModal from "./SubmitCommitsModal";
 
 import { OnboardContext } from "common/context/OnboardContext";
 import { formatVoteDataToCommit } from "./helpers/formatVoteDataToCommit";
-import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
+import { EncryptedVote } from "common/web3/get/queryEncryptedVotesEvents";
 
 import {
   FormWrapper,
   CommitInputLabel,
   NoPublicKeyErrorWrapper,
 } from "./styled/CommitPhase.styled";
-import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 
 import useTableValues from "./useTableValues";
