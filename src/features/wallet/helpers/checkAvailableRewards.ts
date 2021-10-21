@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
-import { queryRetrieveRewards } from "web3/get/queryRetrieveRewards";
+import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
+import { queryRetrieveRewards } from "common/web3/get/queryRetrieveRewards";
 
 export default async function checkAvailableRewards(
   data: VoteRevealed[],

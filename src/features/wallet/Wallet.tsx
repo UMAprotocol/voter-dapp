@@ -31,8 +31,8 @@ import calculateUMATotalValue from "./helpers/calculateUMATotalValue";
 import checkAvailableRewards from "./helpers/checkAvailableRewards";
 import collectRewards from "./helpers/collectRewards";
 import shortenAddress from "./helpers/shortenAddress";
-import { RewardsRetrieved } from "web3/get/queryRewardsRetrievedEvents";
-import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import { RewardsRetrieved } from "common/web3/get/queryRewardsRetrievedEvents";
+import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import {
   Wrapper,
   Connected,

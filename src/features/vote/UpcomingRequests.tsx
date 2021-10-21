@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { FC, useState } from "react";
-import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
+import { PriceRequestAdded } from "common/web3/get/queryPriceRequestAddedEvents";
 import { Wrapper } from "./styled/UpcomingRequests.styled";
 import {
   Description,

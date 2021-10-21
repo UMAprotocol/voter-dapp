@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import {
   queryVotesRevealedEvents,
   VoteRevealed,
-} from "web3/get/queryVotesRevealedEvents";
+} from "common/web3/get/queryVotesRevealedEvents";
 import { ErrorContext } from "common/context/ErrorContext";
 
 export default function useVotesRevealedEvents(

@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import provider from "common/utils/web3/createProvider";
-import createVoidSignerVotingContractInstance from "web3/createVoidSignerVotingContractInstance";
+import createVoidSignerVotingContractInstance from "common/web3/createVoidSignerVotingContractInstance";
 
-import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork";
+import determineBlockchainNetwork from "common/web3/helpers/determineBlockchainNetwork";
 
 import { useQuery } from "react-query";
 
-import { queryRounds, Round } from "web3/get/queryRounds";
+import { queryRounds, Round } from "common/web3/get/queryRounds";
 import { ErrorContext } from "common/context/ErrorContext";
 
 const contract = createVoidSignerVotingContractInstance(

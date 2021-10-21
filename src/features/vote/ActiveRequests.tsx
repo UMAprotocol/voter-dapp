@@ -10,17 +10,17 @@ import {
   useVotesRevealedEventsSummary,
 } from "hooks";
 import { OnboardContext } from "common/context/OnboardContext";
-import { PendingRequest } from "web3/get/queryGetPendingRequests";
+import { PendingRequest } from "common/web3/get/queryGetPendingRequests";
 import { calculateTimeRemaining } from "./helpers/calculateTimeRemaining";
 import { Wrapper } from "./styled/ActiveRequests.styled";
 import timerSVG from "assets/icons/timer.svg";
-import { EncryptedVote } from "web3/get/queryEncryptedVotesEvents";
-import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import { EncryptedVote } from "common/web3/get/queryEncryptedVotesEvents";
+import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import RevealPhase from "./RevealPhase";
 import ActiveViewDetailsModal from "./ActiveViewDetailsModal";
 import useModal from "common/hooks/useModal";
 import { SigningKeys } from "App";
-import { Round } from "web3/get/queryRounds";
+import { Round } from "common/web3/get/queryRounds";
 import { RefetchOptions, QueryObserverResult } from "react-query";
 
 export interface ModalState {

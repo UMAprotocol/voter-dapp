@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import createVotingContractInstance from "web3/createVotingContractInstance";
-import createDesignatedVotingContractInstance from "web3/createDesignatedVotingContractInstance";
+import createVotingContractInstance from "common/web3/createVotingContractInstance";
+import createDesignatedVotingContractInstance from "common/web3/createDesignatedVotingContractInstance";
 
 export default function useVotingContract(
   signer: ethers.Signer | null,
@@ -14,10 +14,8 @@ export default function useVotingContract(
     null
   );
 
-  const [
-    designatedVotingContract,
-    setDesignatedVotingContract,
-  ] = useState<ethers.Contract | null>(null);
+  const [designatedVotingContract, setDesignatedVotingContract] =
+    useState<ethers.Contract | null>(null);
 
   useEffect(() => {
     // If connected, try to create contract with assigned signer.

@@ -1,6 +1,6 @@
 import web3 from "web3";
-import { PostCommitVote } from "web3/post/commitVotes";
-import { PendingRequest } from "web3/get/queryGetPendingRequests";
+import { PostCommitVote } from "common/web3/post/commitVotes";
+import { PendingRequest } from "common/web3/get/queryGetPendingRequests";
 import {
   computeVoteHashAncillary,
   getRandomSignedInt,

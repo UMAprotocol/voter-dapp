@@ -1,10 +1,10 @@
 import { ethers } from "ethers";
-import { RewardsRetrieved } from "web3/get/queryRewardsRetrievedEvents";
+import { RewardsRetrieved } from "common/web3/get/queryRewardsRetrievedEvents";
 import {
   PostRetrieveReward,
   PendingRequestRetrieveReward,
-} from "web3/post/retrieveRewards";
-import { retrieveRewards } from "web3/post/retrieveRewards";
+} from "common/web3/post/retrieveRewards";
+import { retrieveRewards } from "common/web3/post/retrieveRewards";
 
 import VotingArtifact from "@uma/core/build/contracts/Voting.json";
 

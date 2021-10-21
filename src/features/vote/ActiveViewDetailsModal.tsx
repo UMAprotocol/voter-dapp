@@ -31,8 +31,8 @@ import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactTooltip from "react-tooltip";
 import web3 from "web3";
-import { VoteEvent } from "web3/types.web3";
-import { VoteRevealed } from "web3/get/queryVotesRevealedEvents";
+import { VoteEvent } from "common/web3/types.web3";
+import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import has from "lodash.has";
 
 interface Props {

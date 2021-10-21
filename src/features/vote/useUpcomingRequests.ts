@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { PriceRequestAdded } from "web3/get/queryPriceRequestAddedEvents";
+import { PriceRequestAdded } from "common/web3/get/queryPriceRequestAddedEvents";
 import { DateTime } from "luxon";
 import { fetchUmip } from "./fetchUMIP";
 import { FormattedRequest } from "./UpcomingRequests";

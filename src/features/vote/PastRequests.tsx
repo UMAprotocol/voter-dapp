@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, Dispatch, SetStateAction } from "react";
 import { ethers } from "ethers";
 import Button from "common/components/button";
 import { PriceRequestRound } from "common/hooks/useVoteData";
@@ -38,6 +38,8 @@ interface Props {
   address: string | null;
   contract: ethers.Contract | null;
   roundId: string;
+  setNumToQuery: Dispatch<SetStateAction<number>>;
+  pastVoteDataLoading: boolean;
 }
 
 const PastRequests: FC<Props> = ({
@@ -45,6 +47,8 @@ const PastRequests: FC<Props> = ({
   address,
   contract,
   roundId,
+  setNumToQuery,
+  pastVoteDataLoading,
 }) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [showAll, setShowAll] = useState(false);
@@ -86,7 +90,7 @@ const PastRequests: FC<Props> = ({
           <p className="requests-title-lg title">Past Requests</p>
         </div>
       </div>
-      {pastRequests.length ? (
+      {pastRequests.length && !pastVoteDataLoading ? (
         <table className="requests-table">
           <thead>
             <tr>
@@ -148,7 +152,13 @@ const PastRequests: FC<Props> = ({
 
       {pastRequests.length && !showAll ? (
         <div className="bottom-row">
-          <Button variant="secondary" onClick={() => setShowAll(true)}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setNumToQuery(1000);
+              setShowAll(true);
+            }}
+          >
             View All
           </Button>
         </div>

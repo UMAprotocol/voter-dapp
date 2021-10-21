@@ -1,14 +1,14 @@
 import { useContext } from "react";
 import provider from "common/utils/web3/createProvider";
-import createVotingContractInstance from "web3/createVotingContractInstance";
+import createVotingContractInstance from "common/web3/createVotingContractInstance";
 import { useQuery } from "react-query";
 
-import determineBlockchainNetwork from "web3/helpers/determineBlockchainNetwork";
+import determineBlockchainNetwork from "common/web3/helpers/determineBlockchainNetwork";
 
 import {
   queryPriceRoundEvents,
   PriceRound,
-} from "web3/get/queryPriceRoundEvents";
+} from "common/web3/get/queryPriceRoundEvents";
 import { ErrorContext } from "common/context/ErrorContext";
 
 const signer = provider.getSigner();

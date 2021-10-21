@@ -1,8 +1,12 @@
 import { gql } from "@apollo/client";
 
 export const PRICE_REQUEST_VOTING_DATA = gql`
-  query priceRequestRounds($orderBy: String, $orderDirection: String) {
-    priceRequestRounds(first: 1000) {
+  query priceRequestRounds(
+    $orderBy: String
+    $orderDirection: String
+    $numToQuery: Int
+  ) {
+    priceRequestRounds(first: $numToQuery) {
       id
       identifier {
         id

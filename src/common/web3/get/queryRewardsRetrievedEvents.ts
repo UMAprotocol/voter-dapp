@@ -4,7 +4,7 @@ import assert from "assert";
 import { VOTER_CONTRACT_BLOCK } from "common/config";
 import { OLD_VOTING_CONTRACT_ADDRESSES } from "common/config";
 import provider from "common/utils/web3/createProvider";
-import createOldVotingContractInstance from "web3/createOldVotingContractInstance";
+import createOldVotingContractInstance from "common/web3/createOldVotingContractInstance";
 
 /*
   event RewardsRetrieved(
