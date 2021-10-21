@@ -18,6 +18,11 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react" // for the css prop
   },
+  "ts-node":{
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
   "include": ["src"],
   "files": ["src/twin.d.ts"]
 }
