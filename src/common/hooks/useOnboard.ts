@@ -108,7 +108,8 @@ export default function useOnboard() {
         },
       };
 
-      connect(dispatch, network, subscriptions);
+      connect(dispatch, network, subscriptions, onboard);
+
       setInitOnboard(false);
     }
   }, [

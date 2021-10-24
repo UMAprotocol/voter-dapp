@@ -131,7 +131,7 @@ function connectionReducer(state: OnboardState, action: Action) {
       };
     }
     case RESET_STATE: {
-      return INITIAL_STATE;
+      return { ...INITIAL_STATE, onboard: state.onboard };
     }
     default: {
       throw new Error(`Unsupported action type ${(action as any).type}`);
@@ -153,10 +153,12 @@ const INITIAL_STATE = {
 const connect = async (
   dispatch: OnboardDispatch,
   network: Network | null,
-  subscriptions: Subscriptions
+  subscriptions: Subscriptions,
+  onboard: OnboardApi | null
 ) => {
   try {
-    const onboardInstance = createOnboardInstance(network, subscriptions);
+    const onboardInstance =
+      onboard || createOnboardInstance(network, subscriptions);
 
     await onboardInstance.walletSelect();
     await onboardInstance.walletCheck();
