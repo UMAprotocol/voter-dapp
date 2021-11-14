@@ -7,11 +7,12 @@ import {
 
 export default function useVotesRevealedEvents(
   contract: ethers.Contract | null,
-  address: string | null
+  address: string | null,
+  roundId?: string
 ) {
   return useQuery<VoteRevealed[] | undefined | void>(
-    ["votesRevealedEvents", address],
-    () => queryVotesRevealedEvents(contract, address),
-    { enabled: !!contract && !!address }
+    ["votesRevealedEventsByRound", address, roundId],
+    () => queryVotesRevealedEvents(contract, address, roundId),
+    { enabled: !!contract && !!roundId && !!roundId.length && !!address }
   );
 }

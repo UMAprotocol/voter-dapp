@@ -71,8 +71,6 @@ const Wallet: FC<Props> = ({ signingKeys, refetchVoteSummaryData }) => {
   const { data: umaPrice } = useUmaPriceData();
   const { isOpen, open, close, modalRef } = useModal();
   const {
-    initOnboard,
-    setInitOnboard,
     isConnected,
     onboard,
     disconnect,
@@ -80,6 +78,7 @@ const Wallet: FC<Props> = ({ signingKeys, refetchVoteSummaryData }) => {
     address,
     network,
     notify,
+    connect,
   } = useOnboard();
 
   const { addError } = useContext(ErrorContext);
@@ -242,7 +241,7 @@ const Wallet: FC<Props> = ({ signingKeys, refetchVoteSummaryData }) => {
               <Button
                 className="connect-btn"
                 onClick={() => {
-                  if (!initOnboard) setInitOnboard(true);
+                  connect().catch(console.error)
                 }}
                 variant="secondary"
               >

@@ -32,7 +32,7 @@ export const queryGetPendingRequests = async (contract: ethers.Contract) => {
               try {
                 ancData = ethers.utils.toUtf8String(x[2]);
               } catch (err) {
-                console.log("Invalid ancillaryData coding");
+                console.error("Invalid ancillaryData coding");
                 ancData = "Bad anc data encoding.";
               }
             }
