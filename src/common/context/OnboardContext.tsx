@@ -1,9 +1,9 @@
 import { createContext, useReducer, Dispatch, FC, useEffect } from "react";
 import { ethers } from "ethers";
-import { API as OnboardApi, Wallet} from "bnc-onboard/dist/src/interfaces";
+import { API as OnboardApi, Wallet } from "bnc-onboard/dist/src/interfaces";
 import createOnboardInstance from "common/utils/web3/createOnboardInstance";
 import Notify, { API as NotifyAPI } from "bnc-notify";
-import Events from 'events'
+import Events from "events";
 
 type Provider = ethers.providers.Web3Provider;
 type Address = string;
@@ -91,16 +91,16 @@ type WithDelegatedProps = {
   [k: string]: unknown;
 };
 
-const events = new Events()
+const events = new Events();
 const subscriptions = {
   address: (addr: string | null) => {
-    events.emit('event','address',addr)
+    events.emit("event", "address", addr);
   },
   network: async (networkId: any) => {
-    events.emit('event','network',networkId)
+    events.emit("event", "network", networkId);
   },
   wallet: async (wallet: Wallet) => {
-    events.emit('event','wallet',wallet)
+    events.emit("event", "wallet", wallet);
   },
 };
 const onboardInstance = createOnboardInstance(1 as any, subscriptions);
@@ -169,12 +169,8 @@ const INITIAL_STATE = {
   notify: null,
 };
 
-const connect = async (
-  dispatch: OnboardDispatch,
-  onboard: OnboardApi
-) => {
+const connect = async (dispatch: OnboardDispatch, onboard: OnboardApi) => {
   try {
-
     await onboard.walletSelect();
     await onboard.walletCheck();
 
@@ -205,17 +201,34 @@ export const OnboardContext = createContext<TOnboardContext>(
 
 OnboardContext.displayName = "OnboardContext";
 
+// ensure we dont instanciate notify more than once per chain, cache the instance
+const NotifyFactory = () => {
+  const instances = new Map<number, NotifyAPI>();
+  return (networkId: number = 1) => {
+    if (instances.has(networkId)) return instances.get(networkId) as NotifyAPI;
+    const instance = Notify({
+      dappId: process.env.REACT_APP_PUBLIC_ONBOARD_API_KEY, // [String] The API key created by step one above
+      networkId, // [Integer] The Ethereum network ID your Dapp uses.
+      desktopPosition: "topRight",
+    });
+    instances.set(networkId, instance);
+    return instance;
+  };
+};
+
+const getNotify = NotifyFactory();
+
 const OnboardProvider: FC<WithDelegatedProps> = ({
   children,
   ...delegated
 }) => {
   const [state, dispatch] = useReducer(connectionReducer, INITIAL_STATE);
 
-  useEffect(()=>{
-    events.on('event',(event:string,data:any)=>{
-      switch(event){
-        case 'wallet':{
-          const wallet:Wallet = data
+  useEffect(() => {
+    events.on("event", (event: string, data: any) => {
+      switch (event) {
+        case "wallet": {
+          const wallet: Wallet = data;
           if (wallet.provider) {
             const ethersProvider = new ethers.providers.Web3Provider(
               wallet.provider
@@ -225,18 +238,13 @@ const OnboardProvider: FC<WithDelegatedProps> = ({
               type: actions.SET_SIGNER,
               payload: ethersProvider.getSigner(),
             });
-            // dispatch({
-            //   type: actions.SET_NETWORK,
-            //   payload: await ethersProvider.getNetwork(),
-            // });
           } else {
             dispatch({ type: actions.SET_PROVIDER, payload: null });
-            dispatch({ type: actions.SET_NETWORK, payload: null });
           }
           break;
         }
-        case 'network':{
-          const networkId = data 
+        case "network": {
+          const networkId = data;
           if (networkId) {
             dispatch({
               type: actions.SET_NETWORK,
@@ -258,11 +266,7 @@ const OnboardProvider: FC<WithDelegatedProps> = ({
             if (networkId) {
               dispatch({
                 type: actions.SET_NOTIFY,
-                payload: Notify({
-                  dappId: process.env.REACT_APP_PUBLIC_ONBOARD_API_KEY, // [String] The API key created by step one above
-                  networkId, // [Integer] The Ethereum network ID your Dapp uses.
-                  desktopPosition: "topRight",
-                }),
+                payload: getNotify(networkId),
               });
             } else {
               dispatch({
@@ -273,18 +277,17 @@ const OnboardProvider: FC<WithDelegatedProps> = ({
           }
           break;
         }
-        case 'address':{
-          const addr: string | null = data
+        case "address": {
+          const addr: string | null = data;
           dispatch({ type: actions.SET_ADDRESS, payload: addr });
           break;
         }
       }
-    })
-    return ()=>{
-      events.removeAllListeners('events')
-    }
-  },[dispatch])
-
+    });
+    return () => {
+      events.removeAllListeners("events");
+    };
+  }, [dispatch]);
 
   return (
     <OnboardContext.Provider

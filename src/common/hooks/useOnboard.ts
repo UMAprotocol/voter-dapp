@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { OnboardContext } from "common/context/OnboardContext";
 
-
 export default function useOnboard() {
   const [initOnboard, setInitOnboard] = useState(false);
   const context = useContext(OnboardContext);
@@ -33,11 +32,10 @@ export default function useOnboard() {
     address,
     error,
     isConnected,
-    connect: ()=> connect(dispatch,onboard),
+    connect: () => connect(dispatch, onboard),
     disconnect: () => disconnect(dispatch, onboard),
     initOnboard,
     setInitOnboard,
     notify,
   };
-
 }
