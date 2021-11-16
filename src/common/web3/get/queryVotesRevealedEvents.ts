@@ -7,6 +7,7 @@ export interface VoteRevealed extends VoteEvent {
   price: string;
   numTokens: string;
   idenHex: string;
+  address: string;
 }
 
 export const queryVotesRevealedEvents = async (
@@ -28,33 +29,28 @@ export const queryVotesRevealedEvents = async (
   // VoteRevealed(address,uint256,bytes32,uint256,int256,bytes,uint256)
   const filter = contract.filters.VoteRevealed(
     address,
-    roundId,
+    roundId && ethers.BigNumber.from(roundId),
     identifier,
     time,
     price,
     null,
     numTokens
   );
+  const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
+  return events.map((el) => {
+    const { args } = el;
+    const datum = {} as VoteRevealed;
+    if (args) {
+      datum.address = args[0];
+      datum.roundId = args[1].toString();
+      datum.identifier = ethers.utils.toUtf8String(args[2]);
+      datum.idenHex = args[2];
+      datum.time = args[3].toString();
+      datum.price = ethers.utils.formatEther(args[4]);
+      datum.ancillaryData = args[5];
+      datum.numTokens = args[6].toString();
+    }
 
-  try {
-    const events = await contract.queryFilter(filter, VOTER_CONTRACT_BLOCK);
-    return events.map((el) => {
-      const { args } = el;
-      const datum = {} as VoteRevealed;
-      if (args) {
-        datum.address = args[0];
-        datum.roundId = args[1].toString();
-        datum.identifier = ethers.utils.toUtf8String(args[2]);
-        datum.idenHex = args[2];
-        datum.time = args[3].toString();
-        datum.price = ethers.utils.formatEther(args[4]);
-        datum.ancillaryData = args[5];
-        datum.numTokens = args[6].toString();
-      }
-
-      return datum;
-    });
-  } catch (err) {
-    console.log("err", err);
-  }
+    return datum;
+  });
 };

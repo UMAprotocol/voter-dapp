@@ -204,7 +204,7 @@ const RevealPhase: FC<Props> = ({
                                 }
                               })
                               .catch((err) => {
-                                console.log("err in snapshot", err);
+                                console.error("err in snapshot", err);
                                 addError(err);
                               });
                           }

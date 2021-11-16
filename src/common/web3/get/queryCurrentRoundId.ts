@@ -7,6 +7,6 @@ export const queryCurrentRoundId = async (contract: ethers.Contract) => {
       return roundIdToString;
     }
   } catch (err) {
-    console.log("err", err);
+    console.error("err", err);
   }
 };

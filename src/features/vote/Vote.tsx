@@ -22,7 +22,7 @@ import {
   useVotingContract,
   usePendingRequests,
   useCurrentRoundId,
-  useVotesRevealedEvents,
+  useVotesRevealedEventsRound,
   useEncryptedVotesEvents,
 } from "hooks";
 
@@ -74,7 +74,7 @@ const Vote: FC<Props> = ({
   const {
     data: revealedVotes = [] as VoteRevealed[],
     refetch: refetchVoteRevealedEvents,
-  } = useVotesRevealedEvents(votingContract, votingAddress);
+  } = useVotesRevealedEventsRound(votingContract, votingAddress || hotAddress, roundId);
 
   const signingPK =
     hotAddress && signingKeys[hotAddress]
