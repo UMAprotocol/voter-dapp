@@ -6,7 +6,11 @@ export const PRICE_REQUEST_VOTING_DATA = gql`
     $orderDirection: String
     $numToQuery: Int
   ) {
-    priceRequestRounds(first: $numToQuery) {
+    priceRequestRounds(
+      first: $numToQuery
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
       id
       identifier {
         id
