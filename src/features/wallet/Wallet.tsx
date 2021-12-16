@@ -145,7 +145,7 @@ const Wallet: FC<Props> = ({ signingKeys, refetchVoteSummaryData }) => {
       setTotalUmaCollected(DEFAULT_BALANCE);
       setAvailableRewards(DEFAULT_BALANCE);
     }
-  }, [signer, votingAddress, network, isConnected]);
+  }, [signer, votingAddress, network, isConnected, rewardsEvents]);
 
   // Iterate over reward events to determine total UMA collected from voting.
   useEffect(() => {
@@ -241,7 +241,7 @@ const Wallet: FC<Props> = ({ signingKeys, refetchVoteSummaryData }) => {
               <Button
                 className="connect-btn"
                 onClick={() => {
-                  connect().catch(console.error)
+                  connect().catch(console.error);
                 }}
                 variant="secondary"
               >
