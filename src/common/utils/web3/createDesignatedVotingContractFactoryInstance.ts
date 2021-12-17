@@ -19,7 +19,7 @@ export default function createDesignatedVotingContractInstance(
   const network = artifact[networkId];
 
   const contract = new ethers.Contract(
-    network.address,
+    network?.address ?? "",
     DesignatedVotingArtifact.abi,
     signer
   );
