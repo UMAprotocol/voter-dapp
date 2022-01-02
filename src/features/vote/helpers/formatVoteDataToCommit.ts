@@ -47,16 +47,7 @@ export async function formatVoteDataToCommit(
         datum.identifier = el.idenHex;
         // datum.time = el.time;
         datum.time = el.timeBN.toNumber();
-        let ancData = "";
-
-        // anc data is set to - or N/A in UI if empty, convert back to 0x.
-        if (el.ancillaryData === "-" || el.ancillaryData === "N/A") {
-          ancData = "0x";
-        } else {
-          ancData = web3.utils.utf8ToHex(el.ancillaryData);
-        }
-
-        datum.ancillaryData = ancData;
+        datum.ancillaryData = el.ancHex;
         let price = data[uniqueIdentifier];
 
         // change yes/no to numbers.
@@ -93,7 +84,7 @@ export async function formatVoteDataToCommit(
           time: el.timeBN.toNumber(),
           roundId: Number(roundId),
           identifier: el.idenHex,
-          ancillaryData: ancData,
+          ancillaryData: el.ancHex,
         };
         const hash = computeVoteHashAncillary(r);
         if (hash) {
