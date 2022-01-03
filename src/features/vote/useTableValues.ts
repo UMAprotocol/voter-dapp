@@ -108,16 +108,8 @@ export default function useTableValues(
           const prd = {} as PostRevealData;
 
           if (findVote && !findReveal) {
-            prd.ancillaryData = el.ancillaryData;
-            // anc data is set to - or N/A in UI if empty, convert back to 0x.
-            if (
-              el.ancillaryData === UNDEFINED_VOTE ||
-              el.ancillaryData === "N/A"
-            ) {
-              prd.ancillaryData = "0x";
-            } else {
-              prd.ancillaryData = web3.utils.utf8ToHex(el.ancillaryData);
-            }
+            prd.ancillaryData = el.ancHex;
+
             prd.time = Number(el.unix);
             prd.identifier = el.idenHex;
             prd.salt = findVote.salt;
