@@ -25,7 +25,7 @@ import {
 } from "./styled/DetailModals.styled";
 import { ModalState } from "./ActiveRequests";
 import { DiscordRed, CopyIcon } from "assets/icons";
-import useUMIP from "./useUMIP";
+import useUMIP from "./hooks/useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

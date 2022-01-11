@@ -26,7 +26,7 @@ import {
 import { ModalState } from "./PastRequests";
 import { DiscordRed, CopyIcon } from "assets/icons";
 import { ethers } from "ethers";
-import useUMIP from "./useUMIP";
+import useUMIP from "./hooks/useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 import toWeiSafe from "common/utils/web3/convertToWeiSafely";
 import ReactTooltip from "react-tooltip";

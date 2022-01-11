@@ -32,7 +32,7 @@ import {
 import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
 
-import useTableValues from "./useTableValues";
+import useTableValues from "./hooks/useTableValues";
 import {
   Description,
   Table,

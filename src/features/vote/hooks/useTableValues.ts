@@ -172,5 +172,3 @@ export default function useTableValues(
     hasVoted,
   };
 }
-
-const UNDEFINED_VOTE = "-";
