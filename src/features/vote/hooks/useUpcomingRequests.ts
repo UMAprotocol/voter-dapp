@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { PriceRequestAdded } from "common/web3/get/queryPriceRequestAddedEvents";
 import { DateTime } from "luxon";
-import { fetchUmip } from "./fetchUMIP";
-import { FormattedRequest } from "./UpcomingRequests";
+import { fetchUmip } from "../helpers/fetchUMIP";
+import { FormattedRequest } from "../UpcomingRequests";
 
 export default function useUpcomingRequests(
   upcomingRequests: PriceRequestAdded[]

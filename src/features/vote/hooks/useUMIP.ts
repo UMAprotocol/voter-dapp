@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { UMIP, fetchUmip } from "./fetchUMIP";
+import { UMIP, fetchUmip } from "../helpers/fetchUMIP";
 
 // only for testing purposes. This UMIP is returned to avoid showing misleading data on anything thats not mainnet.
 const testUmip: UMIP = {

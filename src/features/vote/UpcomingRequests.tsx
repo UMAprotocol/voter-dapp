@@ -9,7 +9,7 @@ import {
   DescriptionWrapper,
 } from "./styled/ActiveRequests.styled";
 import useModal from "common/hooks/useModal";
-import useUpcomingRequests from "./useUpcomingRequests";
+import useUpcomingRequests from "./hooks/useUpcomingRequests";
 import DescriptionModal from "./DescriptionModal";
 
 export interface FormattedRequest {
