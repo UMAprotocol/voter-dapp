@@ -13,7 +13,7 @@ import { getMessageSignatureMetamask } from "common/tempUmaFunctions";
 import { snapshotCurrentRound } from "common/web3/post/snapshotCurrentRound";
 import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import { ModalState } from "./ActiveRequests";
-import useTableValues from "./useTableValues";
+import useTableValues from "./hooks/useTableValues";
 import { ErrorContext } from "common/context/ErrorContext";
 import { RefetchOptions, QueryObserverResult } from "react-query";
 import useModal from "common/hooks/useModal";

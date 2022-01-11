@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import { PostRevealData } from "common/web3/post/revealVotes";
 import web3 from "web3";
-import { fetchUmip } from "./fetchUMIP";
+import { fetchUmip } from "../helpers/fetchUMIP";
 import { getPrecisionForIdentifier } from "@uma/common";
 import { ethers } from "ethers";
 interface TableValue {
