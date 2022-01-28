@@ -96,14 +96,14 @@ export const AvailableRewards = styled.div`
 
 export const SmallTitle = styled.p`
   margin: 0 0 12px;
-  opacity: 0.5;
   font-size: 14px;
   font-weight: 400;
-  color: #000;
+  color: rgba(0, 0, 0, 0.5);
   .Wallet-collect {
     text-decoration: underline;
     cursor: pointer;
     color: #ff4a4a;
+    font-weight: 700;
     /* font-size: 0.875rem; */
     margin-left: 4px;
     margin-bottom: 1px;
