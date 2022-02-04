@@ -49,6 +49,7 @@ export const Description = styled.span`
   color: #818180;
   line-height: 1.57;
   font-size: ${14 / 16}rem;
+  max-width: 40ch;
   span {
     color: #ff4a4a;
     &:hover {
