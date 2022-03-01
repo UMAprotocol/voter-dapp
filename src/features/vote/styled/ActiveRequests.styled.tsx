@@ -107,6 +107,7 @@ export const Table = styled.table<TableProps>`
       border-style: solid;
       vertical-align: middle;
       border-bottom: 1px solid #e5e4e4;
+      margin: 0 12px;
       @media screen and (max-width: 768px) {
         padding-left: 1rem;
         padding-right: 1rem;
