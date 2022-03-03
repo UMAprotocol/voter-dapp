@@ -5,7 +5,7 @@ import RequestsWrapper from "./RequestsWrapper.styled";
 export const Wrapper = styled(RequestsWrapper)`
   &.PastRequests {
     margin-top: 0;
-    overflow-y: scroll;
+    overflow-y: auto;
     .requests-header-row {
       max-width: 1350px;
       margin: 0 auto;
