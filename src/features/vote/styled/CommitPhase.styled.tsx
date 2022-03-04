@@ -11,7 +11,7 @@ export const FormWrapper = styled.form<StyledFormProps>`
     padding: 1rem 4rem;
     background-color: #fff;
     width: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     .identifier {
       align-items: flex-start;

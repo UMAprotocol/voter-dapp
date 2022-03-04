@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
   ${tw`max-w-full pt-5 mt-5 pb-1`};
   .wrapper {
     ${tw`max-w-7xl mx-auto py-5 px-8 my-10`}
-    overflow-y: scroll;
+    overflow-y: auto;
     background-color: #fff;
   }
 
