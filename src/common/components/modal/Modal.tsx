@@ -48,7 +48,7 @@ export const Wrapper = styled.aside<StyledProps>`
       ? `${(props.coords.y + DEFAULT_TOP_VALUE) / 16}rem`
       : `${DEFAULT_TOP_VALUE / 16}rem`;
   }};
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: 80vh;
   padding: 2.25rem;
   @media screen and (max-width: 768px) {
