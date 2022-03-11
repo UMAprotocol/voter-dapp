@@ -4,6 +4,7 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 export const ModalWrapper = styled.div`
   /* max-width: 700; */
   min-width: 450px;
+  overflow-y: auto;
   height: auto;
   position: relative;
   background-color: #fff;
