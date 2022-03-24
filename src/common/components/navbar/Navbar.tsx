@@ -1,154 +1,139 @@
-/** @jsxImportSource @emotion/react */
-import { FC, useState } from "react";
-import tw from "twin.macro"; // eslint-disable-line
+import { useState } from "react";
+import { COMMUNITY_LINKS, LINKS } from "../../utils/constants";
+import { DownIcon } from "../icons";
+import * as UI from "./Navbar.styled"
+import logo from "assets/icons/logo.svg";
+import { useLocation } from "react-router-dom";
 
-import { Link } from "react-router-dom";
-import {
-  StyledNavbar,
-  DesktopLinks,
-  DesktopLink,
-  DesktopSocialLink,
-  MobileList,
-  MobileListItem,
-  MobileNav,
-  MobileContent,
-  MobileButton,
-  SocialMobileList,
-} from "./Navbar.styled";
-import { Discord, Github, Medium, Twitter } from "assets/icons";
-import logo from "assets/icons/logo.png";
-
-const Navbar: FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const NavLinks = () => {
+  const { pathname } = useLocation();
+  console.log({pathname})
   return (
-    <StyledNavbar>
-      <Link tw="inline-flex items-center p-2 mr-4" to="/">
-        <img className="logo" src={logo} alt="uma_logo" />
-      </Link>
-      <MobileButton
-        isOpen={isOpen}
-        onClick={() => setIsOpen((prevValue) => !prevValue)}
-      >
-        <span />
-        <span />
-        <span />
-      </MobileButton>
-      {isOpen && (
-        <MobileContent>
-          <MobileNav>
-            <MobileList>
-              <MobileListItem>
-                <Link className="link active" to="/">
-                  Vote
-                </Link>
-              </MobileListItem>
-              <MobileListItem>
-                <a
-                  href="https://v1.vote.umaproject.org/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  V1 Vote
-                </a>
-              </MobileListItem>
-              <MobileListItem>
-                <a
-                  href="https://docs.umaproject.org/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Docs
-                </a>
-              </MobileListItem>
-              <MobileListItem>
-                <a
-                  href="https://docs.umaproject.org/uma-tokenholders/uma-holders"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  About
-                </a>
-              </MobileListItem>
-            </MobileList>
-          </MobileNav>
-          <div>
-            <SocialMobileList>
-              {socialLinks.map(({ logo, url }, index) => {
-                return (
-                  <li key={index}>
-                    <a href={url} target="_blank" rel="noreferrer">
-                      {logo}
-                    </a>
-                  </li>
-                );
-              })}
-            </SocialMobileList>
-          </div>
-        </MobileContent>
-      )}
-      <DesktopLinks tw="inline-flex items-center">
-        <Link to="/" tw=""></Link>
-        <div tw="flex place-items-end">
-          <Link className="link active" to="/" tw="px-5 py-3">
-            Vote
-          </Link>
-          <DesktopLink
-            href="https://v1.vote.umaproject.org/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            V1 Vote
-          </DesktopLink>
-          <DesktopLink
-            href="https://docs.umaproject.org/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Docs
-          </DesktopLink>
+    <UI.LinkList>
+      {HEADER_LINKS.map((link) => (
+        <UI.LinkListItem key={link.key}>{link.component({ path: pathname })}</UI.LinkListItem>
+      ))}
+    </UI.LinkList>
+  );
+}
 
-          <DesktopLink
-            href="https://docs.umaproject.org/uma-tokenholders/uma-holders"
-            target="_blank"
-            rel="noreferrer"
-          >
-            About
-          </DesktopLink>
-          {socialLinks.map(({ logo, url }, index) => {
-            return (
-              <DesktopSocialLink
-                key={index}
-                href={url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {logo}
-              </DesktopSocialLink>
-            );
-          })}
-        </div>
-      </DesktopLinks>
-    </StyledNavbar>
+export const Header: React.FunctionComponent = () => {
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  const onToggle = () => {
+    setShowMobileMenu((prevShowMobileMenu) => !prevShowMobileMenu);
+  }
+
+  return (
+    <UI.Container>
+       <UI.Content>
+         <UI.LogoLink to="/">
+           <UI.LogoLinkIcon src={logo} alt="UMA logo" />
+         </UI.LogoLink>
+         <UI.NavContainer>
+           <NavLinks />
+         </UI.NavContainer>
+         <MenuToggle toggled={showMobileMenu} onToggle={onToggle} />
+         <MobileMenuComponent show={showMobileMenu} onClickLink={onToggle} />
+       </UI.Content>
+    </UI.Container>
+  );
+}
+
+const MobileMenuComponent: React.FC<{ show: boolean, onClickLink: () => void }> = ({ show, onClickLink }) => {
+  const { pathname } = useLocation();
+
+  return (
+    <UI.MobileMenuContainer show={show}>
+        {MOBILE_HEADER_LINKS.map((link) => link.component({ path: pathname, onClick: onClickLink }))}
+        <UI.MobileCommunityLinks>
+          {COMMUNITY_LINKS.map((link, idx) => (
+            <UI.MobileCommunityLink key={idx} to={link.href} target="_blank">
+              <img src={link.iconSrc} alt={link.alt} width={25} height={25} />
+            </UI.MobileCommunityLink>
+          ))}
+        </UI.MobileCommunityLinks>
+    </UI.MobileMenuContainer>
+  );
+}
+
+const MenuToggle: React.FC<{ toggled: boolean; onToggle: () => void }> = ({
+  toggled,
+  onToggle,
+}) => {
+  return (
+    <UI.MenuToggleButton onClick={onToggle} toggled={toggled}>
+      <span></span>
+      <span></span>
+      <span></span>
+    </UI.MenuToggleButton>
   );
 };
 
-const socialLinks = [
+const CommunityDropdown: React.FunctionComponent = () => {
+  return (
+    <UI.CommunityDropdownContainer>
+      <UI.DropdownButton>
+        Community
+        <DownIcon />
+      </UI.DropdownButton>
+      <UI.DropdownValuesContainer>
+        <UI.CommunityLinks>
+          {COMMUNITY_LINKS.map((link, idx) => (
+            <UI.CommunityLink key={idx} to={link.href} target="_blank">
+              <img src={link.iconSrc} alt={link.alt} width={25} height={25} />
+              <span>{link.name}</span>
+            </UI.CommunityLink>
+          ))}
+        </UI.CommunityLinks>
+      </UI.DropdownValuesContainer>
+    </UI.CommunityDropdownContainer>
+  );
+}
+
+interface IHeaderLink {
+  key: string;
+  component: (args: { path: string; onClick?: () => void }) => JSX.Element;
+}
+
+const HEADER_LINKS: IHeaderLink[] = [
   {
-    url: "https://medium.com/uma-project",
-    logo: <Medium className="sm-logo" />,
+    key: "Projects",
+    component: () => <UI.NavLink to={LINKS.projects}>Projects</UI.NavLink>,
   },
   {
-    url: "https://github.com/UMAprotocol",
-    logo: <Github className="sm-logo" />,
+    key: "Products",
+    component: () => <UI.NavLink to={LINKS.products}>Products</UI.NavLink>,
   },
   {
-    url: "https://twitter.com/UMAprotocol",
-    logo: <Twitter className="sm-logo" />,
+    key: "Docs",
+    component: () =><UI.NavLink to={LINKS.docs} target="_blank">Docs</UI.NavLink>,
   },
   {
-    url: "https://discord.umaproject.org",
-    logo: <Discord className="sm-logo" />,
+    key: "Community",
+    component: () => <CommunityDropdown />,
+  },
+  {
+    key: "Vote",
+    component: ({ path }) => {console.log({ path }); return <UI.NavLink to="/" active={path === "/"}>Vote</UI.NavLink>},
   },
 ];
 
-export default Navbar;
+const MOBILE_HEADER_LINKS: IHeaderLink[] = [
+  {
+    key: "Projects",
+    component: () => <UI.MobileNavLink to={LINKS.projects}>Projects</UI.MobileNavLink>,
+  },
+  {
+    key: "Products",
+    component: () => <UI.MobileNavLink to={LINKS.products} >Products</UI.MobileNavLink>,
+  },
+  {
+    key: "Docs",
+    component: () =><UI.MobileNavLink to={LINKS.docs} target="_blank">Docs</UI.MobileNavLink>,
+  },
+  {
+    key: "Vote",
+    component: ({ path, onClick }) => <UI.MobileNavLink to="/" active={path === "/"} onClick={onClick}>Vote</UI.MobileNavLink>,
+  },
+];

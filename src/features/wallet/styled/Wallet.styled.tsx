@@ -3,7 +3,7 @@ import tw, { styled } from "twin.macro"; // eslint-disable-line
 export const Wrapper = styled.div`
   background-color: #f5f5f5;
 
-  ${tw`max-w-full pt-5 mt-5 pb-1`};
+  ${tw`max-w-full pt-5 pb-1`};
   .wrapper {
     ${tw`max-w-7xl mx-auto py-5 px-8 my-10`}
     overflow-y: auto;

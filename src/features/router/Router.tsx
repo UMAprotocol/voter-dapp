@@ -6,9 +6,9 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Vote from "features/vote";
 
 // Components
-import Navbar from "common/components/navbar";
+import { Header } from "common/components/navbar";
 import Wallet from "features/wallet";
-import Footer from "common/components/footer";
+import { Footer } from "common/components/footer";
 import { SigningKeys } from "App";
 
 import useVoteData, { PriceRequestRound } from "common/hooks/useVoteData";
@@ -28,7 +28,7 @@ const Router: FC<Props> = ({ signingKeys }) => {
   return (
     <BrowserRouter>
       <div>
-        <Navbar />
+        <Header />
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Wallet
