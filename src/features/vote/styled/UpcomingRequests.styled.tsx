@@ -29,7 +29,7 @@ export const Wrapper = styled(RequestsWrapper)`
       max-width: 1250px;
       margin: 0 auto;
       border-collapse: separate;
-      border-spacing: 0 15px;
+      border-spacing: 8px 15px;
 
       thead {
         tr {
