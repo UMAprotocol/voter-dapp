@@ -1,108 +1,109 @@
 /** @jsxImportSource @emotion/react */
-import { FC } from "react";
-import tw, { styled } from "twin.macro"; // eslint-disable-line
-import { FooterLogo } from "assets/icons";
-import { Discord, Github, Medium, Twitter } from "assets/icons";
-import {
-  StyledFooter,
-  LogoWrapper,
-  LinkWrapper,
-  SubscribeWrapper,
-  Flex,
-} from "./Footer.styled";
+import React, { SyntheticEvent, useState } from "react";
+import MailchimpSubscribe from "react-mailchimp-subscribe";
+import * as UI from "./Footer.styled";
+import { COLORS, LINKS } from "common/utils/constants";
+import { UniversalLink } from "../link";
+import { ArrowRightTailIcon } from "../icons";
+import logo from "assets/icons/logo.svg";
 
-const Footer: FC = () => {
+const LINKS_LIST = [
+  { name: "Docs", href: LINKS.docs },
+  { name: "FAQs", href: LINKS.faq },
+  { name: "Contact", href: "mailto:hello@umaproject.org" },
+  { name: "Getting Started", href: LINKS.getStarted },
+  { name: "Vote", href: LINKS.vote },
+  { name: "Careers", href: "https://angel.co/company/uma-project/jobs" },
+];
+
+const MAILCHIMP_URL =
+  "https://umaproject.us19.list-manage.com/subscribe/post?u=b2e789cb476a06f1261e79e05&id=85dfd6c316";
+
+export const Footer: React.FC = () => (
+  <UI.Container>
+    <UI.Content>
+      <UI.ContentItem>
+        <UniversalLink to="/">
+          <UI.Logo src={logo} alt="UMA logo" />
+        </UniversalLink>
+        <NewsletterFormComponent />
+      </UI.ContentItem>
+      <UI.ContentItem>
+        <UI.NavContainer>
+          <UI.NavLinks>
+            {LINKS_LIST.slice(0, LINKS_LIST.length / 2).map((link, idx) => (
+              <li key={idx}>
+                <UI.NavLink to={link.href}>{link.name}</UI.NavLink>
+              </li>
+            ))}
+          </UI.NavLinks>
+          <UI.NavLinks>
+            {LINKS_LIST.slice(LINKS_LIST.length / 2).map((link, idx) => (
+              <li key={idx}>
+                <UI.NavLink to={link.href}>{link.name}</UI.NavLink>
+              </li>
+            ))}
+          </UI.NavLinks>
+        </UI.NavContainer>
+      </UI.ContentItem>
+    </UI.Content>
+  </UI.Container>
+);
+
+const NewsletterFormComponent: React.FunctionComponent = () => {
+  const [inputFocused, setInputFocused] = useState(false);
+
+  const onFocusInput = () => {
+    setInputFocused(true);
+  };
+
+  const onBlurInput = () => {
+    setInputFocused(false);
+  };
+
   return (
-    <StyledFooter>
-      <Flex>
-        <LogoWrapper>
-          <FooterLogo />
-        </LogoWrapper>
-        <LinkWrapper>
-          <ul className="links">
-            {umaLinks.map(({ url, text }, index) => {
-              return (
-                <li key={index} className="link">
-                  <a href={url} target="_blank" rel="noreferrer">
-                    {text}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </LinkWrapper>
-        <SubscribeWrapper>
-          <div className="subscribe">
-            <h3>Get UMA Updates</h3>
-            <p className="sub-text">
-              Sign up for our newsletter to stay updated about the UMA project.
-            </p>
-            <div className="sm-links-wrapper">
-              {socialLinks.map(({ logo, url }, index) => {
-                return (
-                  <a
-                    key={index}
-                    href={url}
-                    tw="pr-2 py-3 flex-grow"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {logo}
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-        </SubscribeWrapper>
-      </Flex>
-    </StyledFooter>
+    <UI.NewsletterFormContainer>
+      <UI.FooterHeading>Get UMA Updates</UI.FooterHeading>
+      <UI.NewsletterText>
+        Sign up for our newsletter to stay updated about the UMA project.
+      </UI.NewsletterText>
+      <MailchimpSubscribe
+        url={MAILCHIMP_URL}
+        render={({ subscribe, status, message }) => (
+          <UI.NewsletterForm
+            onSubmit={(evt: SyntheticEvent<HTMLFormElement>) => {
+              evt.preventDefault();
+              // @ts-expect-error Doesn't like the input being taken like this
+              subscribe({ EMAIL: evt.target[0].value });
+            }}
+          >
+            <UI.NewsletterInputContainer highlighted={inputFocused}>
+              <UI.Input
+                type="email"
+                name="email"
+                placeholder="satoshi@example.com"
+                onFocus={onFocusInput}
+                onBlur={onBlurInput}
+              />
+              <UI.SubmitButton type="submit">
+                <ArrowRightTailIcon />
+              </UI.SubmitButton>
+            </UI.NewsletterInputContainer>
+            {status === "sending" && (
+              <UI.FormMessage>sending...</UI.FormMessage>
+            )}
+            {status === "error" && (
+              <UI.FormMessage
+                style={{ color: `hsl(${COLORS.primary[500]})` }}
+                dangerouslySetInnerHTML={{ __html: message as string }}
+              />
+            )}
+            {status === "success" && (
+              <UI.FormMessage>Subscribed !</UI.FormMessage>
+            )}
+          </UI.NewsletterForm>
+        )}
+      />
+    </UI.NewsletterFormContainer>
   );
 };
-
-const umaLinks = [
-  {
-    url: "https://docs.umaproject.org/getting-started/overview",
-    text: "How UMA Works",
-  },
-  {
-    url: "https://docs.umaproject.org/build-walkthrough/build-process",
-    text: "Getting Started",
-  },
-  {
-    url: "https://docs.umaproject.org/",
-    text: "Docs",
-  },
-  {
-    url: "https://umaproject.org/faq",
-    text: "FAQs",
-  },
-  {
-    url: "https://angel.co/company/uma-project/jobs",
-    text: "Careers",
-  },
-  {
-    url: "mailto:hello@umaproject.org",
-    text: "Contact",
-  },
-];
-
-const socialLinks = [
-  {
-    url: "https://medium.com/uma-project",
-    logo: <Medium className="sm-logo" />,
-  },
-  {
-    url: "https://github.com/UMAprotocol",
-    logo: <Github className="sm-logo" />,
-  },
-  {
-    url: "https://twitter.com/UMAprotocol",
-    logo: <Twitter className="sm-logo" />,
-  },
-  {
-    url: "https://discord.umaproject.org",
-    logo: <Discord className="sm-logo" />,
-  },
-];
-
-export default Footer;
