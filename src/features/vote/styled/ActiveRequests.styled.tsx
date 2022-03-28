@@ -69,7 +69,7 @@ export const Table = styled.table<TableProps>`
   max-width: 1400px;
   margin: 0 auto;
   border-collapse: separate;
-  border-spacing: 0 15px;
+  border-spacing: 8px 15px;
   .input-cell {
     cursor: ${(props) => (props.isConnected ? "auto" : "not-allowed")};
     input,
