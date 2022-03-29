@@ -65,6 +65,8 @@ const PastRequests: FC<Props> = ({
     unix: "",
   });
 
+  console.log("pastRequests", pastRequests);
+
   useEffect(() => {
     // Handle past requests differently depending on if user is logged in or not.
     if (voteSummaryData.length && roundId) {
@@ -136,7 +138,11 @@ const PastRequests: FC<Props> = ({
                     <div>{el.vote}</div>
                   </td>
                   <td>
-                    <div>{el.reward}</div>
+                    <div>
+                      {el.vote === el.correct && el.reward === "N/A"
+                        ? "Rewards Claimable"
+                        : el.reward}
+                    </div>
                   </td>
                   <td className="last-cell">
                     <div>{el.timestamp}</div>
