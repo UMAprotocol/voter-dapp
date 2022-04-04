@@ -33,8 +33,9 @@ export const Wrapper = styled(RequestsWrapper)`
       border-spacing: 8px 15px;
       &.past-requests-table {
         thead {
-          tr {
-            max-width: 400px;
+          th:nth-of-type(2),
+          th:nth-of-type(3) {
+            max-width: 200px;
           }
         }
         tbody {
