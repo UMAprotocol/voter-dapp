@@ -91,7 +91,7 @@ const PastRequests: FC<Props> = ({
         </div>
       </div>
       {pastRequests.length && !pastVoteDataLoading ? (
-        <table className="requests-table">
+        <table className="requests-table past-requests-table">
           <thead>
             <tr>
               <th>Proposal</th>
