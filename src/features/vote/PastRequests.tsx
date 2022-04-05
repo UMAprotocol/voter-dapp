@@ -103,8 +103,6 @@ const PastRequests: FC<Props> = ({
           </thead>
           <tbody>
             {pastRequests.map((el, index) => {
-              console.log("el.reward", el.reward);
-
               return (
                 <tr key={index}>
                   <td>
