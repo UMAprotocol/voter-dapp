@@ -8,7 +8,7 @@ import { formatPastRequestsByAddress } from "./helpers/formatPastRequestByAddres
 import { Wrapper } from "./styled/PastRequests.styled";
 import useModal from "common/hooks/useModal";
 import PastViewDetailsModal from "./PastViewDetailsModal";
-
+import { numberFormatter } from "common/utils/format";
 export interface ModalState {
   proposal: string;
   correct: string;
@@ -91,7 +91,7 @@ const PastRequests: FC<Props> = ({
         </div>
       </div>
       {pastRequests.length && !pastVoteDataLoading ? (
-        <table className="requests-table">
+        <table className="requests-table past-requests-table">
           <thead>
             <tr>
               <th>Proposal</th>
@@ -136,7 +136,11 @@ const PastRequests: FC<Props> = ({
                     <div>{el.vote}</div>
                   </td>
                   <td>
-                    <div>{el.reward}</div>
+                    <div>
+                      {el.reward !== "N/A" && el.reward !== "-"
+                        ? numberFormatter(Number(el.reward))
+                        : el.reward}
+                    </div>
                   </td>
                   <td className="last-cell">
                     <div>{el.timestamp}</div>

@@ -31,7 +31,21 @@ export const Wrapper = styled(RequestsWrapper)`
       margin: 0 auto;
       border-collapse: separate;
       border-spacing: 8px 15px;
-
+      &.past-requests-table {
+        thead {
+          th:nth-of-type(2),
+          th:nth-of-type(3) {
+            max-width: 200px;
+          }
+        }
+        tbody {
+          td:nth-of-type(2),
+          td:nth-of-type(3) {
+            max-width: 200px;
+            word-break: break-word;
+          }
+        }
+      }
       thead {
         tr {
           text-align: left;
