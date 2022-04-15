@@ -114,7 +114,7 @@ export default function useTableValues(
             prd.identifier = el.idenHex;
             prd.salt = findVote.salt;
             prd.price = findVote.price.toString();
-            postData.push(prd);
+            if (prd.identifier !== "YES_OR_NO_QUERY") postData.push(prd);
           }
           return datum;
         });
