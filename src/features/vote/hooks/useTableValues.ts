@@ -116,7 +116,7 @@ export default function useTableValues(
             prd.identifier = el.idenHex;
             prd.salt = findVote.salt;
             prd.price = findVote.price.toString();
-            if (prd.identifier !== "YES_OR_NO_QUERY") postData.push(prd);
+            if (prd.identifier !== "0x5945535f4f525f4e4f5f51554552590000000000000000000000000000000000" && prd.identifier !== "0x5945535f4f525f4e4f5f5155455259") postData.push(prd);
           }
           return datum;
         });
