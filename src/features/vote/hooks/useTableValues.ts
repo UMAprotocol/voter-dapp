@@ -106,6 +106,8 @@ export default function useTableValues(
 
           // Gather up PostRevealData here to save complexity
           const prd = {} as PostRevealData;
+          
+          console.log(el.idenHex);
 
           if (findVote && !findReveal) {
             prd.ancillaryData = el.ancHex;
