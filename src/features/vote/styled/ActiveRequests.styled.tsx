@@ -79,6 +79,9 @@ export const Table = styled.table<TableProps>`
     }
   }
   thead {
+    th:nth-of-type(3) {
+      max-width: 200px;
+    }
     th {
       padding-bottom: 1rem;
       padding-right: 15px;
@@ -100,6 +103,10 @@ export const Table = styled.table<TableProps>`
   }
 
   tbody {
+    td:nth-of-type(4) {
+      max-width: 200px;
+      word-break: break-word;
+    }
     tr {
       height: 190px;
     }
