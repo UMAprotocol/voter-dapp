@@ -21,6 +21,7 @@ export interface FormattedPriceRequestRounds {
     uniqueClaimers: string;
     uniqueClaimersPctOfReveals: string;
     time: number;
+    voterRewards: string;
   };
 }
 
@@ -118,6 +119,51 @@ export default function formatPriceRequestVoteData(
           .div(roundInflationRewardsAvailable);
       }
     }
+
+    /*
+Summary: you can look up each round’s inflation percentage (inflationRate) and multiply inflationRate * totalSupplyAtSnapshot = totalRewards to get total rewards up for grabs.
+
+ext, grab all voters who voted correctly via the winnerGroup and figure out their share of the total rewards: voter.numTokens / totalVoteAmount * 1e18 = voterShareOfRewards
+
+Voter rewards is then voterShareOfRewards * totalRewards
+
+Doable, but increases the complexity of completing this.
+*/
+
+    // console.log(rr.inflationRate, account);
+    let voterRewards = "";
+    if (rr.inflationRate && account) {
+      const inflationRate = BigNumber.from(toWei(rr.inflationRate)).div(
+        BigNumber.from("100")
+      );
+      const totalSupplyAtSnapshot = BigNumber.from(
+        toWei(rr.totalSupplyAtSnapshot)
+      );
+      const totalRewards = inflationRate.mul(totalSupplyAtSnapshot);
+
+      const voter = rr.winnerGroup.votes.find((x) => {
+        return x.voter.address.toLowerCase() === account.toLowerCase();
+      });
+      if (voter) {
+        // const nt = BigNumber.from(toWei(voter.numTokens));
+        const vnt = toWei(voter.numTokens);
+        console.log("vnt", vnt.toString());
+
+        // const totalVoteAmount = BigNumber.from(
+        //   toWei(rr.winnerGroup.totalVoteAmount)
+        // );
+        const totalVoteAmount = toWei(rr.winnerGroup.totalVoteAmount);
+
+        console.log("totalVoteAmount", totalVoteAmount.toString());
+        const totalShareOfVotes = vnt
+          .div(totalVoteAmount)
+          .mul(BigNumber.from("1"));
+        console.log("totalShareOfVotes", totalShareOfVotes.toString());
+        const test = totalRewards.mul(totalShareOfVotes);
+        console.log("test rewards", test.toString());
+      }
+    }
+
     // Data on unique users:
     const uniqueCommits = Object.keys(uniqueVotersCommitted).length;
     const uniqueReveals = Object.keys(uniqueVotersRevealed).length;
@@ -153,34 +199,8 @@ export default function formatPriceRequestVoteData(
       uniqueClaimers: uniqueClaimers.toString(),
       uniqueClaimersPctOfReveals: uniqueClaimersPctOfReveals.toString(),
       time: Number(rr.time),
+      voterRewards,
     };
-    /*
-Summary: you can look up each round’s inflation percentage (inflationRate) and multiply inflationRate * totalSupplyAtSnapshot = totalRewards to get total rewards up for grabs.
-
-ext, grab all voters who voted correctly via the winnerGroup and figure out their share of the total rewards: voter.numTokens / totalVoteAmount * 1e18 = voterShareOfRewards
-
-Voter rewards is then voterShareOfRewards * totalRewards
-
-Doable, but increases the complexity of completing this.
-*/
-
-    // console.log(rr.inflationRate, account);
-    if (rr.inflationRate && account) {
-      const inflationRate =
-        Number(rr.inflationRate) * Number(rr.totalSupplyAtSnapshot);
-      const voterTokens = rr.winnerGroup.votes.find((x) => {
-        // console.log("x.voter.address", x.voter.address, "account", account);
-        return x.voter.address.toLowerCase() === account.toLowerCase();
-      });
-      console.log(
-        "IR",
-        inflationRate,
-        "voterTokens",
-        voterTokens,
-        "account",
-        account
-      );
-    }
   });
 
   return formattedPriceRequestRounds;
