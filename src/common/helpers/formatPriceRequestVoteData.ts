@@ -1,4 +1,4 @@
-import { BigNumber, utils } from "ethers";
+import { BigNumber, utils, FixedNumber } from "ethers";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import formatRequestKey from "./formatRequestKey";
 import toWei from "common/utils/web3/convertToWeiSafely";
@@ -133,34 +133,23 @@ Doable, but increases the complexity of completing this.
     // console.log(rr.inflationRate, account);
     let voterRewards = "";
     if (rr.inflationRate && account) {
-      const inflationRate = BigNumber.from(toWei(rr.inflationRate)).div(
-        BigNumber.from("100")
+      const totalRewards = FixedNumber.from(rr.totalSupplyAtSnapshot).mulUnsafe(
+        FixedNumber.from(rr.inflationRate)
       );
-      const totalSupplyAtSnapshot = BigNumber.from(
-        toWei(rr.totalSupplyAtSnapshot)
-      );
-      const totalRewards = inflationRate.mul(totalSupplyAtSnapshot);
 
       const voter = rr.winnerGroup.votes.find((x) => {
         return x.voter.address.toLowerCase() === account.toLowerCase();
       });
       if (voter) {
-        // const nt = BigNumber.from(toWei(voter.numTokens));
-        const vnt = toWei(voter.numTokens);
-        console.log("vnt", vnt.toString());
-
-        // const totalVoteAmount = BigNumber.from(
-        //   toWei(rr.winnerGroup.totalVoteAmount)
-        // );
-        const totalVoteAmount = toWei(rr.winnerGroup.totalVoteAmount);
-
-        console.log("totalVoteAmount", totalVoteAmount.toString());
-        const totalShareOfVotes = vnt
-          .div(totalVoteAmount)
-          .mul(BigNumber.from("1"));
-        console.log("totalShareOfVotes", totalShareOfVotes.toString());
-        const test = totalRewards.mul(totalShareOfVotes);
-        console.log("test rewards", test.toString());
+        const vnt = FixedNumber.from(fromWei(voter.numTokens));
+        const totalVoteAmount = FixedNumber.from(
+          rr.winnerGroup.totalVoteAmount
+        );
+        const totalShareOfVotes = vnt.divUnsafe(totalVoteAmount);
+        voterRewards = totalRewards
+          .mulUnsafe(totalShareOfVotes)
+          .divUnsafe(FixedNumber.from("100"))
+          .toString();
       }
     }
 

@@ -30,6 +30,7 @@ const Router: FC<Props> = ({ signingKeys, account }) => {
     refetch: refetchVoteSummaryData,
     setNumToQuery,
     loading: pastVoteDataLoading,
+    votingSummaryData: formattedVoteSummaryData,
   } = useVoteData(votingAddress);
 
   return (
@@ -49,6 +50,7 @@ const Router: FC<Props> = ({ signingKeys, account }) => {
               voteSummaryData={voteSummaryData}
               setNumToQuery={setNumToQuery}
               pastVoteDataLoading={pastVoteDataLoading}
+              formattedVoteSummaryData={formattedVoteSummaryData}
             />
           </Route>
         </Switch>

@@ -100,6 +100,8 @@ function useVoteData(account: string | null) {
     }
   }, [loading, error, data, account]);
 
+  console.log("vote Summary data", votingSummaryData);
+
   return {
     votingSummaryData,
     data: data?.priceRequestRounds,
