@@ -28,6 +28,16 @@ interface RewardsClaimed {
   };
 }
 
+interface WinnerGroup {
+  totalVoteAmount: string;
+  votes: {
+    numTokens: string;
+    voter: {
+      address: string;
+    };
+  }[];
+}
+
 export interface PriceRequestRound {
   committedVotes: Voter[];
   id: string;
@@ -43,13 +53,14 @@ export interface PriceRequestRound {
   roundId: string;
   time: string;
   totalSupplyAtSnapshot: string;
+  winnerGroup: WinnerGroup;
 }
 
 const POLLING_INTERVAL = 60000;
 
 // Retrieve vote data per price request from graphQL API.
 // Taken from previous voter-dapp, with heavy refactoring.
-function useVoteData() {
+function useVoteData(account: string | null) {
   const [votingSummaryData, setVotingSummaryData] =
     useState<FormattedPriceRequestRounds>({});
   const [numToQuery, setNumToQuery] = useState(5);
@@ -82,11 +93,12 @@ function useVoteData() {
 
     if (!loading && data) {
       const newVoteSummaryData = formatPriceRequestVoteData(
-        data.priceRequestRounds
+        data.priceRequestRounds,
+        account
       );
       setVotingSummaryData(newVoteSummaryData);
     }
-  }, [loading, error, data]);
+  }, [loading, error, data, account]);
 
   return {
     votingSummaryData,

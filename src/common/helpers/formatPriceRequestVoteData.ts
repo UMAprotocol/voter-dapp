@@ -38,8 +38,10 @@ export function formatPriceRoundTime(time: number) {
 
 // Taken from previous voter dapp, refactored to use TypeScript and Ethers.
 export default function formatPriceRequestVoteData(
-  data: PriceRequestRound[]
+  data: PriceRequestRound[],
+  account: string | null
 ): FormattedPriceRequestRounds {
+  console.log("data in FormatPriceRequestVoteData", data);
   const formattedPriceRequestRounds: FormattedPriceRequestRounds = {};
   // Load data into `newVoteData` synchronously
   data.forEach((rr: PriceRequestRound) => {
@@ -152,6 +154,33 @@ export default function formatPriceRequestVoteData(
       uniqueClaimersPctOfReveals: uniqueClaimersPctOfReveals.toString(),
       time: Number(rr.time),
     };
+    /*
+Summary: you can look up each round’s inflation percentage (inflationRate) and multiply inflationRate * totalSupplyAtSnapshot = totalRewards to get total rewards up for grabs.
+
+ext, grab all voters who voted correctly via the winnerGroup and figure out their share of the total rewards: voter.numTokens / totalVoteAmount * 1e18 = voterShareOfRewards
+
+Voter rewards is then voterShareOfRewards * totalRewards
+
+Doable, but increases the complexity of completing this.
+*/
+
+    // console.log(rr.inflationRate, account);
+    if (rr.inflationRate && account) {
+      const inflationRate =
+        Number(rr.inflationRate) * Number(rr.totalSupplyAtSnapshot);
+      const voterTokens = rr.winnerGroup.votes.find((x) => {
+        // console.log("x.voter.address", x.voter.address, "account", account);
+        return x.voter.address.toLowerCase() === account.toLowerCase();
+      });
+      console.log(
+        "IR",
+        inflationRate,
+        "voterTokens",
+        voterTokens,
+        "account",
+        account
+      );
+    }
   });
 
   return formattedPriceRequestRounds;
