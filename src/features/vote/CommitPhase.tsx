@@ -71,6 +71,9 @@ export type SubmitModalState = "init" | "pending" | "success" | "error";
 
 const inputRegExp = new RegExp(/^[-]?([0-9]*[.])?[0-9]+$/);
 
+const INVALID_MAGIC_NUMBER =
+  "57896044618658097711785492504343953926634992332820282019728.792003956564819968";
+
 const CommitPhase: FC<Props> = ({
   activeRequests,
   isConnected,
@@ -146,9 +149,11 @@ const CommitPhase: FC<Props> = ({
       for (let i = 0; i < Object.keys(data).length; i++) {
         if (
           Object.values(data)[i] !== "" &&
-          Object.values(data)[i] !== undefined
-        )
+          Object.values(data)[i] !== undefined &&
+          Object.values(data)[i] !== INVALID_MAGIC_NUMBER
+        ) {
           validValues[Object.keys(data)[i]] = Object.values(data)[i];
+        }
       }
       const message = currentSigningMessage(Number(roundId));
       if (signingMessage !== message)
@@ -238,9 +243,14 @@ const CommitPhase: FC<Props> = ({
 
           // Double check the fields pass the input reg exp, otherwise don't show the summary until user fixes it.
           if (
-            !identifiers[i].includes("Admin") &&
-            !inputRegExp.test(values[i])
+            (!identifiers[i].includes("Admin") &&
+              !inputRegExp.test(values[i])) ||
+            values[i] === INVALID_MAGIC_NUMBER
           ) {
+            if (values[i] === INVALID_MAGIC_NUMBER)
+              setError(identifiers[i], {
+                message: "Magic number needs to be negative",
+              });
             passesValidation = false;
           }
           summary.push(val);
@@ -256,7 +266,7 @@ const CommitPhase: FC<Props> = ({
       setButtonVariant("disabled");
       return [];
     }
-  }, [watchAllFields, setButtonVariant]);
+  }, [watchAllFields, setButtonVariant, setError]);
 
   const [noPublicKeyError, setNoPublicKeyError] = useState(false);
   useEffect(() => {
