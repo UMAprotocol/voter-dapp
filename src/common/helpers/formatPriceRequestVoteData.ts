@@ -120,7 +120,7 @@ export default function formatPriceRequestVoteData(
     }
 
     let voterRewards = "";
-    if (rr.inflationRate && account) {
+    if (rr.inflationRate && account && !rewardsClaimed.toString()) {
       const totalRewards = FixedNumber.from(rr.totalSupplyAtSnapshot).mulUnsafe(
         FixedNumber.from(rr.inflationRate)
       );

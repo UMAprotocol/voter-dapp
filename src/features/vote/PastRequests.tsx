@@ -151,7 +151,12 @@ const PastRequests: FC<Props> = ({
                     <div>{el.vote}</div>
                   </td>
                   <td>
-                    <div>{numberFormatter(Number(el.voterRewards)) || "-"}</div>
+                    {el.rewardsClaimed === "N/A" && (
+                      <div>
+                        {numberFormatter(Number(el.voterRewards)) || "-"}
+                      </div>
+                    )}
+                    {el.rewardsClaimed !== "N/A" && <div>{el.reward}</div>}
                   </td>
                   <td className="last-cell">
                     <div>{el.timestamp}</div>

@@ -74,7 +74,7 @@ export function formatPastRequestsByAddress(
     datum.numberRevealVoters = el.revealedVotes.length;
     const voterRewards =
       voteSummaryData[`${datum.proposal}-${el.time}-${el.roundId}`]
-        .voterRewards;
+        ?.voterRewards;
     datum.voterRewards = voterRewards || "N/A";
 
     // Double check the totalsupply has been indexed to avoid a null error.
