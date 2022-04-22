@@ -9,7 +9,7 @@ import { Wrapper } from "./styled/PastRequests.styled";
 import useModal from "common/hooks/useModal";
 import PastViewDetailsModal from "./PastViewDetailsModal";
 import { FormattedPriceRequestRounds } from "common/helpers/formatPriceRequestVoteData";
-
+import { numberFormatter } from "common/utils/format";
 export interface ModalState {
   proposal: string;
   correct: string;
@@ -151,7 +151,7 @@ const PastRequests: FC<Props> = ({
                     <div>{el.vote}</div>
                   </td>
                   <td>
-                    <div>{el.voterRewards || "-"}</div>
+                    <div>{numberFormatter(Number(el.voterRewards)) || "-"}</div>
                   </td>
                   <td className="last-cell">
                     <div>{el.timestamp}</div>
