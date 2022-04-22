@@ -42,7 +42,6 @@ export default function formatPriceRequestVoteData(
   data: PriceRequestRound[],
   account: string | null
 ): FormattedPriceRequestRounds {
-  console.log("data in FormatPriceRequestVoteData", data);
   const formattedPriceRequestRounds: FormattedPriceRequestRounds = {};
   // Load data into `newVoteData` synchronously
   data.forEach((rr: PriceRequestRound) => {
@@ -120,17 +119,6 @@ export default function formatPriceRequestVoteData(
       }
     }
 
-    /*
-Summary: you can look up each round’s inflation percentage (inflationRate) and multiply inflationRate * totalSupplyAtSnapshot = totalRewards to get total rewards up for grabs.
-
-ext, grab all voters who voted correctly via the winnerGroup and figure out their share of the total rewards: voter.numTokens / totalVoteAmount * 1e18 = voterShareOfRewards
-
-Voter rewards is then voterShareOfRewards * totalRewards
-
-Doable, but increases the complexity of completing this.
-*/
-
-    // console.log(rr.inflationRate, account);
     let voterRewards = "";
     if (rr.inflationRate && account) {
       const totalRewards = FixedNumber.from(rr.totalSupplyAtSnapshot).mulUnsafe(
