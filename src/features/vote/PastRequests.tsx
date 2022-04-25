@@ -118,6 +118,17 @@ const PastRequests: FC<Props> = ({
           </thead>
           <tbody>
             {pastRequests.map((el, index) => {
+              if (index === 0) {
+                console.log(
+                  "el.rewards",
+                  el.reward,
+                  "el.rewardsClaimed",
+                  el.rewardsClaimed,
+                  "el.voterREwrads",
+                  el.voterRewards
+                );
+              }
+
               return (
                 <tr key={index}>
                   <td>
@@ -151,13 +162,9 @@ const PastRequests: FC<Props> = ({
                     <div>{el.vote}</div>
                   </td>
                   <td>
-                    {el.rewardsClaimed === "N/A" && (
-                      <div>
-                        {numberFormatter(Number(el.voterRewards)) || "-"}
-                      </div>
-                    )}
-                    {el.rewardsClaimed !== "N/A" && (
-                      <div>{numberFormatter(Number(el.reward))}</div>
+                    {!address && <div>{el.reward}</div>}
+                    {address && (
+                      <div>{numberFormatter(Number(el.voterRewards))}</div>
                     )}
                   </td>
                   <td className="last-cell">
