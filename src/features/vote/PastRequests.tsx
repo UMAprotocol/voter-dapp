@@ -152,8 +152,10 @@ const PastRequests: FC<Props> = ({
                   </td>
                   <td>
                     {!address && <div>{el.reward}</div>}
-                    {address && (
+                    {address && el.voterRewards ? (
                       <div>{numberFormatter(Number(el.voterRewards))}</div>
+                    ) : (
+                      <div>N/A</div>
                     )}
                   </td>
                   <td className="last-cell">
