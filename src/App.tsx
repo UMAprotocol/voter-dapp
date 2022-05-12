@@ -10,7 +10,6 @@ import { OnboardContext } from "common/context/OnboardContext";
 
 import { useCurrentRoundId } from "hooks";
 import useSigningKeys from "hooks/useSigningKeys";
-
 interface Props {
   queryClient: QueryClient;
 }
@@ -82,7 +81,7 @@ function App(props: Props) {
 
   return (
     <div className="App">
-      <Router signingKeys={signingKeys} />
+      <Router signingKeys={signingKeys} account={state.address} />
       <ToastContainer
         position="top-right"
         autoClose={false}

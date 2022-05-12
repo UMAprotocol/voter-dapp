@@ -3,12 +3,14 @@ import { PastRequest } from "../PastRequests";
 import { DateTime } from "luxon";
 import { ethers } from "ethers";
 import { getPrecisionForIdentifier } from "@uma/common";
+import { FormattedPriceRequestRounds } from "common/helpers/formatPriceRequestVoteData";
 
 const NULL_CORRECT_STRING = "-";
 
 export function formatPastRequestsByAddress(
   data: PriceRequestRound[],
-  address: string
+  address: string,
+  voteSummaryData: FormattedPriceRequestRounds
 ) {
   const sortedByTime = data.sort((a, b) => {
     if (Number(b.time) > Number(a.time)) return 1;
@@ -70,6 +72,10 @@ export function formatPastRequestsByAddress(
 
     datum.numberCommitVoters = el.committedVotes.length;
     datum.numberRevealVoters = el.revealedVotes.length;
+    const voterRewards =
+      voteSummaryData[`${datum.proposal}-${el.time}-${el.roundId}`]
+        ?.voterRewards;
+    datum.voterRewards = voterRewards || "N/A";
 
     // Double check the totalsupply has been indexed to avoid a null error.
     datum.totalSupply =

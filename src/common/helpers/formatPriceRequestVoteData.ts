@@ -1,4 +1,4 @@
-import { BigNumber, utils } from "ethers";
+import { BigNumber, utils, FixedNumber } from "ethers";
 import { PriceRequestRound } from "common/hooks/useVoteData";
 import formatRequestKey from "./formatRequestKey";
 import toWei from "common/utils/web3/convertToWeiSafely";
@@ -21,6 +21,7 @@ export interface FormattedPriceRequestRounds {
     uniqueClaimers: string;
     uniqueClaimersPctOfReveals: string;
     time: number;
+    voterRewards: string;
   };
 }
 
@@ -38,7 +39,8 @@ export function formatPriceRoundTime(time: number) {
 
 // Taken from previous voter dapp, refactored to use TypeScript and Ethers.
 export default function formatPriceRequestVoteData(
-  data: PriceRequestRound[]
+  data: PriceRequestRound[],
+  account: string | null
 ): FormattedPriceRequestRounds {
   const formattedPriceRequestRounds: FormattedPriceRequestRounds = {};
   // Load data into `newVoteData` synchronously
@@ -116,6 +118,29 @@ export default function formatPriceRequestVoteData(
           .div(roundInflationRewardsAvailable);
       }
     }
+
+    let voterRewards = "";
+    if (rr.inflationRate && account) {
+      const totalRewards = FixedNumber.from(rr.totalSupplyAtSnapshot).mulUnsafe(
+        FixedNumber.from(rr.inflationRate)
+      );
+
+      const voter = rr.winnerGroup.votes.find((x) => {
+        return x.voter.address.toLowerCase() === account.toLowerCase();
+      });
+      if (voter) {
+        const vnt = FixedNumber.from(fromWei(voter.numTokens));
+        const totalVoteAmount = FixedNumber.from(
+          rr.winnerGroup.totalVoteAmount
+        );
+        const totalShareOfVotes = vnt.divUnsafe(totalVoteAmount);
+        voterRewards = totalRewards
+          .mulUnsafe(totalShareOfVotes)
+          .divUnsafe(FixedNumber.from("100"))
+          .toString();
+      }
+    }
+
     // Data on unique users:
     const uniqueCommits = Object.keys(uniqueVotersCommitted).length;
     const uniqueReveals = Object.keys(uniqueVotersRevealed).length;
@@ -151,6 +176,7 @@ export default function formatPriceRequestVoteData(
       uniqueClaimers: uniqueClaimers.toString(),
       uniqueClaimersPctOfReveals: uniqueClaimersPctOfReveals.toString(),
       time: Number(rr.time),
+      voterRewards,
     };
   });
 

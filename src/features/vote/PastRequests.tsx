@@ -8,6 +8,7 @@ import { formatPastRequestsByAddress } from "./helpers/formatPastRequestByAddres
 import { Wrapper } from "./styled/PastRequests.styled";
 import useModal from "common/hooks/useModal";
 import PastViewDetailsModal from "./PastViewDetailsModal";
+import { FormattedPriceRequestRounds } from "common/helpers/formatPriceRequestVoteData";
 import { numberFormatter } from "common/utils/format";
 export interface ModalState {
   proposal: string;
@@ -31,6 +32,7 @@ export interface PastRequest {
   numberRevealVoters: number;
   rewardsClaimed: string;
   unix: string;
+  voterRewards: string;
 }
 
 interface Props {
@@ -40,6 +42,7 @@ interface Props {
   roundId: string;
   setNumToQuery: Dispatch<SetStateAction<number>>;
   pastVoteDataLoading: boolean;
+  formattedVoteSummaryData: FormattedPriceRequestRounds;
 }
 
 const PastRequests: FC<Props> = ({
@@ -49,6 +52,7 @@ const PastRequests: FC<Props> = ({
   roundId,
   setNumToQuery,
   pastVoteDataLoading,
+  formattedVoteSummaryData,
 }) => {
   const [pastRequests, setPastRequests] = useState<PastRequest[]>([]);
   const [showAll, setShowAll] = useState(false);
@@ -73,7 +77,11 @@ const PastRequests: FC<Props> = ({
       );
 
       if (address && contract) {
-        const pr = formatPastRequestsByAddress(filteredByRound, address);
+        const pr = formatPastRequestsByAddress(
+          filteredByRound,
+          address,
+          formattedVoteSummaryData
+        );
         setPastRequests(!showAll ? pr.slice(0, 10) : pr);
       } else {
         const pr = formatPastRequestsNoAddress(filteredByRound);
@@ -81,7 +89,14 @@ const PastRequests: FC<Props> = ({
         setPastRequests(!showAll ? pr.slice(0, 10) : pr);
       }
     }
-  }, [voteSummaryData, address, contract, showAll, roundId]);
+  }, [
+    voteSummaryData,
+    address,
+    contract,
+    showAll,
+    roundId,
+    formattedVoteSummaryData,
+  ]);
 
   return (
     <Wrapper className="PastRequests">
@@ -136,11 +151,12 @@ const PastRequests: FC<Props> = ({
                     <div>{el.vote}</div>
                   </td>
                   <td>
-                    <div>
-                      {el.reward !== "N/A" && el.reward !== "-"
-                        ? numberFormatter(Number(el.reward))
-                        : el.reward}
-                    </div>
+                    {!address && <div>{el.reward}</div>}
+                    {address && el.voterRewards && el.voterRewards !== "N/A" ? (
+                      <div>{numberFormatter(Number(el.voterRewards))}</div>
+                    ) : (
+                      <div>N/A</div>
+                    )}
                   </td>
                   <td className="last-cell">
                     <div>{el.timestamp}</div>

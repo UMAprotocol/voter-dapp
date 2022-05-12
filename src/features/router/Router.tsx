@@ -12,18 +12,26 @@ import { Footer } from "common/components/footer";
 import { SigningKeys } from "App";
 
 import useVoteData, { PriceRequestRound } from "common/hooks/useVoteData";
+import useOnboard from "common/hooks/useOnboard";
+import { useVotingAddress } from "hooks";
 
 interface Props {
   signingKeys: SigningKeys;
+  account: string | null;
 }
 
-const Router: FC<Props> = ({ signingKeys }) => {
+const Router: FC<Props> = ({ signingKeys, account }) => {
+  const { signer, address, network } = useOnboard();
+
+  const { votingAddress } = useVotingAddress(address, signer, network);
+
   const {
     data: voteSummaryData = [] as PriceRequestRound[],
     refetch: refetchVoteSummaryData,
     setNumToQuery,
     loading: pastVoteDataLoading,
-  } = useVoteData();
+    votingSummaryData: formattedVoteSummaryData,
+  } = useVoteData(votingAddress);
 
   return (
     <BrowserRouter>
@@ -42,6 +50,7 @@ const Router: FC<Props> = ({ signingKeys }) => {
               voteSummaryData={voteSummaryData}
               setNumToQuery={setNumToQuery}
               pastVoteDataLoading={pastVoteDataLoading}
+              formattedVoteSummaryData={formattedVoteSummaryData}
             />
           </Route>
         </Switch>

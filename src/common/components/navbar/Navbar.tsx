@@ -1,61 +1,67 @@
 import { useState } from "react";
 import { COMMUNITY_LINKS, LINKS } from "../../utils/constants";
 import { DownIcon } from "../icons";
-import * as UI from "./Navbar.styled"
+import * as UI from "./Navbar.styled";
 import logo from "assets/icons/logo.svg";
 import { useLocation } from "react-router-dom";
 
 const NavLinks = () => {
   const { pathname } = useLocation();
-  console.log({pathname})
   return (
     <UI.LinkList>
       {HEADER_LINKS.map((link) => (
-        <UI.LinkListItem key={link.key}>{link.component({ path: pathname })}</UI.LinkListItem>
+        <UI.LinkListItem key={link.key}>
+          {link.component({ path: pathname })}
+        </UI.LinkListItem>
       ))}
     </UI.LinkList>
   );
-}
+};
 
 export const Header: React.FunctionComponent = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const onToggle = () => {
     setShowMobileMenu((prevShowMobileMenu) => !prevShowMobileMenu);
-  }
+  };
 
   return (
     <UI.Container>
-       <UI.Content>
-         <UI.LogoLink to="/">
-           <UI.LogoLinkIcon src={logo} alt="UMA logo" />
-         </UI.LogoLink>
-         <UI.NavContainer>
-           <NavLinks />
-         </UI.NavContainer>
-         <MenuToggle toggled={showMobileMenu} onToggle={onToggle} />
-         <MobileMenuComponent show={showMobileMenu} onClickLink={onToggle} />
-       </UI.Content>
+      <UI.Content>
+        <UI.LogoLink to="/">
+          <UI.LogoLinkIcon src={logo} alt="UMA logo" />
+        </UI.LogoLink>
+        <UI.NavContainer>
+          <NavLinks />
+        </UI.NavContainer>
+        <MenuToggle toggled={showMobileMenu} onToggle={onToggle} />
+        <MobileMenuComponent show={showMobileMenu} onClickLink={onToggle} />
+      </UI.Content>
     </UI.Container>
   );
-}
+};
 
-const MobileMenuComponent: React.FC<{ show: boolean, onClickLink: () => void }> = ({ show, onClickLink }) => {
+const MobileMenuComponent: React.FC<{
+  show: boolean;
+  onClickLink: () => void;
+}> = ({ show, onClickLink }) => {
   const { pathname } = useLocation();
 
   return (
     <UI.MobileMenuContainer show={show}>
-        {MOBILE_HEADER_LINKS.map((link) => link.component({ path: pathname, onClick: onClickLink }))}
-        <UI.MobileCommunityLinks>
-          {COMMUNITY_LINKS.map((link, idx) => (
-            <UI.MobileCommunityLink key={idx} to={link.href} target="_blank">
-              <img src={link.iconSrc} alt={link.alt} width={25} height={25} />
-            </UI.MobileCommunityLink>
-          ))}
-        </UI.MobileCommunityLinks>
+      {MOBILE_HEADER_LINKS.map((link) =>
+        link.component({ path: pathname, onClick: onClickLink })
+      )}
+      <UI.MobileCommunityLinks>
+        {COMMUNITY_LINKS.map((link, idx) => (
+          <UI.MobileCommunityLink key={idx} to={link.href} target="_blank">
+            <img src={link.iconSrc} alt={link.alt} width={25} height={25} />
+          </UI.MobileCommunityLink>
+        ))}
+      </UI.MobileCommunityLinks>
     </UI.MobileMenuContainer>
   );
-}
+};
 
 const MenuToggle: React.FC<{ toggled: boolean; onToggle: () => void }> = ({
   toggled,
@@ -89,7 +95,7 @@ const CommunityDropdown: React.FunctionComponent = () => {
       </UI.DropdownValuesContainer>
     </UI.CommunityDropdownContainer>
   );
-}
+};
 
 interface IHeaderLink {
   key: string;
@@ -107,7 +113,11 @@ const HEADER_LINKS: IHeaderLink[] = [
   },
   {
     key: "Docs",
-    component: () =><UI.NavLink to={LINKS.docs} target="_blank">Docs</UI.NavLink>,
+    component: () => (
+      <UI.NavLink to={LINKS.docs} target="_blank">
+        Docs
+      </UI.NavLink>
+    ),
   },
   {
     key: "Community",
@@ -115,25 +125,44 @@ const HEADER_LINKS: IHeaderLink[] = [
   },
   {
     key: "Vote",
-    component: ({ path }) => {console.log({ path }); return <UI.NavLink to="/" active={path === "/"}>Vote</UI.NavLink>},
+    component: ({ path }) => {
+      console.log({ path });
+      return (
+        <UI.NavLink to="/" active={path === "/"}>
+          Vote
+        </UI.NavLink>
+      );
+    },
   },
 ];
 
 const MOBILE_HEADER_LINKS: IHeaderLink[] = [
   {
     key: "Projects",
-    component: () => <UI.MobileNavLink to={LINKS.projects}>Projects</UI.MobileNavLink>,
+    component: () => (
+      <UI.MobileNavLink to={LINKS.projects}>Projects</UI.MobileNavLink>
+    ),
   },
   {
     key: "Products",
-    component: () => <UI.MobileNavLink to={LINKS.products} >Products</UI.MobileNavLink>,
+    component: () => (
+      <UI.MobileNavLink to={LINKS.products}>Products</UI.MobileNavLink>
+    ),
   },
   {
     key: "Docs",
-    component: () =><UI.MobileNavLink to={LINKS.docs} target="_blank">Docs</UI.MobileNavLink>,
+    component: () => (
+      <UI.MobileNavLink to={LINKS.docs} target="_blank">
+        Docs
+      </UI.MobileNavLink>
+    ),
   },
   {
     key: "Vote",
-    component: ({ path, onClick }) => <UI.MobileNavLink to="/" active={path === "/"} onClick={onClick}>Vote</UI.MobileNavLink>,
+    component: ({ path, onClick }) => (
+      <UI.MobileNavLink to="/" active={path === "/"} onClick={onClick}>
+        Vote
+      </UI.MobileNavLink>
+    ),
   },
 ];

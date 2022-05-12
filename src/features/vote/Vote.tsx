@@ -31,12 +31,13 @@ import { PendingRequest } from "common/web3/get/queryGetPendingRequests";
 import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import { EncryptedVote } from "common/web3/get/queryEncryptedVotesEvents";
 import { SigningKeys } from "App";
-
+import { FormattedPriceRequestRounds } from "common/helpers/formatPriceRequestVoteData";
 interface Props {
   signingKeys: SigningKeys;
   voteSummaryData: PriceRequestRound[];
   setNumToQuery: Dispatch<SetStateAction<number>>;
   pastVoteDataLoading: boolean;
+  formattedVoteSummaryData: FormattedPriceRequestRounds;
 }
 
 const Vote: FC<Props> = ({
@@ -44,6 +45,7 @@ const Vote: FC<Props> = ({
   voteSummaryData,
   setNumToQuery,
   pastVoteDataLoading,
+  formattedVoteSummaryData,
 }) => {
   const [upcomingRequests, setUpcomingRequests] = useState<PriceRequestAdded[]>(
     []
@@ -74,7 +76,11 @@ const Vote: FC<Props> = ({
   const {
     data: revealedVotes = [] as VoteRevealed[],
     refetch: refetchVoteRevealedEvents,
-  } = useVotesRevealedEventsRound(votingContract, votingAddress || hotAddress, roundId);
+  } = useVotesRevealedEventsRound(
+    votingContract,
+    votingAddress || hotAddress,
+    roundId
+  );
 
   const signingPK =
     hotAddress && signingKeys[hotAddress]
@@ -126,6 +132,7 @@ const Vote: FC<Props> = ({
         roundId={roundId}
         setNumToQuery={setNumToQuery}
         pastVoteDataLoading={pastVoteDataLoading}
+        formattedVoteSummaryData={formattedVoteSummaryData}
       />
       {upcomingRequests.length ? (
         <UpcomingRequests upcomingRequests={upcomingRequests} />
