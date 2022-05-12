@@ -118,6 +118,7 @@ const PastRequests: FC<Props> = ({
           </thead>
           <tbody>
             {pastRequests.map((el, index) => {
+              console.log("el.voterRewrads", el.voterRewards);
               return (
                 <tr key={index}>
                   <td>
@@ -152,7 +153,7 @@ const PastRequests: FC<Props> = ({
                   </td>
                   <td>
                     {!address && <div>{el.reward}</div>}
-                    {address && el.voterRewards ? (
+                    {address && el.voterRewards && el.voterRewards !== "N/A" ? (
                       <div>{numberFormatter(Number(el.voterRewards))}</div>
                     ) : (
                       <div>N/A</div>
