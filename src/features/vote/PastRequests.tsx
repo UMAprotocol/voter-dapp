@@ -118,7 +118,6 @@ const PastRequests: FC<Props> = ({
           </thead>
           <tbody>
             {pastRequests.map((el, index) => {
-              console.log("el.voterRewrads", el.voterRewards);
               return (
                 <tr key={index}>
                   <td>
