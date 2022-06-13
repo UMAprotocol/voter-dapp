@@ -35,16 +35,16 @@ export const OLD_VOTING_CONTRACT_ADDRESSES = [
 ];
 
 export default function config(network: Network | null) {
-  // const infuraRpc = `https://${
-  //   network ? network?.name : "mainnet"
-  // }.infura.io/v3/${infuraId}`;
+  const infuraRpc = `https://${
+    network ? network?.name : "mainnet"
+  }.infura.io/v3/${infuraId}`;
 
   return {
     onboardConfig: {
       apiKey: process.env.REACT_APP_PUBLIC_ONBOARD_API_KEY || "",
       onboardWalletSelect: {
         wallets: [
-          { walletName: "metamask", preferred: true },
+          { walletName: "metamask" },
           // {
           //   walletName: "imToken",
           //   rpcUrl:
@@ -60,10 +60,10 @@ export default function config(network: Network | null) {
           // },
           // { walletName: "trust", rpcUrl: infuraRpc },
           // { walletName: "dapper" },
-          // {
-          //   walletName: "walletConnect",
-          //   rpc: { [network?.chainId || 1]: infuraRpc },
-          // },
+          {
+            walletName: "walletConnect",
+            rpc: { [network?.chainId || 1]: infuraRpc },
+          },
           // { walletName: "walletLink", rpcUrl: infuraRpc },
           // { walletName: "opera" },
           // { walletName: "operaTouch" },
