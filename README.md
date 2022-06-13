@@ -17,36 +17,29 @@ REACT_APP_PUBLIC_CONTENTFUL_ACCESS_TOKEN
 
 ## Testing Voter dApp locally
 
-In order to test the app with Ganache, you must clone [UMA Protocal Core](https://github.com/UMAprotocol/protocol)
+In order to test this dApp, you must clone [UMA Protocol Core](https://github.com/UMAprotocol/protocol).
 
-In a separate terminal, go into the packages/core directory and run:
+In a separate terminal, navigate to the root directory of the `protocol` repository.
 
-`yarn build`
+Follow the instructions in the root directory README for installing the packages with `yarn`.
 
-You may also need to migrate.
+Add the localhost:9545 network to your MetaMask with the following details:
 
-`npx truffle migrate --network=test`
+```
+Network Name - Localhost 9545
+New RPC URL - http://localhost:9545
+Chain ID - 31337
+Currency Symbol - ETH
+```
 
-In this app, run:
+**You will also need to add update your local .env file:**
 
-`yarn link "@uma/core"`
+Set the environment variable `REACT_APP_CURRENT_ENV` to either `test`, `main`, or `kovan`. If not defined, defaults to `main` in the app.
+`REACT_APP_CURRENT_ENV = <"test" | "main" | "kovan">`
 
-This will link the built contracts and they will be referencable.
+Once all the above is done, navigate to the `packages/scripts` directory and follow the [instructions in the readme](https://github.com/UMAprotocol/protocol/tree/master/packages/scripts#testing-the-voter-dapp) for testing this dApp.
 
-You will then need to run this script in another window [Run Voting Tests](https://github.com/UMAprotocol/protocol/blob/master/packages/voter-dapp/run_tests.sh)\
-This will walk you through the testing process.
-
-Once run_tests.sh is running, make sure to run ganache-cli in another terminal with the following command:
-
-`ganache-cli -p 9545 -e 10000000000 -l 9000000 -m "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat" --chainId 1337 --networkId 1337`
-
-This will run a local ganache server.
-
-To actually integrate and do blockchain calls to ganache, add the network in your MM network tab.
-
-You will also need to add to your local .env file:\
-// Set this REACT_APP_CURRENT_ENV to either: test, main, kovan. If not defined, defaults to main in the app.
-REACT_APP_CURRENT_ENV = <"test" | "main" | "kovan">
+--------------------------------------------------
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
