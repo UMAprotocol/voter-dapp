@@ -83,6 +83,7 @@ export function formatPastRequestsByAddress(
         ? Number(el.totalSupplyAtSnapshot).toFixed(6).toString()
         : "0";
 
+    datum.ancillaryData = el.ancillaryData
     return datum;
   });
 

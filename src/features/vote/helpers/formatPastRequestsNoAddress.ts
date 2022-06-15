@@ -67,6 +67,7 @@ export function formatPastRequestsNoAddress(data: PriceRequestRound[]) {
         : "0";
     datum.rewardsClaimed = rewardsClaimed.toString();
     datum.unix = el.time;
+    datum.ancillaryData = el.ancillaryData
 
     return datum;
   });
