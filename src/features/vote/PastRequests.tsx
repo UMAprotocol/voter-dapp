@@ -12,6 +12,7 @@ import { FormattedPriceRequestRounds } from "common/helpers/formatPriceRequestVo
 import { numberFormatter } from "common/utils/format";
 export interface ModalState {
   proposal: string;
+  ancillaryData: string;
   correct: string;
   totalSupply: string;
   numberCommitVoters: number;
@@ -23,6 +24,7 @@ export interface ModalState {
 
 export interface PastRequest {
   proposal: string;
+  ancillaryData: string;
   correct: string;
   vote: string;
   reward: string;
@@ -60,6 +62,7 @@ const PastRequests: FC<Props> = ({
   const { isOpen, open, close, modalRef } = useModal();
   const [modalState, setModalState] = useState<ModalState>({
     proposal: "",
+    ancillaryData: "",
     correct: "",
     totalSupply: "",
     numberCommitVoters: 0,
@@ -128,6 +131,7 @@ const PastRequests: FC<Props> = ({
                           open();
                           setModalState({
                             proposal: el.proposal,
+                            ancillaryData: el.ancillaryData,
                             correct: el.correct,
                             totalSupply: el.totalSupply,
                             numberCommitVoters: el.numberCommitVoters,
@@ -188,6 +192,7 @@ const PastRequests: FC<Props> = ({
         close={close}
         ref={modalRef}
         proposal={modalState.proposal}
+        ancillaryData={modalState.ancillaryData}
         totalSupply={
           // Null check in case this value is displayed for before snapshot indexed on thegraph
           modalState.totalSupply !== "0"
