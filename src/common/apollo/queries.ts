@@ -37,6 +37,7 @@ export const PRICE_REQUEST_VOTING_DATA = gql`
       orderBy: $orderBy
       orderDirection: $orderDirection
     ) {
+      ancillaryData
       id
       identifier {
         id

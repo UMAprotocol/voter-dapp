@@ -41,6 +41,7 @@ interface WinnerGroup {
 export interface PriceRequestRound {
   committedVotes: Voter[];
   id: string;
+  ancillaryData: string;
   identifier: {
     id: string;
   };

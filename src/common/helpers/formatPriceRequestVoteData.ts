@@ -22,6 +22,7 @@ export interface FormattedPriceRequestRounds {
     uniqueClaimersPctOfReveals: string;
     time: number;
     voterRewards: string;
+    ancillaryData: string;
   };
 }
 
@@ -177,6 +178,7 @@ export default function formatPriceRequestVoteData(
       uniqueClaimersPctOfReveals: uniqueClaimersPctOfReveals.toString(),
       time: Number(rr.time),
       voterRewards,
+      ancillaryData: rr.ancillaryData
     };
   });
 
