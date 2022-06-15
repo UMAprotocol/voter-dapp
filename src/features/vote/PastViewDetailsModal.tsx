@@ -30,12 +30,14 @@ import useUMIP from "./hooks/useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 import toWeiSafe from "common/utils/web3/convertToWeiSafely";
 import ReactTooltip from "react-tooltip";
+import { decodeAncillaryDataHexString, getAncillaryDataTitle } from "common/helpers/ancillaryData";
 
 interface Props {
   isOpen: boolean;
   close: () => void;
   ref: (node: HTMLElement | null) => void;
   proposal: string;
+  ancillaryData: string;
   setModalState: Dispatch<SetStateAction<ModalState>>;
   totalSupply: string;
   correct: string;
@@ -54,6 +56,7 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
     isOpen,
     close,
     proposal,
+    ancillaryData,
     setModalState,
     totalSupply,
     correct,
@@ -90,10 +93,25 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
   const isUmip = proposal.includes("Admin");
   const umipNumber = isUmip ? parseInt(proposal.split(" ")[1]) : undefined;
   const { umip } = useUMIP(umipNumber, network?.chainId);
+  const decodedAncillaryData = decodeAncillaryDataHexString(ancillaryData);
+  const ancillaryDataTitle = getAncillaryDataTitle(decodedAncillaryData ?? "");
 
-  const description =
-    umip?.description ||
-    `No description was found for this ${isUmip ? "umip" : "request"}.`;
+  // description is derived from either the umip description defined in contentful (if it is an umip)
+  // or it is the ancillary data decoded from the ancillary data hex string
+  let description;
+
+  // use umip description if it exists
+  if (umip?.description) {
+    description = umip?.description;
+    // otherwise use the decoded ancillary data
+  } else if (ancillaryDataTitle) {
+    description = ancillaryDataTitle;
+    // if all else fails, use the empty placeholder
+  } else {
+    description = `No description was found for this ${
+      isUmip ? "umip" : "request"
+    }.`;
+  }
 
   return (
     <>
@@ -103,6 +121,7 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
           close();
           setModalState({
             proposal: "",
+            ancillaryData: "",
             correct: "",
             totalSupply: "",
             numberCommitVoters: 0,
