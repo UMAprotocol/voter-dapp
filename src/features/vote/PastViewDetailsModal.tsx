@@ -30,7 +30,11 @@ import useUMIP from "./hooks/useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 import toWeiSafe from "common/utils/web3/convertToWeiSafely";
 import ReactTooltip from "react-tooltip";
-import { decodeAncillaryDataHexString, getAncillaryDataTitle } from "common/helpers/ancillaryData";
+import {
+  decodeAncillaryDataHexString,
+  getAncillaryDataDescription,
+  getAncillaryDataTitle,
+} from "common/helpers/ancillaryData";
 
 interface Props {
   isOpen: boolean;
@@ -95,17 +99,32 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
   const { umip } = useUMIP(umipNumber, network?.chainId);
   const decodedAncillaryData = decodeAncillaryDataHexString(ancillaryData);
   const ancillaryDataTitle = getAncillaryDataTitle(decodedAncillaryData ?? "");
+  const ancillaryDataDescription = getAncillaryDataDescription(
+    decodedAncillaryData ?? ""
+  );
 
   // description is derived from either the umip description defined in contentful (if it is an umip)
   // or it is the ancillary data decoded from the ancillary data hex string
+  let title;
   let description;
 
   // use umip description if it exists
-  if (umip?.description) {
-    description = umip?.description;
+  if (isUmip && umip?.title) {
+    title = umip?.title;
     // otherwise use the decoded ancillary data
   } else if (ancillaryDataTitle) {
-    description = ancillaryDataTitle;
+    title = ancillaryDataTitle;
+    // if all else fails, use the empty placeholder
+  } else {
+    title = proposal;
+  }
+
+  // use umip description if it exists
+  if (isUmip && umip?.description) {
+    description = umip?.description;
+    // otherwise use the decoded ancillary data
+  } else if (ancillaryDataDescription) {
+    description = ancillaryDataDescription;
     // if all else fails, use the empty placeholder
   } else {
     description = `No description was found for this ${
@@ -135,7 +154,7 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
       >
         <ModalWrapper>
           <MiniHeader>Proposal</MiniHeader>
-          <Proposal>{isUmip && umip?.title ? umip.title : proposal}</Proposal>
+          <Proposal>{title}</Proposal>
 
           <Description>
             <ReactMarkdown
