@@ -9,12 +9,40 @@ export function decodeAncillaryDataHexString(ancillaryDataHexString: string) {
 
 export function getAncillaryDataTitle(
   decodedAncillaryData: string,
-  titleToken = "title:",
-  maxLength = 500
+  titleIdentifier = "title:",
+  descriptionIdentifier = "description:"
 ) {
   if (!decodedAncillaryData) {
     return null;
   }
-  const ancillaryDataTitle = decodedAncillaryData.split(titleToken)[1];
-  return ancillaryDataTitle?.slice(0, maxLength) ?? null;
+  const start = decodedAncillaryData.indexOf(titleIdentifier);
+  const end =
+    decodedAncillaryData.indexOf(descriptionIdentifier) ??
+    decodedAncillaryData.length;
+
+  if (start === -1) {
+    return null;
+  }
+
+  return decodedAncillaryData.substring(start + titleIdentifier.length, end);
+}
+
+export function getAncillaryDataDescription(
+  decodedAncillaryData: string,
+  descriptionIdentifier = "description:"
+) {
+  if (!decodedAncillaryData) {
+    return null;
+  }
+  const start = decodedAncillaryData.indexOf(descriptionIdentifier);
+  const end = decodedAncillaryData.length;
+
+  if (start === -1) {
+    return null;
+  }
+
+  return decodedAncillaryData.substring(
+    start + descriptionIdentifier.length,
+    end
+  );
 }
