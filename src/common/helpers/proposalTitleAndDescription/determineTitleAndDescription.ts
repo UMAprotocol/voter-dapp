@@ -1,53 +1,14 @@
-import { ethers } from "ethers";
 import { UMIP } from "features/vote/helpers/fetchUMIP";
+import {
+  decodeAncillaryDataHexString,
+  getAncillaryDataTitle,
+  getAncillaryDataDescription,
+} from "./ancillaryData";
 
-export function decodeAncillaryDataHexString(ancillaryDataHexString: string) {
-  if (!ancillaryDataHexString.startsWith("0x")) {
-    return null;
-  }
-  return ethers.utils.toUtf8String(ancillaryDataHexString);
-}
-
-export function getAncillaryDataTitle(
-  decodedAncillaryData: string,
-  titleIdentifier = "title:",
-  descriptionIdentifier = "description:"
-) {
-  if (!decodedAncillaryData) {
-    return null;
-  }
-  const start = decodedAncillaryData.indexOf(titleIdentifier);
-  const end =
-    decodedAncillaryData.indexOf(descriptionIdentifier) ??
-    decodedAncillaryData.length;
-
-  if (start === -1) {
-    return null;
-  }
-
-  return decodedAncillaryData.substring(start + titleIdentifier.length, end);
-}
-
-export function getAncillaryDataDescription(
-  decodedAncillaryData: string,
-  descriptionIdentifier = "description:"
-) {
-  if (!decodedAncillaryData) {
-    return null;
-  }
-  const start = decodedAncillaryData.indexOf(descriptionIdentifier);
-  const end = decodedAncillaryData.length;
-
-  if (start === -1) {
-    return null;
-  }
-
-  return decodedAncillaryData.substring(
-    start + descriptionIdentifier.length,
-    end
-  );
-}
-
+/** Finds a title and description for a proposal.
+ * 
+ * 
+ */
 export function determineTitleAndDescription(
   ancillaryData: string,
   proposal: string,
