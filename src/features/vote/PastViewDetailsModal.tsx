@@ -95,7 +95,6 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
   const { title, description } = determineTitleAndDescription(
     ancillaryData,
     proposal,
-    isUmip,
     umip
   );
 

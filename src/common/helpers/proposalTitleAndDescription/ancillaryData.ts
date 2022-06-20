@@ -7,7 +7,7 @@ export function decodeAncillaryDataHexString(ancillaryDataHexString: string) {
   return ethers.utils.toUtf8String(ancillaryDataHexString);
 }
 
-export function getAncillaryDataTitle(
+export function getTitleFromAncillaryData(
   decodedAncillaryData: string,
   titleIdentifier = "title:",
   descriptionIdentifier = "description:"
@@ -27,7 +27,7 @@ export function getAncillaryDataTitle(
   return decodedAncillaryData.substring(start + titleIdentifier.length, end);
 }
 
-export function getAncillaryDataDescription(
+export function getDescriptionFromAncillaryData(
   decodedAncillaryData: string,
   descriptionIdentifier = "description:"
 ) {

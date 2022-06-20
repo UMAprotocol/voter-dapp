@@ -1,54 +1,59 @@
 import { UMIP } from "features/vote/helpers/fetchUMIP";
 import {
   decodeAncillaryDataHexString,
-  getAncillaryDataTitle,
-  getAncillaryDataDescription,
+  getTitleFromAncillaryData,
+  getDescriptionFromAncillaryData,
 } from "./ancillaryData";
+import approvedIdentifiers from "./approvedIdentifiersTable.json";
 
 /** Finds a title and description for a proposal.
- * 
- * 
+ *
+ * There are 3 different sources of this data, depending on the proposal type:
+ *
+ * 1. For UMIPs, the title and description comes from Contentful.
+ * 2. For requests for approved price identifiers, the title and description comes from the hard-coded `approvedIdentifiersTable` json file.
+ * 3. For requests from Polymarket, the title and description comes from the proposal's ancillary data.
  */
 export function determineTitleAndDescription(
   ancillaryData: string,
   proposal: string,
-  isUmip: boolean,
   umip?: UMIP
 ) {
+  const isUmip = proposal.includes("Admin");
+
+  if (isUmip) {
+    return {
+      title: umip?.title ?? proposal,
+      description:
+        umip?.description ?? "No description was found for this UMIP.",
+    };
+  }
+
+  const identifierDetails = approvedIdentifiers.find(
+    (id) => proposal === id.title
+  );
+  const isApprovedIdentifier = Boolean(identifierDetails);
+
+  if (isApprovedIdentifier) {
+    return {
+      title: identifierDetails?.title ?? proposal,
+      description:
+        identifierDetails?.summary ??
+        "No description was found for this request.",
+    };
+  }
+
   const decodedAncillaryData = decodeAncillaryDataHexString(ancillaryData);
-  const ancillaryDataTitle = getAncillaryDataTitle(decodedAncillaryData ?? "");
-  const ancillaryDataDescription = getAncillaryDataDescription(
+  const ancillaryDataTitle = getTitleFromAncillaryData(
+    decodedAncillaryData ?? ""
+  );
+  const ancillaryDataDescription = getDescriptionFromAncillaryData(
     decodedAncillaryData ?? ""
   );
 
-  // description is derived from either the umip description defined in contentful (if it is an umip)
-  // or it is the ancillary data decoded from the ancillary data hex string
-  let title;
-  let description;
-
-  // use umip description if it exists
-  if (isUmip && umip?.title) {
-    title = umip?.title;
-    // otherwise use the decoded ancillary data
-  } else if (ancillaryDataTitle) {
-    title = ancillaryDataTitle;
-    // if all else fails, use the empty placeholder
-  } else {
-    title = proposal;
-  }
-
-  // use umip description if it exists
-  if (isUmip && umip?.description) {
-    description = umip?.description;
-    // otherwise use the decoded ancillary data
-  } else if (ancillaryDataDescription) {
-    description = ancillaryDataDescription;
-    // if all else fails, use the empty placeholder
-  } else {
-    description = `No description was found for this ${
-      isUmip ? "umip" : "request"
-    }.`;
-  }
-
-  return { title, description };
+  return {
+    title: ancillaryDataTitle ?? proposal,
+    description:
+      ancillaryDataDescription ?? "No description was found for this request.",
+  };
 }
