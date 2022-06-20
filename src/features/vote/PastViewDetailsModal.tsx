@@ -30,12 +30,7 @@ import useUMIP from "./hooks/useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 import toWeiSafe from "common/utils/web3/convertToWeiSafely";
 import ReactTooltip from "react-tooltip";
-import {
-  decodeAncillaryDataHexString,
-  getAncillaryDataDescription,
-  getAncillaryDataTitle,
-} from "common/helpers/ancillaryData";
-
+import { determineTitleAndDescription } from "common/helpers/ancillaryData";
 interface Props {
   isOpen: boolean;
   close: () => void;
@@ -97,40 +92,12 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
   const isUmip = proposal.includes("Admin");
   const umipNumber = isUmip ? parseInt(proposal.split(" ")[1]) : undefined;
   const { umip } = useUMIP(umipNumber, network?.chainId);
-  const decodedAncillaryData = decodeAncillaryDataHexString(ancillaryData);
-  const ancillaryDataTitle = getAncillaryDataTitle(decodedAncillaryData ?? "");
-  const ancillaryDataDescription = getAncillaryDataDescription(
-    decodedAncillaryData ?? ""
+  const { title, description } = determineTitleAndDescription(
+    ancillaryData,
+    proposal,
+    isUmip,
+    umip
   );
-
-  // description is derived from either the umip description defined in contentful (if it is an umip)
-  // or it is the ancillary data decoded from the ancillary data hex string
-  let title;
-  let description;
-
-  // use umip description if it exists
-  if (isUmip && umip?.title) {
-    title = umip?.title;
-    // otherwise use the decoded ancillary data
-  } else if (ancillaryDataTitle) {
-    title = ancillaryDataTitle;
-    // if all else fails, use the empty placeholder
-  } else {
-    title = proposal;
-  }
-
-  // use umip description if it exists
-  if (isUmip && umip?.description) {
-    description = umip?.description;
-    // otherwise use the decoded ancillary data
-  } else if (ancillaryDataDescription) {
-    description = ancillaryDataDescription;
-    // if all else fails, use the empty placeholder
-  } else {
-    description = `No description was found for this ${
-      isUmip ? "umip" : "request"
-    }.`;
-  }
 
   return (
     <>
