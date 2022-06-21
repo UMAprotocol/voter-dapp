@@ -6,6 +6,12 @@ import {
 } from "./ancillaryData";
 import approvedIdentifiers from "./approvedIdentifiersTable.json";
 
+type RequestMetaData = {
+  title: string;
+  description: string;
+  umipUrl?: string;
+};
+
 /** Finds a title and description for a proposal.
  *
  * There are 3 different sources of this data, depending on the proposal type:
@@ -18,7 +24,7 @@ export function determineTitleAndDescription(
   ancillaryData: string,
   proposal: string,
   umip?: UMIP
-) {
+): RequestMetaData {
   // if we are dealing with a UMIP, get the title and description from Contentful
   const isUmip = proposal.includes("Admin");
   if (isUmip) {
@@ -26,6 +32,7 @@ export function determineTitleAndDescription(
       title: umip?.title ?? proposal,
       description:
         umip?.description ?? "No description was found for this UMIP.",
+      umipUrl: umip?.umipLink,
     };
   }
 
@@ -39,9 +46,9 @@ export function determineTitleAndDescription(
     return {
       title: identifierDetails?.title ?? proposal,
       description:
-        identifierDetails?.summary +
-          ` UMIP link: ${identifierDetails?.umipLink}` ??
+        identifierDetails?.summary ??
         "No description was found for this request.",
+      umipUrl: identifierDetails?.umipLink.url,
     };
   }
 
@@ -58,5 +65,6 @@ export function determineTitleAndDescription(
     title: ancillaryDataTitle ?? proposal,
     description:
       ancillaryDataDescription ?? "No description was found for this request.",
+    umipUrl: undefined,
   };
 }
