@@ -167,7 +167,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   const isUmip = proposal.includes("Admin");
   const umipNumber = isUmip ? parseInt(proposal.split(" ")[1]) : undefined;
   const { umip } = useUMIP(umipNumber, network?.chainId);
-  const { title, description } = getRequestMetaData(ancData, proposal, umip);
+  const { title, description, umipUrl } = getRequestMetaData(ancData, proposal, umip);
 
   return (
     <>
@@ -250,9 +250,9 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
                 Join the UMA Discord
               </a>
             </IconsItem>
-            {umip?.umipLink ? (
+            {umipUrl ? (
               <IconsItem>
-                <a target="_blank" href={umip?.umipLink} rel="noreferrer">
+                <a target="_blank" href={umipUrl} rel="noreferrer">
                   <Icon>
                     <CopyIcon />
                   </Icon>
