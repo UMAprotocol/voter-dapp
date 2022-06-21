@@ -19,8 +19,9 @@ export function determineTitleAndDescription(
   proposal: string,
   umip?: UMIP
 ) {
-  const isUmip = proposal.includes("Admin");
 
+  // if we are dealing with a UMIP, get the title and description from Contentful
+  const isUmip = proposal.includes("Admin");
   if (isUmip) {
     return {
       title: umip?.title ?? proposal,
@@ -29,11 +30,12 @@ export function determineTitleAndDescription(
     };
   }
 
+  // if we are dealing with a request for an approved price identifier, get the title and description from the hard-coded approvedIdentifiersTable json file
+  // we know we are dealing with a request for an approved price identifier if the proposal matches an approved identifier's title
   const identifierDetails = approvedIdentifiers.find(
     (id) => proposal === id.title
   );
   const isApprovedIdentifier = Boolean(identifierDetails);
-
   if (isApprovedIdentifier) {
     return {
       title: identifierDetails?.title ?? proposal,
@@ -43,6 +45,7 @@ export function determineTitleAndDescription(
     };
   }
 
+  // if the previous checks fail, we assume we are dealing with a Polymarket request
   const decodedAncillaryData = decodeAncillaryDataHexString(ancillaryData);
   const ancillaryDataTitle = getTitleFromAncillaryData(
     decodedAncillaryData ?? ""
