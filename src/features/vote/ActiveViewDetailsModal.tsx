@@ -34,7 +34,7 @@ import web3 from "web3";
 import { VoteEvent } from "common/web3/types.web3";
 import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import has from "lodash.has";
-import { getRequestMetaData } from "common/helpers/proposalTitleAndDescription/getRequestMetaData";
+import { getRequestMetaData } from "common/helpers/requestMetaData/getRequestMetaData";
 
 interface Props {
   isOpen: boolean;

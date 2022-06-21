@@ -30,7 +30,7 @@ import useUMIP from "./hooks/useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 import toWeiSafe from "common/utils/web3/convertToWeiSafely";
 import ReactTooltip from "react-tooltip";
-import { getRequestMetaData } from "common/helpers/proposalTitleAndDescription/getRequestMetaData";
+import { getRequestMetaData } from "common/helpers/requestMetaData/getRequestMetaData";
 interface Props {
   isOpen: boolean;
   close: () => void;
