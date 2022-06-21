@@ -34,6 +34,7 @@ import web3 from "web3";
 import { VoteEvent } from "common/web3/types.web3";
 import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import has from "lodash.has";
+import { determineTitleAndDescription } from "common/helpers/proposalTitleAndDescription/determineTitleAndDescription";
 
 interface Props {
   isOpen: boolean;
@@ -166,10 +167,11 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   const isUmip = proposal.includes("Admin");
   const umipNumber = isUmip ? parseInt(proposal.split(" ")[1]) : undefined;
   const { umip } = useUMIP(umipNumber, network?.chainId);
-
-  const description =
-    umip?.description ||
-    `No description was found for this ${isUmip ? "umip" : "request"}.`;
+  const { title, description } = determineTitleAndDescription(
+    ancData,
+    proposal,
+    umip
+  );
 
   return (
     <>
@@ -188,7 +190,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
       >
         <ModalWrapper>
           <MiniHeader>Proposal</MiniHeader>
-          <Proposal>{proposal}</Proposal>
+          <Proposal>{title}</Proposal>
           {ancData !== NULL_ANC_DATA && (
             <>
               <MiniHeader>
