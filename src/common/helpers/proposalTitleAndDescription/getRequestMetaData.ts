@@ -12,20 +12,20 @@ type RequestMetaData = {
   umipUrl?: string;
 };
 
-/** Finds a title and description for a proposal.
+/** Finds a title and description, and UMIP link (if it exists) for a proposal.
  *
  * There are 3 different sources of this data, depending on the proposal type:
  *
- * 1. For UMIPs, the title and description comes from Contentful.
- * 2. For requests for approved price identifiers, the title and description comes from the hard-coded `approvedIdentifiersTable` json file.
- * 3. For requests from Polymarket, the title and description comes from the proposal's ancillary data.
+ * 1. For UMIPs, the title, description and UMIP link come from Contentful.
+ * 2. For requests for approved price identifiers, the title, description, and UMIP link come from the hard-coded `approvedIdentifiersTable` json file.
+ * 3. For requests from Polymarket, the title and description come from the proposal's ancillary data (note that there is no UMIP link here).
  */
 export function getRequestMetaData(
   ancillaryData: string,
   proposal: string,
   umip?: UMIP
 ): RequestMetaData {
-  // if we are dealing with a UMIP, get the title and description from Contentful
+  // if we are dealing with a UMIP, get the title, description and UMIP url from Contentful
   const isUmip = proposal.includes("Admin");
   if (isUmip) {
     return {
@@ -36,7 +36,7 @@ export function getRequestMetaData(
     };
   }
 
-  // if we are dealing with a request for an approved price identifier, get the title and description from the hard-coded approvedIdentifiersTable json file
+  // if we are dealing with a request for an approved price identifier, get the title, description and UMIP url from the hard-coded approvedIdentifiersTable json file
   // we know we are dealing with a request for an approved price identifier if the proposal matches an approved identifier's title
   const identifierDetails = approvedIdentifiers.find(
     (id) => proposal === id.title
@@ -53,6 +53,7 @@ export function getRequestMetaData(
   }
 
   // if the previous checks fail, we assume we are dealing with a Polymarket request
+  // note that `umipUrl` is undefined in this case, as there is no UMIP to link to for this type of request
   const decodedAncillaryData = decodeAncillaryDataHexString(ancillaryData);
   const ancillaryDataTitle = getTitleFromAncillaryData(
     decodedAncillaryData ?? ""
