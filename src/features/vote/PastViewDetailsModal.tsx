@@ -30,7 +30,7 @@ import useUMIP from "./hooks/useUMIP";
 import useOnboard from "common/hooks/useOnboard";
 import toWeiSafe from "common/utils/web3/convertToWeiSafely";
 import ReactTooltip from "react-tooltip";
-import { determineTitleAndDescription } from "common/helpers/proposalTitleAndDescription/determineTitleAndDescription";
+import { getRequestMetaData } from "common/helpers/proposalTitleAndDescription/getRequestMetaData";
 interface Props {
   isOpen: boolean;
   close: () => void;
@@ -92,7 +92,7 @@ const _PastViewDetailsModal: ForwardRefRenderFunction<
   const isUmip = proposal.includes("Admin");
   const umipNumber = isUmip ? parseInt(proposal.split(" ")[1]) : undefined;
   const { umip } = useUMIP(umipNumber, network?.chainId);
-  const { title, description } = determineTitleAndDescription(
+  const { title, description } = getRequestMetaData(
     ancillaryData,
     proposal,
     umip

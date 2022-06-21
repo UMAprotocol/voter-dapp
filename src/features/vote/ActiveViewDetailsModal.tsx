@@ -34,7 +34,7 @@ import web3 from "web3";
 import { VoteEvent } from "common/web3/types.web3";
 import { VoteRevealed } from "common/web3/get/queryVotesRevealedEvents";
 import has from "lodash.has";
-import { determineTitleAndDescription } from "common/helpers/proposalTitleAndDescription/determineTitleAndDescription";
+import { getRequestMetaData } from "common/helpers/proposalTitleAndDescription/getRequestMetaData";
 
 interface Props {
   isOpen: boolean;
@@ -167,11 +167,7 @@ const _ActiveViewDetailsModal: ForwardRefRenderFunction<
   const isUmip = proposal.includes("Admin");
   const umipNumber = isUmip ? parseInt(proposal.split(" ")[1]) : undefined;
   const { umip } = useUMIP(umipNumber, network?.chainId);
-  const { title, description } = determineTitleAndDescription(
-    ancData,
-    proposal,
-    umip
-  );
+  const { title, description } = getRequestMetaData(ancData, proposal, umip);
 
   return (
     <>

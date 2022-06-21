@@ -20,7 +20,7 @@ type RequestMetaData = {
  * 2. For requests for approved price identifiers, the title and description comes from the hard-coded `approvedIdentifiersTable` json file.
  * 3. For requests from Polymarket, the title and description comes from the proposal's ancillary data.
  */
-export function determineTitleAndDescription(
+export function getRequestMetaData(
   ancillaryData: string,
   proposal: string,
   umip?: UMIP
