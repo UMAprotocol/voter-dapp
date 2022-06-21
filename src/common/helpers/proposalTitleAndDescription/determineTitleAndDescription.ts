@@ -19,7 +19,6 @@ export function determineTitleAndDescription(
   proposal: string,
   umip?: UMIP
 ) {
-
   // if we are dealing with a UMIP, get the title and description from Contentful
   const isUmip = proposal.includes("Admin");
   if (isUmip) {
@@ -40,7 +39,8 @@ export function determineTitleAndDescription(
     return {
       title: identifierDetails?.title ?? proposal,
       description:
-        identifierDetails?.summary ??
+        identifierDetails?.summary +
+          ` UMIP link: ${identifierDetails?.umipLink}` ??
         "No description was found for this request.",
     };
   }
