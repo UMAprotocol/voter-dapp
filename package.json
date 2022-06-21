@@ -62,7 +62,7 @@
     "test:coverage": "yarn test --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "reveal": "ts-node ./manualreveal",
-    "parse-approved-identifiers": "ts-node ./src/common/helpers/proposalTitleAndDescription/approvedIdentifiersTableParser.ts"
+    "update-approved-identifiers": "ts-node ./src/common/helpers/proposalTitleAndDescription/approvedIdentifiersTableParser.ts"
   },
   "eslintConfig": {
     "extends": [
