@@ -1,9 +1,17 @@
 import fs from "fs";
+import path from "path";
 
-const contents = fs.readFileSync("approvedIdentifiers.txt", "utf-8");
+const contents = fs.readFileSync(
+  path.join(__dirname, "./approvedIdentifiersTable.txt"),
+  "utf-8"
+);
 const lines = contents.split("\n");
-const parsedLines = JSON.stringify(lines.map(parseLine))
-fs.writeFile('approvedIdentifiers.json', parsedLines, err => console.error(err))
+const parsedLines = JSON.stringify(lines.map(parseLine));
+fs.writeFile(
+  path.join(__dirname, "./approvedIdentifiersTable.json"),
+  parsedLines,
+  (err) => console.error(err)
+);
 
 function parseLine(line: string) {
   const dividerIndices: number[] = [];
@@ -16,21 +24,7 @@ function parseLine(line: string) {
 
   const title = line.substring(dividerIndices[0] + 1, dividerIndices[1]);
   const summary = line.substring(dividerIndices[1] + 2, dividerIndices[2]);
-  const unparsedUmipLink = line.substring(dividerIndices[2] + 2, line.length);
-  const umipLink = parseUmipLink(unparsedUmipLink);
+  const umipLink = line.substring(dividerIndices[2] + 2, line.length);
 
   return { title, summary, umipLink };
-}
-
-function parseUmipLink(umipLink: string) {
-  const number = umipLink.substring(
-    umipLink.indexOf("[") + 1,
-    umipLink.indexOf("]")
-  );
-  const url = umipLink.substring(
-    umipLink.indexOf("(") + 1,
-    umipLink.indexOf(")")
-  );
-
-  return { number, url };
 }
