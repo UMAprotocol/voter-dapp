@@ -8,16 +8,13 @@ async function main() {
   // first download the table of approved identifiers from our docs
   const url =
     "https://raw.githubusercontent.com/UMAprotocol/docs/master/docs/uma-tokenholders/approved-price-identifiers.md";
-  await downloadFile(
-    url,
-    path.join(__dirname, "./approvedIdentifiersTable.md")
-  );
+  const markdownPath = path.join(__dirname, "./approvedIdentifiersTable.md");
+  const jsonPath = path.join(__dirname, "./approvedIdentifiersTable.json");
+
+  await downloadFile(url, markdownPath);
 
   // read and parse the markdown file from GitHub
-  const contents = fs.readFileSync(
-    path.join(__dirname, "./approvedIdentifiersTable.md"),
-    "utf-8"
-  );
+  const contents = fs.readFileSync(markdownPath, "utf-8");
   const lines = contents
     .split("\n")
     // ignore the first 8 lines (headmatter and table headers)
@@ -25,11 +22,10 @@ async function main() {
   const parsedLines = JSON.stringify(lines.map(parseLine));
 
   // write the parsed lines to a json file
-  fs.writeFile(
-    path.join(__dirname, "./approvedIdentifiersTable.json"),
-    parsedLines,
-    (err) => console.error(err)
-  );
+  fs.writeFile(jsonPath, parsedLines, (err) => console.error(err));
+
+  // remove the markdown file
+  fs.unlinkSync(markdownPath);
 }
 
 function parseLine(line: string) {
