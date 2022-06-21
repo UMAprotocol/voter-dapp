@@ -1,17 +1,31 @@
 import fs from "fs";
 import path from "path";
+import https from "https";
 
-const contents = fs.readFileSync(
-  path.join(__dirname, "./approvedIdentifiersTable.txt"),
-  "utf-8"
-);
-const lines = contents.split("\n");
-const parsedLines = JSON.stringify(lines.map(parseLine));
-fs.writeFile(
-  path.join(__dirname, "./approvedIdentifiersTable.json"),
-  parsedLines,
-  (err) => console.error(err)
-);
+main();
+
+async function main() {
+  const url =
+    "https://raw.githubusercontent.com/UMAprotocol/docs/master/docs/uma-tokenholders/approved-price-identifiers.md";
+  await downloadFile(
+    url,
+    path.join(__dirname, "./approvedIdentifiersTable.md")
+  );
+  const contents = fs.readFileSync(
+    path.join(__dirname, "./approvedIdentifiersTable.md"),
+    "utf-8"
+  );
+  const lines = contents
+    .split("\n")
+    // ignore the first 8 lines (headmatter and table headers)
+    .slice(8);
+  const parsedLines = JSON.stringify(lines.map(parseLine));
+  fs.writeFile(
+    path.join(__dirname, "./approvedIdentifiersTable.json"),
+    parsedLines,
+    (err) => console.error(err)
+  );
+}
 
 function parseLine(line: string) {
   const dividerIndices: number[] = [];
@@ -45,4 +59,32 @@ function parseMarkdownUmipLink(umipLink: string) {
   );
 
   return { number, url };
+}
+
+async function downloadFile(url: string, targetFile: fs.PathLike) {
+  return await new Promise((resolve, reject) => {
+    https
+      .get(url, (response) => {
+        const code = response.statusCode ?? 0;
+
+        if (code >= 400) {
+          return reject(new Error(response.statusMessage));
+        }
+
+        // handle redirects
+        if (code > 300 && code < 400 && !!response.headers.location) {
+          return downloadFile(response.headers.location, targetFile);
+        }
+
+        // save the file to disk
+        const fileWriter = fs.createWriteStream(targetFile).on("finish", () => {
+          resolve({});
+        });
+
+        response.pipe(fileWriter);
+      })
+      .on("error", (error) => {
+        reject(error);
+      });
+  });
 }
