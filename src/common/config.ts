@@ -36,7 +36,7 @@ export const OLD_VOTING_CONTRACT_ADDRESSES = [
 
 export default function config(network: Network | null) {
   const infuraRpc = `https://${
-    network ? network?.name : "mainnet"
+    network?.name ?? "mainnet"
   }.infura.io/v3/${infuraId}`;
 
   return {
@@ -79,7 +79,7 @@ export default function config(network: Network | null) {
       walletCheck: [
         { checkName: "connect" },
         { checkName: "accounts" },
-        { checkName: "network" },
+        // { checkName: "network" },
         { checkName: "balance", minimumBalance: "0" },
       ],
     },
