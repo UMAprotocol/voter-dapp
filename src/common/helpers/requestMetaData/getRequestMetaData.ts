@@ -54,13 +54,18 @@ export function getRequestMetaData(
 
   // if the previous checks fail, we assume we are dealing with a Polymarket request
   // note that `umipUrl` is undefined in this case, as there is no UMIP to link to for this type of request
-  const decodedAncillaryData = decodeAncillaryDataHexString(ancillaryData);
-  const ancillaryDataTitle = getTitleFromAncillaryData(
-    decodedAncillaryData ?? ""
-  );
-  const ancillaryDataDescription = getDescriptionFromAncillaryData(
-    decodedAncillaryData ?? ""
-  );
+
+  let decodedAncillaryData = "";
+
+  try {
+    decodedAncillaryData = decodeAncillaryDataHexString(ancillaryData);
+  } catch (e) {
+    console.error(e);
+  }
+
+  const ancillaryDataTitle = getTitleFromAncillaryData(decodedAncillaryData);
+  const ancillaryDataDescription =
+    getDescriptionFromAncillaryData(decodedAncillaryData);
 
   return {
     title: ancillaryDataTitle ?? proposal,

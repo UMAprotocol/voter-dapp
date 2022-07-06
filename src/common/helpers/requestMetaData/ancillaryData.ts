@@ -1,10 +1,15 @@
 import { ethers } from "ethers";
 
 export function decodeAncillaryDataHexString(ancillaryDataHexString: string) {
-  if (!ancillaryDataHexString.startsWith("0x")) {
-    return null;
+  try {
+    return ethers.utils.toUtf8String(ancillaryDataHexString);
+  } catch (e) {
+    if (e instanceof Error) {
+      throw new Error(`Invalid ancillary data hex string: ${e.message}`);
+    } else {
+      throw new Error(`Invalid ancillary data hex string: ${e}`);
+    }
   }
-  return ethers.utils.toUtf8String(ancillaryDataHexString);
 }
 
 export function getTitleFromAncillaryData(
