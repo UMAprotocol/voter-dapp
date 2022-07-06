@@ -41,7 +41,10 @@ export function getRequestMetaData(
   const identifierDetails = approvedIdentifiers.find(
     (id) => proposal === id.title
   );
-  const isApprovedIdentifier = Boolean(identifierDetails);
+  const identifiersToIgnore = [
+    "YES_OR_NO_QUERY"
+  ]
+  const isApprovedIdentifier = Boolean(identifierDetails) && !identifiersToIgnore.includes(proposal);
   if (isApprovedIdentifier) {
     return {
       title: identifierDetails?.title ?? proposal,
