@@ -19,7 +19,7 @@ async function main() {
     .split("\n")
     // ignore the first 8 lines (headmatter and table headers)
     .slice(8);
-  const parsedLines = JSON.stringify(lines.map(parseLine));
+  const parsedLines = JSON.stringify(lines.map(parseLine), null, 2);
 
   // write the parsed lines to a json file
   fs.writeFile(jsonPath, parsedLines, (err) => console.error(err));
