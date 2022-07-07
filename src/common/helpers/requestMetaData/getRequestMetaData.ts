@@ -41,10 +41,11 @@ export function getRequestMetaData(
   const identifierDetails = approvedIdentifiers.find(
     (id) => proposal === id.title
   );
-  const identifiersToIgnore = [
-    "YES_OR_NO_QUERY"
-  ]
-  const isApprovedIdentifier = Boolean(identifierDetails) && !identifiersToIgnore.includes(proposal);
+  const isApprovedIdentifier =
+    Boolean(identifierDetails) &&
+    // `YES_OR_NO_QUERY` is a special case, because it is the only approved identifier that Polymarket uses
+    // we should therefore treat it as a Polymarket request instead
+    proposal !== "YES_OR_NO_QUERY";
   if (isApprovedIdentifier) {
     return {
       title: identifierDetails?.title ?? proposal,
