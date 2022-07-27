@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { VoteEvent } from "../types.web3";
 import assert from "assert";
 import { VOTER_CONTRACT_BLOCK } from "common/config";
-import * as utils from "common/utils/events"
+import * as utils from "common/utils/events";
 
 export interface VoteRevealed extends VoteEvent {
   price: string;
@@ -37,22 +37,22 @@ export const queryVotesRevealedEvents = async (
     null,
     numTokens
   );
-  let events = []
+  let events = [];
   let rangeState = utils.rangeStart({
-    startBlock:VOTER_CONTRACT_BLOCK,
+    startBlock: VOTER_CONTRACT_BLOCK,
     endBlock: await contract.provider.getBlockNumber(),
-  })
-  while(!rangeState.done){
-    try{
+  });
+  while (!rangeState.done) {
+    try {
       const newEvents = await contract.queryFilter(
         filter,
         rangeState.currentStart,
-        rangeState.currentEnd,
+        rangeState.currentEnd
       );
-      rangeState = utils.rangeSuccessDescending(rangeState)
-      events.push(...newEvents)
-    }catch(err){
-      rangeState = utils.rangeFailureDescending(rangeState)
+      rangeState = utils.rangeSuccessDescending(rangeState);
+      events.push(...newEvents);
+    } catch (err) {
+      rangeState = utils.rangeFailureDescending(rangeState);
     }
   }
   return events.map((el) => {
