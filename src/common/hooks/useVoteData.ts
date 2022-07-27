@@ -63,7 +63,10 @@ const POLLING_INTERVAL = 60000;
 function useVoteData(account: string | null) {
   const [votingSummaryData, setVotingSummaryData] =
     useState<FormattedPriceRequestRounds>({});
-  const [numToQuery, setNumToQuery] = useState(5);
+  // this query does not discriminate between past and current votes. so if we have 10 current votes,
+  // we wont find any past votes and it will continue to be loading. This used to be 5, then we had 5
+  // active votes and past requests would not load, so this is bumped to 10.
+  const [numToQuery, setNumToQuery] = useState(10);
 
   // Because apollo caches results of queries, we will poll/refresh this query periodically.
   // We set the poll interval to a very slow 60 seconds for now since the vote states

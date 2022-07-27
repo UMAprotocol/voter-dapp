@@ -126,7 +126,6 @@ const HEADER_LINKS: IHeaderLink[] = [
   {
     key: "Vote",
     component: ({ path }) => {
-      console.log({ path });
       return (
         <UI.NavLink to="/" active={path === "/"}>
           Vote
