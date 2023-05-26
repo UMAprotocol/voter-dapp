@@ -1,6 +1,6 @@
 # UMA Voter dApp
 
-## Get Started
+## Get Started1
 
 Yarn was used for package management. Install yarn and run
 
